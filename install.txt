@@ -1,0 +1,30 @@
+// Magento installation of Kirana
+
+Database:
+1. create database ex. mg_kirana.
+2. Import database backup using /db/db_backup_kirana.sql
+
+
+Magento Setup:
+1. clone repository.
+2. Change permissions to following folders
+chmod 0755 or 0777 var/
+
+chmod 0755 or 0777 generated/
+
+chmod 0755 or 0777 pub/
+
+chmod 0755 or 0777 app/etc/
+
+3. Go to browser and hit URL.
+Ex. http://127.0.0.1/kirana_store/
+
+
+Magento Admin Information:
+Username: admin
+Email: sunil.n@altencalsoftlabs.com
+Password: Admin@123
+Your Store Address: http://127.0.0.1/kirana_store/
+Magento Admin Address: http://127.0.0.1/kirana_store/admin_lirbuz/
+
+Note: If you have issues running setup go to app/etc/env.php and update database and URL settings.

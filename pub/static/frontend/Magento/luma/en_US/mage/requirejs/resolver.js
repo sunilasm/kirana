@@ -1,0 +1,1 @@
+/var/www/html/kirana_store/lib/web/mage/requirejs/resolver.js
