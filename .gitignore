@@ -41,5 +41,5 @@
 /var/package/*
 !/var/package/*.xml
 
-generated
-pub
+generated/
+pub/

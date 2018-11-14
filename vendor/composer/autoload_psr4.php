@@ -72,6 +72,8 @@ return array(
     'Pelago\\' => array($vendorDir . '/pelago/emogrifier/Classes'),
     'PDepend\\' => array($vendorDir . '/pdepend/pdepend/src/main/php/PDepend'),
     'Monolog\\' => array($vendorDir . '/monolog/monolog/src/Monolog'),
+    'Mageplaza\\Smtp\\' => array($vendorDir . '/mageplaza/module-smtp'),
+    'Mageplaza\\Core\\' => array($vendorDir . '/mageplaza/module-core'),
     'Magento\\Wishlist\\' => array($vendorDir . '/magento/module-wishlist'),
     'Magento\\WishlistAnalytics\\' => array($vendorDir . '/magento/module-wishlist-analytics'),
     'Magento\\Widget\\' => array($vendorDir . '/magento/module-widget'),
