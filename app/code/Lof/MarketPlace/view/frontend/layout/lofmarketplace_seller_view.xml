@@ -1,0 +1,63 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Landofcoder
+ * 
+ * NOTICE OF LICENSE
+ * 
+ * This source file is subject to the Landofcoder.com license that is
+ * available through the world-wide-web at this URL:
+ * http://www.landofcoder.com/license-agreement.html
+ * 
+ * DISCLAIMER
+ * 
+ * Do not edit or add to this file if you wish to upgrade this extension to newer
+ * version in the future.
+ * 
+ * @category   Landofcoder
+ * @package    Lof_MarketPlace
+ * @copyright  Copyright (c) 2014 Landofcoder (http://www.landofcoder.com/)
+ * @license    http://www.landofcoder.com/LICENSE-1.0.html
+ */
+-->
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" layout="2columns-left" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <referenceContainer name="columns.top">
+            <container name="seller.view.container" htmlTag="div" htmlClass="seller-view" after="-">
+                <block class="Lof\MarketPlace\Block\Seller\View" name="seller.vacation" template="Lof_MarketPlace::seller/vacation.phtml"/>
+                <block class="Lof\MarketPlace\Block\Seller\View" name="seller.image" template="Lof_MarketPlace::seller/image.phtml"/>
+                
+            </container>
+        </referenceContainer>
+        <referenceContainer name="sidebar.main">
+            <block class="Lof\MarketPlace\Block\Seller\Info" name="seller_info" template="Lof_MarketPlace::seller/info.phtml"/>
+        </referenceContainer>
+        <referenceContainer name="content">
+
+            <block class="Lof\MarketPlace\Block\Seller\View" name="seller.products" template="Lof_MarketPlace::seller/view.phtml">
+                <block class="Lof\MarketPlace\Block\Seller\Product\ListProduct" name="seller.products.list" as="product_list" template="Lof_MarketPlace::product/list.phtml">
+                    <container name="category.product.list.additional" as="additional" />
+                    <block class="Magento\Framework\View\Element\RendererList" name="category.product.type.details.renderers" as="details.renderers">
+                        <block class="Magento\Framework\View\Element\Template" as="default"/>
+                    </block>
+                    <block class="Magento\Catalog\Block\Product\ProductList\Toolbar" name="product_list_toolbar" template="Magento_Catalog::product/list/toolbar.phtml">
+                        <block class="Magento\Theme\Block\Html\Pager" name="product_list_toolbar_pager"/>
+                    </block>
+                    <action method="setToolbarBlockName">
+                        <argument name="name" xsi:type="string">product_list_toolbar</argument>
+                    </action>
+                </block>
+            </block>
+            <block class="Lof\MarketPlace\Block\Seller\View" name="seller.description" template="Lof_MarketPlace::seller/description.phtml"/>
+             <block class="Lof\MarketPlace\Block\Seller\Rating" name="rating.seller" template="Lof_MarketPlace::seller/rating.phtml">
+                    </block>
+            <block class="Magento\Cookie\Block\RequireCookie" name="require-cookie" template="Magento_Cookie::require_cookie.phtml">
+                <arguments>
+                    <argument name="triggers" xsi:type="array">
+                        <item name="compareProductLink" xsi:type="string">.action.tocompare</item>
+                    </argument>
+                </arguments>
+            </block>
+        </referenceContainer>
+    </body>
+</page>

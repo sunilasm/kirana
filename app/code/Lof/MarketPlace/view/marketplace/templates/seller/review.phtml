@@ -1,0 +1,62 @@
+<?php
+$helper = $this->helper('Lof\MarketPlace\Helper\Data');
+?>
+<div class="page-title">
+  <div class="title_left">
+    <h3><?php echo 'Review'; ?></h3>
+  </div>
+</div>
+<div class="row">
+  	<div class="col-md-12 col-sm-12 col-xs-12">
+    	<div class="x_panel">
+	      	<div class="x_title">
+	        	<h2><?php echo 'All Review'; ?></h2>
+	        	<div class="clearfix"></div>
+	     	</div>
+	      	<div class="x_content">
+		        <table id="datatable" class="table table-striped table-bordered">
+		          	<thead>
+			          	<tr class="headings">
+			          		<th class="hidden"> </th>
+			                <th class="column-title"><?php echo __('Id');?> </th>
+			                <th class="column-title"><?php echo __('Nick Name');?> </th>
+			                <th class="column-title"><?php echo __('Title');?> </th>
+			                <th class="column-title"><?php echo __('Detail');?> </th>
+			                <th class="column-title"><?php echo __('Review');?> </th>
+			                <th class="column-title"><?php echo __('Status');?> </th>
+			                <th class="column-title"><?php echo __('Created At'); ?> </th>
+			                <th class="column-title no-link last"><span class="nobr"><?php echo __('Action'); ?></span>
+			                </th>
+			                <th class="bulk-actions" colspan="7">
+			                  <a class="antoo" style="color:#fff; font-weight:500;"><?php echo __('Bulk Actions');?> ( <span class="action-cnt"> </span> ) <i class="fa fa-chevron-down"></i></a>
+			                </th>
+			          	</tr>
+			        </thead>
+			        <tbody>
+		
+				         <?php foreach ($this->getReview()->setOrder('review_id', 'desc') as $key => $review) { 
+				         	?>
+				         <tr>
+				         	<td class="hidden"> </td>
+				         	<td class=""><?php echo $review->getReviewId(); ?>  </td>
+				         	<td class=""><?php echo $review->getNickname(); ?>  </td>
+				         	<td class=""><?php echo $review->getTitle(); ?>  </td>
+				         	<td class=""><?php echo $review->getDetail(); ?>  </td>
+				         	<td class=""> <div class="ratings">
+								<div class="rating-box">
+									<div class="rating" style="width: <?php echo $review->getData('rating')/5*100; ?>%;"></div>
+								</div>
+								<div class="clearfix"></div>
+							</div>  </td>
+				         	<td class=""><?php echo $helper->getStatusRating($review->getStatus()); ?>  </td>
+				         	<td class=""><?php echo $review->getCreatedAt(); ?>  </td>
+				         	<td class=" last"><a href="<?php echo $block->getUrl('catalog/review/view', ['review_id' => $review->getReviewsellerId()]); ?>"><?php echo __('View'); ?></a>
+				         </tr>
+				         <?php } ?>
+			        </tbody>    
+		        </table>
+	      	</div>
+	    </div>  	
+    </div>
+ </div>
+

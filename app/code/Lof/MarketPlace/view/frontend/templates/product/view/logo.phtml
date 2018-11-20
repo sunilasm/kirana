@@ -1,0 +1,172 @@
+<?php
+
+$sellerCollection = $this->getSellerCollection();
+
+$data = $this->helper('Lof\MarketPlace\Helper\Data');
+$currPageUrl = $data->getCurrentUrls();
+//$seller_layout_listing = $data->getConfig("product_view_page/seller_layout_listing");
+$show_seller_text = $data->getConfig("product_view_page/show_seller_text");
+$show_seller_image = $data->getConfig("product_view_page/show_seller_image");
+$show_seller_name = $data->getConfig("product_view_page/show_seller_name");
+$show_seller_address = $data->getConfig("product_view_page/show_seller_address");
+$show_seller_sale = $data->getConfig("product_view_page/show_seller_sale");
+$show_seller_phone = $data->getConfig("product_view_page/show_seller_phone");
+$show_seller_contact = $data->getConfig("product_view_page/show_seller_contact");
+$text_contact = $data->getConfig("product_view_page/text_contact");
+$formActionUrl = $this->getUrl('lofmarketplace/seller/savemessage');
+$href = '#';
+?>
+<?php if($sellerCollection && $sellerCollection->count()){
+	$sellerId = $sellerCollection->getFirstItem()->getData('seller_id');  ?>
+	<?php
+	$total = $sellerCollection->count();
+	
+	?>
+	<?php 
+		foreach ($sellerCollection as $_seller) { ?>
+		<div class="seller-profile-container">
+			<div class="seller-image col-xs-3">
+				<?php if($show_seller_image): ?>
+				<a href="<?php echo $_seller->getUrl(); ?>" title="<?php echo $_seller->getName(); ?>">
+				<img src="<?php echo $_seller->getThumbnailUrl(); ?>" alt="<?php echo $_seller->getName(); ?>"/></a>
+				<?php endif; ?>
+			</div>
+			<div class="col-xs-9 seller-description">
+				<?php if($show_seller_name): ?>
+				<h3 class="seller_title">
+					<a href="<?php echo $_seller->getUrl(); ?>" title="<?php echo $_seller->getName(); ?>"><?php echo $_seller->getName(); ?></a>
+				</h3>
+				<?php endif; ?>
+				<?php if($show_seller_text) { ?>
+					<span class="seller-headline"><?php echo $_seller->getShopTitle();?> </span>
+				<?php } ?>
+				<?php if($show_seller_address) { ?>
+					<p class="seller-info"><span class="seller-address"><i class="fa fa-map-marker"></i><?php echo $_seller->getAddress();?>, <?php echo $_seller->getCountry();?></span></p>
+				<?php } ?>
+				<?php if($show_seller_sale) { ?>
+				<p class="seller-info">
+					<span class="seller-sales-count">
+						<i class="fa fa-shopping-cart"></i>
+						<?php if($this->getTotalSales() >1) {
+							echo $this->getTotalSales().__(" Sales");
+						} else {
+							echo $this->getTotalSales().__(" Sale");
+						} ?>
+					</span>
+					<span class="seller-joined-date"><i class="fa fa-calendar"></i><?php echo __("Joined since ").$this->formatDate($_seller->getCreationTime(),\IntlDateFormatter::MEDIUM);?></span>
+				</p>
+				<?php } ?>
+				<?php if($show_seller_phone) { ?>
+				<p class="seller-info">    
+					<span class="seller-phone"><i class="fa fa-phone"></i><?php echo $_seller->getContactNumber();?></span>
+				</p>
+				<?php } ?>
+				<?php if($show_seller_contact) { ?>
+				<div class="seller-info message-contact">
+				    <a class="btn" id="seller-contact" href="<?php echo $href;?>"><i class="fa fa-envelope-o"></i><?php echo $text_contact;?></a>
+				</div>
+				<?php } ?>
+			</div>
+		</div>	
+	 <?php 
+		}
+	?>
+
+	<?php if($data->isLoggedIn()) { ?>
+	<div class="contact-seller" id="contact-seller" style="display: none;">
+		<form class="form contact" action="<?php echo $formActionUrl;?>" id="contact-form" method="post" data-hasrequired="<?php /* @escapeNotVerified */ echo __('* Required Fields') ?>" data-mage-init='{"validation":{}}'>
+		    <fieldset class="fieldset">
+		        <legend class="legend"><span><?php /* @escapeNotVerified */ echo $text_contact; ?></span></legend><br />
+				<input name="sender_name" type="hidden" value="<?php echo $data->getCustomerName(); ?>" />
+				<input name="sender_email" type="hidden" value="<?php echo $data->getCustomerEmail(); ?>" />
+				<input name="sender_id" type="hidden" value="<?php echo $data->getCustomerId(); ?>" />
+				<input name="owner_id" type="hidden" value="<?php echo $sellerId; ?>" />
+		        <div class="field name required">
+		            <label class="label" for="subject"><span><?php /* @escapeNotVerified */ echo __('Subject') ?></span></label>
+		            <div class="control">
+		                <input name="subject" id="subject" title="<?php /* @escapeNotVerified */ echo __('Subject') ?>" class="input-text" type="text" data-validate="{required:true}"/>
+		            </div>
+		        </div>
+		        <div class="field description required">
+		            <label class="label" for="description"><span><?php /* @escapeNotVerified */ echo __('What’s on your mind?') ?></span></label>
+		            <div class="control">
+		                <textarea name="description" id="description" title="<?php /* @escapeNotVerified */ echo __('What’s on your mind?') ?>" class="input-text" cols="5" rows="3" data-validate="{required:true}"></textarea>
+		            </div>
+		        </div>
+		 
+		    </fieldset>
+		    <div class="actions-toolbar">
+		        <div class="primary">
+		        	<input type="hidden" name="currUrl" id="currUrl" value="<?php echo $currPageUrl; ?>" />
+		            <button type="submit" title="<?php /* @escapeNotVerified */ echo __('Submit') ?>" class="action submit primary">
+		                <span><?php /* @escapeNotVerified */ echo __('Submit') ?></span>
+		            </button>
+		        </div>
+		    </div>
+		</form>
+	</div>	
+	<?php } else { ?>  
+	<div class="contact-seller" id="contact-seller" style="display: none;">
+		<form class="form contact" action="<?php echo $formActionUrl;?>" id="contact-form" method="post" data-hasrequired="<?php /* @escapeNotVerified */ echo __('* Required Fields') ?>" data-mage-init='{"validation":{}}'>
+		    <fieldset class="fieldset">
+		        <legend class="legend"><span><?php /* @escapeNotVerified */ echo $text_contact; ?></span></legend><br />
+				<input name="owner_id" type="hidden" value="<?php echo $sellerId; ?>" />
+				<div class="field name required">
+		            <label class="label" for="sender_name"><span><?php /* @escapeNotVerified */ echo __('Customer Name') ?></span></label>
+		            <div class="control">
+		                <input name="sender_name" id="sender_name" title="<?php /* @escapeNotVerified */ echo __('Customer Name') ?>" class="input-text" type="text" data-validate="{required:true}"/>
+		            </div>
+		        </div>
+		        <div class="field name required">
+		            <label class="label" for="sender_email"><span><?php /* @escapeNotVerified */ echo __('Customer Email') ?></span></label>
+		            <div class="control">
+		                <input name="sender_email" id="sender_email" title="<?php /* @escapeNotVerified */ echo __('Customer Email') ?>" class="input-text" type="text" data-validate="{required:true}"/>
+		            </div>
+		        </div>
+		        <div class="field name required">
+		            <label class="label" for="subject"><span><?php /* @escapeNotVerified */ echo __('Subject') ?></span></label>
+		            <div class="control">
+		                <input name="subject" id="subject" title="<?php /* @escapeNotVerified */ echo __('Subject') ?>" class="input-text" type="text" data-validate="{required:true}"/>
+		            </div>
+		        </div>
+		        <div class="field description required">
+		            <label class="label" for="description"><span><?php /* @escapeNotVerified */ echo __('What’s on your mind?') ?></span></label>
+		            <div class="control">
+		                <textarea name="description" id="description" title="<?php /* @escapeNotVerified */ echo __('What’s on your mind?') ?>" class="input-text" cols="5" rows="3" data-validate="{required:true}"></textarea>
+		            </div>
+		        </div>
+		 
+		    </fieldset>
+		    <div class="actions-toolbar">
+		        <div class="primary">
+		        	<input type="hidden" name="currUrl" id="currUrl" value="<?php echo $currPageUrl; ?>" />
+		            <button type="submit" title="<?php /* @escapeNotVerified */ echo __('Submit') ?>" class="action submit primary">
+		                <span><?php /* @escapeNotVerified */ echo __('Submit') ?></span>
+		            </button>
+		        </div>
+		    </div>
+		</form>
+	</div>	
+	<?php } ?>
+	<script type="text/javascript">
+	require(
+		[
+		'jquery',
+		'Lof_All/lib/fancybox/jquery.fancybox.pack',
+		'mage/validation'
+		], function($){
+		jQuery(document).ready(function($) {
+			jQuery("#seller-contact").fancybox({
+				'href'   : '#contact-seller',
+				'titleShow'  : false,
+				'transitionIn'  : 'elastic',
+				'transitionOut' : 'elastic',
+				'minWidth'		: 420,
+
+			});	
+		});
+	});
+	</script>
+	
+
+<?php } ?>

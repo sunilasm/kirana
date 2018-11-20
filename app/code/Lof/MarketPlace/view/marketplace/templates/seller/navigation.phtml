@@ -1,0 +1,103 @@
+<?php
+$_helper = $this->helper('Lof\MarketPlace\Helper\Data');
+$isSeller= $this->isSeller();
+$seller = $_helper->getSellerByCustomer();
+
+if($seller['thumbnail']) {
+  $imageSrc = $_helper->getMediaUrl() . $seller['thumbnail'];
+} else {
+  $imageSrc = $_helper->getMediaUrl() . 'images/user.png';
+}
+$magentoCurrentUrl = $block->getCurrentUrl();
+$allow_pro_type='configurable'; //$_helper->getAllowedProductType();
+$isSellerGroup = 1; //$_helper->isSellerGroupModuleInstalled();
+?>
+<div class="col-md-3 left_col">
+    <div class="left_col scroll-view">
+      <div class="navbar nav_title">
+        <a href="<?php echo $block->getUrl('catalog/dashboard', ['_secure' => $this->getRequest()->isSecure()]); ?>" class="site_title"><i class="fa <?php echo $_helper->getConfig('design/header_icon'); ?>"></i> 
+          <span>  
+            <?php if($_helper->getConfig('design/header_text')) {
+              echo $_helper->getConfig('design/header_text');
+            } else { ?>
+              <?php echo __('Landofcoder');?>
+            <?php } ?>
+          </span>
+        </a> 
+      </div>
+      <div class="clearfix"></div>
+      <div class="profile clearfix">
+        <div class="profile_pic">
+          <img src="<?php echo $imageSrc; ?>" alt="..." class="img-circle profile_img">
+        </div>
+        <div class="profile_info">
+          <span><?php echo 'Welcome,'; ?></span>
+          <h2><?php echo $seller['name'];?></h2>
+          <a href="#"><i class="fa fa-circle text-success"></i><?php echo 'Online';?></a>
+        </div>
+      </div>
+      <br>
+      <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
+        <div class="menu_section active">
+          <ul class="nav side-menu" style="display: block;">
+            <?php  //if($isSeller == 1){ ?>
+            <li>
+              <a href="<?php echo $block->getUrl('catalog/dashboard', ['_secure' => $this->getRequest()->isSecure()]); ?>"><i class="fa fa-tachometer"></i><?php echo __('Dashboard'); ?></a>
+            </li>
+            <li>
+              <a href="<?php echo $block->getUrl('catalog/seller/profile', ['_secure' => $this->getRequest()->isSecure()]); ?>"><i class="fa fa-user-md"></i><?php echo __('Profile'); ?></a>
+            </li>
+            <li>
+              <a><i class="fa fa-cart-plus"></i><?php echo __('Sales'); ?><span class="fa fa-chevron-down"></span></a>
+              <ul class="nav child_menu">
+                <li><a href="<?php echo $block->getUrl('catalog/sales', ['_secure' => $this->getRequest()->isSecure()]); ?>"><?php echo __('Invoice'); ?></a></li>
+                <li><a href="<?php echo $block->getUrl('catalog/sales/order', ['_secure' => $this->getRequest()->isSecure()]); ?>"><?php echo __('Order'); ?></a></li>
+                <li><a href="<?php echo $block->getUrl('catalog/sales/amounttransaction', ['_secure' => $this->getRequest()->isSecure()]); ?>"><?php echo __('Amount Transaction'); ?></a></li>
+              </ul>    
+            </li>
+            <li>
+              <a><i class="fa fa-cubes"></i><?php echo __('Catalog'); ?><span class="fa fa-chevron-down"></span></a>
+              <ul class="nav child_menu">
+                  <li><a href="<?php echo $block->getUrl('catalog/product', ['_secure' => $this->getRequest()->isSecure()]); ?>"><?php echo __('Manage Product'); ?></a></li>
+                  <li><a><?php echo __('Add Product'); ?><span class="fa fa-chevron-down"></span></a>
+                    <ul class="nav child_menu">
+                      <li><a href="<?php echo $block->getUrl('catalog/product/new',['set' => 4, 'type' => 'simple']); ?>"><?php echo __('Simple Product'); ?></a></li>
+                      <li><a href="<?php echo $block->getUrl('catalog/product/new', ['set' => 4, 'type' => 'virtual']); ?>"><?php echo __('Virtual Product'); ?></a></li>
+                      <li><a href="<?php echo $block->getUrl('catalog/product/new', ['set' => 4, 'type' => 'configurable']); ?>"><?php echo __('Configurable Product'); ?></a></li>
+                    </ul>
+                  </li>
+                </ul>
+            </li>
+            <li>
+              <a href="<?php echo $block->getUrl('catalog/withdrawals', ['_secure' => $this->getRequest()->isSecure()]); ?>"><i class="fa fa-usd"></i><?php echo __('Withdrawals'); ?></a>
+            </li>
+            <li>
+              <a href="<?php echo $block->getUrl('catalog/message', ['_secure' => $this->getRequest()->isSecure()]); ?>"><i class="fa fa-envelope-o"></i><?php echo __('Messages'); ?></a>
+            </li>
+            <li>
+              <a href="<?php echo $block->getUrl('catalog/review', ['_secure' => $this->getRequest()->isSecure()]); ?>"><i class="fa fa-comment-o"></i><?php echo __('Reviews'); ?></a>
+            </li>
+            <li>
+              <a href="<?php echo $block->getUrl('catalog/rating', ['_secure' => $this->getRequest()->isSecure()]); ?>"><i class="fa fa-star-o"></i><?php echo __('Ratings'); ?></a>
+            </li>
+              <li>
+              <a href="<?php echo $block->getUrl('catalog/vacation', ['_secure' => $this->getRequest()->isSecure()]); ?>"><i class="fa fa-bed"></i><?php echo __('Vacation Setting'); ?></a>
+            </li>
+            
+            <?php //} ?>
+            <li>
+              <a><i class="fa fa-cloud-upload"></i><?php echo __('Mass Import/Export'); ?><span class="fa fa-chevron-down"></span></a>
+              <ul class="nav child_menu">
+                <li><a href="<?php echo $block->getUrl('catalog/product/uploadimage', ['_secure' => $this->getRequest()->isSecure()]); ?>"><?php echo __('Upload Image'); ?></a></li>
+                <li><a href="<?php echo $block->getUrl('catalog/product/import', ['_secure' => $this->getRequest()->isSecure()]); ?>"><?php echo __('Import Product'); ?></a></li>
+                 <li><a href="<?php echo $block->getUrl('catalog/product/export', ['_secure' => $this->getRequest()->isSecure()]); ?>"><?php echo __('Export Product'); ?></a></li>
+                </ul>
+            </li>
+             <li>
+              <a href="<?php echo $block->getUrl('catalog/report', ['_secure' => $this->getRequest()->isSecure()]); ?>"><i class="fa fa-area-chart"></i><?php echo __('Advanced Report'); ?></a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+</div>

@@ -1,0 +1,76 @@
+<?php
+$type = $this->getTypeProduct();
+if(is_numeric($type )) {
+	$objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+	$product = $objectManager->create('Magento\Catalog\Model\Product')->load($this->getTypeProduct());
+	$type = $product->getTypeId();
+} 
+?>
+<style type="text/css">
+	<?php if($type == 'configurable') { ?>
+		div[data-index="configurable"] {
+			display: block;
+		}
+	<?php } else { ?>
+		div[data-index="configurable"] {
+			display: none;
+		}
+	<?php  } ?>
+</style>
+<script type="text/javascript">
+	require([
+        'jquery',
+		'mage/adminhtml/wysiwyg/tiny_mce/setup',
+		'accordion'
+    ], function (jQuery) {
+        jQuery(document).ready(function() {
+  			jQuery( "#product_form_description" ).accordion({
+            "openedState": "active",
+            "collapsible": true,
+            "active": [1,4], /** Integrat Dynamic open tab  */
+            "multipleCollapsible": true,
+        	});
+        	jQuery('.main_container').click(function() { 
+    
+	        	var config = '<?php echo $block->getWysiwygConfig() ?>',
+	        	editor;
+	   
+				jQuery.extend(config, {
+				    settings: {
+				        theme_advanced_buttons1 : 'bold,italic,|,justifyleft,justifycenter,justifyright,|,' +
+				            'fontselect,fontsizeselect,|,forecolor,backcolor,|,link,unlink,image,|,bullist,numlist,|,code',
+				        theme_advanced_buttons2: null,
+				        theme_advanced_buttons3: null,
+				        theme_advanced_buttons4: null,
+				        theme_advanced_statusbar_location: null
+				    },
+				    files_browser_window_url: false
+				});
+
+				editor = new tinyMceWysiwygSetup(
+				    'product_form_description',
+				    config
+				);
+				editor.turnOn();
+				jQuery('#product_form_description')
+			    .addClass('wysiwyg-editor')
+			    .data(
+			        'wysiwygEditor',
+			        editor
+			    );
+
+			    editor = new tinyMceWysiwygSetup(
+				    'product_form_short_description',
+				    config
+				);
+				editor.turnOn();
+				jQuery('#product_form_short_description')
+			    .addClass('wysiwyg-editor')
+			    .data(
+			        'wysiwygEditor',
+			        editor
+			    );
+		    });
+        });
+    });
+</script>

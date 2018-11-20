@@ -1,0 +1,58 @@
+<?php
+/**
+ * Landofcoder
+ * 
+ * NOTICE OF LICENSE
+ * 
+ * This source file is subject to the Landofcoder.com license that is
+ * available through the world-wide-web at this URL:
+ * http://landofcoder.com/license
+ * 
+ * DISCLAIMER
+ * 
+ * Do not edit or add to this file if you wish to upgrade this extension to newer
+ * version in the future.
+ * 
+ * @category   Landofcoder
+ * @package    Lof_MarketPlace
+ * @copyright  Copyright (c) 2017 Landofcoder (http://www.landofcoder.com/)
+ * @license    http://www.landofcoder.com/LICENSE-1.0.html
+ */
+?>
+<?php 
+$_item = $block->getItem();
+$product = $_item->getProduct();
+$helper = $this->helper('Lof\MarketPlace\Helper\Data');
+$_product=$product;
+$seller_id = '';
+$priceComparison = $helper->isEnableModule('Lofmp_PriceComparison');
+if($priceComparison) {
+    $assignHelper = $this->helper('Lofmp\PriceComparison\Helper\Data');
+    $quote = $assignHelper->getQuoteCollection()->addFieldToFilter('product_id',$_product['entity_id'])->getLastItem();
+ 
+    if(count($quote->getData())>0) {
+        $seller_id = $quote->getSellerId();
+    } else {
+        $seller_id = $helper->getSellerIdByProduct($_product['entity_id']);
+    }
+} else {
+    $seller_id = $helper->getSellerIdByProduct($_product['entity_id']);
+}
+
+if($seller_id!=""){
+    $objectManager       = \Magento\Framework\App\ObjectManager::getInstance ();
+    $seller = $objectManager->create ( 'Lof\MarketPlace\Model\Seller' )->load ($seller_id, 'seller_id' );
+    $url = $seller->getUrl();
+    $shoptitle = $seller->getName();
+    ?>
+    <div class="lof-seller-block lof-block" id="mp-lof-block">
+        <div>
+            <span class="lof-block-font-bold-up"><?php echo __('Sold By')?></span>
+            <span class="lof-block-title-css">
+                <a href="<?php echo $url;?>" title="<?php echo __('Visit Shop') ?>" id="profileconnect"><?php echo $shoptitle; ?></a>
+            </span>
+        </div>
+    </div>
+<?php 
+} 
+?>

@@ -1,0 +1,235 @@
+<?php
+/**
+ * Landofcoder
+ * 
+ * NOTICE OF LICENSE
+ * 
+ * This source file is subject to the landofcoder.com license that is
+ * available through the world-wide-web at this URL:
+ * http://landofcoder.com/license
+ * 
+ * DISCLAIMER
+ * 
+ * Do not edit or add to this file if you wish to upgrade this extension to newer
+ * version in the future.
+ * 
+ * @category   Landofcoder
+ * @package    Lof_MarketPlace
+ * @copyright  Copyright (c) 2016 Landofcoder (http://www.landofcoder.com/)
+ * @license    http://www.landofcoder.com/LICENSE-1.0.html
+ */
+
+//$seller = $block->getSellerCollection()->getData()[0];
+
+foreach ($block->getSellerCollection() as $key => $_seller) {
+	$seller     = $_seller->getData();
+	$sellerId   = $seller['seller_id'];
+	$twitter_id = $seller['twitter_id'];
+	$twitter_id = $seller['facebook_id'];
+
+?>
+<form action="<?php echo $block->getUrl('lofmarketplace/seller/editProfileSave', ["_secure" => $this->getRequest()->isSecure()]) ?>" enctype="multipart/form-data" method="post" data-role="form-profile-validate" data-mage-init='{"validation":{}}'>
+	<div class="wk-mp-page-title page-title">
+		<h2><?php echo __('Edit Profile Information') ?></h2>
+		<button class="button wk-mp-btn" title="<?php echo __('Save Profile') ?>" type="submit" id="save-btn">
+			<span><span><?php echo __('Save Profile') ?></span></span>
+		</button>
+	</div>
+	<input type="hidden" id="seller_id" name="seller_id" title="Seller ID" value="<?php echo $sellerId; ?>" />
+	<div class="form-list row">
+		<div class="field col-sm-6">
+			<div class="response-field-text">
+				<div class="subtemplate-wrapper">
+					<label for="twitter_id">
+						<?php echo __('Twitter ID') ?>
+						<input type="checkbox" name="tw_active" value="<?php echo $seller['tw_active']; ?>" <?php if($seller['tw_active'] ==1){ echo 'checked';} ?>  style="margin: 5px;">
+					</label>
+					<div class="row">
+						<div class="col-sm-12">
+							<div class="subtemplate-inner">
+								<input type="text" id="twitter_id" name="twitter_id" title="Twitter ID" value="<?php echo $seller['twitter_id']; ?>" />
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="field col-sm-6">
+			<div class="response-field-text">
+				<div class="subtemplate-wrapper">
+					<label for="facebook_id">
+						<?php echo __('Facebook ID') ?>
+						<input type="checkbox" name="fb_active" value="<?php echo $seller['fb_active']; ?>" <?php if($seller['fb_active'] ==1){ echo 'checked';} ?>  style="margin: 5px;">
+					</label>
+					<div class="row">
+						<div class="col-sm-12">
+							<div class="subtemplate-inner">
+								<input type="text" id="facebook_id" name="facebook_id" title="Facebook ID" value="<?php echo $seller['facebook_id']; ?>" />
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="field col-sm-6">
+			<div class="response-field-text">
+				<div class="subtemplate-wrapper">
+					<label for="instagram_id">
+						<?php echo __('Instagram ID') ?>
+						<input type="checkbox" name="instagram_active" value="<?php echo $seller['instagram_active']; ?>" <?php if($seller['instagram_active'] ==1){ echo 'checked';} ?> style="margin: 5px;">
+					</label>
+					<div class="row">
+						<div class="col-sm-12">
+							<div class="subtemplate-inner">
+								<input type="text" id="instagram_id" name="instagram_id" title="Instagram ID" value="<?php echo $seller['instagram_id']; ?>" />
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="field col-sm-6">
+			<div class="response-field-text">
+				<div class="subtemplate-wrapper">
+					<label for="gplus_id">
+						<?php echo __('Google Plus ID') ?>
+						<input type="checkbox" name="gplus_active" value="<?php echo $seller['gplus_active']; ?>" <?php if($seller['gplus_active'] ==1){ echo 'checked';} ?>  style="margin: 5px;">
+					</label>
+					<div class="row">
+						<div class="col-sm-12">
+							<div class="subtemplate-inner">
+								<input type="text" id="gplus_id" name="gplus_id" title="Google Plus ID" value="<?php echo $seller['gplus_id']; ?>" />
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="field col-sm-6">
+			<div class="response-field-text">
+				<div class="subtemplate-wrapper">
+					<label for="youtube_id">
+						<?php echo __('Youtube ID') ?>
+						<input type="checkbox" name="youtube_active" value="<?php echo $seller['youtube_active']; ?>" <?php if($seller['youtube_active'] ==1){ echo 'checked';} ?> style="margin: 5px;">
+					</label>
+					<div class="row">
+						<div class="col-sm-12">
+							<div class="subtemplate-inner">
+								<input type="text" id="youtube_id" name="youtube_id" title="Youtube ID" value="<?php echo $seller['youtube_id']; ?>" />
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="field col-sm-6">
+			<div class="response-field-text">
+				<div class="subtemplate-wrapper">
+					<label for="vimeo_id">
+						<?php echo __('Vimeo ID') ?>
+						<input type="checkbox" name="vimeo_active" value="<?php echo $seller['vimeo_active']; ?>" <?php if($seller['vimeo_active'] ==1){ echo 'checked';} ?> style="margin: 5px;">
+					</label>
+					<div class="row">
+						<div class="col-sm-12">
+							<div class="subtemplate-inner">
+								<input type="text" id="vimeo_id" name="vimeo_id" title="Vimeo ID" value="<?php echo $seller['vimeo_id']; ?>" />
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="field col-sm-6">
+			<div class="response-field-text">
+				<div class="subtemplate-wrapper">
+					<label for="pinterest_id">
+						<?php echo __('Pinterest ID') ?>
+						<input type="checkbox" name="pinterest_active" value="<?php echo $seller['pinterest_active']; ?>" <?php if($seller['pinterest_active'] ==1){ echo 'checked';} ?> style="margin: 5px;">
+					</label>
+					<div class="row">
+						<div class="col-sm-12">
+							<div class="subtemplate-inner">
+								<input type="text" id="pinterest_id" name="pinterest_id" title="Printerest ID" value="<?php echo $seller['pinterest_id']; ?>" />
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="field col-sm-6">
+			<div class="response-field-text">
+				<div class="subtemplate-wrapper">
+					<label for="contact_number">
+						<?php echo __('Contact Number') ?>
+					</label>
+					<div class="row">
+						<div class="col-sm-12">
+							<div class="subtemplate-inner">
+								<input type="text" id="contact_number" name="contact_number" title="Contact Number" />
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="field col-sm-12">
+			<div class="response-field-file_upload">
+				<div class="subtemplate-wrapper">
+					<label for="image">
+						<?php echo __('Company Banner'); ?>
+					</label>
+					<div class="row">
+						<div class="col-sm-12">
+							<div class="input-box">
+								<input type="file" id="image" name="image" title="Company Banner" />
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="field col-sm-12">
+			<div class="response-field-file_upload">
+				<div class="subtemplate-wrapper">
+					<div class="row">
+						<div class="col-sm-12">
+							<div class="input-box">
+								<image src="<?php echo $_seller->getImageUrl(); ?>" />
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="field col-sm-12">
+			<div class="response-field-file_upload">
+				<div class="subtemplate-wrapper">
+					<label for="thumbnail">
+						<?php echo __('Company Logo'); ?>
+					</label>
+					<div class="row">
+						<div class="col-sm-12">
+							<div class="input-box">
+								<input type="file" id="thumbnail" name="thumbnail" title="Contact Number" />
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="field col-sm-12">
+			<div class="response-field-file_upload">
+				<div class="subtemplate-wrapper">
+					<div class="row">
+						<div class="col-sm-12">
+							<div class="input-box">
+								<image src="<?php echo  $_seller->getThumbnailUrl(); ?>" />
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>	
+</form>	
+<?php } ?>

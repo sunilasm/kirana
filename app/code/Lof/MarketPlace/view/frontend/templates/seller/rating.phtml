@@ -1,0 +1,283 @@
+<?php
+$helper = $this->helper('Lof\MarketPlace\Helper\Data');
+$seller = $this->getCurrentSeller();
+$formActionUrl = $this->getUrl('lofmarketplace/seller/saverating');
+$currPageUrl = $helper->getCurrentUrls();
+$per_rate = round($this->getRate()['average']/5*100);
+?>
+<div class="lof_marketplace_wrapper">
+	<div class="fieldset lof_marketplace_fieldset">
+		<div class="grid">
+			<div class="mkpl-header"><h2><?php echo __('Customer ratings');?></h2></div>
+			<div class="wrap-mkpl-content row">
+				<div class=" col-lg-5 col-md-5 col-sm-12 col-xs-12">
+					<div class="review-top">
+						<div class="review-average-info">
+							<div class="average-rating">
+								<div class="ratings">
+									<div class="rating-box">
+										<div class="rating" style="width: <?php echo $per_rate;?>%;"></div>
+									</div>
+									<div class="rating-links"> 
+										<a href="javascript:;"><?php echo count($this->getRating()); ?><?php echo __('Rating(s)'); ?></a>
+									</div>
+									<div class="clearfix"></div>
+								</div>
+							</div>
+						</div>
+						<div class="ratings-and-size">
+							<div class="review-right">
+								<div class="separate-rating">
+									<?php for($i=5;$i>=1;$i--) { ?>
+									<div class="mark-rating">
+										<div class="rating-box">
+											<div class="rating">
+												<span><?php echo $i.__('star');?></span>
+											</div>
+										</div>
+										<div class="scroll-box">
+											<div class="scroll-rating" style="width:<?php 
+											if($this->getRate()['count'] >0) {
+												echo round($this->getRate()['rate'][$i]/$this->getRate()['count']*100);
+											} else {
+												echo 0;
+											}
+											?>%;">
+												
+											</div>
+										</div>
+										<div class="rating-percent"> 
+											<span><?php echo $this->getRate()['rate'][$i]; ?></span>
+										</div>
+									</div>
+									<?php }?>
+								<div class="clearfix"></div>
+								</div>
+							</div>
+						</div>
+					</div> 
+					<div id="review_hidden_form">
+						<div class="form-add">
+							<div class="review-form">
+								<h2><?php echo __('Write Your Own Review');?></h2>
+								<form action="<?php echo $formActionUrl;?>" method="post" id="review-form" data-hasrequired="* Required Fields" novalidate="novalidate" enctype="multipart/form-data" data-mage-init='{"validation":{}}'>
+									<h3><?php echo __("You're rating"); ?>: <span><?php echo $seller->getData('name');?></span></h3>
+									<div class="fieldset">
+										<h4><?php echo __('How do you rate this seller');?>? <em class="required">*</em></h4>
+										<span id="input-message-box"></span>
+									</div>
+									<input type="hidden" name="seller_email" value="<?php echo $seller->getData('email'); ?>">
+									<input type="hidden" name="seller_id" value="<?php echo $seller->getData('seller_id'); ?>">
+									<input type="hidden" name="seller_name" value="<?php echo $seller->getData('seller_name'); ?>">
+									<input type="hidden" name="currUrl" id="currUrl" value="<?php echo $currPageUrl; ?>" />
+									<div class="fieldset">
+										<div class="control" id="stars-default">
+											<div class="rating-title"><?php echo __('Price');?></div>
+											<div id="rating_1" class="ratings">
+												
+						                        <div id="1" class="star_1  ratings_stars rating1"></div>
+						                        <div id="2" class="star_2  ratings_stars rating1"></div>
+						                        <div id="3" class="star_3  ratings_stars rating1"></div>
+						                        <div id="4" class="star_4 ratings_stars rating1"></div>
+						                        <div id="5" class="star_5 ratings_stars rating1"></div> 
+						                    </div>
+						                    <input name="rate1" id="total_votes1" title="Rating" class="input-text" type="hidden" value="0">
+						                </div>
+									</div>
+									<div class="fieldset">
+										<div class="control" id="stars-default">
+											<div class="rating-title"><?php echo __('Value');?></div>
+											<div id="rating_2" class="ratings">
+												
+						                        <div id="1" class="star_1  ratings_stars rating2"></div>
+						                        <div id="2" class="star_2  ratings_stars rating2"></div>
+						                        <div id="3" class="star_3  ratings_stars rating2"></div>
+						                        <div id="4" class="star_4 ratings_stars rating2"></div>
+						                        <div id="5" class="star_5 ratings_stars rating2"></div> 
+						                    </div>
+						                    <input name="rate2" id="total_votes2" title="Rating" class="input-text" type="hidden" value="0">
+						                </div>
+									</div>
+									<div class="fieldset">
+										<div class="control" id="stars-default">
+											<div class="rating-title"><?php echo __('Quality');?></div>
+											<div id="rating_3" class="ratings">
+												
+						                        <div id="1" class="star_1  ratings_stars rating3"></div>
+						                        <div id="2" class="star_2  ratings_stars rating3"></div>
+						                        <div id="3" class="star_3  ratings_stars rating3"></div>
+						                        <div id="4" class="star_4 ratings_stars rating3"></div>
+						                        <div id="5" class="star_5 ratings_stars rating3"></div> 
+						                    </div>
+						                    <input name="rate3" id="total_votes3" title="Rating" class="input-text" type="hidden" value="0">
+						                </div>
+									</div>
+									<div class="fieldset">
+										<ul class="form-list">
+											<li class="inline-label">
+												<div class="input-box"> 
+													<input type="text" name="nickname" id="nickname_field" class="input-text required-entry" placeholder="<?php echo __("What's your nickname?"); ?> " value="">
+												</div>
+											</li>
+											<?php if(!$helper->isLoggedIn()) {  ?>
+											<li class="inline-label">
+												<div class="input-box"> 
+													<input type="text" name="email" id="email_field" class="input-text required-entry validate-email" placeholder="<?php echo __("What's your Email?"); ?> " value="">
+												</div>
+											</li>
+											<?php } else { ?>
+												<input type="hidden" name="email" value="<?php echo $helper->getCustomerEmail(); ?>">
+											<?php } ?>
+											<li class="inline-label">
+												<div class="input-box"> 
+													<input type="text" name="title" id="summary_field" class="input-text required-entry" placeholder="<?php echo __("Summary of Your Rating"); ?>" value="">
+												</div>
+											</li>
+											<li>
+												<div class="input-box">
+													<textarea name="detail" id="review_field" cols="5" rows="3" placeholder="<?php echo __("Let us know your thoughts"); ?>" class="required-entry"></textarea>
+												</div>
+											</li>
+										</ul>
+									</div>
+									<div class="buttons-set"> 
+										<button type="submit" title="Submit Rating" class="button">
+											<span><span><?php echo __('Submit Rating');?></span></span>
+										</button>
+									</div>
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class=" col-lg-7 col-md-7 col-sm-12 col-xs-12">
+					<div class="box-collateral box-reviews" id="customer-reviews">
+						<div class="reviews-container">
+							<?php foreach ($this->getRating() as $key => $rating) { ?>
+							<div class="row review-row no-margin">
+								<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
+									<div class="title"> 
+										<?php echo $rating->getData('title') ?>
+									</div>
+								</div>
+								<div class="review-dd col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
+									<div class="value-review-attr description"> 
+										<?php echo $rating->getData('detail') ?>
+									</div>
+									<div class="info"> 
+										<span class="date"><?php echo $rating->getData('created_at') ?></span>
+										<span class="nickname"> 
+										<span class="lable"><?php echo __('By');?> </span> <?php echo $rating->getData('nickname') ?></span>
+									</div>
+								</div>
+								<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
+									<ul class="ratings-table">
+										<li> 
+											<span><?php echo __('Price');?></span>
+											<div class="rating-box">
+												<div class="rating" style="width:<?php echo ($rating->getData('rate1')/5*100);?>%;"></div>
+											</div>
+										</li>
+										<li> 
+											<span><?php echo __('Value');?></span>
+											<div class="rating-box">
+												<div class="rating" style="width:<?php echo ($rating->getData('rate2')/5*100);?>%;"></div>
+											</div>
+										</li>
+										<li> 
+											<span><?php echo __('Quality');?></span>
+											<div class="rating-box">
+												<div class="rating" style="width:<?php echo ($rating->getData('rate3')/5*100);?>%;"></div>
+											</div>
+										</li>
+									</ul>
+								</div>
+								
+							</div>
+							<?php } ?>
+							
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript">
+require(
+	[
+	'jquery',
+	'Lof_MarketPlace/js/marketplace_rating',
+	'mage/validation'
+	], function($){
+	jQuery(document).ready(function($) {
+		 jQuery(document).ready(function($) {
+		 	$('.rating1').mouseover(function() { 
+		                $(this).prevAll().andSelf().addClass('ratings_over');
+		                $(this).nextAll().removeClass('ratings_over');  
+		                var id=$(this).parent().attr("id");
+		                var num=$(this).attr("id");
+		                //$('#total_votes1').val(num);
+
+		     });
+		 	$('#rating_1').mouseout(function() {
+			    $(this).find('.ratings_stars').removeClass('ratings_over'); 
+			    for(var i = 1;i <= $('#total_votes1').val();i++) {
+			    	$(this).find('#'+i).addClass('ratings_over');
+			    }
+			});
+	 	  $('.rating2').mouseover(
+	            function() { 
+	                $(this).prevAll().andSelf().addClass('ratings_over');
+	                $(this).nextAll().removeClass('ratings_over');  
+	                var id=$(this).parent().attr("id");
+	                var num=$(this).attr("id");
+	                //$('#total_votes2').val(num);
+
+	        });
+	 	  $('#rating_2').mouseout(function() {
+			    $(this).find('.ratings_stars').removeClass('ratings_over'); 
+			    for(var i = 1;i <= $('#total_votes2').val();i++) {
+			    	$(this).find('#'+i).addClass('ratings_over');
+			    }
+			});
+	 	   $('.rating3').mouseover(
+	            function() { 
+	                $(this).prevAll().andSelf().addClass('ratings_over');
+	                $(this).nextAll().removeClass('ratings_over');  
+	                var id=$(this).parent().attr("id");
+	                var num=$(this).attr("id");
+	                //$('#total_votes3').val(num);
+
+	        });
+	 	   $('#rating_3').mouseout(function() {
+			    $(this).find('.ratings_stars').removeClass('ratings_over'); 
+			    for(var i = 1;i <= $('#total_votes3').val();i++) {
+			    	$(this).find('#'+i).addClass('ratings_over');
+			    }
+			});
+            $('.rating1').bind('click', function() { 
+                var id=$(this).parent().attr("id");
+                var num=$(this).attr("id");
+                $('#total_votes1').val(num);
+            });
+            $('.rating2').bind('click', function() { 
+                var id=$(this).parent().attr("id");
+                var num=$(this).attr("id");
+                $('#total_votes2').val(num);
+            });
+            $('.rating3').bind('click', function() { 
+                var id=$(this).parent().attr("id");
+                var num=$(this).attr("id");
+                $('#total_votes3').val(num);
+            });
+            jQuery('#lof-rating').click(function() {
+			    jQuery('html,body').animate({
+			        scrollTop: jQuery(".lof_marketplace_wrapper").offset().top},
+			        'slow');
+			});
+        });
+	});
+});
+</script>

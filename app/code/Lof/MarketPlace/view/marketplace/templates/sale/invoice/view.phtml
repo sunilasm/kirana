@@ -1,0 +1,242 @@
+<?php
+
+$items = $this->getOrder()->getAllItems(); 
+$sellerProducts = $block->getSellerProducts();
+$helper = $this->helper('Lof\MarketPlace\Helper\Data');
+$objectManager   = \Magento\Framework\App\ObjectManager::getInstance ();
+$orderitems = $objectManager->get('Lof\MarketPlace\Model\Orderitems');
+$calculate        = $objectManager->get ( 'Lof\MarketPlace\Model\CalculateCommission' );
+?>
+<style type="text/css">
+  #invoice_content {background-color: white;}
+</style>
+<div class="row lof_marketplace">
+	<div class="col-md-12">
+		<div class="x_panel">
+			<div class="x_title">
+          <h2><?php echo __('Invoice Design');?></h2>
+          <!-- <div class="page-actions-buttons">
+              <div class="actions-split save primary" title="Order">
+                  <button type="button" class="btn btn-primary lof_invoice" id="cmd"><?php echo __('Export Pdf file'); ?></button>
+              </div>
+          </div> -->
+          <div class="clearfix"></div>
+      </div>
+    	<div class="x_content" id="invoice_content">
+    		<div class="content invoice">
+    			<div class="row">
+    				<div class="col-xs-12 invoice-header">
+              <h1>
+                <i class="fa fa-globe"></i> <?php echo __('Invoice'); ?>
+                <small class="pull-right"><?php echo __('Create At');?>: <?php echo $this->getInvoice()->getData('created_at');?></small>
+              </h1>
+            </div>
+    			</div> 
+    			<div class="row invoice-info">
+            <div class="col-sm-3 invoice-col">
+              <b><?php echo __('Billing Address'); ?></b>
+              <br>
+            	<address>
+                  <?php echo $this->getFormattedAddress(); ?>
+              </address>
+            </div>
+            <!-- /.col -->
+            <div class="col-sm-3 invoice-col">
+              	<b><?php echo __('Shipping Address'); ?></b>
+                <br>
+              	<address>
+              	<?php echo $this->getBillingAddress(); ?>
+                </address>
+            </div>
+            <!-- /.col -->
+            <div class="col-sm-3 invoice-col">
+              <?php /* @escapeNotVerified */ echo __('<b>Invoice</b> # %1', $this->getInvoice()->getRealInvoiceId()) ?>
+              <br>
+             
+               <?php /* @escapeNotVerified */ echo __('<b>Order:</b> # %1', $this->getOrder()->getRealOrderId()) ?> 
+              <br>
+              <b><?php echo __('Order Date');?>:</b> <?php echo $this->getOrderDate(); ?>
+              <br>
+              <b><?php echo __('Order Status'); ?>:</b> <?php echo $this->getOrder()->getStatusLabel(); ?>
+              <br>
+              <b><?php echo __('Purchased From'); ?>:</b> <?php echo $this->getOrderStoreName(); ?>
+            </div>
+             <!-- /.col -->
+            <div class="col-sm-3 invoice-col">
+              	<b><?php echo __('Account Information '); ?></b>
+              	<br>
+              	
+              	<b><?php echo __('Customer Name');?>:</b> <?php echo $this->getOrder()->getCustomerName(); ?>
+              <br>
+              <b><?php echo __('Email'); ?>:</b> <?php echo $this->getOrder()->getCustomerEmail(); ?>
+              <br>
+              <b><?php echo __('Customer Group'); ?>:</b> <?php echo $this->getCustomerGroupName(); ?>
+            </div>
+          </div>
+          <div class="row">
+              <div class="col-xs-12 table">
+                <table class="table table-striped  edit-order-table">
+                  <thead>
+                    <tr>
+                    	<th><?php echo __('Product'); ?></th>
+                    	<th><?php echo __('Price'); ?></th>
+                      <th><?php echo __('Qty'); ?></th>
+                      <th><?php echo __('Subtotal');?></th>
+                      <th><?php echo __('Tax Amount');?></th>
+                      <th><?php echo __('Discount Amount');?></th>
+                       <th><?php echo __('Row Total');?></th>
+                      <th><?php echo __('Admin Commission');?></th>
+                      <th><?php echo __('Seller Total');?></th>
+                      <th><?php echo __('Seller');?></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                  	<?php 
+                  	$subtotal = $tax = $discount = $grand_total = $seller_amount =$seller_total = 0;
+                  	foreach($items as $item) {  
+                      if($item->getData('base_row_total') >0)  {  
+                        $product_id = $item->getData('product_id');
+                        if(!in_array($product_id, $sellerProducts)) continue;
+                         $seller_id = $orderitems->load($item->getId(),'order_item_id')->getSellerId();
+              
+                        if($seller_id == $helper->getSellerId()) {
+                          $product_id = $item->getData('product_id'); 
+                          $subtotalIncl = $item->getData('base_row_total_incl_tax');
+                          $discount_amount = $item->getData('discount_amount');
+                          $tax_amount = $item->getData('tax_amount');
+                          $total =   $item->getData('base_row_total');
+                     
+                          $row_total =  $total + $tax_amount - $discount_amount;
+                          $subtotal = $subtotal + $total;
+                          $tax = $tax + $tax_amount;
+                          $discount = $discount + $discount_amount;
+                          $subtotalExcl = $row_total - $tax_amount;
+                          $grand_total = $grand_total + $row_total;
+                          $seller_name = $this->getSeller($product_id)->getData('name');
+                          $seller_id = $this->getSeller($product_id)->getData('seller_id');
+                          $admin_commission = $this->getOrderItems($product_id)->getData('admin_commission');
+                          $seller_commission = $this->getOrderItems($product_id)->getData('seller_commission');
+                         
+                          $seller_total += $seller_commission;
+                          
+                          ?>
+                        <tr>
+                          <td>
+                            <div class="product-title"><?php echo $item->getData('name');?></div>
+                            <div class="product-sku-block"><span><?php echo __('SKU');?>:</span><?php echo $item->getData('sku');?></div>
+                            <?php 
+                            if(isset($item->getData('product_options')['attributes_info'])) {
+                              echo '<dl class="item-options">';
+                                foreach ($item->getData('product_options')['attributes_info'] as $key => $attributes_info) {
+                                  echo '<dt>'.$attributes_info['label'].'</dt>';
+                                  echo '<dd>'.$attributes_info['value'].'</dd>';
+                                }
+                              echo '</dl>';
+                            }
+                            if(isset($item->getData('product_options')['options'])) {
+                              echo '<dl class="item-options">';
+                                foreach ($item->getData('product_options')['options'] as $key => $options) {
+                                  echo '<dt>'.$options['label'].'</dt>';
+                                  echo '<dd>'.$options['value'].'</dd>';
+                                }
+                              echo '</dl>';
+                            }
+                            ?>
+                          </td>
+                          <td><?php echo $helper->getPriceFomat($item->getData('price'));?></td>
+                          <td><?php echo $item->getData('qty_invoiced');?></td>
+                          <td><?php echo $helper->getPriceFomat($total);?></td>
+                          <td><?php echo $helper->getPriceFomat($tax_amount);?></td>
+                          <td><?php echo $helper->getPriceFomat($discount_amount);?></td>
+                          <td><?php echo $helper->getPriceFomat($row_total);?></td>
+                          <td><?php echo $helper->getPriceFomat($admin_commission); ?></td>
+                          <td><?php echo $helper->getPriceFomat($seller_commission); ?></td>
+                          <td><?php echo $seller_name; ?></td>
+                        </tr>
+   					      <?php }
+                      }
+                    } ?>
+                  </tbody>
+                </table>
+            </div>
+            <!-- /.col -->
+          </div>
+          <div class="row">
+              <!-- accepted payments column -->
+              <div class="col-xs-6">
+                <p class="lead"><?php echo __('Payment Methods');?>:</p>
+                <img src="<?php echo $helper->getMediaUrl() ;?>/images/visa.png" alt="Visa">
+                <img src="<?php echo $helper->getMediaUrl() ;?>/images/mastercard.png" alt="Mastercard">
+                <img src="<?php echo $helper->getMediaUrl() ;?>/images/american-express.png" alt="American Express">
+                <img src="<?php echo $helper->getMediaUrl() ;?>/images/paypal.png" alt="Paypal">
+                <p class="text-muted well well-sm no-shadow" style="margin-top: 10px;">
+                  <?php echo $this->getOrder()->getPayment()->getMethodInstance()->getTitle(); ?>
+                </p>
+                <p><?php echo __('The order was placed using');?> <?php echo $this->getOrder()->getData('order_currency_code');?>.</p>
+              </div>
+              <!-- /.col -->
+              <div class="col-xs-6">
+                <p class="lead"><?php echo __('Invoice Totals');?></p>
+                <div class="table-responsive">
+                  <table class="table">
+                    <tbody>
+                      <tr>
+                        <th style="width:50%"><?php echo __('Subtotal');?></th>
+                        <td><?php echo $helper->getPriceFomat($subtotal); ?></td>
+                      </tr>
+                      <tr>
+                        <th><?php echo __('Shipping & Handling');?></th>
+                        <td><?php echo $helper->getPriceFomat($this->getOrder()->getData('shipping_amount')); ?></td>
+                      </tr>
+                      <tr>
+                        <th><?php echo __('Tax');?></th>
+                        <td><?php echo $helper->getPriceFomat($tax); ?></td>
+                      </tr>
+                       <tr>
+                        <th><?php echo __('Discount');?></th>
+                        <td><?php echo $helper->getPriceFomat(-$discount); ?></td>
+                      </tr>
+                       <tr>
+                        <th><?php echo __('Grand Total');?></th>
+                        <td><?php echo $helper->getPriceFomat($grand_total); ?></td>
+                      </tr>
+                       <tr>
+                        <th><?php echo __('Seller Amount');?></th>
+                        <td><?php echo $helper->getPriceFomat($seller_total); ?></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <!-- /.col -->
+          </div>
+          <!-- this row will not appear when printing -->
+          <div class="row no-print">
+              <div class="col-xs-12">
+                <button class="btn btn-default" onclick="window.print();"><i class="fa fa-print"></i> Print</button>
+              </div>
+          </div>
+    		</div>
+      </div>
+		</div>
+	</div>	
+</div>
+<!-- <script>
+    require([
+    'jquery',
+    'jspdf',
+    'html2canvas'
+    ], function(jQuery, jsPdf) {
+        jQuery(document).ready(function() {
+            jQuery('#cmd').click(function () {
+                var d = new Date();
+                var n = d.getTime();
+                var doc = new jsPdf('l', 'pt', 'a4');
+                doc.setFontSize(10);
+                doc.addHTML(jQuery("#invoice_content")[0], 10, 10, {pagesplit: false, margin: {top: 10, right: 10, bottom: 10, left: 20, useFor: 'page'}}, function() {
+                    doc.save('invoice_'+ n +'.pdf');
+                });
+            });
+        });
+    });
+</script> -->

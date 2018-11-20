@@ -1,0 +1,33 @@
+<?php
+/**
+ * Landofcoder
+ * 
+ * NOTICE OF LICENSE
+ * 
+ * This source file is subject to the landofcoder.com license that is
+ * available through the world-wide-web at this URL:
+ * http://landofcoder.com/license
+ * 
+ * DISCLAIMER
+ * 
+ * Do not edit or add to this file if you wish to upgrade this extension to newer
+ * version in the future.
+ * 
+ * @category   Landofcoder
+ * @package    Lof_MarketPlace
+ * @copyright  Copyright (c) 2016 Landofcoder (http://www.landofcoder.com/)
+ * @license    http://www.landofcoder.com/LICENSE-1.0.html
+ */
+
+$_helper = $this->helper('Lof\MarketPlace\Helper\Data');
+$_seller = $block->getCurrentSeller();
+$_img = '';
+if($_seller->getImageUrl()){ ?>
+<div class="seller-image">
+	<img src="<?php echo $_seller->getImageUrl() ?>" alt="<?php echo $_seller->getName(); ?>" class="image"/>
+</div>
+<?php } else { ?>
+<div class="seller-image">
+	<img src="<?php echo $_helper->getMediaUrl() . 'images/banner-seller.png' ?>" alt="<?php echo $_seller->getName(); ?>" class="image"/>
+</div>	
+<?php } ?>

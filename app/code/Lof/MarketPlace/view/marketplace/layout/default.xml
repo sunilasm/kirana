@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" layout="vendor-1column" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+        <link src="requirejs/require.js"/>
+        <css src="Lof_MarketPlace::css/admin.min.css" />
+        <css src="Lof_MarketPlace::css/styles.css" />
+    </head>    
+    <body>
+        <block name="require.js" class="Magento\Backend\Block\Page\RequireJs" template="Lof_MarketPlace::page/js/require_js.phtml" />
+        <referenceContainer name="after.body.start">
+            <block class="Magento\RequireJs\Block\Html\Head\Config" name="requirejs-config"/>
+            <block class="Magento\Translation\Block\Html\Head\Config" name="translate-config"/>
+            <block class="Magento\Translation\Block\Js" name="translate" template="Magento_Translation::translate.phtml"/>
+        </referenceContainer>
+        <referenceContainer name="header">
+            <block class="Lof\MarketPlace\Block\Account\Navigation"   name="logo" before="-" template="Lof_MarketPlace::page/header.phtml" />
+        </referenceContainer>
+        <referenceContainer name="page.menu">
+            <block class="Lof\MarketPlace\Block\Seller\Menu" name="menu" as="menu" template="Lof_MarketPlace::seller/menu.phtml"/>
+        </referenceContainer>
+        <referenceContainer name="page.main.actions">
+            <block class="Magento\Framework\View\Element\Template" name="page.actions.toolbar" template="Lof_MarketPlace::toolbar.phtml" after="-"/>
+        </referenceContainer>
+        <referenceContainer name="page.messages">
+            <block class="Lof\MarketPlace\Block\Seller\Messages" name="messages" as="messages"/>
+        </referenceContainer>
+        <referenceContainer name="footer">
+            <block class="Lof\MarketPlace\Block\Account\Navigation"   name="page.footer" before="-" template="Lof_MarketPlace::page/footer.phtml" />
+        </referenceContainer>
+    </body>
+</page>

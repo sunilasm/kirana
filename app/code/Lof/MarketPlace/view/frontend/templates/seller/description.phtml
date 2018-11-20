@@ -1,0 +1,43 @@
+<?php
+/**
+ * Landofcoder
+ * 
+ * NOTICE OF LICENSE
+ * 
+ * This source file is subject to the landofcoder.com license that is
+ * available through the world-wide-web at this URL:
+ * http://landofcoder.com/license
+ * 
+ * DISCLAIMER
+ * 
+ * Do not edit or add to this file if you wish to upgrade this extension to newer
+ * version in the future.
+ * 
+ * @category   Landofcoder
+ * @package    Lof_MarketPlace
+ * @copyright  Copyright (c) 2016 Landofcoder (http://www.landofcoder.com/)
+ * @license    http://www.landofcoder.com/LICENSE-1.0.html
+ */
+?>
+<div class="lof_marketplace_wrapper">
+	<?php if ($return = $block->getCurrentSeller()->getData('return_policy')): ?>
+	<div id="return-policies" style="padding-top: 10px;" class="fieldset lof_mv_fieldset">
+	   <div class="lof_mv_detail">
+		  <div class="label lof_info_title"><?php echo __('Returns Policies');?></div>
+		  <div class="lof_content">
+			<?php echo $this->helper('Lof\MarketPlace\Helper\Data')->filter($return) ?>
+		  </div>
+	   </div>
+	</div>
+	<?php endif; ?>
+	<?php if ($shipping = $block->getCurrentSeller()->getData('shipping_policy')): ?>
+	<div id="shipping-policies" style="padding-top: 10px;" class="fieldset lof_mv_fieldset">
+	   <div class="lof_mv_detail">
+		  <div class="label lof_info_title"><?php echo __('Shipping Policies');?></div>
+		  <div class="lof_content">
+			<?php echo $this->helper('Lof\MarketPlace\Helper\Data')->filter($shipping) ?>
+		  </div>
+	   </div>
+	</div>
+	<?php endif; ?>
+</div>	

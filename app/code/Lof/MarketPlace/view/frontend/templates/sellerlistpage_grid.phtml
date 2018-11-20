@@ -1,0 +1,50 @@
+<?php
+$_sellerCollection = $block->getCollection();
+
+// Boostrap Carousel
+$itemsperpage = (int)$this->getConfig('seller_list_page/item_per_page',12);
+$lg_column_item = (int)$this->getConfig('seller_list_page/lg_column_item',6);
+$md_column_item = (int)$this->getConfig('seller_list_page/md_column_item',6);
+$sm_column_item = (int)$this->getConfig('seller_list_page/sm_column_item',4);
+$xs_column_item = (int)$this->getConfig('seller_list_page/xs_column_item',2);
+
+$show_seller_name = $this->getConfig('seller_list_page/show_seller_name');
+$lg_column = 12/$lg_column_item;
+$md_column = 12/$md_column_item;
+$sm_column = 12/$sm_column_item;
+$xs_column = 12/$xs_column_item;
+$i = 1;
+$x = 0;
+?>
+<?php if ( $_sellerCollection->count() ){ ?>
+<?php $total = $_sellerCollection->count(); ?>
+<div class="sellerlist">
+	<div class="block-content">
+		<?php foreach ($_sellerCollection as $_seller) { ?>
+		<?php if( $lg_column_item == 1 || $x%$lg_column_item == 0){ ?>
+		<!-- ROW -->
+		<div class="row">
+			<?php } ?>
+			<div class="col-lg-<?php echo $lg_column ?> col-md-<?php echo $md_column ?> col-sm-<?php echo $sm_column ?> col-xs-<?php echo $xs_column ?>">
+				<div class="seller-item">
+					<div class="seller-image"><a href="<?php echo $_seller->getUrl(); ?>" title="<?php echo $_seller->getName(); ?>"><img src="<?php echo $_seller->getThumbnailUrl(); ?>"/></a></div>
+					<?php if($show_seller_name){ ?>
+					<div class="seller-name"><a href="<?php echo $_seller->getUrl(); ?>" title="<?php echo $_seller->getName(); ?>"><?php echo $_seller->getName() ?></a></div>
+					<?php } ?>
+				</div>
+			</div>
+			<?php if( $lg_column_item == 1 || ($x+1)%$lg_column_item == 0 || $i == $total ) {  ?>
+		</div><!-- ROW -->
+		<?php } ?>
+		<?php $i++; $x++; ?>
+		<?php } ?>
+	</div>
+	<?php if($html = $block->getChildHtml('toolbar')){ ?>
+	<div class="seller-toolbar">
+		<?php echo $html ?>
+	</div>
+	<?php } ?>
+</div>
+<?php }else{ ?>
+<div class="message info empty"><div><?php echo __('We can\'t find sellers matching the selection.'); ?></div>
+<?php } ?>
