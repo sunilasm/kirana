@@ -1,0 +1,353 @@
+<?php
+
+$items = $this->getOrder()->getAllItems(); 
+$order = $block->getOrder();
+$helper = $this->helper('Lof\MarketPlace\Helper\Data');
+$objectManager   = \Magento\Framework\App\ObjectManager::getInstance ();
+$calculate        = $objectManager->get ( 'Lof\MarketPlace\Model\CalculateCommission' );
+$orderitems = $objectManager->get ( 'Lof\MarketPlace\Model\Orderitems' );
+$order_id = $this->getOrder()->getId();
+$refundedShippingAmount = $order->getData('shipping_refunded');
+$invoice = $order->getInvoiceCollection()->getFirstItem();
+ 
+$invoiceId = $order->getInvoiceId();
+?>
+ <form id="lof-form-creditmemo" data-parsley-validate="" action="<?php echo $this->getUrl('catalog/order/creditmemo',['id'=>$order_id, '_secure' => $this->getRequest()->isSecure()]);?>" class="form-horizontal form-label-left" method="post" data-hasrequired="<?php /* @escapeNotVerified */ echo __('* Required Fields') ?>" data-mage-init='{"validation":{}}'>
+<div class="row">
+  <div class="col-md-12">
+    <div class="x_panel">
+      <div class="x_title">
+          <h2><?php echo __('Order Design');?></h2>
+          <div class="clearfix"></div>
+      </div>
+      <div class="x_content">
+        <div class="content invoice">
+         
+            <div class="row">
+              <div class="col-xs-12 invoice-header">
+                <h1>
+                  <i class="fa fa-globe"></i> <?php echo __('Order'); ?>
+                  <small class="pull-right"><?php echo __('Create At');?>: <?php echo $this->getOrderDate();?></small>
+                </h1>
+              </div>
+            </div> 
+            <div class="row invoice-info">
+              <div class="col-sm-3 invoice-col">
+                <b><?php echo __('Billing Address'); ?></b>
+                <br>
+                <address>
+                    <?php echo $this->getFormattedAddress(); ?>
+                </address>
+              </div>
+              <!-- /.col -->
+              <div class="col-sm-3 invoice-col">
+                  <b><?php echo __('Shipping Address'); ?></b>
+                  <br>
+                  <address>
+                  <?php echo $this->getBillingAddress(); ?>
+                  </address>
+              </div>
+              <!-- /.col -->
+              <div class="col-sm-3 invoice-col">
+                <?php /* @escapeNotVerified */ echo __('<b>Order:</b> # %1', $this->getOrder()->getRealOrderId()) ?> 
+                
+                <br>
+                <b><?php echo __('Order Date');?>:</b> <?php echo $this->getOrderDate(); ?>
+                <br>
+                <b><?php echo __('Order Status'); ?>:</b> <?php echo $this->getOrder()->getStatusLabel(); ?>
+                <br>
+                <b><?php echo __('Purchased From'); ?>:</b> <?php echo $this->getOrderStoreName(); ?>
+              </div>
+               <!-- /.col -->
+              <div class="col-sm-3 invoice-col">
+                  <b><?php echo __('Account Information '); ?></b>
+                  <br>
+                  
+                  <b><?php echo __('Customer Name');?>:</b> <?php echo $this->getOrder()->getCustomerName(); ?>
+                <br>
+                <b><?php echo __('Email'); ?>:</b> <?php echo $this->getOrder()->getCustomerEmail(); ?>
+                <br>
+                <b><?php echo __('Customer Group'); ?>:</b> <?php echo $this->getCustomerGroupName(); ?>
+              </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12 table">
+                  <table class="table table-striped edit-order-table">
+                    <thead>
+                      <tr>
+                        <th><?php echo __('Product'); ?></th>
+                       
+                        <th><?php echo __('Qty'); ?></th>
+                        <th><?php echo __('Price'); ?></th>
+                         <th><?php echo __('Return to Stock'); ?></th>
+                         <th><?php echo __('Qty to Refund'); ?></th>
+                        <th><?php echo __('Subtotal');?></th>
+                        <th><?php echo __('Tax Amount');?></th>
+                        <th><?php echo __('Discount Amount');?></th>
+                         <th><?php echo __('Row Total');?></th>
+                        <th><?php echo __('Admin Commission');?></th>
+                        <th><?php echo __('Seller Total');?></th>
+                        <th><?php echo __('Seller');?></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <?php 
+                      $subtotal = $subtotal_seller = $tax = $tax_seller = $discount = $discount_seller = $grand_total = $grand_total_seller = $refund_total_seller = $seller_amount = $refund_total =$seller_total=$seller_total_seller= $shippingamount = 0;
+                      $seller = '';
+                      foreach($items as $item) { 
+                        if($item->getData('base_row_total') >0)  {
+                          $product_id = $item->getData('product_id');
+                          $seller_id = $orderitems->load($item->getId(),'order_item_id')->getSellerId();
+                
+                          if($seller_id == $helper->getSellerId()) {
+                            $refund = $item->getData('amount_refunded')+$item->getData('tax_refunded')-$item->getData('discount_refunded');
+                            $refund_total = $refund_total+$refund;
+                           
+                            $subtotalIncl = $item->getData('base_row_total_incl_tax');
+                            $discount_amount = $item->getData('discount_amount');
+                            $tax_amount = $item->getData('tax_amount');
+                            $total =   $item->getData('base_row_total');
+                            $shippingcharges = $item->getData('shipping_amount');
+                            $row_total =  $total + $tax_amount - $discount_amount;
+                            $subtotal = $subtotal + $total;
+                            $tax = $tax + $tax_amount;
+                            $shippingamount = $shippingamount+$shippingcharges;
+                            $discount = $discount + $discount_amount;
+                            $subtotalExcl = $row_total - $tax_amount;
+                            $grand_total = $grand_total + $row_total;
+                            $seller_name = $this->getSeller($product_id)->getData('name');
+                            if($seller == $seller_name) {
+                              $name = '';
+                            } else {
+                              $name = $seller_name;
+                            }
+                            $seller_id = $this->getSeller($product_id)->getData('seller_id');
+
+                            $admin_commission = $this->getOrderItems($product_id)->getData('admin_commission_order');
+                            $seller_commission = $this->getOrderItems($product_id)->getData('seller_commission_order');
+                            if($seller_id == $helper->getSellerId()) {
+                              $subtotal_seller = $subtotal_seller + $total;
+                              $tax_seller = $tax_seller + $tax_amount;
+                              $discount_seller = $discount_seller + $discount_amount;
+                              $grand_total_seller = $grand_total_seller + $row_total;
+                              $seller_total_seller += $seller_commission;
+                            }
+                            $seller_total += $seller_commission;
+                            $itemId = $item->getItemId();
+                          ?>
+                          <tr>
+                            <td>
+                              <div class="product-title"><?php echo $item->getData('name');?></div>
+                              <div class="product-sku-block"><span><?php echo __('SKU');?>:</span><?php echo $item->getData('sku');?></div>
+                              <?php 
+                              if(isset($item->getData('product_options')['attributes_info'])) {
+                                echo '<dl class="item-options">';
+                                  foreach ($item->getData('product_options')['attributes_info'] as $key => $attributes_info) {
+                                    echo '<dt>'.$attributes_info['label'].'</dt>';
+                                    echo '<dd>'.$attributes_info['value'].'</dd>';
+                                  }
+                                echo '</dl>';
+                              }
+                              ?>
+                            </td>
+                      
+                            <td>
+                              <table class="qty-table">
+                                <tbody>
+                                  <?php if($item->getData('qty_ordered') > 0) { ?>
+                                  <tr>
+                                    <th><?php echo __('Ordered'); ?></th>
+                                    <td><?php echo (int)$item->getData('qty_ordered'); ?></td>
+                                  </tr>
+                                  <?php } ?>
+                                  <?php if($item->getData('qty_ordered') > 0) { ?>
+                                  <tr>
+                                    <th><?php echo __('Invoiced'); ?></th>
+                                    <td><?php echo (int)$item->getData('qty_invoiced'); ?></td>
+                                  </tr>
+                                  <?php } ?>
+                                  <?php if($item->getData('qty_refunded') > 0) { ?>
+                                  <tr>
+                                    <th><?php echo __('Refunded'); ?></th>
+                                    <td><?php echo (int)$item->getData('qty_refunded'); ?></td>
+                                  </tr>
+                                  <?php } ?>
+                                  <?php if($item->getData('qty_canceled') > 0) { ?>
+                                  <tr>
+                                    <th><?php echo __('Canceled'); ?></th>
+                                    <td><?php echo (int)$item->getData('qty_canceled'); ?></td>
+                                  </tr>
+                                  <?php } ?>
+                                </tbody>
+                              </table>
+                            </td>
+                            <td><?php echo $helper->getPriceFomat($item->getData('price'));?></td>
+                            <td><input type="checkbox" class="admin__control-checkbox" name="creditmemo[items][<?php echo $itemId;?>][back_to_stock]" value="1"></td>
+                            <td><input type="text" class="input-text admin__control-text qty-input" name="creditmemo[items][<?php echo $itemId;?>][qty]" value="<?php echo $item->getQtyToRefund()?>"/><td>
+                            <td><?php echo $helper->getPriceFomat($total);?></td>
+                            <td><?php echo $helper->getPriceFomat($tax_amount);?></td>
+                            <td><?php echo $item->getData('tax_percent').'%';?></td>
+                            <td><?php echo $helper->getPriceFomat($discount_amount);?></td>
+                            <td><?php echo $helper->getPriceFomat($row_total);?></td>
+                            <td><?php echo $helper->getPriceFomat($admin_commission); ?></td>
+                            <td><?php echo $helper->getPriceFomat($seller_commission); ?></td>
+                            <td><?php echo $name; ?></td>
+                          </tr>
+                    <?php $seller = $seller_name;  } 
+                        }
+                      } ?>
+                    </tbody>
+                  </table>
+              </div>
+            
+            <!-- /.col -->
+          </div>
+          <div class="row">
+              <!-- accepted payments column -->
+              <div class="col-xs-8">
+                <p class="lead"><?php echo __('Payment Methods');?>:</p>
+                <img src="<?php echo $helper->getMediaUrl() ;?>/images/visa.png" alt="Visa">
+                <img src="<?php echo $helper->getMediaUrl() ;?>/images/mastercard.png" alt="Mastercard">
+                <img src="<?php echo $helper->getMediaUrl() ;?>/images/american-express.png" alt="American Express">
+                <img src="<?php echo $helper->getMediaUrl() ;?>/images/paypal.png" alt="Paypal">
+                <p class="text-muted well well-sm no-shadow" style="margin-top: 10px;">
+                  <?php echo $this->getOrder()->getPayment()->getMethodInstance()->getTitle(); ?>
+                </p>
+                <p><?php echo __('The order was placed using');?> <?php echo $this->getOrder()->getData('order_currency_code');?>.</p>
+
+                 <div class="admin__page-section-item order-comments-history">
+                  <div class="admin__page-section-item-title">
+                      <span class="title"><?php echo __('Credit Memo Comments');?></span>
+                  </div>
+                  <div id="history_form" class="admin__fieldset-wrapper-content">
+                      <div class="admin__field">
+                          <label class="normal admin__field-label" for="creditmemo_comment_text">
+                              <span><?php echo __('Comment Text');?></span></label>
+                          <div class="admin__field-control">
+                              <textarea id="creditmemo_comment_text" class="admin__control-textarea" name="creditmemo[comment_text]" rows="3" cols="5"></textarea>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+              </div>
+              <!-- /.col -->
+              <div class="col-xs-4">
+                <p class="lead"><?php echo __('Order Totals');?></p>
+                <div class="table-responsive">
+                  <table class="table">
+                    <tbody>
+                      <tr>
+                        <th style="width:50%"><?php echo __('Subtotal');?></th>
+                        <td><?php echo $helper->getPriceFomat($subtotal); ?></td>
+                      </tr>
+                      <tr>
+                        <th><?php echo __('Tax');?></th>
+                        <td><?php echo $helper->getPriceFomat($tax); ?></td>
+                      </tr>
+                       <tr>
+                        <th><?php echo __('Discount');?></th>
+                        <td><?php echo $helper->getPriceFomat(-$discount); ?></td>
+                      </tr>
+                       <tr>
+                        <th><?php echo __('Refund Shipping');?></th>
+                        <td><input type="text" name="creditmemo[shipping_amount]" value="<?php echo $shippingamount-$refundedShippingAmount; ?>" class="input-text admin__control-text  not-negative-amount"  id="shipping_amount"></td>
+                      </tr>
+                       <tr>
+                        <th><?php echo __('Adjustment Refund');?></th>
+                        <td><input type="text" name="creditmemo[adjustment_positive]" value="0" class="input-text admin__control-text  not-negative-amount"  id="adjustment_positive"></td>
+                      </tr>
+                      <tr>
+                        <th><?php echo __('Adjustment Fee');?></th>
+                        <td><input type="text" name="creditmemo[adjustment_negative]" value="0" class="input-text admin__control-text  not-negative-amount"  id="adjustment_negative"></td>
+                      </tr>
+                      <tr>
+                        <th><?php echo __('Grand Total');?></th>
+                        <td><?php echo $helper->getPriceFomat($grand_total); ?></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <input type="hidden" name="id" value="<?php echo $order_id ?>">
+                  <input type="hidden" name="invoice_id" value="<?php echo $invoiceId ?>">
+                  <input type="hidden" name="creditmemo[do_offline]" id="mp-creditmemo-do-offline" value="0">
+                  <!-- for buyer mail -->
+                  <div class="order-totals-bottom">
+                  
+                    <div class="field choice admin__field admin__field-option field-comment_customer_notify">
+                      <input id="notify-customer" name="creditmemo[comment_customer_notify]" value="1" type="checkbox" class="admin__control-checkbox" disabled="disabled"/>
+                      <label class="admin__field-label" for="notify-customer"><?php echo __('Append Comments') ?></label>
+                      
+                    </div>
+                     <div class="field choice admin__field admin__field-option field-is_visible_on_front">
+                      <input id="history_notify" name="creditmemo[is_visible_on_front]" value="1" type="checkbox" class="admin__control-checkbox"/>
+                      <label class="admin__field-label" for="history_notify"><?php echo __('Visible on Frontend') ?></label>
+                    </div>
+                    <div class="field choice admin__field admin__field-option field-is_visible_on_front">
+                      <input id="send-email" name="creditmemo[send_email]" value="1" type="checkbox" class="admin__control-checkbox">
+                      <label class="admin__field-label" for="send-email"><?php echo __('Email Copy of Credit Memo') ?></label>
+                    </div>
+                </div>
+
+                  <div class="actions">
+                  <button class="action-default scalable save submit-button primary" type="button" id="submit_creditMemo_offline">
+                    <span>
+                      <span>
+                        <?php echo __('Refund Offline') ?>
+                      </span>
+                    </span>
+                  </button>
+                  <?php
+                  if($invoice && $invoice->getTransactionId()){ ?>
+                    <button class="action-default scalable save submit-button primary" type="button" id="submit_creditMemo" title="<?php echo __('Refund Online') ?>">
+                      <span>
+                        <span>
+                          <?php echo __('Refund') ?>
+                        </span>
+                      </span>
+                    </button>
+                  <?php
+                  } ?>
+                </div>  
+              </div>
+              
+              <!-- /.col -->
+          </div>
+          <!-- this row will not appear when printing -->
+          <div class="row no-print">
+              <div class="col-xs-12">
+                <button class="btn btn-default" onclick="window.print();"><i class="fa fa-print"></i> Print</button>
+              </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>  
+</div>
+</form> 
+<script>
+  require([
+      "jquery",
+      "mage/mage"
+  ], function($){
+      var dataForm = $('#lof-form-creditmemo');
+      dataForm.mage('validation', {});
+
+  $('#submit_creditMemo').click(function(){
+          if ($('#mp-creditmemo-do-offline')) $('#mp-creditmemo-do-offline').attr('value',0);
+      dataForm.submit()
+      });
+
+  $('#submit_creditMemo_offline').click(function(){
+          if ($('#mp-creditmemo-do-offline')) $('#mp-creditmemo-do-offline').attr('value',1);
+      dataForm.submit();
+      });
+
+      $('#send-email').click(function(){
+          if (this.checked == true){
+      $('#notify-customer').removeAttr('disabled');
+    }else{
+      $('#notify-customer').attr('disabled','disabled');
+    }
+      });
+  }); 
+</script>

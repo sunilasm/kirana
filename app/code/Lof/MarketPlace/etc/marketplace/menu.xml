@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright © 2015 Magento. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Backend:etc/menu.xsd">
+    <menu>
+        <add id="Lof_MarketPlace::dashboard" icon="fa fa-dashboard" title="Dashboard" module="Lof_MarketPlace" action="catalog/dashboard" sortOrder="10" resource="Lof_MarketPlace::dashboard"/>
+
+        <add id="Lof_MarketPlace::profile" icon="fa fa-user-md" title="Profile" module="Lof_MarketPlace" action="catalog/seller/profile" sortOrder="20" resource="Lof_MarketPlace::profile"/>
+
+        <add id="Lof_MarketPlace::sales" icon="fa fa-cart-plus" title="Sales" module="Lof_MarketPlace" sortOrder="30" resource="Lof_MarketPlace::sales"/>
+        <add id="Lof_MarketPlace::order" title="Order" module="Lof_MarketPlace" action="catalog/sales/order" sortOrder="31" parent="Lof_MarketPlace::sales" resource="Lof_MarketPlace::order"/>
+        <add id="Lof_MarketPlace::invoice" title="Invoice" module="Lof_MarketPlace" action="catalog/sales" sortOrder="32" parent="Lof_MarketPlace::sales" resource="Lof_MarketPlace::invoice"/>
+        <add id="Lof_MarketPlace::amounttransaction" title="Amount Transaction" module="Lof_MarketPlace" action="catalog/sales/amounttransaction" sortOrder="33" parent="Lof_MarketPlace::sales" resource="Lof_MarketPlace::amounttransaction"/>
+
+        <add id="Lof_MarketPlace::catalog" icon="fa fa-cubes" title="Catalog" module="Lof_MarketPlace" sortOrder="40" resource="Lof_MarketPlace::catalog"/>
+        <add id="Lof_MarketPlace::manager_product" title="Manager Product" module="Lof_MarketPlace" action="catalog/product" sortOrder="41" parent="Lof_MarketPlace::catalog" resource="Lof_MarketPlace::manager_product"/>
+        <add id="Lof_MarketPlace::simple_product" title="Add Simple Product" module="Lof_MarketPlace"  action="catalog/product/new/set/4/type/simple" sortOrder="43" parent="Lof_MarketPlace::catalog" resource="Lof_MarketPlace::simple_product"/>
+        <add id="Lof_MarketPlace::virtual_product" title="Add Virtual Product" module="Lof_MarketPlace"  action="catalog/product/new/set/4/type/virtual" sortOrder="44" parent="Lof_MarketPlace::catalog" resource="Lof_MarketPlace::virtual_product"/>
+        <add id="Lof_MarketPlace::configurable_product" title="Add Configurable Product" module="Lof_MarketPlace"  action="catalog/product/new/set/4/type/configurable" sortOrder="45" parent="Lof_MarketPlace::catalog" resource="Lof_MarketPlace::configurable_product"/>
+          <add id="Lof_MarketPlace::bundle_product" title="Add Bundle Product" module="Lof_MarketPlace"  action="catalog/product/new/set/4/type/bundle" sortOrder="46" parent="Lof_MarketPlace::catalog" resource="Lof_MarketPlace::bundle_product"/>
+
+        <add id="Lof_MarketPlace::withdrawals" icon="fa fa-usd" title="Withdrawals" module="Lof_MarketPlace" action="catalog/withdrawals" sortOrder="50" resource="Lof_MarketPlace::withdrawals"/>
+
+        <add id="Lof_MarketPlace::message" icon="fa fa-envelope-o" title="Messages" module="Lof_MarketPlace" action="catalog/message" sortOrder="60" resource="Lof_MarketPlace::message"/>
+
+        <add id="Lof_MarketPlace::review" icon="fa fa-comment-o" title="Reviews" module="Lof_MarketPlace" action="catalog/review" sortOrder="70" resource="Lof_MarketPlace::review"/>
+
+        <add id="Lof_MarketPlace::rating" icon="fa fa-star-o" title="Ratings" module="Lof_MarketPlace" action="catalog/rating" sortOrder="80" resource="Lof_MarketPlace::rating"/>
+
+        <add id="Lof_MarketPlace::vacation" icon="fa fa-bed" title="Vacation" module="Lof_MarketPlace" action="catalog/vacation" sortOrder="90" resource="Lof_MarketPlace::vacation"/>
+
+        <add id="Lof_MarketPlace::upload" icon="fa fa-cloud-upload" title="Mass Import/Export" module="Lof_MarketPlace" sortOrder="100" resource="Lof_MarketPlace::upload"/>
+        <add id="Lof_MarketPlace::uploadimage" title="Upload Image" module="Lof_MarketPlace" action="catalog/product/uploadimage" sortOrder="101" parent="Lof_MarketPlace::upload" resource="Lof_MarketPlace::uploadimage"/>
+        <add id="Lof_MarketPlace::import" title="Import" module="Lof_MarketPlace"  action="catalog/product/import" sortOrder="102" parent="Lof_MarketPlace::upload" resource="Lof_MarketPlace::import"/>
+        <add id="Lof_MarketPlace::export" title="Export" module="Lof_MarketPlace"  action="catalog/product/export" sortOrder="104" parent="Lof_MarketPlace::upload" resource="Lof_MarketPlace::export"/>
+
+        <add id="Lof_MarketPlace::report" icon="fa fa-area-chart" title="Advanced Report" module="Lof_MarketPlace" action="catalog/report" sortOrder="110" resource="Lof_MarketPlace::report"/>
+        <add id="Lof_MarketPlace::shipping" icon="fa fa-truck" title="Shipping" module="Lof_MarketPlace" sortOrder="140" resource="Lof_MarketPlace::shipping"/>
+    </menu>
+</config>

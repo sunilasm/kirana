@@ -1,0 +1,105 @@
+<?php
+$payment = $this->getPayment()->getData()[0];
+if($payment['max_amount'] >= $this->getAmount()) {
+  $withdrawal = $this->getAmount();
+} else {
+  $withdrawal = $payment['max_amount'];
+}
+$fee_fixed = $this->getPriceFomat($payment['fee'],$this->getCurrentCurrencyCode());
+$fee_percent = $payment['fee_percent'].'%';
+if($payment['fee_by'] == 'all') {
+  $fee = $fee_fixed.' + '.$fee_percent;
+} elseif($payment['fee_by'] == 'by_fixed') {
+  $fee = $fee_fixed;
+}  elseif($payment['fee_by'] == 'by_percent') {
+  $fee = $fee_percent;
+}
+?>
+<div class="row">
+  <div class="col-md-12 col-sm-12 col-xs-12">
+    <div class="x_panel">
+      <div class="x_title">
+        <h2><?php echo $payment['name'].__(' Withdrawal');?></h2>
+        <div class="clearfix"></div>
+      </div>
+      <div class="x_content">
+        <br>
+        <form id="demo-form2" data-parsley-validate="" action="<?php echo $block->getUrl('catalog/savewithdrawal', ["_secure" => $this->getRequest()->isSecure()]) ?>" enctype="multipart/form-data" method="post" data-role="form-profile-validate" class="form-horizontal form-label-left" data-mage-init='{"validation":{}}' >
+        <?php if(!empty($payment['message'])) { ?>
+         <div class="form-group">
+            <label class="control-label col-md-3 col-sm-3 col-xs-12">
+            	
+          	</label> 
+          	<div class="col-md-6 col-sm-6 col-xs-12  alert-warning">
+          		<?php echo $payment['message']; ?>
+          	</div>
+          </div> 
+        <?php } ?>  
+         <div class="form-group">
+            <?php if($payment['min_amount'] <= $this->getAmount()) { ?>
+            <label class="control-label col-md-3 col-sm-3 col-xs-12" > <?php echo __('You can withdraw up to').' <span style="color: #ff3333;">'.$this->getPriceFomat($withdrawal,$this->getCurrentCurrencyCode());?></span></label>
+            </label>
+            <?php } ?>
+            <div class="col-md-6 col-sm-6 col-xs-12">
+              <input type="hidden" id="seller_id" name="seller_id" value="<?php echo $this->getSellerId(); ?>">
+            </div>
+            <div class="col-md-6 col-sm-6 col-xs-12">
+              <input type="hidden" id="payment_id" name="payment_id"  value="<?php echo $this->getPaymentId(); ?>">
+              <input type="hidden" id="min_amount" name="min_amount"  value="<?php echo $payment['min_amount']; ?>">
+              <input type="hidden" id="max_amount" name="max_amount"  value="<?php echo $payment['max_amount']; ?>">
+              <input type="hidden" id="balance" name="balance"  value="<?php echo $this->getAmount(); ?>">
+            </div>
+          </div>  
+           <div class="form-group">
+            <label class="control-label col-md-3 col-sm-3 col-xs-12"><?php echo __('Min amount ').$this->getPriceFomat($payment['min_amount'],$this->getCurrentCurrencyCode()).(', Max amount ').$this->getPriceFomat($payment['max_amount'],$this->getCurrentCurrencyCode());?></span>
+            </label>
+            <div class="col-md-6 col-sm-6 col-xs-12">
+              <input type="hidden" id="fee" name="fee" required="required" class="form-control col-md-7 col-xs-12 validate-number required-entry" value="<?php echo $payment['fee']; ?>">
+            </div>
+             <div class="col-md-6 col-sm-6 col-xs-12">
+              <input type="hidden" id="fee_percent" name="fee_percent" required="required" class="form-control col-md-7 col-xs-12 validate-number required-entry" value="<?php echo $payment['fee_percent']; ?>">
+            </div>
+          </div> 
+          <div class="form-group">
+            <label class="control-label col-md-3 col-sm-3 col-xs-12"><?php echo __('Fee ').$fee;?></span>
+            </label>
+            <div class="col-md-6 col-sm-6 col-xs-12">
+              <input type="hidden" id="fee" name="fee" required="required" class="form-control col-md-7 col-xs-12 validate-number required-entry" value="<?php echo $payment['fee']; ?>">
+            </div>
+          </div> 
+          <?php if($payment['min_amount'] <= $this->getAmount()) { ?>
+          <div class="form-group">
+            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name"><?php echo __('Amount to withdraw');?><span class="required">*</span>
+            </label>
+            <div class="col-md-6 col-sm-6 col-xs-12">
+              <input type="text" id="amount" name="amount" required="required" class="form-control col-md-7 col-xs-12 validate-number required-entry validate-digits-range digits-range-<?php echo $payment['min_amount']; ?>-<?php echo (int)$withdrawal; ?>">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="email"><?php echo $payment['name'].__(' email account');?><span class="required">*</span>
+            </label>
+            <div class="col-md-6 col-sm-6 col-xs-12">
+              <input type="text" id="email" name="email" required="required" class="form-control col-md-7 col-xs-12">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12"><?php echo $payment['name'].__('  Info');?></label>
+            <div class="col-md-6 col-sm-6 col-xs-12">
+              <textarea id="comment" class="form-control col-md-7 col-xs-12" name="comment" rows="10"></textarea>
+            </div>
+          </div>
+          <div class="ln_solid"></div>
+          <div class="form-group">
+            <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
+              <button class="btn btn-primary" type="reset">Reset</button>
+              <button type="submit" class="btn btn-success">Submit</button>
+            </div>
+          </div>
+          <?php } else { ?>
+          <p><?php echo __('You do not have the minimum amount to withdraw');?></p>
+          <?php } ?>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

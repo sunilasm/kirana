@@ -1,0 +1,325 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Landofcoder
+ * 
+ * NOTICE OF LICENSE
+ * 
+ * This source file is subject to the Landofcoder.com license that is
+ * available through the world-wide-web at this URL:
+ * http://www.landofcoder.com/license-agreement.html
+ * 
+ * DISCLAIMER
+ * 
+ * Do not edit or add to this file if you wish to upgrade this extension to newer
+ * version in the future.
+ * 
+ * @category   Landofcoder
+ * @package    Lof_MarketPlace
+ * @copyright  Copyright (c) 2014 Landofcoder (http://www.landofcoder.com/)
+ * @license    http://www.landofcoder.com/LICENSE-1.0.html
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+	<preference for="Magento\Catalog\Model\Layer" type="Lof\MarketPlace\Model\Layer" />
+    <preference for="Lof\MarketPlace\Model\UrlInterface" type="Lof\MarketPlace\Model\Url" />
+	<type name="Magento\Framework\View\Element\UiComponent\DataProvider\CollectionFactory">
+		<arguments>
+			<argument name="collections" xsi:type="array">
+				<item name="seller_listing_data_source" xsi:type="string">Lof\MarketPlace\Model\ResourceModel\Seller\Grid\Collection</item>
+				<item name="sellergroup_listing_data_source" xsi:type="string">Lof\MarketPlace\Model\ResourceModel\Group\Grid\Collection</item>
+                <item name="commission_listing_data_source" xsi:type="string">Lof\MarketPlace\Model\ResourceModel\Commission\Grid\Collection</item>
+                <item name="order_listing_data_source" xsi:type="string">Lof\MarketPlace\Model\ResourceModel\Order\Grid\Collection</item>
+                <item name="transaction_listing_data_source" xsi:type="string">Lof\MarketPlace\Model\ResourceModel\Orderitems\Grid\Collection</item>
+                <item name="sellerproduct_listing_data_source" xsi:type="string">Lof\MarketPlace\Model\ResourceModel\SellerProduct\Grid\Collection</item>
+                <item name="invoice_listing_data_source" xsi:type="string">Lof\MarketPlace\Model\ResourceModel\Invoice\Grid\Collection</item>
+                <item name="vendors_sales_order_invoice_grid_data_source" xsi:type="string">Lof\MarketPlace\Model\ResourceModel\SellerInvoice\Grid\Collection</item>
+                <item name="payment_listing_data_source" xsi:type="string">Lof\MarketPlace\Model\ResourceModel\Payment\Grid\Collection</item>
+                <item name="amount_listing_data_source" xsi:type="string">Lof\MarketPlace\Model\ResourceModel\Amount\Grid\Collection</item>
+                <item name="amounttransaction_listing_data_source" xsi:type="string">Lof\MarketPlace\Model\ResourceModel\Amounttransaction\Grid\Collection</item>
+                <item name="withdrawal_listing_data_source" xsi:type="string">Lof\MarketPlace\Model\ResourceModel\Withdrawal\Grid\Collection</item>
+                <item name="invoice_listing_data_source" xsi:type="string">Lof\MarketPlace\Model\ResourceModel\Invoice\Grid\Collection</item>
+                <item name="rating_listing_data_source" xsi:type="string">Lof\MarketPlace\Model\ResourceModel\Rating\Grid\Collection</item>
+                <item name="reviewseller_listing_data_source" xsi:type="string">Lof\MarketPlace\Model\ResourceModel\Review\Grid\Collection</item>
+                <item name="refund_listing_data_source" xsi:type="string">Lof\MarketPlace\Model\ResourceModel\Refund\Grid\Collection</item>
+			</argument>
+		</arguments>
+	</type>
+    <type name="Lof\MarketPlace\Model\ResourceModel\Withdrawal\Grid\Collection">
+        <arguments>
+            <argument name="mainTable" xsi:type="string">lof_marketplace_withdrawal</argument>
+            <argument name="eventPrefix" xsi:type="string">lof_marketplace_withdrawal_grid_collection</argument>
+            <argument name="eventObject" xsi:type="string">withdrawal_grid_collection</argument>
+            <argument name="resourceModel" xsi:type="string">Lof\MarketPlace\Model\ResourceModel\Withdrawal</argument>
+        </arguments>
+    </type>
+     <type name="Lof\MarketPlace\Model\ResourceModel\Refund\Grid\Collection">
+        <arguments>
+            <argument name="mainTable" xsi:type="string">lof_marketplace_refund</argument>
+            <argument name="eventPrefix" xsi:type="string">lof_marketplace_refund_grid_collection</argument>
+            <argument name="eventObject" xsi:type="string">refund_grid_collection</argument>
+            <argument name="resourceModel" xsi:type="string">Lof\MarketPlace\Model\ResourceModel\Refund</argument>
+        </arguments>
+    </type>
+    <type name="Lof\MarketPlace\Model\ResourceModel\Amount\Grid\Collection">
+        <arguments>
+            <argument name="mainTable" xsi:type="string">lof_marketplace_amount</argument>
+            <argument name="eventPrefix" xsi:type="string">lof_marketplace_amount_grid_collection</argument>
+            <argument name="eventObject" xsi:type="string">amount_grid_collection</argument>
+            <argument name="resourceModel" xsi:type="string">Lof\MarketPlace\Model\ResourceModel\Amount</argument>
+        </arguments>
+    </type>
+     <type name="Lof\MarketPlace\Model\ResourceModel\Amounttransaction\Grid\Collection">
+        <arguments>
+            <argument name="mainTable" xsi:type="string">lof_marketplace_amount_transaction</argument>
+            <argument name="eventPrefix" xsi:type="string">lof_marketplace_amount_transaction_grid_collection</argument>
+            <argument name="eventObject" xsi:type="string">amounttransaction_grid_collection</argument>
+            <argument name="resourceModel" xsi:type="string">Lof\MarketPlace\Model\ResourceModel\Amounttransaction</argument>
+        </arguments>
+    </type>
+    <type name="Lof\MarketPlace\Model\ResourceModel\Payment\Grid\Collection">
+        <arguments>
+            <argument name="mainTable" xsi:type="string">lof_marketplace_payment</argument>
+            <argument name="eventPrefix" xsi:type="string">lof_marketplace_payment_grid_collection</argument>
+            <argument name="eventObject" xsi:type="string">payment_grid_collection</argument>
+            <argument name="resourceModel" xsi:type="string">Lof\MarketPlace\Model\ResourceModel\Payment</argument>
+        </arguments>
+    </type>
+    <type name="Lof\MarketPlace\Model\ResourceModel\Orderitems\Grid\Collection">
+        <arguments>
+            <argument name="mainTable" xsi:type="string">lof_marketplace_sellerorderitems</argument>
+            <argument name="eventPrefix" xsi:type="string">lof_marketplace_grid_collection</argument>
+            <argument name="eventObject" xsi:type="string">tramsaction_grid_collection</argument>
+            <argument name="resourceModel" xsi:type="string">Lof\MarketPlace\Model\ResourceModel\Orderitems</argument>
+        </arguments>
+    </type>
+    <type name="Lof\MarketPlace\Model\ResourceModel\Order\Grid\Collection">
+        <arguments>
+            <argument name="mainTable" xsi:type="string">lof_marketplace_order</argument>
+            <argument name="eventPrefix" xsi:type="string">lof_marketplace_grid_collection</argument>
+            <argument name="eventObject" xsi:type="string">order_grid_collection</argument>
+            <argument name="resourceModel" xsi:type="string">Lof\MarketPlace\Model\ResourceModel\Order</argument>
+        </arguments>
+    </type>
+    <type name="Lof\MarketPlace\Model\ResourceModel\SellerProduct\Grid\Collection">
+        <arguments>
+            <argument name="mainTable" xsi:type="string">lof_marketplace_product</argument>
+            <argument name="eventPrefix" xsi:type="string">lof_marketplace_grid_collection</argument>
+            <argument name="eventObject" xsi:type="string">sellerproduct_grid_collection</argument>
+            <argument name="resourceModel" xsi:type="string">Lof\MarketPlace\Model\ResourceModel\SellerProduct</argument>
+        </arguments>
+    </type>
+	<type name="Lof\MarketPlace\Model\ResourceModel\Seller\Grid\Collection">
+		<arguments>
+			<argument name="mainTable" xsi:type="string">lof_marketplace</argument>
+			<argument name="eventPrefix" xsi:type="string">lof_marketplace_grid_collection</argument>
+			<argument name="eventObject" xsi:type="string">seller_grid_collection</argument>
+			<argument name="resourceModel" xsi:type="string">Lof\MarketPlace\Model\ResourceModel\Seller</argument>
+		</arguments>
+	</type>
+	<type name="Lof\MarketPlace\Model\ResourceModel\Commission\Grid\Collection">
+        <arguments>
+            <argument name="mainTable" xsi:type="string">lof_marketplace_commission</argument>
+            <argument name="eventPrefix" xsi:type="string">lof_marketplace_grid_collection</argument>
+            <argument name="eventObject" xsi:type="string">commission_grid_collection</argument>
+            <argument name="resourceModel" xsi:type="string">Lof\MarketPlace\Model\ResourceModel\Commission</argument>
+        </arguments>
+    </type>
+	<type name="Lof\MarketPlace\Model\ResourceModel\Group\Grid\Collection">
+		<arguments>
+			<argument name="mainTable" xsi:type="string">lof_marketplace_group</argument>
+			<argument name="eventPrefix" xsi:type="string">lof_marketplace_grid_collection</argument>
+			<argument name="eventObject" xsi:type="string">group_grid_collection</argument>
+			<argument name="resourceModel" xsi:type="string">Lof\MarketPlace\Model\ResourceModel\Group</argument>
+		</arguments>
+	</type>
+    <type name="Lof\MarketPlace\Model\ResourceModel\Invoice\Grid\Collection">
+        <arguments>
+            <argument name="mainTable" xsi:type="string">lof_marketplace_sellerinvoice</argument>
+            <argument name="eventPrefix" xsi:type="string">lof_marketplace_invoice_grid_collection</argument>
+            <argument name="eventObject" xsi:type="string">invoice_grid_collection</argument>
+            <argument name="resourceModel" xsi:type="string">Lof\MarketPlace\Model\ResourceModel\Invoice</argument>
+        </arguments>
+    </type>
+     <type name="Lof\MarketPlace\Model\ResourceModel\Rating\Grid\Collection">
+        <arguments>
+            <argument name="mainTable" xsi:type="string">lof_marketplace_rating</argument>
+            <argument name="eventPrefix" xsi:type="string">lof_marketplace_rating_grid_collection</argument>
+            <argument name="eventObject" xsi:type="string">rating_grid_collection</argument>
+            <argument name="resourceModel" xsi:type="string">Lof\MarketPlace\Model\ResourceModel\Rating</argument>
+        </arguments>
+    </type>
+    <type name="Lof\MarketPlace\Model\ResourceModel\Review\Grid\Collection">
+        <arguments>
+            <argument name="mainTable" xsi:type="string">lof_marketplace_review</argument>
+            <argument name="eventPrefix" xsi:type="string">lof_marketplace_reviewseller_grid_collection</argument>
+            <argument name="eventObject" xsi:type="string">reviewseller_grid_collection</argument>
+            <argument name="resourceModel" xsi:type="string">Lof\MarketPlace\Model\ResourceModel\Review</argument>
+        </arguments>
+    </type>
+	<type name="Lof\MarketPlace\Model\Layer\Resolver">
+		<arguments>
+			<argument name="layersPool" xsi:type="array">
+				<item name="seller" xsi:type="string">Lof\MarketPlace\Model\Layer\Seller</item>
+			</argument>
+		</arguments>
+	</type>
+	<type name="Lof\MarketPlace\Model\Layer\Seller">
+		<arguments>
+			<argument name="context" xsi:type="object">Magento\Catalog\Model\Layer\Category\Context</argument>
+		</arguments>
+	</type>
+	<type name="Lof\MarketPlace\Block\Seller\Product\ListProduct">
+		<arguments>
+			<argument name="layerResolver" xsi:type="object">Lof\MarketPlace\Model\Layer\Resolver</argument>
+		</arguments>
+	</type>
+	<virtualType name="SellerGirdFilterPool" type="Magento\Framework\View\Element\UiComponent\DataProvider\FilterPool">
+        <arguments>
+            <argument name="appliers" xsi:type="array">
+                <item name="regular" xsi:type="object">Magento\Framework\View\Element\UiComponent\DataProvider\RegularFilter</item>
+                <item name="fulltext" xsi:type="object">Magento\Framework\View\Element\UiComponent\DataProvider\FulltextFilter</item>
+            </argument>
+        </arguments>
+    </virtualType>
+   <!--  <virtualType name="InvoiceGridDataProvider" type="Lof\MarketPlace\Ui\DataProvider\Seller\InvoiceDataProvider">
+        <arguments>
+            <argument name="filterPool" xsi:type="object" shared="false">SellerGirdFilterPool</argument>
+        </arguments>
+    </virtualType> -->
+    <virtualType name="WithdrawalGridDataProvider" type="Lof\MarketPlace\Ui\DataProvider\Seller\WithdrawalDataProvider">
+        <arguments>
+            <argument name="filterPool" xsi:type="object" shared="false">SellerGirdFilterPool</argument>
+        </arguments>
+    </virtualType>
+     <virtualType name="RefundGridDataProvider" type="Lof\MarketPlace\Ui\DataProvider\Seller\RefundDataProvider">
+        <arguments>
+            <argument name="filterPool" xsi:type="object" shared="false">SellerGirdFilterPool</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="AmountGridDataProvider" type="Lof\MarketPlace\Ui\DataProvider\Seller\AmountDataProvider">
+        <arguments>
+            <argument name="filterPool" xsi:type="object" shared="false">SellerGirdFilterPool</argument>
+        </arguments>
+    </virtualType>
+     <virtualType name="AmounttransactionGridDataProvider" type="Lof\MarketPlace\Ui\DataProvider\Seller\AmounttransactionDataProvider">
+        <arguments>
+            <argument name="filterPool" xsi:type="object" shared="false">SellerGirdFilterPool</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="InvoiceGridDataProvider" type="Magento\Framework\View\Element\UiComponent\DataProvider\DataProvider">
+        <arguments>
+            <argument name="collection" xsi:type="object" shared="false">Lof\MarketPlace\Model\ResourceModel\Invoice\Collection</argument>
+            <argument name="filterPool" xsi:type="object" shared="false">SellerGirdFilterPool</argument>
+        </arguments>
+    </virtualType>
+   <virtualType name="RatingGridDataProvider" type="Lof\MarketPlace\Ui\DataProvider\Seller\RatingDataProvider">
+        <arguments>
+            <argument name="filterPool" xsi:type="object" shared="false">SellerGirdFilterPool</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="ReviewSellerGridDataProvider" type="Lof\MarketPlace\Ui\DataProvider\Seller\ReviewSellerDataProvider">
+        <arguments>
+            <argument name="filterPool" xsi:type="object" shared="false">SellerGirdFilterPool</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="PaymentGridDataProvider" type="Lof\MarketPlace\Ui\DataProvider\Seller\PaymentDataProvider">
+        <arguments>
+            <argument name="filterPool" xsi:type="object" shared="false">SellerGirdFilterPool</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="TransactionGridDataProvider" type="Lof\MarketPlace\Ui\DataProvider\Seller\TransactionDataProvider">
+        <arguments>
+            <argument name="filterPool" xsi:type="object" shared="false">SellerGirdFilterPool</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="OrderGridDataProvider" type="Lof\MarketPlace\Ui\DataProvider\Seller\OrderDataProvider">
+        <arguments>
+            <argument name="filterPool" xsi:type="object" shared="false">SellerGirdFilterPool</argument>
+        </arguments>
+    </virtualType>
+	<virtualType name="SellerGridDataProvider" type="Lof\MarketPlace\Ui\DataProvider\Seller\SellerDataProvider">
+        <arguments>
+            <argument name="filterPool" xsi:type="object" shared="false">SellerGirdFilterPool</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="CommissionGridDataProvider" type="Lof\MarketPlace\Ui\DataProvider\Seller\CommissionDataProvider">
+        <arguments>
+            <argument name="filterPool" xsi:type="object" shared="false">SellerGirdFilterPool</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="SellerGroupGridDataProvider" type="Lof\MarketPlace\Ui\DataProvider\Seller\GroupDataProvider">
+        <arguments>
+            <argument name="filterPool" xsi:type="object" shared="false">SellerGirdFilterPool</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="SellerProductGridDataProvider" type="Lof\MarketPlace\Ui\DataProvider\Seller\SellerProductDataProvider">
+        <arguments>
+            <argument name="filterPool" xsi:type="object" shared="false">SellerGirdFilterPool</argument>
+        </arguments>
+    </virtualType>
+     <type name="Magento\Framework\App\AreaList">
+        <arguments>
+            <argument name="areas" xsi:type="array">
+                <item name="marketplace" xsi:type="array">
+                	<item name="frontNameResolver" xsi:type="string">Lof\MarketPlace\App\Area\FrontNameResolver</item>
+                   <!--  <item name="frontName" xsi:type="string">vendors</item> -->
+                    <item name="router" xsi:type="string">marketplace</item>
+                </item>
+            </argument>
+        </arguments>
+    </type>
+    <type name="Lof\MarketPlace\App\Router">
+        <arguments>
+            <argument name="routerId" xsi:type="string">marketplace</argument>
+        </arguments>
+    </type>
+       <type name="Magento\Framework\App\Router\NoRouteHandlerList">
+        <arguments>
+            <argument name="handlerClassesList" xsi:type="array">
+                <item name="marketplace" xsi:type="array">
+                    <item name="class" xsi:type="string">Lof\MarketPlace\App\Router\NoRouteHandler</item>
+                    <item name="sortOrder" xsi:type="string">5</item>
+                </item>
+            </argument>
+        </arguments>
+    </type>
+    <type name="Lof\MarketPlace\Helper\Data">
+        <arguments>
+            <argument name="backendUrl" xsi:type="object">Lof\MarketPlace\Model\UrlInterface\Proxy</argument>
+            <argument name="auth" xsi:type="object">Magento\Backend\Model\Auth\Proxy</argument>
+            <argument name="locale" xsi:type="object">Magento\Backend\Model\Locale\Resolver\Proxy</argument>
+        </arguments>
+    </type>
+    <type name="Magento\Catalog\Helper\Product">
+        <plugin name="seller_product_permission" type="Lof\MarketPlace\Model\Plugin\ViewProduct"/>
+    </type>
+     <type name="Lof\MarketPlace\Model\Url\ScopeResolver">
+        <arguments>
+            <argument name="areaCode" xsi:type="string">marketplace</argument>
+        </arguments>
+    </type>
+     <preference for="Magento\Catalog\Block\Product\ListProduct" type="Lof\MarketPlace\Block\Product\ListProduct"/>
+     <preference for="Magento\CatalogSearch\Block\SearchResult\ListProduct" type="Lof\MarketPlace\Block\Product\ListProduct"/>
+     <virtualType name="Magento\CatalogSearch\Block\SearchResult\ListProduct" type="Lof\MarketPlace\Block\Product\ListProduct">
+        <arguments>
+            <argument name="catalogLayer" xsi:type="object">Magento\Catalog\Model\Layer\Search</argument>
+        </arguments>
+    </virtualType>
+    <type name="Lof\MarketPlace\Model\Url">
+        <arguments>
+            <argument name="scopeResolver" xsi:type="object">Lof\MarketPlace\Model\Url\ScopeResolver</argument>
+            <argument name="authSession" xsi:type="object">Magento\Backend\Model\Auth\Session\Proxy</argument>
+            <argument name="formKey" xsi:type="object">Magento\Framework\Data\Form\FormKey\Proxy</argument>
+            <argument name="scopeType" xsi:type="const">Magento\Store\Model\ScopeInterface::SCOPE_STORE</argument>
+            <argument name="backendHelper" xsi:type="object">Lof\MarketPlace\Helper\Data\Proxy</argument>
+        </arguments>
+    </type>
+    <type name="Magento\Theme\Model\View\Design">
+        <arguments>
+            <argument name="themes" xsi:type="array">
+                <item name="marketplace" xsi:type="string">Lof/market</item>
+            </argument>
+        </arguments>
+    </type>
+</config>

@@ -1,0 +1,74 @@
+<?php
+ $helper = $this->helper("Lof\MarketPlace\Helper\Data");
+?>
+<div class="page-title">
+  <div class="title_left">
+    <h3><?php echo __('Export'); ?></h3>
+  </div>
+
+</div>
+<div class="clearfix"></div>
+<div class="row">
+  <div class="col-md-12 col-sm-12 col-xs-12">
+    <div class="x_panel">
+      <div class="x_title">
+        <h2><?php echo __('Export Settings'); ?></h2>
+        <div class="clearfix"></div>
+      </div>
+      <div class="x_content">
+        <form id="export_filter_form" data-parsley-validate="" class="form-horizontal form-label-left" novalidate=""  action="<?php /* @escapeNotVerified */ echo $block->getUrl('*/*/processexport/entity/catalog_product/file_format/csv') ?>" method="post">
+          <div class="form-group">
+            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="entity"><?php echo __('Entity Type'); ?></label>
+            <div class="col-md-3 col-sm-3 col-xs-12">
+              <select class="form-control" id="entity" name="entity" title="Entity Type">
+                <option value="catalog_product"><?php echo __('Products'); ?></option>  
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="file_format"><?php echo __('Export File Format'); ?></label>
+            <div class="col-md-3 col-sm-3 col-xs-12">
+              <select class="form-control" id="file_format" name="file_format" title="Export File Format">
+                <?php foreach ($this->getFomat() as $key => $file_format) { ?>
+                <option value="<?php echo $file_format['value']; ?>"><?php echo $file_format['label']; ?></option>  
+                <?php } ?>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="file_format"><?php echo __('Fields Enclosure'); ?></label>
+            <div class="col-md-3 col-sm-3 col-xs-12">
+              <div class="checkbox">
+                <label class="">
+                  <div class="icheckbox_flat-green"><input id="fields_enclosure" name="fields_enclosure" type="checkbox" class="flat"><ins class="iCheck-helper"></ins></div> 
+                </label>
+              </div>
+            </div>
+          </div>
+          <div class="ln_solid"></div>
+            
+          <input type="hidden" name="export_filter[seller_id][]" class="admin__control-text input-text input-text-range" value="<?php echo $helper->getSellerId(); ?>">
+          <input type="hidden" name="export_filter[seller_id][]" class="admin__control-text input-text input-text-range" value="<?php echo $helper->getSellerId(); ?>">
+          <div class="form-group">  
+            <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">        
+              <button class="action- scalable btn btn-success" type="submit"><span><?php
+              /* @escapeNotVerified */ echo __('Continue') ?></span></button>
+            </div>
+          </div>
+        </form>
+        
+     
+    
+        
+    </div>
+  </div>
+</div>
+<script>
+require(['prototype'], function(){
+
+//<![CDATA[
+   $('entity').selectedIndex = 0; // forced resetting entity selector after page refresh
+//]]>
+
+});
+</script>

@@ -1,0 +1,497 @@
+ol, ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+} 
+.row {
+    margin-left: -15px;
+    margin-right: -15px;
+    content: '';
+    display: block;
+    clear: both;
+} 
+.seller-profile-container {
+    display: inline-block;
+    padding: 10px;
+    background-color: #fbfbfb;
+
+    .seller-image {
+    	padding: 0px;
+
+    	img {
+    		width: 100%;
+    	}
+    }
+
+    .seller-description {
+    	.seller_title {
+    		margin-top:0px;
+    	}
+
+	    .seller-headline{
+	    	display: block;
+	    	margin-bottom: 15px;
+	    }
+	    .seller-info {
+	    	color: #888;
+    		margin-top: 10px;
+    		
+    		>span:nth-child(n+2) {
+			    margin-left: 15px;
+			    padding-left: 15px;
+			    border-left: 1px solid #e1e3df;
+			}
+
+    		i.fa {
+    			padding: 6px;
+    		}
+
+    		#seller-contact {
+    			border: 1px solid #d3d3d3;
+			    color: #888;
+			    display: block;
+			    padding: 10px;
+			    text-align: center;
+			    border-radius: 3px;
+			    -moz-border-radius: 3px;
+			    -webkit-border-radius: 3px;
+    		}
+	    }
+	}
+}
+
+.lof-message {
+    margin-bottom: 3rem;
+
+    .lof-message-header {
+	    position: relative;
+	    margin: 0 0 5px 3px;
+
+	    span {
+		    color: #adadad;
+		    margin-left: 1.5rem;
+		}
+	}
+
+	.lof-message-body {
+	    background: #ecfaff;
+	    border-left: 3px solid #4b8dcb;
+	    padding: 1rem 1.5rem;
+	}
+	.lof-message-body.seller {
+		border-left: 3px solid #fb4c2f;
+	}
+}
+
+.lrw-block .unread {
+	color: #fb4c2f;
+}
+.lrw-block .readed {
+	color: #16a765;
+}
+.lof_marketplace_wrapper {
+	padding: 15px 0px;
+	.seller-info {
+	    color: #888;
+	    margin-top: 5px;
+
+	    i.fa {
+		    padding: 6px;
+		}
+	}
+
+	.mkpl-image img {
+		width:100%;
+	}
+
+	.mkpl-title {
+	    margin-bottom: 12px;
+		line-height: 1.2em;
+		font-size: 1.5em;
+    	font-weight: normal;
+    	text-align: center;
+	}
+	.mkpl-description {
+		margin-bottom: 30px;
+		line-height: 1.6em;
+	}
+
+	.mkpl-review {
+		font-size: 18px;
+
+		a:hover {
+		    text-decoration: none;
+		}
+		.fa-star {
+			color: #c7c7c7;
+		}
+		.fa-star.voted {
+			color: #ff5501;
+		}
+
+	}
+	.mkpl-socialnetworks {
+		.list-social  {
+			padding: 0;
+    		margin: 0;
+
+			li {
+			    display: inline-block;
+			    margin-bottom: 0;
+			    text-align: center;
+
+			    a {
+				    width: 29px;
+				    height: 29px;
+				    line-height: 29px;
+				    border-radius: 50%;
+				    display: inline-block;
+				    margin-right: -3px;
+				    color: #707070;
+				}
+				a.facebook:hover{
+				    background: #3b5999;
+				}
+				a.twitter:hover{
+				    background: #55acef;
+				}
+				a.google:hover{
+				    background: #dc4d3c;
+				}
+				a.youtube:hover{
+				    background: #e04e41;
+				}
+				a.linkedin:hover{
+				    background: #0077B5;
+				}
+				a.vimeo:hover{
+				    background: #44BBFF;
+				}
+				a.pinterest:hover{
+				    background: #cb2027;
+				}
+				a.instagram:hover{
+				    background: #125688;
+				}
+				a.email:hover{
+				    background: #E34D42;
+				}
+				a:hover i:before{
+				    color: #FFF;
+				}
+			}
+		}
+	}
+	.lof_info_title {
+		font-size: 15px;
+	    font-weight: 700;
+	    margin: 5px 0 10px;
+	    text-transform: capitalize;
+	}
+	
+}
+#seller-contact {
+	border: 1px solid #d3d3d3;
+    color: #888;
+    display: block;
+    padding: 10px;
+    text-align: center;
+    border-radius: 3px;
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    i.fa {
+	    padding: 6px;
+	}
+}
+
+.lof_marketplace_wrapper {
+	.lof_marketplace_fieldset {
+		border: 1px solid #ddd;
+    	margin-bottom: 15px;
+    	margin: 0;
+    	padding: 15px;
+
+    	h2 {
+			text-align: center;
+		    color: #222;
+		    font-size: 24px;
+		    margin-bottom: 30px;
+		}	
+	}
+	.review-top {
+	    border: 1px solid #ECECEC;
+	    padding: 30px;
+	    text-transform: uppercase;
+
+	  
+	}
+	.ratings-and-size {
+		.review-right {
+			.separate-rating {
+				.mark-rating {
+				    float: left;
+				    margin: 1px 0;
+				    width: 100%;
+				    .rating-box {
+					    float: left;
+					    margin-right: 10px;
+					    background: transparent;
+					    .rating {
+						    background: none;
+						}
+					}
+					.scroll-box {
+					    float: left;
+					    width: 75%;
+					    height: 10px;
+					    background: #F4F4F4;
+					    margin-right: 5px;
+					    margin-top: 7px;
+					    .scroll-rating {
+						    background: #ffba00;
+						    height: 10px;
+						}
+					}
+					.rating-percent {
+					    float: left;
+					    margin-left: 3px;
+					    padding-top: 3px;
+					}
+				}
+			}
+		}
+	}
+
+	#review_hidden_form {
+		.form-add {
+		    margin-top: 30px;
+		    padding: 30px;
+		    border: 1px solid #ECECEC;
+
+		    h2 {
+			    font-size: 20px;
+			    text-transform: none;
+			}
+			.ratings {
+			    overflow: visible;
+			    position: relative;
+			    display: inline;
+   				float: left;
+   				margin-top: 0px;
+
+			    .ratings_stars {
+				    background: url(../Lof_MarketPlace/image/star_blank.png) no-repeat;
+				    float: left;
+				    height: 28px;
+				    padding: 2px;
+				    width: 32px;
+				}
+			    .ratings_over {
+					background: url(../Lof_MarketPlace/image/star_overs.png) no-repeat;
+				}
+
+			}
+			.rating-title {
+					float: left;
+					padding-right:15px;
+					width: 50px;
+				}
+			.review-form {
+				display: inline-block;
+				width: 100%;
+
+				.fieldset{
+					display: inline-block;
+    				width: 100%;
+    				margin: 0px;
+				}
+			}
+
+			.buttons-set {
+			    clear: both;
+			    margin: 10px 0 0;
+			    padding-top: 10px;
+			    border-top: 0;
+			    text-align: right;
+
+			    button.button {
+				    float: left;
+				    margin-left: 0;
+				    border-radius: 30px;
+				    padding: 15px 30px;
+				    margin-right: 5px;
+				    min-width: auto;
+				    background-color: #1d96bb;
+    				color: #fff;
+    				box-shadow: none;
+				}
+
+				.button:hover  a.button:focus {
+				    background-color: #177997;
+    				color: #fff;
+    			}
+			}
+
+		}
+	}
+
+	#customer-reviews {
+	    width: auto;
+	    float: none;
+	    .review-row {
+		    padding: 15px 0;
+		}
+
+	}
+}
+.review-average-info {
+    width: 100%;
+    border-bottom: 1px solid #ECECEC;
+    margin-bottom: 15px;
+    text-align: center;
+}
+.ratings {
+    margin: 7px 0;
+
+    .rating-box {
+    	margin: 0;
+	    display: inline-block;
+	    zoom: 1;
+
+    	background-image: url(../Lof_MarketPlace/image/stars-big.png);
+	    background-position: left -22px;
+	    background-repeat: no-repeat;
+	    height: 19px;
+	    width: 121px;
+	    .rating {
+	    	background-image: url(../Lof_MarketPlace/image/stars-big.png);
+		    background-position: left top;
+		    background-repeat: no-repeat;
+		    height: 19px;
+	    }
+	}
+	.rating-links {
+	    margin: 0; 
+	    display: inline-block;
+	    zoom: 1;
+	}
+}
+.box-collateral.box-reviews {
+	 /*text-align: center;*/
+	 #seller-contact {
+	 	display: inline-block;
+	 }
+	 .title {
+	    font-size: 18px;
+	    font-weight: 700;
+	}
+	.description {
+	    padding: 10px 0;
+	}
+	.info {
+	    color: #f1703d;
+	    text-transform: uppercase;
+	    font-size: 13px;
+	    padding-bottom: 10px;
+	    font-weight: 700;
+
+	    .lable {
+		    color: #bbb;
+		    font-weight: 400;
+		    font-size: 12px;
+		}
+		
+	}
+	.ratings-table {
+	    border-top: 1px solid #ECECEC;
+	    border-bottom: 1px solid #ECECEC;
+	    padding: 10px 0;
+	    text-align: right;
+	    font-size: 12px;
+	    text-transform: uppercase;
+	}
+	.ratings-table {
+	    text-align: left!important;
+
+	    li {
+		    display: inline-block;
+		    zoom: 1;
+		    margin-right: 8px;
+
+		    span {
+			    display: inline-block;
+			}
+
+			div.rating-box {
+			    display: inline-block;
+			    margin-left: 5px;
+
+			    background-image: url(../Lof_MarketPlace/image/stars.png);
+			    background-position: left -10px;
+			    background-repeat: no-repeat;
+			    height: 12px;
+			    width: 61px;
+
+			    .rating {
+				    background-image: url(../Lof_MarketPlace/image/stars.png);
+				    background-position: left 2px;
+				    background-repeat: no-repeat;
+				    height: 12px;
+				}
+			}
+		}
+
+	}
+}
+.form-list {
+	>li {
+    	margin-bottom: 10px;
+
+    	.input-box {
+		    padding-top: 2px;
+		}
+	}
+
+	input,textarea {
+	    background: #f1f1f1;
+	    border-radius: 30px;
+	    height: 50px;
+	    border: 0;
+	    width: 100%;
+	    box-shadow: none;
+	    padding: 15px;
+	}
+	textarea {
+	    min-height: 250px;
+	}
+}
+.message-link {
+	position: relative;
+	span {
+		font-size: 10px;
+	    font-weight: 400;
+	    line-height: 13px;
+	    padding: 2px 6px;
+	    position: absolute;
+	    right: -15px;
+	    top: -8px;
+	    background: #1ABB9C!important;
+	    border: 1px solid #1ABB9C!important;
+	    color: #fff;
+	    border-radius: 10px;
+	}
+}
+.input-box label {
+	display: block;
+    padding-bottom: 3px;
+    margin-bottom: 10px;
+    .required em {
+    color: #f00;
+	}
+	.help-block {
+	    display: block;
+	    margin-top: 5px;
+	    margin-bottom: 10px;
+	    color: #737373;
+	}
+}

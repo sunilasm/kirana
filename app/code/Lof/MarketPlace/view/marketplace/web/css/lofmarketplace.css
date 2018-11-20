@@ -1,0 +1,13 @@
+.nav-md .container.body .right_col {
+	padding-top: 100px !important;
+	padding-bottom: 50px;
+}
+.lof-mp-page-title button.lof-mp-btn {
+	float:right;
+}
+.page-main-actions .page-actions._fixed {
+	left: 230px;
+}
+body .container.body .right_col {
+    background: #fff !important;
+}

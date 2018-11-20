@@ -1,0 +1,52 @@
+<?php
+$helper = $this->helper('Lof\MarketPlace\Helper\Data');
+$collection = $block->getMessage()
+    ->setOrder('created_at', 'desc');
+$count       = $collection->count();
+$size        = $collection->getSize();
+$limit       = $block->getLimit();
+$currentPage = $block->getCurrentPage();
+$start       = $size - (($currentPage - 1) * $limit);
+$modId       = time() . rand();
+?>
+<?php if($count){ ?>
+<div class="block lrw-block lrw-account-summary-listing">
+	<div class="block-content">
+		<div class="table-wrapper orders-recent">
+			<table class="data-table table">
+				<thead>
+					<tr>
+						<th><?php echo __('ID'); ?></th>
+						<th><?php echo __('Subject'); ?></th>
+						<th><?php echo __('Description'); ?></th>
+						<th><?php echo __('Created At'); ?></th>
+						<th><?php echo __('Read'); ?></th>
+						<th><?php echo __('Status'); ?></th>
+					</tr>
+				</thead>
+				<tbody>
+					<?php $i = 0; ?>
+					<?php foreach ($collection as $_ticket) {
+					$read = $this->getUnreadMessage($_ticket->getData('message_id'));	
+					 ?>
+					<tr class="<?php echo $i % 2 ? 'odd' : 'even' ?> <?php echo ($i == $count-1) ? 'last' : '' ?>">
+						<td><?php echo ($start-$i) ?></td>
+						<td><a class="box-body" href="<?php echo $block->getUrl('lofmarketplace/customer/viewmessage', ['message_id' => $_ticket->getData('message_id')]); ?>"><?php echo $_ticket->getSubject() ?></a></td>
+						<td><?php echo $_ticket->getDescription(); ?>
+						</td>
+						<td><?php echo $_ticket->getCreatedAt(); ?></td>
+						<td class="<?php echo strtolower($read); ?>"><?php echo $read; ?></td>
+						<td class="lrw-status-<?php echo str_replace(" ", "-", strtolower($_ticket->getStatus())); ?>">
+							<?php echo $helper->getStatus($_ticket->getStatus()); ?>
+						</td>
+					</tr>
+					<?php $i++; ?>
+					<?php } ?>
+				</tbody>
+			</table>
+		</div>	
+		<?php echo $block->getChildHtml('toolbar'); ?>	
+	</div>
+</div>
+
+<?php } ?>	

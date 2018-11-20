@@ -1,0 +1,53 @@
+<div class="row">
+	<div class="col-md-12 col-sm-12 col-xs-12">
+		<div class="x_panel">
+			<div class="x_title">
+				<h2><?php echo __('Withdrawal information');?></h2>
+				<div class="clearfix"></div>
+			</div>
+			<div class="x_content">
+	    		<div class="form-horizontal form-label-left">
+	    			<div class="form-group">
+	                    <label class=" col-md-2 col-sm-2 col-xs-12"><?php echo __('Payment Method');?></label>
+	                    <div class="col-md-6 col-sm-6 col-xs-12">
+	                    <?php echo $this->getPayment()->getData('name'); ?>
+	                    </div>
+	                </div>
+	                <div class="form-group">
+	                    <label class=" col-md-2 col-sm-2 col-xs-12"><?php echo $this->getPayment()->getData('name').__(' Email Account');?></label>
+	                    <div class="col-md-6 col-sm-6 col-xs-12">
+	                    <?php echo $this->getWithdrawal()->getData('email'); ?></div>
+	                </div>
+	                 <div class="form-group">
+	                    <label class=" col-md-2 col-sm-2 col-xs-12"><?php echo __('Amount');?></label>
+	                    <div class="col-md-6 col-sm-6 col-xs-12">
+	                    <?php echo $this->getWithdrawal()->getData('amount'); ?></div>
+	                </div>
+	                <div class="form-group">
+	                    <label class=" col-md-2 col-sm-2 col-xs-12"><?php echo __('Fee');?></label>
+	                    <div class="col-md-6 col-sm-6 col-xs-12">
+	                    <?php echo $this->getWithdrawal()->getData('fee'); ?></div>
+	                </div>
+	                <div class="form-group">
+	                    <label class=" col-md-2 col-sm-2 col-xs-12"><?php echo __('Net Amount');?></label>
+	                    <div class="col-md-6 col-sm-6 col-xs-12">
+	                    <?php echo $this->getWithdrawal()->getData('net_amount'); ?></div>
+	                </div>
+	                <?php if($this->getWithdrawal()->getData('admin_message')) { ?>
+	                 <div class="form-group">
+	                    <label class=" col-md-2 col-sm-2 col-xs-12"><?php echo __('Admin Message');?></label>
+	                    <div class="col-md-6 col-sm-6 col-xs-12">
+	                    <?php echo $this->getWithdrawal()->getData('admin_message'); ?></div>
+	                </div>	
+	                <?php } ?>
+	                <div class="form-group">
+	                    <label class=" col-md-2 col-sm-2 col-xs-12"><?php echo __('Created At');?></label>
+	                    <div class="col-md-6 col-sm-6 col-xs-12">
+	                    <?php echo $this->getWithdrawal()->getData('created_at'); ?></div>
+	                </div>
+                </div>
+	           
+	    	</div>
+		</div>
+	</div>
+</div>	

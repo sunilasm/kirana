@@ -1,0 +1,71 @@
+.admin__menu .item-seller > a:before {
+  content: '\e60d'!important;
+  font-size: 2.4rem!important;
+  position: relative!important;
+  top: -0.2rem!important;
+}
+
+.fue-status-completed,
+.fue-status-Completed {
+    color: #1AA941;
+}
+
+.fue-status-completed.red {
+    color: #BB1212;
+}
+
+.fue-status-processing,
+.fue-status-pending,
+.fue-status-Pending {
+    color: #F96B25;
+}
+
+.fue-status {
+    background: #feeee1 none repeat scroll 0 0;
+    border: 1px solid #ed4f2e;
+    color: #ed4f2e;
+    display: block;
+    font-weight: bold;
+    line-height: 17px;
+    padding: 0 3px;
+    text-align: center;
+    text-transform: uppercase;
+    width: 150px;
+}
+
+.fue-status.fue-status-completed,
+.fue-status.fue-status-Completed,
+.fue-status.fue-status-sent {
+    background: #d0e5a9 none repeat scroll 0 0;
+    border-color: #5b8116;
+    color: #185b00;
+}
+.fue-status.fue-status-pending,
+.fue-status.fue-status-Pending
+{
+    background: #feddcd none repeat scroll 0 0;
+    border-color: #F96B25;
+    color: #F96B25;
+}
+.fue-status.fue-status-canceled,
+.fue-status.fue-status-Canceled,
+.fue-status.fue-status-failed{
+    background: #f9d4d4 none repeat scroll 0 0;
+    border-color: #e22626;
+    color: #e22626;
+}
+.fue-status-canceled{
+    color: #e22626;
+}
+.fue-status-Canceled{
+    color: #e22626;
+}
+.form-list td.label {
+    padding: 5px 0px 0px 30px;
+    width: 300px;
+}
+.form-list td.value {
+    padding-right: 5px !important;
+    width: 300px;
+    padding-top: 5px;
+}

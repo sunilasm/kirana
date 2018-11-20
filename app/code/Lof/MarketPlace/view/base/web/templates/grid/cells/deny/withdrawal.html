@@ -1,0 +1,156 @@
+
+<form id="ask-form-<%- withdrawalid %>" method="get" enctype="multipart/form-data" action="<%- formaction %>" class="wk-mp-deny-form">
+    <div class="modal-body">
+        <div class="bootbox-body">
+            <input type="hidden" name="withdrawal_id" value="<%- withdrawalid %>">           
+            <input type="hidden" name="status" value="<%- status %>"> 
+            <input type="hidden" name="netamount" value="<%- netamount %>"> 
+            <input type="hidden" name="amount" value="<%- amount %>"> 
+            <input type="hidden" name="fee" value="<%- fee %>"> 
+            <input type="hidden" name="sellerid" value="<%- sellerid %>">
+            <div style="font-size: 12px" id="withdrawal_tabs_main_section_content">
+                <div class="entry-edit">
+                    <div class="entry-edit-head">
+                        <h4 class="icon-head head-edit-form fieldset-legend">Seller Information</h4>
+                        <div class="form-buttons"></div>
+                    </div>
+                    <div id="vendorinfo_form" class="fieldset ">
+                        <div class="hor-scroll">
+                            <table cellspacing="0" class="form-list">
+                                <tbody>
+                                    <tr>
+                                        <td class="label"><label for="credit">Seller Name</label></td>
+                                        <td class="value">
+                                            <span style="color: #996515;font-weight: bold;">
+                                                <%- sellername %>                                           
+                                            </span>           
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="label"><label for="credit">Credit Balance</label></td>
+                                        <td class="value">
+                                            <span style="color: #996515;font-weight: bold;">
+                                                <%- balance %>                                          
+                                            </span>           
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="entry-edit-head">
+                        <h4 class="icon-head head-edit-form fieldset-legend">Withdrawal information</h4>
+                        <div class="form-buttons"></div>
+                    </div>
+                    <div id="withdrawal_form" class="fieldset ">
+                        <div class="hor-scroll">
+                            <table cellspacing="0" class="form-list">
+                                <tbody>
+                                    <tr>
+                                        <td class="label"><label for="method">Payment Method</label></td>
+                                        <td class="value">
+                                            <%- paymentname %>             
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="label">
+                                            <label for="payment_account"><%- paymentname %>  Email Account</label>
+                                        </td>
+                                        <td class="value">
+                                            <%- email %>             
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="label"><label for="amount">Amount</label></td>
+                                        <td class="value">
+                                            <span style="color: #996515;font-weight: bold;">
+                                                <%- amount %>    
+                                            </span>            
+                                        </td>
+                                    </tr>
+                                        <tr>
+                                        <td class="label"><label for="fee">Fee Amount</label></td>
+                                        <td class="value">
+                                            <span style="color: #996515;font-weight: bold;">
+                                                <%- fee %>   
+                                            </span>            
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="label"><label for="net_amount">Net Amount</label></td>
+                                        <td class="value">
+                                            <span style="color: #996515;font-weight: bold;">
+                                                <%- netamount %>    
+                                            </span>            
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="label"><label for="status">Status</label></td>
+                                        <td class="value">
+                                            <span class="fue-status fue-status-<%- status %>"><%- status %></span>                            
+                                        </td>
+                                    </tr>
+                                     <% if(status == 'Pending')  { %>
+                                    <tr>
+                                        <td class="label"><label for="status">Change Status</label></td>
+                                        <td class="value">
+                                            <select name="withdrawal_status">
+                                                <option value="0" >Pending</option>
+                                                <option value="1" >Completed</option>
+                                                <option value="2" >Canceled</option>
+                                            </select>                                                                                           
+                                        </td>
+                                    </tr>
+                                      <% } %>
+                                    <tr>
+                                        <td class="label"><label for="created_at">Created At</label></td>
+                                        <td class="value">
+                                            <%- createdat %>              
+                                        </td>
+                                    </tr>
+                                    <% if(status == 'Pending')  { %>
+                                    <tr>
+                                        <td class="label"><label for="note">Note</label></td>
+                                        <td class="value">
+                                            <textarea class="textarea" cols="50" rows="5" name="note" id="complete_note"></textarea>
+                                        </td>
+                                    </tr>
+                                    <% } %>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>     
+        </div>
+    </div>
+    <div class="modal-footer">
+         <% if(status == 'Pending')  { %>
+        <span class="error"></span>
+        <button type="reset" class="btn btn-default" name="cancel"><span><%- cancellabel %></span></button>
+        <button type="submit" class="btn btn-primary" name="complete"><span><%- submitlabel %></span></button>
+         <% } %>
+        <span class="clear"></span>
+    </div>
+   
+</form>
+<script>
+    require([
+        "jquery",
+        "mage/mage"
+    ], function($){
+        $('#ask-form-<%- withdrawalid %>').mage('validation', {});
+        $('.complete').click(function() {
+            $('.withdrawal_status').val('complete');
+        });
+        $("body").delegate('.action-close',"click",function(){
+            console.log($(this).parents('.modals-wrapper').find('form').attr('class'));
+            if($(this).parents('.modals-wrapper').find('form').attr('class')=='wk-mp-deny-form'){
+                $(this).parents('.modals-wrapper').find('.modals-overlay').remove();
+                $(this).parents('.modal-popup').remove();
+                $('body').removeClass('_has-modal');
+            }
+        });
+    });
+</script>

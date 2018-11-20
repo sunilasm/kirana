@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Landofcoder
+ * 
+ * NOTICE OF LICENSE
+ * 
+ * This source file is subject to the Landofcoder.com license that is
+ * available through the world-wide-web at this URL:
+ * http://www.landofcoder.com/license-agreement.html
+ * 
+ * DISCLAIMER
+ * 
+ * Do not edit or add to this file if you wish to upgrade this extension to newer
+ * version in the future.
+ * 
+ * @category   Landofcoder
+ * @package    Lof_MarketPlace
+ * @copyright  Copyright (c) 2014 Landofcoder (http://www.landofcoder.com/)
+ * @license    http://www.landofcoder.com/LICENSE-1.0.html
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../Backend/etc/menu.xsd">
+	<menu> 
+		<add id="Lof_MarketPlace::marketplace" title="Market Place" module="Lof_MarketPlace" sortOrder="10" resource="Lof_MarketPlace::marketplace" />  
+		<add id="Lof_MarketPlace::seller" title="Seller" module="Lof_MarketPlace" sortOrder="5" resource="Lof_MarketPlace::seller" parent="Lof_MarketPlace::marketplace" /> 
+		<add id="Lof_MarketPlace::seller_manage" title="Manage Sellers" module="Lof_MarketPlace" sortOrder="20" parent="Lof_MarketPlace::seller" action="lofmarketplace/seller/index" resource="Lof_MarketPlace::seller"/> 
+		<add id="Lof_MarketPlace::seller_group_manage" title="Manage Groups" module="Lof_MarketPlace" sortOrder="40" parent="Lof_MarketPlace::seller" action="lofmarketplace/group/index" resource="Lof_MarketPlace::seller"/> 
+		<add id="Lof_MarketPlace::seller_commission_manage" title="Manage Commission" module="Lof_MarketPlace" sortOrder="40" parent="Lof_MarketPlace::seller" action="lofmarketplace/commission/index" resource="Lof_MarketPlace::seller"/>
+		<add id="Lof_MarketPlace::catalog" title="Catalog" module="Lof_MarketPlace" sortOrder="41" resource="Lof_MarketPlace::catalog" parent="Lof_MarketPlace::marketplace" />
+		<add id="Lof_MarketPlace::sellerproduct" title="Manage Product" module="Lof_MarketPlace" sortOrder="45" parent="Lof_MarketPlace::catalog" action="lofmarketplace/sellerproduct/index" resource="Lof_MarketPlace::catalog"/>
+		<add id="Lof_MarketPlace::sales" title="Sales" module="Lof_MarketPlace" sortOrder="60" resource="Lof_MarketPlace::sales" parent="Lof_MarketPlace::marketplace" />
+		<add id="Lof_MarketPlace::sales_order_manage" title="Manager Seller Order" module="Lof_MarketPlace" sortOrder="60" parent="Lof_MarketPlace::sales" action="lofmarketplace/order/index" resource="Lof_MarketPlace::sales"/>
+		<add id="Lof_MarketPlace::transaction" title="Manager Order Transaction" module="Lof_MarketPlace" sortOrder="70" parent="Lof_MarketPlace::sales" action="lofmarketplace/transaction/index" resource="Lof_MarketPlace::sales"/>
+		<add id="Lof_MarketPlace::invoice" title="Manager Invoice" module="Lof_MarketPlace" sortOrder="80" parent="Lof_MarketPlace::sales" action="lofmarketplace/invoice/index" resource="Lof_MarketPlace::sales"/>
+		<add id="Lof_MarketPlace::refund" title="Manager Refund" module="Lof_MarketPlace" sortOrder="81" parent="Lof_MarketPlace::sales" action="lofmarketplace/refund/index" resource="Lof_MarketPlace::sales"/>
+		<add id="Lof_MarketPlace::payment" title="Payment and Amount" module="Lof_MarketPlace" sortOrder="82" resource="Lof_MarketPlace::payment" parent="Lof_MarketPlace::marketplace" />
+		<add id="Lof_MarketPlace::amount_transaction" title="Seller Amount Transaction" module="Lof_MarketPlace" sortOrder="82" parent="Lof_MarketPlace::payment" action="lofmarketplace/amounttransaction/index" resource="Lof_MarketPlace::payment"/>
+		<add id="Lof_MarketPlace::amount" title="Seller Amount" module="Lof_MarketPlace" sortOrder="83" parent="Lof_MarketPlace::payment" action="lofmarketplace/amount/index" resource="Lof_MarketPlace::payment"/>
+		<add id="Lof_MarketPlace::paymentmethod" title="Payment Method" module="Lof_MarketPlace" sortOrder="85" parent="Lof_MarketPlace::payment" action="lofmarketplace/payment/index" resource="Lof_MarketPlace::payment"/>
+		<add id="Lof_MarketPlace::withdrawal" title="All Withdrawals Request" module="Lof_MarketPlace" sortOrder="90" parent="Lof_MarketPlace::payment" action="lofmarketplace/withdrawal/index" resource="Lof_MarketPlace::payment"/>
+		<add id="Lof_MarketPlace::reviewrating" title="Review And Rating" module="Lof_MarketPlace" sortOrder="100" resource="Lof_MarketPlace::reviewrating" parent="Lof_MarketPlace::marketplace" />
+		<add id="Lof_MarketPlace::review" title="Manager Review" module="Lof_MarketPlace" sortOrder="110" parent="Lof_MarketPlace::reviewrating" action="lofmarketplace/review/index" resource="Lof_MarketPlace::reviewrating"/>
+		<add id="Lof_MarketPlace::rating" title="Manager Rating" module="Lof_MarketPlace" sortOrder="120" parent="Lof_MarketPlace::reviewrating" action="lofmarketplace/rating/index" resource="Lof_MarketPlace::reviewrating"/>
+		<add id="Lof_MarketPlace::shipping" title="Shipping" module="Lof_MarketPlace" sortOrder="140" resource="Lof_MarketPlace::shipping" parent="Lof_MarketPlace::marketplace" /> 
+        <add id="Lof_MarketPlace::configuration" title="Configuration" module="Lof_MarketPlace" sortOrder="150"
+            parent="Lof_MarketPlace::marketplace" action="adminhtml/system_config/edit/section/lofmarketplace" resource="Lof_MarketPlace::config_marketplace"/>
+	</menu>
+</config>

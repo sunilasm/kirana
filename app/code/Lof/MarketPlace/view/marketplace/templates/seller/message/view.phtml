@@ -1,0 +1,122 @@
+<?php
+$helper = $this->helper('Lof\MarketPlace\Helper\Data');
+$formActionUrl = $this->getUrl('catalog/seller/savemsg');
+$currPageUrl = $helper->getCurrentUrls();
+$this->isRead();
+ 
+?>
+<div class="row">
+  	<div class="col-md-6 col-sm-6 col-xs-12">
+	    <div class="x_panel">
+	      	<div class="x_title">
+	        	<h2><?php echo $this->getMessage()->getSubject();?></h2>
+	        <div class="clearfix"></div>
+	    	</div>
+		    <div class="x_content">
+		    	<table class="tile_info">
+	              	<tbody>
+		              	<tr>
+			                <td>
+			                  	<b><?php echo __('Customer Name');?></b>
+			                </td>
+			                <td><p><?php echo $this->getMessage()->getSenderName(); ?></p></td>
+			            </tr>
+		              	<tr>
+			                <td>
+			                  	<b><?php echo __('Customer Email');?></b>
+			                </td>
+			                <td><p><?php echo $this->getMessage()->getSenderEmail(); ?></p></td>
+		              	</tr>
+		              	<tr>
+			                <td>
+			                  <b><?php echo __('Status');?></b>
+			                </td>
+			                <td><p><?php echo $helper->getStatus($this->getMessage()->getStatus()); ?></p></td>
+		              	</tr>
+	            	</tbody>
+	            </table>
+		    </div>
+		</div>    
+    </div>
+    <?php  if($this->getMessage()->getStatus() != 0) { ?>
+    <div class="col-md-12 col-sm-12 col-xs-12">
+    	<div class="x_panel">
+    		<div class="x_title">
+    			<h2><?php echo __('Post a Reply');?></h2>
+    			<div class="clearfix"></div>
+    		</div>
+    		<div class="x_content">
+	    		<form id="form-message" data-parsley-validate="" action="<?php echo $formActionUrl;?>" class="form-horizontal form-label-left" method="post" data-hasrequired="<?php /* @escapeNotVerified */ echo __('* Required Fields') ?>" data-mage-init='{"validation":{}}'>
+	                <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12"><?php echo __('Status'); ?></label>
+                        <div class="col-md-2 col-sm-2 col-xs-12">
+                          <select class="form-control" id="status" name="status">
+                          <?php foreach ($helper->arrayStatus() as $key => $status) { ?>
+                          	<option <?php if($status['value'] == $this->getMessage()->getStatus()) echo "selected"; ?> value="<?php echo $status['value'];?>"><?php echo $status['label'];?></option>
+                          <?php } ?>
+                          </select>
+                        </div>
+                    </div>
+	                <div class="form-group">
+	                    <label class="control-label col-md-3 col-sm-3 col-xs-12" for="content"><?php echo __('Message');?> <span class="required">*</span>
+	                    </label>
+	                    <div class="col-md-6 col-sm-6 col-xs-12">
+	                      <textarea name="content" rows="10" id="content" required="required" class="form-control col-md-7 col-xs-12"> </textarea>
+	                    </div>
+	                </div>
+	                <div class="ln_solid"></div>
+	                <div class="form-group">
+                        <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
+                        	<input type="hidden" name="sender_id" value="<?php echo $this->getSeller()->getSellerId();?>" />
+                        	<input type="hidden" name="seller_send" value="1" />
+                        	<input type="hidden" name="sender_name" value="<?php echo $this->getSeller()->getName();?>" />
+                        	<input type="hidden" name="sender_email" value="<?php echo $this->getSeller()->getEmail();?>" />
+                        	<input type="hidden" name="receiver_id" value="<?php echo $this->getMessage()->getSenderId(); ?>" />
+                        	<input type="hidden" name="receiver_name" value="<?php echo $this->getMessage()->getSenderName(); ?>" />
+                        	<input type="hidden" name="receiver_email" value="<?php echo $this->getMessage()->getSenderEmail(); ?>" />
+                        	<input type="hidden" name="message_id" value="<?php echo $this->getMessage()->getMessageId();?>" />
+                        	<input type="hidden" name="currUrl"  id="currUrl" value="<?php echo $currPageUrl; ?>" />
+						  	<button class="btn btn-primary" type="reset"><?php echo __('Reset');?></button>
+                          	<button type="submit" class="btn btn-success"><?php echo __('Submit');?></button>
+                        </div>
+                    </div>
+	            </form>
+	    	</div>
+    	</div>
+    </div>
+    <?php } ?>
+    <div class="col-md-12 col-sm-12 col-xs-12">
+    	<div class="x_panel">
+    		<div class="x_title">
+    			<h2><?php echo __('Message History');?></h2>
+    			<div class="clearfix"></div>
+    		</div>
+    		<div  class="x_content" >
+    			<ul class="messages">
+    				<?php foreach ($this->getDetail() as $key => $detail) { ?>
+    				<li>
+	                    <div class="message_date">
+	                      	<h4 class="date text-info"><?php echo $helper->nicetime($detail->getCreatedAt());?></h4>
+	                      	<p class="month"><?php echo $helper->getFormatDate($detail->getCreatedAt()); ?></p>
+	                    </div>
+	                    <div class="message_wrapper">
+	                      	<h4 class="heading"><?php echo $detail->getSenderName();?></h4>
+	                      	<blockquote class="contact-message"><?php echo $detail->getContent(); ?></blockquote>
+	                    </div>
+                  	</li>
+    				<?php } ?>
+                  	<li>
+	                    <div class="message_date">
+	                      	<h4 class="date text-info"><?php echo $helper->nicetime($this->getMessage()->getCreatedAt());?></h4>
+	                      	<p class="month"><?php echo $helper->getFormatDate($this->getMessage()->getCreatedAt()); ?></p>
+	                    </div>
+	                    <div class="message_wrapper">
+	                      	<h4 class="heading"><?php echo $this->getMessage()->getSenderName();?></h4>
+	                      	<blockquote class="contact-message"><?php echo $this->getMessage()->getDescription(); ?></blockquote>
+	                    </div>
+                  	</li>
+                </ul>
+    		</div>
+    	</div>
+    </div>
+</div>

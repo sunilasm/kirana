@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" layout="vendor-1column" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+        <css src="css/bootstrap.min.css" />
+         <css src="css/dataTables.bootstrap.min.css" />
+        <css src="css/font-awesome.min.css" />
+        <css src="css/ionicons.min.css" />
+        <css src="css/green.css" />
+        <css src="css/custom.min.css" />
+        <css src="css/skins/_all-skins.min.css" />
+    </head>
+    <body>
+    	<attribute name="class" value="hold-transition"/>
+    	<attribute name="class" value="nav-md"/>
+    	<attribute name="class" value="sidebar-mini"/>
+    	<referenceContainer name="page.wrapper" htmlClass="main_container"/>
+    	<referenceContainer name="header" htmlClass="main-header"/>
+		<referenceContainer name="page.content" htmlClass="right_col">
+           <referenceContainer name="messages.wrapper" htmlClass="page messages" /> 
+        </referenceContainer>
+		<referenceContainer name="page.main.container" htmlClass="content" htmlTag="section" />
+		<referenceContainer name="footer" htmlClass="main-footer" />
+    </body>
+</page>

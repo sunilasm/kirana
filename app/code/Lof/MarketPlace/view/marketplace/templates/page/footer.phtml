@@ -1,0 +1,20 @@
+<?php
+$_helper = $this->helper('Lof\MarketPlace\Helper\Data');
+?>
+<footer>
+  <div class="pull-right">
+  	<?php if($_helper->getConfig('design/footer_text')) {
+  		echo $_helper->getConfig('design/footer_text');
+  	} else { ?>
+    	<?php echo __('Marketplace - Module by'); ?> <a href="http://landofcoder.com"><?php echo __('Landofcoder');?></a>
+    <?php } ?>
+  </div>
+  <div class="clearfix"></div>
+</footer>
+<script type="text/javascript">
+	require(['jquery'],function() {
+		if ( jQuery('#menu-lof-marketplace-shipping ul.child_menu').length == 0 ) {
+		   jQuery('#menu-lof-marketplace-shipping').css('display','none')
+		}
+	});
+</script>

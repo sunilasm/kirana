@@ -1,0 +1,20 @@
+<?php
+/**
+ * Copyright © 2013-2017 Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+$status = explode('/',$this->getRequest()->getPathInfo());
+ if(isset($status[6]) && $status[6] == 1) {
+?>
+<div data-bind="scope: 'messages'">
+    <div data-bind="attr: {
+        class: 'message-' + message.type + ' ' + message.type + ' message',
+        'data-ui-id': 'message-' + message.type
+        }" class="message-success success message" data-ui-id="message-success">
+        <div data-bind="html: message.text"> 
+        <?php
+            echo __('Save success');
+        ?></div>
+    </div>
+</div>
+<?php }?>

@@ -1,0 +1,8 @@
+<!--@subject New Invoice # {{var data.invoice_id}} from Order # {{var data.order_id}} @-->
+
+
+{{template config_path="design/email/header_template"}}
+Hi {{var data.name}}
+You have new invoice {{var data.invoice_id}} form order {{var data.order_id}}
+Invoice status {{var data.invoice_status}}
+{{template config_path="design/email/footer_template"}} 

@@ -1,0 +1,306 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Landofcoder
+ * 
+ * NOTICE OF LICENSE
+ * 
+ * This source file is subject to the Landofcoder.com license that is
+ * available through the world-wide-web at this URL:
+ * http://www.landofcoder.com/license-agreement.html
+ * 
+ * DISCLAIMER
+ * 
+ * Do not edit or add to this file if you wish to upgrade this extension to newer
+ * version in the future.
+ * 
+ * @category   Landofcoder
+ * @package    Lof_MarketPlace
+ * @copyright  Copyright (c) 2014 Landofcoder (http://www.landofcoder.com/)
+ * @license    http://www.landofcoder.com/LICENSE-1.0.html
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../Config/etc/system_file.xsd">
+	<system>
+		<tab id="landofcoder" translate="label" sortOrder="400">
+			<label><![CDATA[Lof All - <a href="http://landofcoder.com" target="_BLANK" title=""Magento Marketplace, Opencart Marketplace, Magento 2 Extension, Free Magento Extension, Opencart Advanced Reports">landofcoder.com</a>]]></label>
+		</tab>
+		<section id="lofmarketplace" translate="label" type="text" sortOrder="0" showInDefault="1" showInWebsite="1" showInStore="1">
+			<class>separator-top</class>
+			<label>Market Place</label>
+			<tab>landofcoder</tab>
+			<resource>Lof_MarketPlace::config_seller</resource>
+			<group id="general_settings" translate="label" type="text" sortOrder="0" showInDefault="1" showInWebsite="1" showInStore="1">
+				<label>General Settings</label>
+				<field id="enable" translate="label comment" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Enabled</label>
+					<source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+				</field>
+				<field id="route" translate="label comment" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Seller List Url</label>
+				</field>
+				<field id="url_prefix" translate="label comment" type="text" sortOrder="24" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Seller Url Prefix</label>
+				</field>
+				<field id="url_suffix" translate="label comment" type="text" sortOrder="28" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Seller Url Suffix</label>
+				</field>
+				<field id="rating_approval" translate="label comment" type="select" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Rating Approval Required	</label>
+					<source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+				</field>
+				<field id="seller_approval" translate="label comment" type="select" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Seller Approval Required</label>
+					<source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+				</field>
+			</group>
+			<group id="seller_settings" translate="label" type="text" sortOrder="2" showInDefault="1" showInWebsite="1" showInStore="1">
+				<label>Seller Settings</label>
+				<field id="approval" translate="label comment" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Need Admin Approval Product</label>
+					<source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+				</field>
+				<field id="commission" translate="label comment" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Seller Commission(%)</label>
+					<comment><![CDATA[Enter global commission for sellers.If you don't using commission in http://yourdomain.com/admin/lofmarketplace/commission/index]]></comment>
+				</field>
+			</group>
+			<group id="sales_settings" translate="label" type="text" sortOrder="3" showInDefault="1" showInWebsite="1" showInStore="1">
+				<label>Sales Settings</label>
+				<field id="can_send_email" translate="label comment" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Can Send Email</label>
+					<source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+				</field>
+				<field id="can_cancel" translate="label comment" type="select" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Can Cancel Order</label>
+					<source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+				</field>
+				<field id="can_invoice" translate="label comment" type="select" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Can Create Invoice</label>
+					<source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+				</field>
+				<field id="can_ship" translate="label comment" type="select" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Can Create Ship</label>
+					<source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+				</field>
+				<field id="can_refund" translate="label comment" type="select" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Can Create Refund</label>
+					<source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+				</field>
+			</group>
+			<group id="design" translate="label tooltip" type="text" sortOrder="4" showInDefault="1" showInWebsite="1" showInStore="1">
+				<label>Seller Panel</label>
+				<field id="head_favicon" translate="label" type="image" sortOrder="2" showInDefault="1" showInWebsite="1" showInStore="0">
+	            	<label>Favicon Icon</label>
+	            	<comment>Allowed file types: ICO, PNG, GIF, JPG, JPEG, APNG, SVG. Not all browsers support all these formats!</comment>
+	            	<backend_model>Magento\Config\Model\Config\Backend\Image\Favicon</backend_model>
+                    <base_url type="media" scope_info="1">favicon</base_url>
+	            	<tooltip></tooltip>
+	            	<depends>
+                        <field id="panel_type">1</field>
+                    </depends>
+	        	</field>
+	        	
+				<field id="head_default_title" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="0">
+	            	<label>Default Title</label>
+	            	<tooltip>This default title will be used for all seller panel page.</tooltip>
+	            	<depends>
+                        <field id="panel_type">1</field>
+                    </depends>
+	        	</field>
+	        	<field id="header_icon" translate="label" type="text" sortOrder="80" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Header Icon</label>
+                    <comment>fa-shopping-cart</comment>
+                </field>
+	        	<field id="header_text" translate="label" type="textarea" sortOrder="90" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Header Text</label>
+                </field>
+	        	<field id="footer_text" translate="label" type="textarea" sortOrder="100" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Footer Text</label>
+                </field>
+			</group>
+			
+			 <group id="email_settings" translate="label" type="text" sortOrder="5" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Email Settings</label>
+                <field id="enable_send_email" translate="label comment" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Enable Send Email</label>
+					<source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+				</field>
+                <field id="sender_email_identity" translate="label" type="select" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Email Sender</label>
+                    <source_model>Magento\Config\Model\Config\Source\Email\Identity</source_model>
+                </field>
+                <field id="message_template" translate="label" type="select" sortOrder="25" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Choose template for emailing customer</label>
+                    <source_model>\Lof\MarketPlace\Model\Config\Source\EmailTemplate</source_model>
+                </field>
+                 <field id="seller_message_template" translate="label" type="select" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Choose template for emailing seller</label>
+                    <source_model>\Lof\MarketPlace\Model\Config\Source\EmailTemplate</source_model>
+                </field>
+                 <field id="reply_message_template" translate="label" type="select" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Choose template for email reply</label>
+                    <source_model>\Lof\MarketPlace\Model\Config\Source\EmailTemplate</source_model>
+                </field>
+                <field id="rating_template" translate="label" type="select" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Choose email template for new rating</label>
+                    <source_model>\Lof\MarketPlace\Model\Config\Source\EmailTemplate</source_model>
+                </field>
+                <field id="order_template" translate="label" type="select" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Choose email template for new order</label>
+                    <source_model>\Lof\MarketPlace\Model\Config\Source\EmailTemplate</source_model>
+                </field>
+                <field id="invoice_template" translate="label" type="select" sortOrder="70" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Choose email template for new invoice</label>
+                    <source_model>\Lof\MarketPlace\Model\Config\Source\EmailTemplate</source_model>
+                </field>
+                <field id="shipment_template" translate="label" type="select" sortOrder="80" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Choose email template for new shipment</label>
+                    <source_model>\Lof\MarketPlace\Model\Config\Source\EmailTemplate</source_model>
+                </field>
+                <field id="register_seller_template" translate="label" type="select" sortOrder="90" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Choose email template for new seller register</label>
+                    <source_model>\Lof\MarketPlace\Model\Config\Source\EmailTemplate</source_model>
+                </field>
+                 <field id="approve_seller_template" translate="label" type="select" sortOrder="100" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Choose email template for approve seller</label>
+                    <source_model>\Lof\MarketPlace\Model\Config\Source\EmailTemplate</source_model>
+                </field>
+                <field id="unapprove_seller_template" translate="label" type="select" sortOrder="110" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Choose email template for unapprove seller</label>
+                    <source_model>\Lof\MarketPlace\Model\Config\Source\EmailTemplate</source_model>
+                </field>
+            </group>
+			<group id="product_view_page" translate="label" type="text" sortOrder="6" showInDefault="1" showInWebsite="1" showInStore="1">
+				<label>Seller Info On Product View Page</label>
+				<field id="enable_seller_info" translate="label comment" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Enabled Seller Block</label>
+					<source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+				</field>
+				<field id="seller_layout_listing" translate="label comment" type="select" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Show Seller As Listing</label>
+					<source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+				</field>
+				<field id="show_seller_text" translate="label comment" type="select" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Show Seller Title</label>
+					<source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+				</field>
+				<field id="show_seller_image" translate="label comment" type="select" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Show Seller Logo</label>
+					<source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+				</field>
+				<field id="show_seller_name" translate="label comment" type="select" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Show Seller Name</label>
+					<source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+				</field>
+				<field id="show_seller_address" translate="label comment" type="select" sortOrder="70" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Show Seller Address</label>
+					<source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+				</field>
+				<field id="show_seller_sale" translate="label comment" type="select" sortOrder="75" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Show Seller Sales</label>
+					<source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+				</field>
+				<field id="show_seller_phone" translate="label comment" type="select" sortOrder="80" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Show Seller Phone</label>
+					<source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+				</field>
+				<field id="show_seller_contact" translate="label comment" type="select" sortOrder="90" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Show Seller Contact</label>
+					<source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+				</field>
+				<field id="text_contact" translate="label comment" type="text" sortOrder="100" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Text Contact</label>
+					<depends><field id="show_seller_contact">1</field></depends>
+				</field>
+			</group>
+			<group id="seller_list_page" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+				<label>Seller List Page</label>
+				<field id="layout" translate="label comment" type="select" sortOrder="0" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Layout</label>
+					<source_model>Lof\MarketPlace\Model\Config\Source\Sellerlistlayout</source_model>
+				</field>
+				<field id="show_seller_name" translate="label comment" type="select" sortOrder="5" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Show Seller Name</label>
+					<source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+				</field>
+				<field id="item_per_page" translate="label comment" type="text" sortOrder="7" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Number Seller Per Page</label>
+					<comment>Empty to show all item</comment>
+				</field>
+				<field id="seo_config_heading" translate="label comment" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>SEO - Search Engine Optimization</label>
+					<frontend_model>Lof\MarketPlace\Block\Adminhtml\System\Config\Form\Field\Heading</frontend_model>
+				</field>
+				<field id="page_title" type="text"  translate="label comment" showInDefault="1" showInWebsite="1" showInStore="1" sortOrder="20">
+					<label>Page Title</label>
+				</field>
+				<field id="meta_description" type="textarea"  translate="label comment" showInDefault="1" showInWebsite="1" showInStore="1" sortOrder="30">
+					<label>Meta Description</label>
+				</field>
+				<field id="meta_keywords" type="textarea"  translate="label comment" showInDefault="1" showInWebsite="1" showInStore="1" sortOrder="40">
+					<label>Meta Keywords</label>
+				</field>
+				<field id="grid_config_heading" translate="label comment" type="text" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Grid Layout</label>
+					<frontend_model>Lof\MarketPlace\Block\Adminhtml\System\Config\Form\Field\Heading</frontend_model>
+				</field>
+				<field id="lg_column_item" translate="label comment" type="select" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Number Column on Large Desktop</label>
+					<comment><![CDATA[Large devices Desktops (≥1200px)]]></comment>
+					<source_model>Lof\MarketPlace\Model\Config\Source\Gridcolumns</source_model>
+				</field>
+				<field id="md_column_item" translate="label comment" type="select" sortOrder="70" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Number Column on Desktop</label>
+					<comment><![CDATA[Medium devices Desktops (≥992px)]]></comment>
+					<source_model>Lof\MarketPlace\Model\Config\Source\Gridcolumns</source_model>
+				</field>
+				<field id="sm_column_item" translate="label comment" type="select" sortOrder="80" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Number Column on Tablets</label>
+					<source_model>Lof\MarketPlace\Model\Config\Source\Gridcolumns</source_model>
+					<comment><![CDATA[Small devices Tablets (≥768px)]]></comment>
+				</field>
+				<field id="xs_column_item" translate="label comment" type="select" sortOrder="90" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Number Column on Phones</label>
+					<source_model>Lof\MarketPlace\Model\Config\Source\Gridcolumns</source_model>
+					<comment><![CDATA[Extra small devices Phones (<768px)]]></comment>
+				</field>
+			</group>
+			<group id="group_page" translate="label" type="text" sortOrder="15" showInDefault="1" showInWebsite="1" showInStore="1">
+				<label>Group Page</label>
+				<field id="show_seller_name" translate="label comment" type="select" sortOrder="5" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Show Seller Name</label>
+					<source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+				</field>
+				<field id="item_per_page" translate="label comment" type="text" sortOrder="7" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Number Seller Per Page</label>
+					<comment>Empty to show all item</comment>
+				</field>
+				<field id="lg_column_item" translate="label comment" type="select" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Number Column on Large Desktop</label>
+					<comment><![CDATA[Large devices Desktops (≥1200px)]]></comment>
+					<source_model>Lof\MarketPlace\Model\Config\Source\Gridcolumns</source_model>
+				</field>
+				<field id="md_column_item" translate="label comment" type="select" sortOrder="70" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Number Column on Desktop</label>
+					<comment><![CDATA[Medium devices Desktops (≥992px)]]></comment>
+					<source_model>Lof\MarketPlace\Model\Config\Source\Gridcolumns</source_model>
+				</field>
+				<field id="sm_column_item" translate="label comment" type="select" sortOrder="80" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Number Column on Tablets</label>
+					<source_model>Lof\MarketPlace\Model\Config\Source\Gridcolumns</source_model>
+					<comment><![CDATA[Small devices Tablets (≥768px)]]></comment>
+				</field>
+				<field id="xs_column_item" translate="label comment" type="select" sortOrder="90" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Number Column on Phones</label>
+					<source_model>Lof\MarketPlace\Model\Config\Source\Gridcolumns</source_model>
+					<comment><![CDATA[Extra small devices Phones (<768px)]]></comment>
+				</field>
+			</group>
+			<group id="lofmp_multishipping" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+				<label>Seller Multi Shipping</label>
+
+			</group>
+		</section>
+	</system>
+</config>

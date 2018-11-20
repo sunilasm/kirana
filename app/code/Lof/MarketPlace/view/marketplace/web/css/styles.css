@@ -1,0 +1,130 @@
+.tab-content .fade {
+    background-color: #fff;
+    position: relative;
+}
+#menu1 .lof-message {
+    display: block;
+}
+.ratings {
+    margin: 7px 0;
+}
+.ratings .rating-box {
+    margin: 0;
+    display: inline-block;
+    zoom: 1;
+    background-image: url(../image/stars-big.png);
+    background-position: left -22px;
+    background-repeat: no-repeat;
+    height: 19px;
+    width: 121px;
+}
+.ratings .rating-box .rating {
+    background-image: url(../image/stars-big.png);
+    background-position: left top;
+    background-repeat: no-repeat;
+    height: 19px;
+}
+
+.amount-transaction .amount {
+    color: #1abb9c;
+}
+.amount-transaction .refund {
+    color: #eb5202;
+}
+.page-main-actions .page-actions._fixed {
+    left:230px;
+}
+.main-col label {
+    color: #303030;
+}
+.admin__field.field.required {
+    display: inline-block;
+}
+
+.fileupload-buttonbar .toggle {
+    float:none;
+}
+#media_gallery_content {
+    overflow: initial;
+}
+.import-product .admin__fieldset > .admin__field {
+    display: block;
+}
+#return_policy_path_row,
+#shipping_policy_path_row,
+#company_description_path_row {
+    display: none;
+}
+.actions-split .action-default {
+    margin-right: 0;
+}
+.image.image-placeholder input[type='file'] {
+    border: 0px;
+    font-size: 14px;
+}
+.btn, .buttons, .modal-footer .btn+.btn, button,.action-multicheck-wrap button {
+    margin-bottom: 0px !important;
+    margin-right: 0px;
+}
+table.qty-table th {
+    padding-right: 7px;
+}
+.modal-content,.modal-header,.modal-footer {
+    box-shadow: none !important;
+    border-radius: 0px !important;
+    border-width: 0px !important;
+}
+.lof_marketplace .actions-split:hover {
+    box-shadow: 0 0 0 1px #f8f8f8;
+}
+.form-group .col-sm-9 {
+    margin: 0;
+    width: 60%;
+}
+.form-group .col-sm-9 select.form-control {
+    background-image: url(../images/arrows-bg.svg), linear-gradient(#e3e3e3, #e3e3e3), linear-gradient(#007bdb, #007bdb);
+    background-position: calc(100% - 12px) 13px, 100%, calc(100% - 3.2rem) 0;
+}
+.ui-datepicker .ui-datepicker-buttonpane button {
+    margin: 0px;
+}
+[class*='admin__control-grouped'] > .admin__field:first-child > .admin__field-label, .admin__control-fields > .admin__field:first-child > .admin__field-label {
+    background: none;
+}
+/*.action-basic[data-index="create_category_button"] {
+    display: none;
+}*/
+.sticky-header {
+    left: 23rem;
+}
+@media screen and (max-width: 768px) {
+    .editprofile .admin__field:not(.admin__field-option) > .admin__field-label,
+    .editprofile .admin__fieldset > .admin__field > .admin__field-control {
+            word-wrap: inherit;
+        text-align: left;
+        width: 90%;
+    }
+    .admin__field:not(.admin__field-option) > .admin__field-label span[data-config-scope]:before, .accordion .config .label span[data-config-scope]:before {
+        font-size: 0px;
+    }
+    .page-main-actions .page-actions._fixed {
+    left: 0px;
+    }
+    .admin__fieldset-wrapper-content .admin__fieldset {
+        width: 100%;
+    }
+   .page-actions > button, .page-actions .page-actions-buttons > button, .page-actions > .block-footer .action-add, .page-actions .page-actions-buttons > .block-footer .action-add,.page-actions .actions-split {
+     margin-left: 0px;
+   }
+   .page-main-actions .page-actions._fixed {
+    width: 100%;
+   }
+   .admin__data-grid-header-row .col-xs-2,
+   .admin__data-grid-header-row .col-xs-9,
+    .admin__data-grid-header-row .col-xs-10 {
+        width: 100%;
+   }
+   .admin__data-grid-header-row {
+         margin-top: 50px;
+   }
+}
