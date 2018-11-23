@@ -153,6 +153,50 @@ require.config(config);
 })();
 (function() {
 /**
+ * Copyright © 2015 Magento. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+ var config = {
+ 	map: {
+ 		'*': {
+ 			lofallOwlCarousel: 'Lof_All/lib/owl.carousel/owl.carousel.min',
+ 			lofallBootstrap: 'Lof_All/lib/bootstrap/js/bootstrap.min',
+ 			lofallColorbox: 'Lof_All/lib/colorbox/jquery.colorbox.min',
+ 			lofallFancybox: 'Lof_All/lib/fancybox/jquery.fancybox.pack',
+ 			lofallFancyboxMouseWheel: 'Lof_All/lib/fancybox/jquery.mousewheel-3.0.6.pack'
+ 		}
+ 	},
+ 	shim: {
+        'Lof_All/lib/bootstrap/js/bootstrap.min': {
+            'deps': ['jquery']
+        },
+        'Lof_All/lib/bootstrap/js/bootstrap': {
+            'deps': ['jquery']
+        },
+        'Lof_All/lib/owl.carousel/owl.carousel': {
+            'deps': ['jquery']
+        },
+        'Lof_All/lib/owl.carousel/owl.carousel.min': {
+        	'deps': ['jquery']
+        },
+        'Lof_All/lib/fancybox/jquery.fancybox': {
+            'deps': ['jquery']  
+        },
+        'Lof_All/lib/fancybox/jquery.fancybox.pack': {
+            'deps': ['jquery']  
+        },
+        'Lof_All/lib/colorbox/jquery.colorbox': {
+            'deps': ['jquery']  
+        },
+        'Lof_All/lib/colorbox/jquery.colorbox.min': {
+            'deps': ['jquery']  
+        }
+    }
+ };
+require.config(config);
+})();
+(function() {
+/**
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
@@ -245,6 +289,28 @@ require.config(config);
 var config = {
     map: {
         '*': {
+            discountCode:           'Magento_Checkout/js/discount-codes',
+            shoppingCart:           'Magento_Checkout/js/shopping-cart',
+            regionUpdater:          'Magento_Checkout/js/region-updater',
+            sidebar:                'Magento_Checkout/js/sidebar',
+            checkoutLoader:         'Magento_Checkout/js/checkout-loader',
+            checkoutData:           'Magento_Checkout/js/checkout-data',
+            proceedToCheckout:      'Magento_Checkout/js/proceed-to-checkout'
+        }
+    }
+};
+
+require.config(config);
+})();
+(function() {
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+
+var config = {
+    map: {
+        '*': {
             addToCart: 'Magento_Msrp/js/msrp'
         }
     }
@@ -275,15 +341,55 @@ require.config(config);
  */
 
 var config = {
+    config: {
+        mixins: {
+            'Magento_Checkout/js/action/place-order': {
+                'Magento_CheckoutAgreements/js/model/place-order-mixin': true
+            },
+            'Magento_Checkout/js/action/set-payment-information': {
+                'Magento_CheckoutAgreements/js/model/set-payment-information-mixin': true
+            }
+        }
+    }
+};
+
+require.config(config);
+})();
+(function() {
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+
+var config = {
     map: {
         '*': {
-            discountCode:           'Magento_Checkout/js/discount-codes',
-            shoppingCart:           'Magento_Checkout/js/shopping-cart',
-            regionUpdater:          'Magento_Checkout/js/region-updater',
-            sidebar:                'Magento_Checkout/js/sidebar',
-            checkoutLoader:         'Magento_Checkout/js/checkout-loader',
-            checkoutData:           'Magento_Checkout/js/checkout-data',
-            proceedToCheckout:      'Magento_Checkout/js/proceed-to-checkout'
+            orderReview: 'Magento_Paypal/order-review',
+            paypalCheckout: 'Magento_Paypal/js/paypal-checkout'
+        }
+    },
+    paths: {
+        paypalInContextExpressCheckout: 'https://www.paypalobjects.com/api/checkout'
+    },
+    shim: {
+        paypalInContextExpressCheckout: {
+            exports: 'paypal'
+        }
+    }
+};
+
+require.config(config);
+})();
+(function() {
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+
+var config = {
+    map: {
+        '*': {
+            transparent: 'Magento_Payment/transparent'
         }
     }
 };
@@ -332,47 +438,6 @@ require.config(config);
 var config = {
     map: {
         '*': {
-            transparent: 'Magento_Payment/transparent'
-        }
-    }
-};
-
-require.config(config);
-})();
-(function() {
-/**
- * Copyright © Magento, Inc. All rights reserved.
- * See COPYING.txt for license details.
- */
-
-var config = {
-    map: {
-        '*': {
-            orderReview: 'Magento_Paypal/order-review',
-            paypalCheckout: 'Magento_Paypal/js/paypal-checkout'
-        }
-    },
-    paths: {
-        paypalInContextExpressCheckout: 'https://www.paypalobjects.com/api/checkout'
-    },
-    shim: {
-        paypalInContextExpressCheckout: {
-            exports: 'paypal'
-        }
-    }
-};
-
-require.config(config);
-})();
-(function() {
-/**
- * Copyright © Magento, Inc. All rights reserved.
- * See COPYING.txt for license details.
- */
-
-var config = {
-    map: {
-        '*': {
             downloadable: 'Magento_Downloadable/downloadable'
         }
     }
@@ -389,8 +454,12 @@ require.config(config);
 var config = {
     map: {
         '*': {
-            transparent: 'Magento_Payment/transparent'
+            loadPlayer: 'Magento_ProductVideo/js/load-player',
+            fotoramaVideoEvents: 'Magento_ProductVideo/js/fotorama-add-video-events'
         }
+    },
+    shim: {
+        vimeoAPI: {}
     }
 };
 
@@ -442,18 +511,18 @@ require.config(config);
 })();
 (function() {
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
-
 var config = {
-    map: {
-        '*': {
-            braintree: 'https://js.braintreegateway.com/js/braintree-2.32.0.min.js'
-        }
-    }
+	map: {
+		"*": {
+			conflict: "Lof_MarketPlace/js/conflict",
+			owlcarousel: "Lof_MarketPlace/js/owl.carousel",
+			boostrap: "Lof_MarketPlace/js/bootstrap.min",
+		}
+	}
 };
-
 require.config(config);
 })();
 (function() {
@@ -501,7 +570,23 @@ require.config(config);
 var config = {
     map: {
         '*': {
-            captcha: 'Magento_Captcha/captcha'
+            transparent: 'Magento_Payment/transparent'
+        }
+    }
+};
+
+require.config(config);
+})();
+(function() {
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+
+var config = {
+    map: {
+        '*': {
+            braintree: 'https://js.braintreegateway.com/js/braintree-2.32.0.min.js'
         }
     }
 };
@@ -533,12 +618,8 @@ require.config(config);
 var config = {
     map: {
         '*': {
-            loadPlayer: 'Magento_ProductVideo/js/load-player',
-            fotoramaVideoEvents: 'Magento_ProductVideo/js/fotorama-add-video-events'
+            captcha: 'Magento_Captcha/captcha'
         }
-    },
-    shim: {
-        vimeoAPI: {}
     }
 };
 
@@ -566,44 +647,6 @@ var config = {
             amazonLogout: 'Amazon_Login/js/amazon-logout',
             amazonOAuthRedirect: 'Amazon_Login/js/amazon-redirect',
             amazonCsrf: 'Amazon_Login/js/amazon-csrf'
-        }
-    }
-};
-
-require.config(config);
-})();
-(function() {
-/**
- * Copyright 2016 Amazon.com, Inc. or its affiliates. All Rights Reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License").
- * You may not use this file except in compliance with the License.
- * A copy of the License is located at
- *
- *  http://aws.amazon.com/apache2.0
- *
- * or in the "license" file accompanying this file. This file is distributed
- * on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
- * express or implied. See the License for the specific language governing
- * permissions and limitations under the License.
- */
-var config = {
-    map: {
-        '*': {
-            amazonCore: 'Amazon_Payment/js/amazon-core',
-            amazonWidgetsLoader: 'Amazon_Payment/js/amazon-widgets-loader',
-            amazonButton: 'Amazon_Payment/js/amazon-button',
-            amazonProductAdd: 'Amazon_Payment/js/amazon-product-add',
-            bluebird: 'Amazon_Payment/js/lib/bluebird.min',
-            amazonPaymentConfig: 'Amazon_Payment/js/model/amazonPaymentConfig',
-            sjcl: 'Amazon_Payment/js/lib/sjcl.min'
-        }
-    },
-    config: {
-        mixins: {
-            'Amazon_Payment/js/action/place-order': {
-                'Amazon_Payment/js/model/place-order-mixin': true
-            }
         }
     }
 };
@@ -646,18 +689,35 @@ require.config(config);
 })();
 (function() {
 /**
- * Copyright © Magento, Inc. All rights reserved.
- * See COPYING.txt for license details.
+ * Copyright 2016 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License").
+ * You may not use this file except in compliance with the License.
+ * A copy of the License is located at
+ *
+ *  http://aws.amazon.com/apache2.0
+ *
+ * or in the "license" file accompanying this file. This file is distributed
+ * on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language governing
+ * permissions and limitations under the License.
  */
-
 var config = {
+    map: {
+        '*': {
+            amazonCore: 'Amazon_Payment/js/amazon-core',
+            amazonWidgetsLoader: 'Amazon_Payment/js/amazon-widgets-loader',
+            amazonButton: 'Amazon_Payment/js/amazon-button',
+            amazonProductAdd: 'Amazon_Payment/js/amazon-product-add',
+            bluebird: 'Amazon_Payment/js/lib/bluebird.min',
+            amazonPaymentConfig: 'Amazon_Payment/js/model/amazonPaymentConfig',
+            sjcl: 'Amazon_Payment/js/lib/sjcl.min'
+        }
+    },
     config: {
         mixins: {
-            'Magento_Checkout/js/action/place-order': {
-                'Magento_CheckoutAgreements/js/model/place-order-mixin': true
-            },
-            'Magento_Checkout/js/action/set-payment-information': {
-                'Magento_CheckoutAgreements/js/model/set-payment-information-mixin': true
+            'Amazon_Payment/js/action/place-order': {
+                'Amazon_Payment/js/model/place-order-mixin': true
             }
         }
     }

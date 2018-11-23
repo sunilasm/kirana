@@ -4534,6 +4534,441 @@ body._has-modal-custom .modal-custom-overlay {
   width: 100vw;
   z-index: 899;
 }
+ol,
+ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.row {
+  margin-left: -15px;
+  margin-right: -15px;
+  content: '';
+  display: block;
+  clear: both;
+}
+.seller-profile-container {
+  display: inline-block;
+  padding: 10px;
+  background-color: #fbfbfb;
+}
+.seller-profile-container .seller-image {
+  padding: 0px;
+}
+.seller-profile-container .seller-image img {
+  width: 100%;
+}
+.seller-profile-container .seller-description .seller_title {
+  margin-top: 0px;
+}
+.seller-profile-container .seller-description .seller-headline {
+  display: block;
+  margin-bottom: 15px;
+}
+.seller-profile-container .seller-description .seller-info {
+  color: #888;
+  margin-top: 10px;
+}
+.seller-profile-container .seller-description .seller-info > span:nth-child(n+2) {
+  margin-left: 15px;
+  padding-left: 15px;
+  border-left: 1px solid #e1e3df;
+}
+.seller-profile-container .seller-description .seller-info i.fa {
+  padding: 6px;
+}
+.seller-profile-container .seller-description .seller-info #seller-contact {
+  border: 1px solid #d3d3d3;
+  color: #888;
+  display: block;
+  padding: 10px;
+  text-align: center;
+  border-radius: 3px;
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
+}
+.lof-message {
+  margin-bottom: 3rem;
+}
+.lof-message .lof-message-header {
+  position: relative;
+  margin: 0 0 5px 3px;
+}
+.lof-message .lof-message-header span {
+  color: #adadad;
+  margin-left: 1.5rem;
+}
+.lof-message .lof-message-body {
+  background: #ecfaff;
+  border-left: 3px solid #4b8dcb;
+  padding: 1rem 1.5rem;
+}
+.lof-message .lof-message-body.seller {
+  border-left: 3px solid #fb4c2f;
+}
+.lrw-block .unread {
+  color: #fb4c2f;
+}
+.lrw-block .readed {
+  color: #16a765;
+}
+.lof_marketplace_wrapper {
+  padding: 15px 0px;
+}
+.lof_marketplace_wrapper .seller-info {
+  color: #888;
+  margin-top: 5px;
+}
+.lof_marketplace_wrapper .seller-info i.fa {
+  padding: 6px;
+}
+.lof_marketplace_wrapper .mkpl-image img {
+  width: 100%;
+}
+.lof_marketplace_wrapper .mkpl-title {
+  margin-bottom: 12px;
+  line-height: 1.2em;
+  font-size: 1.5em;
+  font-weight: normal;
+  text-align: center;
+}
+.lof_marketplace_wrapper .mkpl-description {
+  margin-bottom: 30px;
+  line-height: 1.6em;
+}
+.lof_marketplace_wrapper .mkpl-review {
+  font-size: 18px;
+}
+.lof_marketplace_wrapper .mkpl-review a:hover {
+  text-decoration: none;
+}
+.lof_marketplace_wrapper .mkpl-review .fa-star {
+  color: #c7c7c7;
+}
+.lof_marketplace_wrapper .mkpl-review .fa-star.voted {
+  color: #ff5501;
+}
+.lof_marketplace_wrapper .mkpl-socialnetworks .list-social {
+  padding: 0;
+  margin: 0;
+}
+.lof_marketplace_wrapper .mkpl-socialnetworks .list-social li {
+  display: inline-block;
+  margin-bottom: 0;
+  text-align: center;
+}
+.lof_marketplace_wrapper .mkpl-socialnetworks .list-social li a {
+  width: 29px;
+  height: 29px;
+  line-height: 29px;
+  border-radius: 50%;
+  display: inline-block;
+  margin-right: -3px;
+  color: #707070;
+}
+.lof_marketplace_wrapper .mkpl-socialnetworks .list-social li a.facebook:hover {
+  background: #3b5999;
+}
+.lof_marketplace_wrapper .mkpl-socialnetworks .list-social li a.twitter:hover {
+  background: #55acef;
+}
+.lof_marketplace_wrapper .mkpl-socialnetworks .list-social li a.google:hover {
+  background: #dc4d3c;
+}
+.lof_marketplace_wrapper .mkpl-socialnetworks .list-social li a.youtube:hover {
+  background: #e04e41;
+}
+.lof_marketplace_wrapper .mkpl-socialnetworks .list-social li a.linkedin:hover {
+  background: #0077B5;
+}
+.lof_marketplace_wrapper .mkpl-socialnetworks .list-social li a.vimeo:hover {
+  background: #44BBFF;
+}
+.lof_marketplace_wrapper .mkpl-socialnetworks .list-social li a.pinterest:hover {
+  background: #cb2027;
+}
+.lof_marketplace_wrapper .mkpl-socialnetworks .list-social li a.instagram:hover {
+  background: #125688;
+}
+.lof_marketplace_wrapper .mkpl-socialnetworks .list-social li a.email:hover {
+  background: #E34D42;
+}
+.lof_marketplace_wrapper .mkpl-socialnetworks .list-social li a:hover i:before {
+  color: #FFF;
+}
+.lof_marketplace_wrapper .lof_info_title {
+  font-size: 15px;
+  font-weight: 700;
+  margin: 5px 0 10px;
+  text-transform: capitalize;
+}
+#seller-contact {
+  border: 1px solid #d3d3d3;
+  color: #888;
+  display: block;
+  padding: 10px;
+  text-align: center;
+  border-radius: 3px;
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
+}
+#seller-contact i.fa {
+  padding: 6px;
+}
+.lof_marketplace_wrapper .lof_marketplace_fieldset {
+  border: 1px solid #ddd;
+  margin-bottom: 15px;
+  margin: 0;
+  padding: 15px;
+}
+.lof_marketplace_wrapper .lof_marketplace_fieldset h2 {
+  text-align: center;
+  color: #222;
+  font-size: 24px;
+  margin-bottom: 30px;
+}
+.lof_marketplace_wrapper .review-top {
+  border: 1px solid #ECECEC;
+  padding: 30px;
+  text-transform: uppercase;
+}
+.lof_marketplace_wrapper .ratings-and-size .review-right .separate-rating .mark-rating {
+  float: left;
+  margin: 1px 0;
+  width: 100%;
+}
+.lof_marketplace_wrapper .ratings-and-size .review-right .separate-rating .mark-rating .rating-box {
+  float: left;
+  margin-right: 10px;
+  background: transparent;
+}
+.lof_marketplace_wrapper .ratings-and-size .review-right .separate-rating .mark-rating .rating-box .rating {
+  background: none;
+}
+.lof_marketplace_wrapper .ratings-and-size .review-right .separate-rating .mark-rating .scroll-box {
+  float: left;
+  width: 75%;
+  height: 10px;
+  background: #F4F4F4;
+  margin-right: 5px;
+  margin-top: 7px;
+}
+.lof_marketplace_wrapper .ratings-and-size .review-right .separate-rating .mark-rating .scroll-box .scroll-rating {
+  background: #ffba00;
+  height: 10px;
+}
+.lof_marketplace_wrapper .ratings-and-size .review-right .separate-rating .mark-rating .rating-percent {
+  float: left;
+  margin-left: 3px;
+  padding-top: 3px;
+}
+.lof_marketplace_wrapper #review_hidden_form .form-add {
+  margin-top: 30px;
+  padding: 30px;
+  border: 1px solid #ECECEC;
+}
+.lof_marketplace_wrapper #review_hidden_form .form-add h2 {
+  font-size: 20px;
+  text-transform: none;
+}
+.lof_marketplace_wrapper #review_hidden_form .form-add .ratings {
+  overflow: visible;
+  position: relative;
+  display: inline;
+  float: left;
+  margin-top: 0px;
+}
+.lof_marketplace_wrapper #review_hidden_form .form-add .ratings .ratings_stars {
+  background: url(../Lof_MarketPlace/image/star_blank.png) no-repeat;
+  float: left;
+  height: 28px;
+  padding: 2px;
+  width: 32px;
+}
+.lof_marketplace_wrapper #review_hidden_form .form-add .ratings .ratings_over {
+  background: url(../Lof_MarketPlace/image/star_overs.png) no-repeat;
+}
+.lof_marketplace_wrapper #review_hidden_form .form-add .rating-title {
+  float: left;
+  padding-right: 15px;
+  width: 50px;
+}
+.lof_marketplace_wrapper #review_hidden_form .form-add .review-form {
+  display: inline-block;
+  width: 100%;
+}
+.lof_marketplace_wrapper #review_hidden_form .form-add .review-form .fieldset {
+  display: inline-block;
+  width: 100%;
+  margin: 0px;
+}
+.lof_marketplace_wrapper #review_hidden_form .form-add .buttons-set {
+  clear: both;
+  margin: 10px 0 0;
+  padding-top: 10px;
+  border-top: 0;
+  text-align: right;
+}
+.lof_marketplace_wrapper #review_hidden_form .form-add .buttons-set button.button {
+  float: left;
+  margin-left: 0;
+  border-radius: 30px;
+  padding: 15px 30px;
+  margin-right: 5px;
+  min-width: auto;
+  background-color: #1d96bb;
+  color: #fff;
+  box-shadow: none;
+}
+.lof_marketplace_wrapper #review_hidden_form .form-add .buttons-set .button:hover a.button:focus {
+  background-color: #177997;
+  color: #fff;
+}
+.lof_marketplace_wrapper #customer-reviews {
+  width: auto;
+  float: none;
+}
+.lof_marketplace_wrapper #customer-reviews .review-row {
+  padding: 15px 0;
+}
+.review-average-info {
+  width: 100%;
+  border-bottom: 1px solid #ECECEC;
+  margin-bottom: 15px;
+  text-align: center;
+}
+.ratings {
+  margin: 7px 0;
+}
+.ratings .rating-box {
+  margin: 0;
+  display: inline-block;
+  zoom: 1;
+  background-image: url(../Lof_MarketPlace/image/stars-big.png);
+  background-position: left -22px;
+  background-repeat: no-repeat;
+  height: 19px;
+  width: 121px;
+}
+.ratings .rating-box .rating {
+  background-image: url(../Lof_MarketPlace/image/stars-big.png);
+  background-position: left top;
+  background-repeat: no-repeat;
+  height: 19px;
+}
+.ratings .rating-links {
+  margin: 0;
+  display: inline-block;
+  zoom: 1;
+}
+.box-collateral.box-reviews {
+  /*text-align: center;*/
+}
+.box-collateral.box-reviews #seller-contact {
+  display: inline-block;
+}
+.box-collateral.box-reviews .title {
+  font-size: 18px;
+  font-weight: 700;
+}
+.box-collateral.box-reviews .description {
+  padding: 10px 0;
+}
+.box-collateral.box-reviews .info {
+  color: #f1703d;
+  text-transform: uppercase;
+  font-size: 13px;
+  padding-bottom: 10px;
+  font-weight: 700;
+}
+.box-collateral.box-reviews .info .lable {
+  color: #bbb;
+  font-weight: 400;
+  font-size: 12px;
+}
+.box-collateral.box-reviews .ratings-table {
+  border-top: 1px solid #ECECEC;
+  border-bottom: 1px solid #ECECEC;
+  padding: 10px 0;
+  text-align: right;
+  font-size: 12px;
+  text-transform: uppercase;
+}
+.box-collateral.box-reviews .ratings-table {
+  text-align: left !important;
+}
+.box-collateral.box-reviews .ratings-table li {
+  display: inline-block;
+  zoom: 1;
+  margin-right: 8px;
+}
+.box-collateral.box-reviews .ratings-table li span {
+  display: inline-block;
+}
+.box-collateral.box-reviews .ratings-table li div.rating-box {
+  display: inline-block;
+  margin-left: 5px;
+  background-image: url(../Lof_MarketPlace/image/stars.png);
+  background-position: left -10px;
+  background-repeat: no-repeat;
+  height: 12px;
+  width: 61px;
+}
+.box-collateral.box-reviews .ratings-table li div.rating-box .rating {
+  background-image: url(../Lof_MarketPlace/image/stars.png);
+  background-position: left 2px;
+  background-repeat: no-repeat;
+  height: 12px;
+}
+.form-list > li {
+  margin-bottom: 10px;
+}
+.form-list > li .input-box {
+  padding-top: 2px;
+}
+.form-list input,
+.form-list textarea {
+  background: #f1f1f1;
+  border-radius: 30px;
+  height: 50px;
+  border: 0;
+  width: 100%;
+  box-shadow: none;
+  padding: 15px;
+}
+.form-list textarea {
+  min-height: 250px;
+}
+.message-link {
+  position: relative;
+}
+.message-link span {
+  font-size: 10px;
+  font-weight: 400;
+  line-height: 13px;
+  padding: 2px 6px;
+  position: absolute;
+  right: -15px;
+  top: -8px;
+  background: #1ABB9C !important;
+  border: 1px solid #1ABB9C!important;
+  color: #fff;
+  border-radius: 10px;
+}
+.input-box label {
+  display: block;
+  padding-bottom: 3px;
+  margin-bottom: 10px;
+}
+.input-box label .required em {
+  color: #f00;
+}
+.input-box label .help-block {
+  display: block;
+  margin-top: 5px;
+  margin-bottom: 10px;
+  color: #737373;
+}
 /**
  * Copyright 2016 Amazon.com, Inc. or its affiliates. All Rights Reserved.
  *

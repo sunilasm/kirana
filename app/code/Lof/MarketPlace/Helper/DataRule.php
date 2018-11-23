@@ -162,7 +162,7 @@ Class DataRule extends \Magento\Framework\App\Helper\AbstractHelper
 
         $commissionRules = $rules;
         foreach($commissionRules as $commissionRule) {
-            if(in_array($seller->getGroupId(), $commissionRule->getGroupId())) {
+            if(is_array($commissionRule->getGroupId()) && in_array($seller->getGroupId(), $commissionRule->getGroupId())) {
                 foreach ($rules as $key => $_rules) {
                     if((in_array($storeId, $_rules->getData('store_id')) || in_array(0, $_rules->getData('store_id'))) && count($_rules) >0 && in_array($seller->getGroupId(), $_rules->getGroupId()) ){
                         if($_rules->getData('stop_rules_processing')) {
@@ -179,7 +179,7 @@ Class DataRule extends \Magento\Framework\App\Helper\AbstractHelper
                     $collection->getSelect()->where('e.entity_id IN (?) ',$entity_id)->where($this->sqlBuilder->attachConditionToCollection($collection, $conditions));
                     if(count($collection->getData())>0) {
                         return $commissionRule;
-                    } 
+                    }  
                } 
            }
         } 
