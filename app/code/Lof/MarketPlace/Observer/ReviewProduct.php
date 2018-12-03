@@ -1,4 +1,5 @@
 <?php
+namespace Lof\MarketPlace\Observer;
 /**
  * Landofcoder
  * 
@@ -18,8 +19,6 @@
  * @copyright  Copyright (c) 2014 Landofcoder (http://www.landofcoder.com/)
  * @license    http://www.landofcoder.com/LICENSE-1.0.html
  */
-namespace Lof\MarketPlace\Observer;
-
 use Magento\Framework\Event\ObserverInterface;
 
 class ReviewProduct implements ObserverInterface
@@ -73,7 +72,7 @@ class ReviewProduct implements ObserverInterface
                 if($data = $reviewFactory->getCollection()->addFieldToFilter('entity_pk_value',$product->getId())->getLastItem()->getData()) {
 
                     $rating = $connection->fetchCol(" SELECT value FROM ".$table_name." WHERE entity_pk_value = ".$product->getId()." AND review_id=".$data['review_id']);
-                    $data['rating'] = $rating[0];
+                    $data['rating'] = (isset($rating[0])) ? $rating[0] : '';
                     $data['product_id'] = $product->getId();
                     $data['status'] = $data['status_id'];
                     $data['seller_id'] = $this->helper->getSellerIdByProduct($product->getId());
