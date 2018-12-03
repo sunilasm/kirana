@@ -19,8 +19,6 @@ namespace Lof\MarketPlace\Observer;
  * @copyright  Copyright (c) 2014 Landofcoder (http://www.landofcoder.com/)
  * @license    http://www.landofcoder.com/LICENSE-1.0.html
  */
-
-
 use Magento\Framework\Event\ObserverInterface;
 
 class ReviewProduct implements ObserverInterface
