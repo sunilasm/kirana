@@ -38,7 +38,7 @@
             </argument>
         </argument>
     </dataSource>
-   <!--  <listingToolbar name="listing_top">
+    <listingToolbar name="listing_top">
         <argument name="data" xsi:type="array">
             <item name="config" xsi:type="array">
                 <item name="sticky" xsi:type="boolean">true</item>
@@ -166,7 +166,7 @@
                 </item>
             </argument>
         </paging>
-    </listingToolbar> -->
+    </listingToolbar>
     <columns name="seller_columns">
         <argument name="data" xsi:type="array">
             <item name="config" xsi:type="array">
@@ -174,7 +174,7 @@
                     <item name="provider" xsi:type="string">seller_listing.seller_listing.listing_top.bookmarks</item>
                     <item name="namespace" xsi:type="string">current</item>
                 </item>
-                <!-- <item name="editorConfig" xsi:type="array">
+                <item name="editorConfig" xsi:type="array">
                     <item name="selectProvider" xsi:type="string">seller_listing.seller_listing.seller_columns.ids</item>
                     <item name="enabled" xsi:type="boolean">true</item>
                     <item name="indexField" xsi:type="string">seller_id</item>
@@ -182,7 +182,7 @@
                         <item name="saveUrl" xsi:type="string">lofmarketplace/seller/inlineEdit</item>
                         <item name="validateBeforeSave" xsi:type="boolean">false</item>
                     </item>
-                </item> -->
+                </item>
                 <item name="childDefaults" xsi:type="array">
                     <item name="fieldAction" xsi:type="array">
                         <item name="provider" xsi:type="string">seller_listing.seller_listing.seller_columns_editor</item>
