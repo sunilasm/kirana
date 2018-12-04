@@ -70,7 +70,7 @@ class Register extends \Magento\Directory\Block\Data {
      * @return $this
      */
     protected function _prepareLayout() {
-        $this->pageConfig->getTitle ()->set ( __ ( 'Create New Seller Account' ) );
+        $this->pageConfig->getTitle ()->set ( __ ( 'Create New Kirana Account' ) );
         return parent::_prepareLayout ();
     }
      /**
