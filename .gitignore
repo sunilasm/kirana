@@ -1,3 +1,4 @@
+
 #--------------------------#
 # Magento Default Files    #
 #--------------------------#
@@ -43,3 +44,5 @@
 
 generated/
 pub/
+mantis/*
+mantis/

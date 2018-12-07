@@ -1,0 +1,89 @@
+<?php
+$objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+
+$customerSession = $objectManager->get('\Magento\Customer\Model\Session');
+
+$urlInterface = $objectManager->get('\Magento\Framework\UrlInterface');
+
+if(!$customerSession->isLoggedIn()) {
+    $customerSession->setAfterAuthUrl(str_replace('marketplace','',$urlInterface->getCurrentUrl()));
+    $customerSession->authenticate();
+}
+
+$_helper = $this->helper('Lof\MarketPlace\Helper\Data');
+$url = $this->helper('Lof\MarketPlace\Helper\Url');
+$seller = $_helper->getSellerByCustomer();
+$dataseller = $objectManager->get('\Lof\MarketPlace\Model\Seller')->load($seller['seller_id']);
+if($seller['thumbnail']) {
+  $imageSrc = $_helper->getMediaUrl() . $seller['thumbnail'];
+} else {
+  $imageSrc = $_helper->getMediaUrl() . 'images/user.png';
+}
+ 
+?>
+<div class="top_nav">
+  <div class="nav_menu">
+    <nav>
+      <div class="nav toggle">
+        <a id="menu_toggle"><i class="fa fa-bars"></i></a>
+      </div>
+
+      <ul class="nav navbar-nav navbar-right">
+        <li class="">
+          <a href="javascript:;" class="user-profile dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+            <img src="<?php echo $imageSrc; ?>" alt=""><?php echo $seller['name']; ?>
+            <span class=" fa fa-angle-down"></span>
+          </a>
+          <ul class="dropdown-menu dropdown-usermenu pull-right">
+            <li>
+              <a target="blank" href="<?php echo $dataseller->getUrl();?>">
+                <span><?php echo __('View My Store'); ?></span>
+              </a>
+            </li>
+            <li>
+              <a href="<?php echo $this->getUrl('catalog/seller/profile');?>">
+                <span><?php echo __('Profile'); ?></span>
+              </a>
+            </li>
+            <li><a href="<?php echo $url->getLogoutUrl();?>"><i class="fa fa-sign-out pull-right"></i><?php echo __('Log Out'); ?></a></li>
+          </ul>
+        </li>
+
+        <li role="presentation" class="dropdown">
+          <a href="javascript:;" class="dropdown-toggle info-number" data-toggle="dropdown" aria-expanded="false">
+            <i class="fa fa-envelope-o"></i>
+            <span class="badge bg-green"><?php $count = count($this->getDetailUnRead()) + count($this->getMessageUnRead()); echo $count; ?></span>
+          </a>
+          <ul id="menu1" class="dropdown-menu list-unstyled msg_list" role="menu">
+          <?php foreach($this->getDetailUnRead() as $detail) { ?>
+            <li>
+              <a href="<?php echo $block->getUrl('catalog/message/view', ['view' => $detail->getMessageId()]); ?>">
+                <span>
+                  <span><?php echo $detail->getData('sender_name');?></span>
+                  <span class="time"><?php echo $_helper->nicetime($detail->getData('created_at'));?></span>
+                </span>
+                <span class="lof-message">
+                  <?php echo $detail->getData('content'); ?>
+                </span>
+              </a>
+            </li>
+          <?php } ?>
+          <?php foreach($this->getMessageUnRead() as $message) { ?>
+            <li>
+               <a href="<?php echo $block->getUrl('catalog/message/view', ['view' => $message['message_id']]); ?>">
+                <span>
+                  <span><?php echo $message['sender_name'];?></span>
+                  <span class="time"><?php echo $_helper->nicetime($message['created_at']);?></span>
+                </span>
+                <span class="lof-message">
+                  <?php echo $message['description']; ?>
+                </span>
+              </a>
+            </li>
+          <?php } ?>
+          </ul>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</div>

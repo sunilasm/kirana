@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Landofcoder
+ * 
+ * NOTICE OF LICENSE
+ * 
+ * This source file is subject to the Landofcoder.com license that is
+ * available through the world-wide-web at this URL:
+ * http://www.landofcoder.com/license-agreement.html
+ * 
+ * DISCLAIMER
+ * 
+ * Do not edit or add to this file if you wish to upgrade this extension to newer
+ * version in the future.
+ * 
+ * @category   Landofcoder
+ * @package    Lof_MarketPlace
+ * @copyright  Copyright (c) 2014 Landofcoder (http://www.landofcoder.com/)
+ * @license    http://www.landofcoder.com/LICENSE-1.0.html
+ */
+-->
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" layout="admin-2columns-left" xsi:noNamespaceSchemaLocation="../../../../../../../lib/internal/Magento/Framework/View/Layout/etc/page_configuration.xsd">
+	<head>
+		<css src="jquery/fileUploader/css/jquery.fileupload-ui.css"/>
+	</head>
+	<update handle="editor"/>
+	<body>
+		<referenceContainer name="content">
+			<block class="Lof\MarketPlace\Block\Adminhtml\Seller\Edit" name="seller_edit_page"/>
+		</referenceContainer>
+		<referenceContainer name="left">
+			<block class="Lof\MarketPlace\Block\Adminhtml\Seller\Edit\Tabs" name="seller_edit_tabs">
+			</block>
+		</referenceContainer>
+	</body>
+</page>

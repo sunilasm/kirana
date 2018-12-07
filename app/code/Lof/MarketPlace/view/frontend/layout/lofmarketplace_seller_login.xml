@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Landofcoder
+ * 
+ * NOTICE OF LICENSE
+ * 
+ * This source file is subject to the Landofcoder.com license that is
+ * available through the world-wide-web at this URL:
+ * http://www.landofcoder.com/license-agreement.html
+ * 
+ * DISCLAIMER
+ * 
+ * Do not edit or add to this file if you wish to upgrade this extension to newer
+ * version in the future.
+ * 
+ * @category   Landofcoder
+ * @package    Lof_MarketPlace
+ * @copyright  Copyright (c) 2014 Landofcoder (http://www.landofcoder.com/)
+ * @license    http://www.landofcoder.com/LICENSE-1.0.html
+ */
+-->
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" layout="1column"
+	xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+	<body>
+		<referenceContainer name="content">
+			<container name="seller.login.container" label="Seller Login Container"
+				htmlTag="div" htmlClass="login-container">
+				<block class="Lof\MarketPlace\Block\Seller\Login" name="marketplace_seller_login"
+					template="Lof_MarketPlace::seller/login.phtml">
+					<container name="form.additional.info" as="form_additional_info" />
+				</block>
+				<block class="Magento\Customer\Block\Form\Login\Info" name="seller.new"
+					template="Lof_MarketPlace::seller/newcustomer.phtml" />
+			</container>
+			<block class="Magento\Cookie\Block\RequireCookie" name="require-cookife"
+				template="Magento_Cookie::require_cookie.phtml">
+				<arguments>
+					<argument name="triggers" xsi:type="array">
+						<item name="loginButton" xsi:type="string">.action.login</item>
+					</argument>
+				</arguments>
+			</block>
+		</referenceContainer>
+	</body>
+</page> 

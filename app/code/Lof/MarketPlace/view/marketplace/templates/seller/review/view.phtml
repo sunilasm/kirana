@@ -1,0 +1,91 @@
+<?php
+$helper = $this->helper('Lof\MarketPlace\Helper\Data');
+$formActionUrl = $this->getUrl('catalog/seller/saverating');
+$currPageUrl = $helper->getCurrentUrls();
+?>
+<div class="row">
+    <div class="col-md-12 col-sm-12 col-xs-12">
+    	<div class="x_panel">
+    		<div class="x_title">
+    			<h2><?php echo __('Review');?></h2>
+    			<div class="clearfix"></div>
+    		</div>
+    		<div class="x_content fieldset admin__fieldset fieldset-wide">
+    			<div class="admin__field field">
+                    <label class="admin__field-label"><span><?php echo __('Product'); ?></span></label>
+                    <div class="admin__field-control control">
+                    	<div class="control-value admin__field-value">
+                      	<?php echo $helper->getProductById($this->getReview()->getProductId())->getName();?>
+                      	</div>
+                    </div>
+                </div>
+    			<div class="admin__field field">
+                    <label class="admin__field-label"><span><?php echo __('Title'); ?></span></label>
+                    <div class="admin__field-control control">
+                    	<div class="control-value admin__field-value">
+                      	<?php echo $this->getReview()->getTitle();?>
+                      	</div>
+                    </div>
+                </div>
+                <div class="admin__field field">
+                    <label class="admin__field-label"><span><?php echo __('Author'); ?></span></label>
+                    <div class="admin__field-control control">
+                    	<div class="control-value admin__field-value">
+                      	<?php if($this->getReview()->getCustomerId())  {
+                      		$customer = $helper->getCustomerById($this->getReview()->getCustomerId());
+                      		echo $customer->getFirstname().' '.$customer->getLastname();
+                      	} else {
+                      		echo __('Guest');
+                      	}?>
+                      	</div>
+                    </div>
+                </div>
+                 <div class="admin__field field">
+                    <label class="admin__field-label"><span><?php echo __('Summary Rating'); ?></span></label>
+                    <div class="admin__field-control control">
+                    	<div class="control-value">
+	                      	<div class="ratings">
+								<div class="rating-box">
+									<div class="rating" style="width: <?php echo ($this->getReview()->getRating()/5*100); ?>%;"></div>
+								</div>
+								<div class="clearfix"></div>
+							</div>
+                      	</div>
+                    </div>
+                </div>
+                <div class="admin__field field">
+                    <label class="admin__field-label"><span><?php echo __('Status'); ?></span></label>
+                    <div class="admin__field-control control">
+                    	<div class="control-value admin__field-value">
+                      	<?php echo $helper->getStatusRating($this->getReview()->getStatus());?>
+                      	</div>
+                    </div>
+                </div>
+                <div class="admin__field field">
+                    <label class="admin__field-label"><span><?php echo __('Nick Name'); ?></span></label>
+                    <div class="admin__field-control control">
+                    	<div class="control-value admin__field-value">
+                      	<?php echo $this->getReview()->getNickname();?>
+                      	</div>
+                    </div>
+                </div>
+                <div class="admin__field field">
+                    <label class="admin__field-label"><span><?php echo __('Summary of Review'); ?></span></label>
+                    <div class="admin__field-control control">
+                    	<div class="control-value admin__field-value">
+                      	<?php echo $this->getReview()->getTitle();?>
+                      	</div>
+                    </div>
+                </div>
+                <div class="admin__field field">
+                    <label class="admin__field-label"><span><?php echo __('Review'); ?></span></label>
+                    <div class="admin__field-control control">
+                    	<div class="control-value admin__field-value">
+                      	<?php echo $this->getReview()->getDetail();?>
+                      	</div>
+                    </div>
+                </div>
+	    	</div>
+    	</div>
+    </div>
+</div>

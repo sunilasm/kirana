@@ -1,0 +1,274 @@
+<?php
+
+?>
+<div class>
+	<div class="row top_tiles">
+      <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
+        <div class="tile-stats">
+          <div class="icon"><i class="fa fa-credit-card"></i></div>
+          <div class="count"><?php echo $this->getCreditAmount(); ?></div>
+          <h3><?php echo __('Credit Amount'); ?></h3>
+        </div>
+      </div>
+      <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
+        <div class="tile-stats">
+          <div class="icon"><i class="fa fa-money"></i></div>
+          <div class="count"><?php echo $this->getTotalSales(); ?></div>
+          <h3><?php echo __('Total Sales'); ?></h3>
+        </div>
+      </div>
+      <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
+        <div class="tile-stats">
+          <div class="icon"><i class="fa fa-shopping-cart"></i></div>
+          <div class="count"><?php echo $this->getTotalOrder(); ?></div>
+          <h3><?php echo __('Total Orders'); ?></h3>
+        </div>
+      </div>
+      <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
+        <div class="tile-stats">
+          <div class="icon"><i class="fa fa fa-archive"></i></div>
+          <div class="count"><?php echo $this->getTotalProduct(); ?></div>
+          <h3><?php echo __('Total Products'); ?></h3>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+    	<div class="col-md-3 col-sm-6 col-xs-12">
+            <div class="x_panel">
+              <div class="x_title">
+                <h2><?php echo __("Today's Sales"); ?></h2>
+                <div class="clearfix"></div>
+              </div>
+              <div class="x_content">
+						<h2><?php echo $this->getTotalSalesDay(); ?></h2>
+              </div>
+            </div>
+	    </div>
+	    <div class="col-md-3 col-sm-6 col-xs-12">
+	        <div class="x_panel">
+	          <div class="x_title">
+	            <h2><?php echo __("Today's Earnings"); ?></h2>
+	            <div class="clearfix"></div>
+	          </div>
+	          <div class="x_content">
+						<h2><?php echo $this->getEarningsToDay(); ?></h2>
+	          </div>
+	        </div>
+	     </div>
+	     <div class="col-md-3 col-sm-6 col-xs-12">
+            <div class="x_panel">
+              <div class="x_title">
+                <h2><?php echo __("Current Month's Sales"); ?></h2>
+                <div class="clearfix"></div>
+              </div>
+              <div class="x_content">
+						<h2><?php echo $this->getTotalSalesMonth(); ?></h2>
+              </div>
+            </div>
+	    </div>
+	    <div class="col-md-3 col-sm-6 col-xs-12">
+	        <div class="x_panel">
+	          <div class="x_title">
+	            <h2><?php echo __("Current Month's Earnings"); ?></h2>
+	            <div class="clearfix"></div>
+	          </div>
+	          <div class="x_content">
+						<h2><?php echo $this->getEarningsToMonth(); ?></h2>
+	          </div>
+	        </div>
+	     </div>
+    </div>
+    <div class="row">
+
+      <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="x_panel">
+          <div class="x_title">
+            <h2><?php echo __('Your top countries');?></h2>
+            <div class="clearfix"></div>
+          </div>
+          <div class="x_content">
+            <div class="dashboard-widget-content">
+              <div class="col-md-4 hidden-small">
+                <h2 class="line_30"><?php echo __('Earning '.$this->getPriceFomat($this->getDataCountry()['amount']).' from '.$this->getDataCountry()['country'].' countries');?></h2>
+
+                <table class="countries_list">
+                  <thead>
+                    <tr>
+                      <td><?php echo __('Country');?></td>
+                      <td class="fs15 fw700 text-right"><?php echo __('Total Order');?></td>
+                      <td class="fs15 fw700 text-right"><?php echo __('Total Earning');?></td>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <?php foreach ($this->getTopCountries() as $key => $country) { ?>
+                    <tr>
+                      <td><?php echo $this->getCountry($country['country_id']);?></td>
+                      <td class="fs15 fw700 text-right"><?php echo $country['orders_count'];?></td>
+                      <td class="fs15 fw700 text-right"><?php echo $this->getPriceFomat($country['seller_amount']);?></td>
+                    </tr> 
+                    <?php } ?>
+                    
+                  </tbody>
+                </table>
+              </div>
+              <div id="world-map-gdp" class="col-md-8 col-sm-12 col-xs-12" style="height:420px;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+   
+      <!-- line graph -->
+      <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="x_panel">
+          <div class="x_title">
+            <h2><?php echo __('Sales Report'); ?></h2>
+            <div class="clearfix"></div>
+          </div>
+          <div class="x_content2">
+            <div id="saleschart" style="width:100%; height:300px;"></div>
+          </div>
+        </div>
+      </div>
+        <!-- /line graph -->
+      <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="x_panel">
+          <div class="x_content2">
+            <ul class="nav nav-tabs">
+              <li class="active"><a data-toggle="tab" href="#sectionA"><?php echo __('Last Orders'); ?></a></li>
+              <li><a data-toggle="tab" href="#sectionB"><?php echo __('Best Seller'); ?></a></li>
+              <li><a data-toggle="tab" href="#sectionC"><?php echo __('Most Viewed Products'); ?></a></li>
+            </ul>
+            <div class="tab-content">
+              <div id="sectionA" class="tab-pane fade in active">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>#</th>
+                      <th><?php echo __('Order Date');?></th>
+                      <th><?php echo __('Customer');?></th>
+                      <th><?php echo __('Subtotal');?></th>
+                      <th><?php echo __('View');?></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <?php foreach ($this->getOrderSeller()->setPageSize(10) as $key => $order) { 
+                      $data = $this->getOrder($order->getOrderId());
+                      $order_date =$data->getCreatedAt();
+                      $id = $data->getRealOrderId();
+                      $customer = $data->getCustomerName();
+                      $subtotal = $data->getSubtotal();
+                   
+                      ?>
+
+                    <tr>
+                      <th scope="row">#<?php echo $id; ?></th>
+                      <td><?php echo $order_date; ?></td>
+                      <td><?php echo $customer; ?></td>
+                      <td><?php echo $subtotal; ?></td>
+                      <td><a href="<?php echo $block->getUrl('catalog/sales/orderview', ['view' => $data->getId()]); ?>"><?php echo __('View'); ?></a></td>
+                    </tr>
+                    <?php } ?>
+                  </tbody>
+                </table>
+              </div>
+              <div id="sectionB" class="tab-pane fade">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>#</th>
+                      <th><?php echo __('Product');?></th>
+                      <th><?php echo __('Price');?></th>
+                      <th><?php echo __('Qty');?></th>
+                      <th><?php echo __('View');?></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <?php 
+                    foreach ($this->getBestSeller()->setPageSize(10) as $key => $data) {
+                      
+                      $id = $data->getData('entity_id');
+                      $name = $data->getData('name');
+                      $price = $data->getData('price');
+                       $qty = $data->getData('qty_ordered');
+                      ?>
+                    <tr>
+                      <th scope="row">#<?php echo $id; ?></th>
+                      <td><?php echo $name; ?></td>
+                      <td><?php echo $price; ?></td>
+                      <td><?php echo intval($qty); ?></td>
+                      <td><a href="<?php echo $block->getUrl('catalog/product/edit',['id' => $id]); ?>"><?php echo __('View'); ?></a></td>
+                    </tr>
+                    <?php }   ?>
+                  </tbody>
+                </table>
+                 
+              </div>
+              <div id="sectionC" class="tab-pane fade">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>#</th>
+                      <th><?php echo __('Product');?></th>
+                      <th><?php echo __('Price');?></th>
+                      <th><?php echo __('View');?></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <?php 
+                    foreach ($this->getMostView()->setPageSize(10) as $key => $data) {
+                      
+                      $id = $data->getData('entity_id');
+                      $name = $data->getData('name');
+                      $price = $data->getData('price');
+                       $views = $data->getData('views');
+                      ?>
+                    <tr>
+                      <th scope="row">#<?php echo $id; ?></th>
+                      <td><?php echo $name; ?></td>
+                      <td><?php echo $price; ?></td>
+                      <td><?php echo intval($views); ?></td>
+                    </tr>
+                    <?php }   ?>
+                  </tbody>
+                </table>
+              </div>
+            </div>  
+          </div>
+        </div>
+      </div>
+    </div>  
+  </div>
+<script> 
+      require([
+        "jquery",
+        "Lof_MarketPlace/js/raphael",
+        "Lof_MarketPlace/js/morris",
+        "Lof_MarketPlace/js/jquery.vmap",
+        "Lof_MarketPlace/js/jquery.vmap.world",
+        "Lof_MarketPlace/js/jquery.vmap.sampledata"
+      ], function($){  
+        lineChart();
+        $(window).resize(function() {
+          window.lineChart.redraw();
+        });
+        function lineChart() {
+          var day_data = <?php echo $this->getSalesReport(); ?>;
+          window.lineChart =  Morris.Line({
+            element: 'saleschart',
+            data: day_data,
+            xkey: 'period',
+            ykeys: ['sales'],
+            labels: ['Sales'],
+            parseTime: false,
+            showTooltip: true,
+            hoverCallback: function (index, options, default_content, data) {
+                            return default_content.replace("Sales", "<span style='color:#000;'>Earn Amount: " + data.earn + "</span><br>Sales " );
+            },
+            xLabelMargin: 10,
+            integerYLabels: true
+          });           
+        }
+      }); 
+  </script>
+
+   

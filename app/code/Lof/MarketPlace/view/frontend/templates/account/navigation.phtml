@@ -1,0 +1,159 @@
+<?php
+$_helper = $this->helper('Lof\MarketPlace\Helper\Data');
+$isSeller= $this->isSeller();
+
+$magentoCurrentUrl = $block->getCurrentUrl();
+$allow_pro_type='configurable'; //$_helper->getAllowedProductType();
+$isSellerGroup = 1; //$_helper->isSellerGroupModuleInstalled();
+?>
+<style type="text/css">
+    @media only screen and (max-width: 767px){
+        .block-collapsible-nav.wk-mp-main{
+            top: 20px;
+        }
+    }
+</style>
+<div class="block account-nav block-collapsible-nav wk-mp-main">
+    <div class="title block-collapsible-nav-title" data-mage-init='{"toggleAdvanced": {"toggleContainers": "#block-collapsible-nav-seller", "selectorsToggleClass": "active"}}'>
+        <strong><?php /* @escapeNotVerified */ echo __('Marketplace'); ?></strong>
+    </div>
+    <div class="content block-collapsible-nav-content" id="block-collapsible-nav-seller">
+        <nav class="account-nav">
+            <ul class="nav items">
+                <?php 
+                if($isSeller == 1){ ?>
+                        <li class="nav item <?php echo strpos($magentoCurrentUrl,'lofmarketplace/seller/dashboard')? "current":"";?>">
+                            <?php 
+                            if(strpos($magentoCurrentUrl,'marketplace/account/dashboard') !== false){ ?>      
+                                <strong><?php echo __('Marketplace Dashboard') ?></strong>              
+                            <?php
+                            } else{ ?>        
+                                <a href="<?php echo $block->getUrl('lofmarketplace/seller/dashboard', ['_secure' => $this->getRequest()->isSecure()]); ?>">
+                                    <?php echo __('Marketplace Dashboard') ?>
+                                </a>                    
+                            <?php 
+                            } ?>
+                        </li>
+                        <li class="nav item <?php echo strpos($magentoCurrentUrl,'lofmarketplace/account/editprofile')? "current":"";?>">     
+                            <?php if(strpos($magentoCurrentUrl,'lofmarketplace/account/editprofile') !== false){ ?>
+                                <strong><?php echo __('Seller Profile') ?></strong>
+                            <?php 
+                            } else{ ?>
+                                <a href="<?php echo $block->getUrl('lofmarketplace/seller/editprofile', ['_secure' => $this->getRequest()->isSecure()]); ?>">
+                                    <?php echo __('Seller Profile') ?>
+                                </a>
+                            <?php 
+                            } ?>
+                        </li>
+                        <li class="nav item">
+                            <a href="#">
+                                <span><?php echo __('Manager Product'); ?></span>
+                                <span class="opener"></span>
+                            </a>
+                            <ul class="dropdown">
+                                <li style="display: none" class="submenu">
+                                    <a href="<?php echo $block->getUrl('lofmarketplace/product/index', ['_secure' => $this->getRequest()->isSecure()]); ?>"><?php echo __('Manager Product') ?></a>
+                                </li>
+                            </ul>
+                        </li>
+                        <?php
+                        if(strpos($allow_pro_type,'configurable') !== false){ ?>
+                            <li class="nav item <?php echo strpos($magentoCurrentUrl,'lofmarketplace/product/attribute')? "current":"";?>">       
+                            <?php if(strpos($magentoCurrentUrl,'lofmarketplace/product/attribute') !== false){ ?>
+                                <strong><?php echo __('Create Attribute') ?></strong>  
+                                <?php }     
+                                else{ ?>        
+                                    <a href="<?php echo $block->getUrl('lofmarketplace/product/attribute', ['_secure' => $this->getRequest()->isSecure()]); ?>">
+                                        <?php echo __('Create Attribute') ?></a>           
+                                <?php } ?>              
+                            </li>
+                            <?php
+                        }
+                        ?>
+                        <li class="nav item <?php echo (strpos($magentoCurrentUrl,'lofmarketplace/product/add/set/4/type/simple'))? "current":"";?>">           
+                            <?php 
+                            if(strpos($magentoCurrentUrl,'lofmarketplace/product/add/set/4/type/simple') !== false){ ?>       
+                                <strong><?php echo __('New Products') ?></strong>  
+                            <?php 
+                            } else{ ?>                    
+                                <a href="<?php echo $block->getUrl('lofmarketplace/product/add/set/4/type/simple', ['_secure' => $this->getRequest()->isSecure()]); ?>">
+                                    <?php echo __('New Products') ?>
+                                </a>                        
+                            <?php 
+                            } ?>          
+                        </li>   
+                        <li class="nav item <?php echo strpos($magentoCurrentUrl,'marketplace/product/productlist')? "current":"";?>">         
+                        <?php if(strpos($magentoCurrentUrl,'marketplace/product/productlist') !== false){ ?>       
+                            <strong><?php echo __('My Products List') ?></strong>  
+                            <?php }                 
+                            else{ ?>                    
+                                <a href="<?php echo $block->getUrl('marketplace/product/productlist', ['_secure' => $this->getRequest()->isSecure()]); ?>">
+                                    <?php echo __('My Products List') ?>
+                                </a>                        
+                            <?php } ?>          
+                        </li>
+                        <li class="nav item <?php echo strpos($magentoCurrentUrl,'marketplace/transaction/history')? "current":"";?>">
+                            <?php 
+                            if(strpos($magentoCurrentUrl,'marketplace/transaction/history') !== false){ ?>
+                                <strong><?php echo __('My Transaction List') ?></strong>
+                            <?php 
+                            } else{ ?>
+                                <a href="<?php echo $block->getUrl('marketplace/transaction/history', ['_secure' => $this->getRequest()->isSecure()]); ?>"><?php echo __('My Transaction List') ?></a>
+                            <?php 
+                            } ?>
+                        </li>
+                        <li class="nav item <?php echo strpos($magentoCurrentUrl,'marketplace/order/shipping/')? "current":"";?>">
+                            <?php if(strpos($magentoCurrentUrl,'marketplace/order/shipping') !== false){ ?>
+                                <strong><?php echo __('Manage Print PDF Header Info') ?></strong>
+                            <?php 
+                            } else{ ?>
+                                <a href="<?php echo $block->getUrl('marketplace/order/shipping', ['_secure' => $this->getRequest()->isSecure()]); ?>"><?php echo __('Manage Print PDF Header Info') ?></a>
+                            <?php 
+                            } ?>
+                        </li> 
+                        <?php echo $block->getChildHtml();?>
+                        <li class="nav item <?php echo strpos($magentoCurrentUrl,'marketplace/order')&&(!strpos($magentoCurrentUrl,'marketplace/order/shipping/'))? "current":"";?>">        
+                            <?php 
+                            if(strpos($magentoCurrentUrl,'marketplace/order') !== false && strpos($magentoCurrentUrl,'marketplace/order/shipping/') === false){ ?>    
+                                <strong><?php echo __('My Order History') ?></strong>  
+                            <?php 
+                            } else{ ?>        
+                                <a href="<?php echo $block->getUrl('marketplace/order/history', ['_secure' => $this->getRequest()->isSecure()]); ?>">
+                                    <?php echo __('My Order History') ?>
+                                </a>                        
+                            <?php 
+                            } ?>  
+                        </li>
+                    <?php 
+                } else { ?>    
+                    <?php echo $block->getChildHtml();?>
+                    <li class="nav item <?php echo strpos($magentoCurrentUrl,'marketplace/seller/becomepartner')? "current":"";?>">
+                        <?php if(strpos($magentoCurrentUrl,'lofmarketplace/seller/becomeseller') !== false){ ?> 
+                            <strong><?php echo __('Become Kirana') ?></strong>    
+                        <?php }         
+                        else{ ?>    
+                            <a href="<?php echo $block->getUrl('lofmarketplace/seller/becomeseller', ['_secure' => $this->getRequest()->isSecure()]); ?>">
+                                <?php echo __('Become A Kirana') ?>
+                            </a>                    
+                        <?php } ?>      
+                    </li>       
+                <?php 
+                } ?>
+            </ul>
+        </nav>
+    </div>
+</div>
+<script type="text/javascript">
+    require(['jquery'], function(){
+        jQuery(document).ready(function($) {
+            $('.account-nav .opener').on('click', function(e) {
+                    e.preventDefault();
+                    $(".account-nav .nav.item").removeClass("item-active");
+                    var parent = $(this).parents(".nav.item").eq(0);
+                    $(this).toggleClass('item-active');
+                    $(parent).find(".submenu").eq(0).slideToggle();
+                    return false;
+                });
+        });
+    });
+</script>

@@ -1,0 +1,85 @@
+<?php
+$helper = $this->helper('Lof\MarketPlace\Helper\Data');
+$formActionUrl = $this->getUrl('catalog/seller/saverating');
+$currPageUrl = $helper->getCurrentUrls();
+?>
+<div class="row">
+  	<div class="col-md-6 col-sm-6 col-xs-12">
+	    <div class="x_panel">
+	      	<div class="x_title">
+	        	<h2><?php echo $this->getRating()->getSubject();?></h2>
+	        <div class="clearfix"></div>
+	    	</div>
+		    <div class="x_content">
+		    	<table class="tile_info">
+	              	<tbody>
+		              	<tr>
+			                <td>
+			                  	<b><?php echo __('Nick Name');?></b>
+			                </td>
+			                <td><p><?php echo $this->getRating()->getNickname(); ?></p></td>
+			            </tr>
+		              	<tr>
+			                <td>
+			                  	<b><?php echo __('Email');?></b>
+			                </td>
+			                <td><p><?php echo $this->getRating()->getEmail(); ?></p></td>
+		              	</tr>
+		              	<tr>
+			                <td>
+			                  	<b><?php echo __('Price');?></b>
+			                </td>
+			                <td><p><?php echo $this->getRating()->getData('rate1'); ?></p></td>
+		              	</tr>
+		              	<tr>
+			                <td>
+			                  	<b><?php echo __('Value');?></b>
+			                </td>
+			                <td><p><?php echo $this->getRating()->getData('rate2'); ?></p></td>
+		              	</tr>
+		              	<tr>
+			                <td>
+			                  	<b><?php echo __('Qty');?></b>
+			                </td>
+			                <td><p><?php echo $this->getRating()->getData('rate3'); ?></p></td>
+		              	</tr>
+		              	<tr>
+			                <td>
+			                  <b><?php echo __('Status');?></b>
+			                </td>
+			                <td><p><?php echo $this->getRating()->getStatus(); ?></p></td>
+		              	</tr>
+	            	</tbody>
+	            </table>
+		    </div>
+		</div>    
+    </div>
+
+    <div class="col-md-12 col-sm-12 col-xs-12">
+    	<div class="x_panel">
+    		<div class="x_title">
+    			<h2><?php echo __('Comment');?></h2>
+    			<div class="clearfix"></div>
+    		</div>
+    		<div class="x_content">
+	    		<form id="form-message" data-parsley-validate="" action="<?php echo $formActionUrl;?>" class="form-horizontal form-label-left" method="post" data-hasrequired="<?php /* @escapeNotVerified */ echo __('* Required Fields') ?>" data-mage-init='{"validation":{}}'>
+	    			<div class="form-group">
+                        <label class=" col-md-2 col-sm-2 col-xs-12"><?php echo __('Title'); ?></label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                          	<?php echo $this->getRating()->getTitle();?>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class=" col-md-2 col-sm-2 col-xs-12"><?php echo __('Detail'); ?></label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                          	<?php echo $this->getRating()->getDetail();?>
+                        </div>
+                    </div>
+	               
+	                <div class="ln_solid"></div>
+	     
+	            </form>
+	    	</div>
+    	</div>
+    </div>
+</div>

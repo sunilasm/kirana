@@ -1,0 +1,246 @@
+<div class="col-md-12">
+	<div class="x_panel">
+		<div class="x_title">
+            <h2><?php echo __('Product Upload');?></h2>    
+         <div class="clearfix"></div>
+         </div>
+         <div class="x_content import-product">
+         	<form enctype="multipart/form-data" method="post" action="<?php echo $block->getUrl('*/*/validateimport/');?>" id="edit_form" novalidate="novalidate">
+         		<input name="form_key" type="hidden" value="lenvCjnaOf6CBttF">
+		        <fieldset class="fieldset admin__fieldset fieldset_setting">
+		            <legend class="admin__legend legend">
+		                <span><?php echo __('Import Settings');?></span>
+		                <button class="action-default scalable save primary" type="button" title="Check Data" id="upload_button" onclick="MST.validateImport()">
+		                    <span><?php echo __('Check Data');?></span>
+		                </button>
+		            </legend>
+		            <div class="admin__field field required">
+		                <label for="entity" class="label admin__field-label">
+		                    <span><?php echo __('Entity Type');?></span>
+		                </label>
+		                <div class="admin__field-control control">
+		                    <div class="admin__field">
+		                        <select title="Entity Type" name="entity" id="entity" class="admin__control-select" data-validate="{required:true}" aria-required="true">
+		                            <option value="">-- <?php echo __('Please Select');?> --</option>
+		                            <option value="catalog_product"><?php echo __('Products');?></option>
+		                        </select>
+		                        <label for="entity" class="addafter">
+		                            <span class="no-display" id="sample-file-span" style="display: inline;">
+		                                <a href="<?php echo $this->getViewFileUrl('Lof_MarketPlace/files/catalog_product.csv');?>" id="sample-file-link">
+		                                    <?php echo __('Download Sample File');?>                                </a>
+		                            </span>
+		                        </label>
+		                    </div>                            
+		                </div>
+		            </div>
+		        </fieldset>
+		        <fieldset class="fieldset admin__fieldset fieldset_behavior" style="display: none;">
+		            <legend class="admin__legend legend">
+		                <span><?php echo __('Import Behavior');?></span>
+		            </legend>
+		            <div class="admin__field field required">
+		                <label for="basic_behavior" class="label admin__field-label">
+		                    <span><?php echo __('Import Behavior');?></span>
+		                </label>
+		                <div class="admin__field-control control">
+		                    <div class="admin__field">
+		                        <select title="Import Behavior" name="behavior" id="basic_behavior" class="admin__control-select" data-validate="{required:true}" aria-required="true">
+		                            <option value="">-- <?php echo __('Please Select');?> --</option>
+		                            <option value="append"><?php echo __('Add/Update');?></option>
+		                            <option value="delete"><?php echo __('Delete');?></option>
+		                        </select>   
+		                    </div>     
+		                </div>
+		            </div>
+		            <div class="admin__field field required">
+		                <label for="basic_behaviorvalidation_strategy" class="label admin__field-label">
+		                    <span><?php echo __('Error Handling');?></span>
+		                </label>
+		                <div class="admin__field-control control">
+		                    <div class="admin__field">
+		                        <select title="Error Handling" name="validation_strategy" id="basic_behaviorvalidation_strategy" class="admin__control-select" data-validate="{required:true}" aria-required="true">
+		                            <option value="validation-stop-on-errors"><?php echo __('Stop on Error');?></option>
+		                            <option value="validation-skip-errors"><?php echo __('Skip error entries');?></option>
+		                        </select>
+		                    </div>                            
+		                </div>
+		            </div>
+		            <div class="admin__field field required">
+		                <label for="basic_behavior_allowed_error_count" class="label admin__field-label">
+		                    <span><?php echo __('Allowed Errors Count');?></span>
+		                </label>
+		                <div class="admin__field-control control">
+		                    <div class="admin__field">
+		                        <input type="text" class="input-file" title="Allowed Errors Count" value="10" name="allowed_error_count" id="basic_behavior_allowed_error_count" data-validate="{required:true}" aria-required="true">                
+		                        <div id="basic_behavior_allowed_error_count-note" class="note"><?php echo __('Please specify number of errors to halt import process');?></div>   
+		                    </div>         
+		                </div>
+		            </div>
+		            <div class="admin__field field required">
+		                <label for="basic_behavior__import_field_separator" class="label admin__field-label">
+		                    <span><?php echo __('Field separator');?></span>
+		                </label>
+		                <div class="admin__field-control control">
+		                    <div class="admin__field">
+		                        <input type="text" class="input-file" title="Field separator" value="," name="_import_field_separator" id="basic_behavior__import_field_separator" data-validate="{required:true}" aria-required="true">                            
+		                    </div> 
+		                </div>
+		            </div>
+		            <div class="admin__field field required">
+		                <label for="basic_behavior_import_multiple_value_separator" class="label admin__field-label">
+		                    <span><?php echo __('Multiple value separator');?></span>
+		                </label>
+		                <div class="admin__field-control control">
+		                    <div class="admin__field">
+		                        <input type="text" class="input-file" title="Multiple value separator" value="," name="_import_multiple_value_separator" id="basic_behavior_import_multiple_value_separator" data-validate="{required:true}" aria-required="true">                            
+		                    </div>
+		                </div>
+		            </div>
+		        </fieldset>
+		        <fieldset class="fieldset admin__fieldset fieldset_import" style="display: none;">
+		            <legend class="admin__legend legend">
+		                <span><?php echo __('File to Import');?></span>
+		            </legend>
+		            <div class="admin__field field required">
+		                <label for="import_file" class="label admin__field-label">
+		                    <span><?php echo __('Select File to Import');?></span>
+		                </label>
+		                <div class="admin__field-control control">
+		                    <div class="admin__field">
+		                        <input type="file" class="input-file" title="Select File to Import" name="import_file" id="import_file" data-validate="{required:true}" aria-required="true">
+		                    </div>
+		                </div>
+		            </div>
+		            <div class="admin__field field">
+		                <label for="import_images_file_dir" class="label admin__field-label">
+		                    <span><?php echo __('Images File Directory');?></span>
+		                </label>
+		                <div class="admin__field-control control">
+		                    <input type="text" class="input-text" title="Images File Directory" name="import_images_file_dir" id="import_images_file_dir" value="pub/media/catalog/product">                
+		                    <div class="note admin__field-note" id="import_images_file_dir-note">
+		                        <?php echo __('*Notice Import image first');?>                    </div>            
+		                </div>
+		            </div>
+		        </fieldset>
+		    </form>
+       		<div class="messages_validate_import"></div>
+		</div>	
+	</div>
+</div>
+<style>
+    .required > .admin__field-label > span::after{
+        content: "";
+    }
+    #upload_button{
+        float: right;
+    }
+    .admin__fieldset > .admin__field {
+	    clear: both;
+	}
+	.label {
+    color: #303030;
+	}
+</style>
+<script>
+    require([
+        "jquery",
+        "mage/mage"
+    ], function($){
+        var dataForm = $('#edit_form');
+        dataForm.mage('validation', {});
+        var _action = dataForm.attr('action');
+        $('#entity').change(function(){
+            if($(this).val() == 'catalog_product'){
+                $('.fieldset_behavior,.fieldset_import').show();
+            }else{
+                $('.fieldset_behavior,.fieldset_import').hide();
+            }
+        });
+        MST={
+            validateImport: function(){
+                if($('#edit_form').valid()){
+                    //grab all form data  
+                    var formData = new FormData($('#edit_form')[0]);                                
+                    $.ajax({
+                        type: "POST",
+                        url: "<?php echo $block->getUrl('*/*/validateimport/');?>",
+                        data: formData,
+                        async: false,
+                        cache: false,
+                        contentType: false,
+                        enctype: 'multipart/form-data',
+                        processData: false,
+                        //showLoader: true,
+                        beforeSend:  function() {
+                           
+                        },
+                        success: function(html){
+                            $('.messages_validate_import').html('<p>Validation Results</p>');
+                            var returnedData = jQuery.parseJSON(html);
+                            $('.messages_validate_import').html(html.innerHTML);
+  
+                            if((returnedData.error.length)==0){
+                                var text = returnedData.success;
+                                var notice = returnedData.notice;
+                                //if(text.length == 2){
+                                    $('.messages_validate_import').append('<div class="message message-notice notice"><div>'+'Checked'+notice+'</div></div>');
+                                    $('.messages_validate_import').append('<div class="message message-success success"><div>'+text+'&nbsp; &nbsp; &nbsp;<button class="scalable save" type="button" onclick="MST.startImport()"><span><span><span>Import</span></span></span></button></div></div>');
+                                // }else{
+                                    
+                                // }
+                            }else{
+                                var notice = returnedData.notice;
+                                var error = returnedData.error;
+                                
+                                    for (i = 0; i < error.length; i++) { 
+                                        $('.messages_validate_import').append('<div class="message message-error error"><div>'+error[i]+'</div></div>');
+                                    }
+
+                                    for (i = 0; i < notice.length; i++) {
+                                    	$('.messages_validate_import').append('<div class="message message-notice notice"><div>'+'Checked'+notice[i]+'</div></div>');
+                                	}
+                               
+                            }
+                        }
+                    }); 
+                }  
+            },
+            startImport: function(){
+                if($('#edit_form').valid()){
+                    //grab all form data  
+                    var formData = new FormData($('#edit_form')[0]);                                
+                    $.ajax({
+                        type: "POST",
+                        url: "<?php echo $block->getUrl('*/*/processimport/');?>",
+                        data: formData,
+                        async: false,
+                        cache: false,
+                        contentType: false,
+                        enctype: 'multipart/form-data',
+                        processData: false,
+                        showLoader: true,
+                        beforeSend:  function() {
+                           
+                        },
+                        success: function(html){
+                            $('.messages_validate_import').html('<p>Status</p>');
+                            var returnedData = jQuery.parseJSON(html);
+                            if(returnedData.error.length ==0){
+                            	var success = returnedData.success;
+                            	console.log(success);
+                                for (i = 0; i < success.length; i++) { 
+                                	$('.messages_validate_import').append('<div class="message message-success success"><div>'+returnedData.success+'</div></div>');
+                            	}
+                            }else{
+                            	var notice = returnedData.notice;
+                                for (i = 0; i < notice.length; i++) { 
+                                $('.messages_validate_import').append('<div class="message message-error error"><div>'+returnedData.notice+'</div></div>');
+                            	}
+                            }
+                        }
+                    }); 
+                } 
+            }
+        }         
+    });
+</script>

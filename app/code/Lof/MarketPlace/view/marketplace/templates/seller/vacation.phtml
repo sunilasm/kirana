@@ -1,0 +1,80 @@
+<div class="row">
+	<div class="col-md-12 col-sm-12 col-xs-12">
+		<div class="x_panel">
+			<div class="x_title">
+				<h2><?php echo __('Vacation Settings');?></h2>
+				<div class="clearfix"></div>
+			</div>
+			<div class="x_content">
+				<br>
+				<form id="vacation-settings" action="<?php echo $block->getUrl('catalog/vacation/save', ["_secure" => $this->getRequest()->isSecure()]) ?>" data-parsley-validate="" class="form-horizontal form-label-left" novalidate="" data-mage-init='{"validation":{}}' method="post">
+					<input type="hidden" name="seller_id" value="<?php echo $this->getSellerId(); ?>" />
+					<input type="hidden" name="vacation_id" value="<?php echo $this->getVacation()->getData('vacation_id'); ?>" />
+					<div class="form-group">
+						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="status"><?php echo __('Vacation Status');?> <span class="required">*</span>
+						</label>
+						<div class="col-md-6 col-sm-6 col-xs-12">
+							<div class="radio">
+								<label>
+									<input <?php if($this->getVacation()->getData('status') == 1) echo 'checked'; ?> type="radio" class="flat" value="1" name="status">
+										<?php echo __('Turn ON');?>
+								</label>
+							</div>
+							<div class="radio">
+								<label>
+									<input type="radio" class="flat" value="0" name="status" <?php if($this->getVacation()->getData('status') == 0) echo 'checked'; ?>>
+									 <?php echo __('Turn OFF');?>
+								</label>
+							</div>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="last-name"><?php echo __('Vacation Message');?> <span class="required">*</span>
+						</label>
+						<div class="col-md-6 col-sm-6 col-xs-12">
+							<textarea id="vacation_message" name="vacation_message" required="required" class="form-control col-md-7 col-xs-12"><?php echo $this->getVacation()->getData('vacation_message'); ?></textarea>
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="from_date" class="control-label col-md-3 col-sm-3 col-xs-12"><?php echo __('Vacation Date From');?><span class="required">*</span></label>
+						<div class="col-md-6 col-sm-6 col-xs-12">
+							<input id="from_date" class="form-control col-md-7 col-xs-12" type="text" name="from_date" value="<?php echo $this->getVacation()->getData('from_date'); ?>" required="required">
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="to_date" class="control-label col-md-3 col-sm-3 col-xs-12"><?php echo __('Vacation Date To');?><span class="required">*</span></label>
+						<div class="col-md-6 col-sm-6 col-xs-12">
+							<input id="to_date" class="form-control col-md-7 col-xs-12" type="text" name="to_date" value="<?php echo $this->getVacation()->getData('to_date'); ?>" required="required">
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="control-label col-md-3 col-sm-3 col-xs-12"><?php echo __('Text display on button add to cart when seller on vacation');?><span class="required">*</span></label>
+						<div class="col-md-6 col-sm-6 col-xs-12">
+							<input id="text_add_cart" class="form-control col-md-7 col-xs-12" type="text" name="text_add_cart" value="<?php echo $this->getVacation()->getData('text_add_cart'); ?>" required="required">
+						</div>
+					</div>
+					<div class="ln_solid"></div>
+					<div class="form-group">
+						<div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
+							<button type="submit" class="btn btn-success">Submit</button>
+						</div>
+					</div>
+
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+	require([
+		"jquery",
+		"mage/calendar"
+		], function($){
+			$("#from_date").calendar({
+				buttonText:"<?php echo __('Select Date') ?>"
+			});
+			$("#to_date").calendar({
+				buttonText:"<?php echo __('Select Date') ?>"
+			});
+		});
+	</script>

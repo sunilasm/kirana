@@ -1,0 +1,8 @@
+<!--@subject New Shipment from Order # {{var data.order_id}} @-->
+
+
+{{template config_path="design/email/header_template"}}
+Hi {{var data.name}}
+You have new shipment form order {{var data.order_id}}
+Order status {{var data.order_status}} 
+{{template config_path="design/email/footer_template"}}

@@ -1,0 +1,94 @@
+<?php 
+$helper = $this->helper('Lof\MarketPlace\Helper\Data');
+$message = $block->getMessage();
+$currPageUrl = $helper->getCurrentUrls();
+$detail = $this->getDetail();
+$modId       = time() . rand();
+ $helper = $this->helper("Lof\MarketPlace\Helper\Data");
+$this->isRead(); 
+?>
+
+<div class="block lrw-block lrw-account-summary-listing">
+	<div class="block-title">
+		<strong><?php echo __('Post Reply Message');?></strong>
+	</div>
+	<div class="block-content">
+		<div class="orders-recent">
+			<div id="lofform<?php echo $modId;?>" class="lofmarketplace-form">
+				<div class="form-content">
+					<form id="lofmarketplace<?php echo $modId;?>" class="lofmarketplace form" action="<?php  echo $block->getUrl('*/*/savemsg')?>" method="post" data-hasrequired="<?php echo __('* Required Fields') ?>" data-mage-init='{"validation":{}}' enctype="multipart/form-data">
+						<input type="hidden" name="message_id" value="<?php echo $message->getData('message_id'); ?>" />
+						<input type="hidden" name="receiver_id" value="<?php echo $this->getSeller()->getData('seller_id');?>" />
+                    	<input type="hidden" name="receiver_name" value="<?php echo $this->getSeller()->getName();?>" />
+                    	<input type="hidden" name="receiver_email" value="<?php echo $this->getSeller()->getEmail();?>" />
+                    	<input type="hidden" name="sender_id" value="<?php echo $message->getSenderId(); ?>" />
+                    	<input type="hidden" name="sender_name" value="<?php echo $message->getSenderName(); ?>" />
+                    	<input type="hidden" name="sender_email" value="<?php echo $message->getSenderEmail(); ?>" />
+                    
+                        	<input type="hidden" name="currUrl"  id="currUrl" value="<?php echo $currPageUrl; ?>" />
+						<div class="form-message row">
+							<div class="field col-sm-12">
+								<div class="response-field-text">
+									<div class="subtemplate-wrapper" style="">
+										<label for="content " class="required"><?php echo __('Message '); ?><em>*</em>
+										</label>
+										<div class="row">
+											<div class="col-sm-12">
+												<div class="subtemplate-inner">
+													<textarea name="content" id="content" class="input-text required-entry _required" rows="5" aria-required="true"></textarea>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>	
+						<div class="row">
+							<div class="buttons-set col-sm-12">
+							<button type="submit" title="Submit" class="formbuilder-button button">
+								<span>
+									<?php echo __('Post Reply'); ?>							
+								</span>
+							</button>
+						</div>
+					</div>
+					</form>
+				</div>		
+			</div>
+		</div>	
+	</div>
+</div>
+
+<div class="block lrw-block lrw-account-summary-listing">
+	<div class="block-title">
+		<strong><?php echo __('History Message');?></strong>
+	</div>
+	<div class="block-content">
+		<div class="orders-recent">
+		<?php 
+			$data = '';
+            $class = '';
+			foreach ($detail->setOrder('created_at','desc') as $key => $_message) {
+         		$class = '';
+         		if($_message->getData('seller_send') == 1) {
+         			$class = 'seller';
+         		}
+                $name = $_message->getData('sender_name');
+                   
+                $data .= '<div class="lof-ticket-history">';
+                    $data .= '<div class="lof-message">';
+                        $data .= '<div class="lof-message-header">';
+                            $data .= '<strong>'.$name.'</strong>';
+                            $data .= '<span class="minor">'.__('added %1 (%2)', $helper->nicetime($_message->getCreatedAt()), $_message->getCreatedAt()).'</span>';
+                        $data .= '</div>';
+                        $data .= '<div class="lof-message-body '.$class.'">';
+                            $data .= $_message->getContent(); 
+                        $data .= '</div>';
+                    $data .= '</div>';
+                $data .= '</div>';
+            }
+            echo $data;
+		?>
+		</div>
+	</div>
+</div>	

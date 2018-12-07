@@ -1,0 +1,56 @@
+<?php
+/**
+ * Copyright © 2015 Magento. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+
+// @codingStandardsIgnoreFile
+
+?>
+
+<?php
+$_helper = $this->helper('Lof\MarketPlace\Helper\Data');
+$isSeller= $this->isSeller();
+$seller = $_helper->getSellerByCustomer();
+
+if($seller['thumbnail']) {
+  $imageSrc = $_helper->getMediaUrl() . $seller['thumbnail'];
+} else {
+  $imageSrc = $_helper->getMediaUrl() . 'images/user.png';
+}
+$magentoCurrentUrl = $block->getCurrentUrl();
+$allow_pro_type='configurable'; //$_helper->getAllowedProductType();
+$isSellerGroup = 1; //$_helper->isSellerGroupModuleInstalled();
+?>
+<div class="col-md-3 left_col">
+    <div class="left_col scroll-view">
+      <div class="navbar nav_title">
+        <a href="<?php echo $block->getUrl('catalog/dashboard', ['_secure' => $this->getRequest()->isSecure()]); ?>" class="site_title"><i class="fa <?php echo $_helper->getConfig('design/header_icon'); ?>"></i> 
+          <span>  
+            <?php if($_helper->getConfig('design/header_text')) {
+              echo $_helper->getConfig('design/header_text');
+            } else { ?>
+              <?php echo __('Landofcoder');?>
+            <?php } ?>
+          </span>
+        </a> 
+      </div>
+      <div class="clearfix"></div>
+      <div class="profile clearfix">
+        <div class="profile_pic">
+          <img src="<?php echo $imageSrc; ?>" alt="..." class="img-circle profile_img">
+        </div>
+        <div class="profile_info">
+          <span><?php echo __('Welcome').','; ?></span>
+          <h2><?php echo $seller['name'];?></h2>
+          <a href="#"><i class="fa fa-circle text-success"></i><?php echo __('Online');?></a>
+        </div>
+      </div>
+      <br>
+      <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
+        <div class="menu_section active">
+          <?php /* @escapeNotVerified */ echo $block->renderNavigation($block->getMenuModel(), 0, 12); ?>
+        </div>
+      </div>
+    </div>
+</div>

@@ -1,0 +1,17 @@
+All js files here are copied from core.
+
+Folder: vendor/magento/module-catalog/view/adminhtml/web
+
+js/components/attribute-set-select.js
+js/components/dynamic-rows-import-custom-options.js
+js/components/import-handler.js
+js/components/new-category.js
+
+
+Folder: vendor/magento/module-variable/view/adminhtml/web
+js/components/variables.js
+
+
+js/components/use-config-settings.js
+js/components/qty-validator-changer.js
+js/components/use-config-min-sale-qty.js

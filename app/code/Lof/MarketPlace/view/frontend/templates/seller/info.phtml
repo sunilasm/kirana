@@ -1,0 +1,218 @@
+<?php
+$seller = $this->getCurrentSeller(); 
+$sellerId = $seller->getData('seller_id');
+$data = $this->helper('Lof\MarketPlace\Helper\Data');
+$show_seller_contact = $data->getConfig("product_view_page/show_seller_contact");
+$text_contact = $data->getConfig("product_view_page/text_contact");
+$formActionUrl = $this->getUrl('lofmarketplace/seller/savemessage');
+$currPageUrl = $data->getCurrentUrls();
+$per_rate = round($this->getRate()['average']/5*100);
+$href = '#';
+$_helper = $this->helper('Lof\MarketPlace\Helper\Data');
+?>
+<div class="lof_marketplace_wrapper">
+	<div class="block block-multivendor">
+		<div class="block-content">
+			<div class="fieldset item-wrapp">
+				<div class="mkpl-image">
+					<img src="<?php 
+					if($this->getCurrentSeller()->getThumbnailUrl()) {
+						echo $this->getCurrentSeller()->getThumbnailUrl();
+					} else {
+						echo $_helper->getMediaUrl() . 'images/avartar-seller.png';
+					}
+					?>" alt="<?php echo $this->getCurrentSeller()->getName();?>">
+				</div>
+				<div class="mkpl-title"><span><?php echo $this->getCurrentSeller()->getName();?></span></div>
+				<div class="mkpl-description">
+					<p><span><?php echo $this->getCurrentSeller()->getCompanyDescription();?></span></p>
+				</div>
+				<?php if($this->getCurrentSeller()->getAddress()) { ?>
+				<div class="mkpl-address seller-info">
+					<i class="fa fa-map-marker"></i><?php echo $this->getCurrentSeller()->getAddress();?>, <?php echo $this->getCurrentSeller()->getCountry();?>
+				</div>
+				<?php } ?>
+				<div class="mkpl-sale seller-info">
+					<i class="fa fa-shopping-cart"></i>
+						<?php if($this->getTotalSales() >1) {
+							echo $this->getTotalSales().__(" Sales");
+						} else {
+							echo $this->getTotalSales().__(" Sale");
+						} ?>
+					
+				</div>
+				<div class="mkpl-join-date seller-info">
+					<i class="fa fa-calendar"></i>
+					<?php echo __("Joined since ").$this->formatDate($this->getCurrentSeller()->getCreationTime(),\IntlDateFormatter::MEDIUM);?>
+					
+				</div>
+				<?php if($this->getCurrentSeller()->getContactNumber()) { ?>
+				<div class="mkpl-join-date seller-info">
+					<i class="fa fa-phone"></i>
+					<?php echo $this->getCurrentSeller()->getContactNumber();?>
+					
+				</div>
+				<?php } ?>
+				<div class="mkpl-review">
+					<div class="review-average-info">
+						<div class="average-rating">
+							<div class="ratings">
+								<div class="rating-box">
+									<div class="rating" style="width: <?php echo $per_rate;?>%;"></div>
+								</div>
+								<div class="rating-links"> 
+									<a id="lof-rating" href="javascript:;"><?php echo count($this->getRating()); ?><?php echo __('Rating(s)'); ?></a>
+								</div>
+								<div class="clearfix"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="mkpl-socialnetworks">
+					<ul class="list-social">
+						<?php if($seller->getData('fb_active')) { ?>
+						<li class="icon-social">
+							<a class="facebook" href="<?php echo $seller->getData('facebook_id');?>"> <i class="fa fa-facebook"></i> </a>
+						</li>	
+						<?php } ?>
+						<?php if($seller->getData('gplus_active')) { ?>						
+						<li class="icon-social">
+							<a class="google" href="<?php echo $seller->getData('gplus_id');?>"> <i class="fa fa-google-plus"></i></a>
+						</li>
+						<?php } ?>	
+						<?php if($seller->getData('tw_active')) { ?>						
+						<li class="icon-social">
+							<a class="twitter" href="<?php echo $seller->getData('twitter_id');?>"> <i class="fa fa-twitter"></i></a>
+						</li>
+						<?php } ?>	
+						<?php if($seller->getData('youtube_active')) { ?>
+						<li class="icon-social">
+							<a class="youtube" href="<?php echo $seller->getData('youtube_id');?>"> <i class="fa fa-youtube"></i> </a>
+						</li>
+						<?php } ?>	
+						<?php if($seller->getData('linkedin_active')) { ?>							
+						<li class="icon-social">
+							<a class="linkedin" href="<?php echo $seller->getData('linkedin_id');?>"> <i class="fa fa-linkedin"></i></a>
+						</li>							
+						<?php } ?>	
+						<?php if($seller->getData('vimeo_active')) { ?>
+						<li class="icon-social">
+							<a class="vimeo" href="<?php echo $seller->getData('vimeo_id');?>"> <i class="fa fa-vimeo"></i> </a>
+						</li>
+						<?php } ?>	
+						<?php if($seller->getData('instagram_active')) { ?>
+						<li class="icon-social">
+							<a class="instagram" href="<?php echo $seller->getData('instagram_id');?>"> <i class="fa fa-instagram"></i> </a>
+						</li>
+						<?php } ?>
+						<?php if($seller->getData('pinterest_active')) { ?>
+						<li class="icon-social">
+							<a class="pinterest" href="<?php echo $seller->getData('pinterest_id');?>"> <i class="fa fa-pinterest"></i> </a>
+						</li>
+						<?php } ?>	
+					</ul>
+				</div>
+				<?php if($show_seller_contact) { ?>
+				<div class="mkpl-contact  message-contact seller-info">
+					<a class="btn" id="seller-contact" href="<?php echo $href;?>"><i class="fa fa-envelope-o"></i><?php echo $text_contact;?></a>
+				</div>
+				<?php } ?>	
+			</div>
+		</div>
+	</div>
+</div>
+<?php if($data->isLoggedIn()) { ?>
+<div class="contact-seller" id="contact-seller" style="display: none;">
+	<form class="form contact" action="<?php echo $formActionUrl;?>" id="contact-form" method="post" data-hasrequired="<?php /* @escapeNotVerified */ echo __('* Required Fields') ?>" data-mage-init='{"validation":{}}'>
+	    <fieldset class="fieldset">
+	        <legend class="legend"><span><?php /* @escapeNotVerified */ echo $text_contact; ?></span></legend><br />
+			<input name="sender_name" type="hidden" value="<?php echo $data->getCustomerName(); ?>" />
+			<input name="sender_email" type="hidden" value="<?php echo $data->getCustomerEmail(); ?>" />
+			<input name="sender_id" type="hidden" value="<?php echo $data->getCustomerId(); ?>" />
+			<input name="owner_id" type="hidden" value="<?php echo $sellerId; ?>" />
+	        <div class="field name required">
+	            <label class="label" for="subject"><span><?php /* @escapeNotVerified */ echo __('Subject') ?></span></label>
+	            <div class="control">
+	                <input name="subject" id="subject" title="<?php /* @escapeNotVerified */ echo __('Subject') ?>" class="input-text" type="text" data-validate="{required:true}"/>
+	            </div>
+	        </div>
+	        <div class="field description required">
+	            <label class="label" for="description"><span><?php /* @escapeNotVerified */ echo __('What’s on your mind?') ?></span></label>
+	            <div class="control">
+	                <textarea name="description" id="description" title="<?php /* @escapeNotVerified */ echo __('What’s on your mind?') ?>" class="input-text" cols="5" rows="3" data-validate="{required:true}"></textarea>
+	            </div>
+	        </div>
+	 
+	    </fieldset>
+	    <div class="actions-toolbar">
+	        <div class="primary">
+	        	<input type="hidden" name="currUrl" value="<?php echo $currPageUrl; ?>" />
+	            <button type="submit" title="<?php /* @escapeNotVerified */ echo __('Submit') ?>" class="action submit primary">
+	                <span><?php /* @escapeNotVerified */ echo __('Submit') ?></span>
+	            </button>
+	        </div>
+	    </div>
+	</form>
+</div>	
+<?php } else { ?>
+<div class="contact-seller" id="contact-seller" style="display: none;">
+	<form class="form contact" action="<?php echo $formActionUrl;?>" id="contact-form" method="post" data-hasrequired="<?php /* @escapeNotVerified */ echo __('* Required Fields') ?>" data-mage-init='{"validation":{}}'>
+	    <fieldset class="fieldset">
+	        <legend class="legend"><span><?php /* @escapeNotVerified */ echo $text_contact; ?></span></legend><br />
+			<input name="owner_id" type="hidden" value="<?php echo $sellerId; ?>" />
+			<div class="field name required">
+	            <label class="label" for="sender_name"><span><?php /* @escapeNotVerified */ echo __('Customer Name') ?></span></label>
+	            <div class="control">
+	                <input name="sender_name" id="sender_name" title="<?php /* @escapeNotVerified */ echo __('Customer Name') ?>" class="input-text" type="text" data-validate="{required:true}"/>
+	            </div>
+	        </div>
+	        <div class="field name required">
+	            <label class="label" for="sender_email"><span><?php /* @escapeNotVerified */ echo __('Customer Email') ?></span></label>
+	            <div class="control">
+	                <input name="sender_email" id="sender_email" title="<?php /* @escapeNotVerified */ echo __('Customer Email') ?>" class="input-text" type="text" data-validate="{required:true}"/>
+	            </div>
+	        </div>
+	        <div class="field name required">
+	            <label class="label" for="subject"><span><?php /* @escapeNotVerified */ echo __('Subject') ?></span></label>
+	            <div class="control">
+	                <input name="subject" id="subject" title="<?php /* @escapeNotVerified */ echo __('Subject') ?>" class="input-text" type="text" data-validate="{required:true}"/>
+	            </div>
+	        </div>
+	        <div class="field description required">
+	            <label class="label" for="description"><span><?php /* @escapeNotVerified */ echo __('What’s on your mind?') ?></span></label>
+	            <div class="control">
+	                <textarea name="description" id="description" title="<?php /* @escapeNotVerified */ echo __('What’s on your mind?') ?>" class="input-text" cols="5" rows="3" data-validate="{required:true}"></textarea>
+	            </div>
+	        </div>
+	 
+	    </fieldset>
+	    <div class="actions-toolbar">
+	        <div class="primary">
+	        	<input type="hidden" name="currUrl"  value="<?php echo $currPageUrl; ?>" />
+	            <button type="submit" title="<?php /* @escapeNotVerified */ echo __('Submit') ?>" class="action submit primary">
+	                <span><?php /* @escapeNotVerified */ echo __('Submit') ?></span>
+	            </button>
+	        </div>
+	    </div>
+	</form>
+</div>	
+<?php } ?>
+<script type="text/javascript">
+require(
+	[
+	'jquery',
+	'Lof_All/lib/fancybox/jquery.fancybox.pack',
+	'mage/validation'
+	], function($){
+	jQuery(document).ready(function($) {
+		jQuery("#seller-contact").fancybox({
+			'href'   : '#contact-seller',
+			'titleShow'  : false,
+			'transitionIn'  : 'elastic',
+			'transitionOut' : 'elastic',
+			'minWidth'		: 420,
+
+		});	
+	});
+});
+</script>

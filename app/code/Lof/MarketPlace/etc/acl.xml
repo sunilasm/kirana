@@ -1,0 +1,74 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Landofcoder
+ * 
+ * NOTICE OF LICENSE
+ * 
+ * This source file is subject to the Landofcoder.com license that is
+ * available through the world-wide-web at this URL:
+ * http://www.landofcoder.com/license-agreement.html
+ * 
+ * DISCLAIMER
+ * 
+ * Do not edit or add to this file if you wish to upgrade this extension to newer
+ * version in the future.
+ * 
+ * @category   Landofcoder
+ * @package    Lof_MarketPlace
+ * @copyright  Copyright (c) 2014 Landofcoder (http://www.landofcoder.com/)
+ * @license    http://www.landofcoder.com/LICENSE-1.0.html
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Acl/etc/acl.xsd">
+    <acl>
+        <resources>
+            <resource id="Magento_Backend::admin">
+                <resource id="Lof_MarketPlace::marketplace" title="Lof Seller">
+                    <resource id="Lof_MarketPlace::seller" title="Sellers" sortOrder="10">
+                        <resource id="Lof_MarketPlace::seller_edit" title="Edit Seller" sortOrder="10" />
+                        <resource id="Lof_MarketPlace::seller_save" title="Save Seller" sortOrder="20" />
+                        <resource id="Lof_MarketPlace::seller_delete" title="Delete Seller" sortOrder="30" />
+                    </resource>
+                    <resource id="Lof_MarketPlace::commission" title="Commission" sortOrder="20">
+                        <resource id="Lof_MarketPlace::commission_edit" title="Edit Commission" sortOrder="10" />
+                        <resource id="Lof_MarketPlace::commission_save" title="Save Commission" sortOrder="20" />
+                        <resource id="Lof_MarketPlace::commission_delete" title="Delete Commission" sortOrder="30" />
+                    </resource>
+                    <resource id="Lof_MarketPlace::group" title="Groups" sortOrder="30">
+                        <resource id="Lof_MarketPlace::group_edit" title="Edit Group" sortOrder="10" />
+                        <resource id="Lof_MarketPlace::group_save" title="Save Group" sortOrder="20" />
+                        <resource id="Lof_MarketPlace::group_delete" title="Delete Group" sortOrder="30" />
+                    </resource>
+                    <resource id="Lof_MarketPlace::catalog" title="Catalog" sortOrder="40" >
+                        <resource id="Lof_MarketPlace::sellerproduct" title="Product" sortOrder="40" />
+                    </resource>
+                    <resource id="Lof_MarketPlace::sales" title="Sales" sortOrder="50">
+                        <resource id="Lof_MarketPlace::order" title="Orders" sortOrder="50"/>
+                        <resource id="Lof_MarketPlace::transaction" title="Orders Transaction" sortOrder="60"/>
+                        <resource id="Lof_MarketPlace::invoice" title="Invoices" sortOrder="70" />
+                        <resource id="Lof_MarketPlace::refund" title="Refund" sortOrder="80" />
+                    </resource>
+                    <resource id="Lof_MarketPlace::amount" title="Amount" sortOrder="90" />
+                    <resource id="Lof_MarketPlace::amounttransaction" title="Amount Transaction" sortOrder="100" />
+                    <resource id="Lof_MarketPlace::payment" title="Payment" sortOrder="110">
+                        <resource id="Lof_MarketPlace::payment_edit" title="Edit Payment" sortOrder="10" />
+                        <resource id="Lof_MarketPlace::payment_save" title="Save Payment" sortOrder="20" />
+                        <resource id="Lof_MarketPlace::payment_delete" title="Delete Payment" sortOrder="30" />
+                    </resource>
+                    <resource id="Lof_MarketPlace::withdrawal" title="Withdrawal" sortOrder="120" />
+                    <resource id="Lof_MarketPlace::reviewrating" title="Review" sortOrder="130" />
+                    <resource id="Lof_MarketPlace::review" title="Review" sortOrder="125" />
+                    <resource id="Lof_MarketPlace::rating" title="Rating" sortOrder="140" />
+                </resource>
+                <resource id="Magento_Backend::stores">
+                    <resource id="Magento_Backend::stores_settings">
+                        <resource id="Magento_Config::config">
+                            <resource id="Lof_MarketPlace::config_seller" title="Seller" />
+                        </resource>
+                    </resource>
+                </resource>
+            </resource>
+        </resources>
+    </acl>
+</config>

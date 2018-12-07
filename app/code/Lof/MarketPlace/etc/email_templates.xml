@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/**
+ * Landofcoder
+ * 
+ * NOTICE OF LICENSE
+ * 
+ * This source file is subject to the Landofcoder.com license that is
+ * available through the world-wide-web at this URL:
+ * http://www.venustheme.com/license-agreement.html
+ * 
+ * DISCLAIMER
+ * 
+ * Do not edit or add to this file if you wish to upgrade this extension to newer
+ * version in the future.
+ * 
+ * @category   Landofcoder
+ * @package    Lof_MarketPlace
+ * @copyright  Copyright (c) 2014 Landofcoder (http://www.venustheme.com/)
+ * @license    http://www.venustheme.com/LICENSE-1.0.html
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../Magento/Email/etc/email_templates.xsd">
+    <template id="lofmarketplace_email_settings_message_template" label="Customer New Message" file="message_template.html" type="html" module="Lof_MarketPlace" area="frontend"/>
+    <template id="lofmarketplace_email_settings_rating_template" label="Customer Rating Seller" file="rating_template.html" type="html" module="Lof_MarketPlace" area="frontend"/>
+    <template id="lofmarketplace_email_settings_seller_message_template" label="Seler New Message " file="seller_message_template.html" type="html" module="Lof_MarketPlace" area="frontend"/>
+    <template id="lofmarketplace_email_settings_reply_message_template" label="Customer Reply Message " file="reply_message_template.html" type="html" module="Lof_MarketPlace" area="frontend"/>
+    <template id="lofmarketplace_email_settings_order_template" label="New Order" file="new_order_template.html" type="html" module="Lof_MarketPlace" area="frontend"/>
+    <template id="lofmarketplace_email_settings_invoice_template" label="New Invoice" file="new_invoice_template.html" type="html" module="Lof_MarketPlace" area="frontend"/>
+    <template id="lofmarketplace_email_settings_shipment_template" label="New Shipment" file="new_shipment_template.html" type="html" module="Lof_MarketPlace" area="frontend"/>
+    <template id="lofmarketplace_email_settings_register_seller_template" label="Register Seller" file="register_seller_template.html" type="html" module="Lof_MarketPlace" area="frontend"/>
+    <template id="lofmarketplace_email_settings_approve_seller_template" label="Approve Seller" file="approve_seller_template.html" type="html" module="Lof_MarketPlace" area="frontend"/>
+    <template id="lofmarketplace_email_settings_unapprove_seller_template" label="Unapprove Seller" file="unapprove_seller_template.html" type="html" module="Lof_MarketPlace" area="frontend"/>
+</config>
