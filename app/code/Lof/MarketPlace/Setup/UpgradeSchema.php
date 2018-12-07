@@ -421,6 +421,33 @@ class UpgradeSchema implements UpgradeSchemaInterface
                 'comment'  => 'total amount sold'
             ]
         );
+        if (version_compare($context->getVersion(), '1.0.6') <= 0) {
+
+            /* table lof_sellerr */
+            $table = $installer->getTable('lof_marketplace_seller');
+
+            $installer->getConnection()->addColumn(
+                $table,
+                'geo_lat',
+                [
+                'type'     => \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+                    'length'   => 255,
+                    'nullable' => true,
+                    'comment'  => 'Goe Latitude'
+                ]
+            );
+
+            $installer->getConnection()->addColumn(
+                $table,
+                'geo_lng',
+                [
+                'type'     => \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+                    'length'   => 255,
+                    'nullable' => true,
+                    'comment'  => 'Goe Longitude'
+                ]
+            );
+        }
          $installer->endSetup();  
     }
 }
