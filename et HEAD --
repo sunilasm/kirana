@@ -1,0 +1,194 @@
+[33mcommit 511688c517be1788db414c15d7bebe9f142f1887[m[33m ([m[1;36mHEAD -> [m[1;32mmarketplace_extension[m[33m, [m[1;31morigin/marketplace_extension[m[33m)[m
+Author: sunilasm <sunil.n@altencalsoftlabs.com>
+Date:   Tue Dec 4 19:29:54 2018 +0530
+
+    Kirana marketplace update
+
+[33mcommit 30d67889410f556462e9803e669889e2cb947fb2[m
+Merge: 1bb4587e6 bd7d5fe8a
+Author: sunilasm <sunil.n@altencalsoftlabs.com>
+Date:   Tue Dec 4 18:42:06 2018 +0530
+
+    Merge branch 'marketplace_extension' of https://github.com/sunilasm/kirana into marketplace_extension
+
+[33mcommit 1bb4587e64c8331ad36d7d6b202ad227157da6bd[m
+Author: sunilasm <sunil.n@altencalsoftlabs.com>
+Date:   Tue Dec 4 18:27:26 2018 +0530
+
+    Update word seller to kirana
+
+[33mcommit bd7d5fe8af99b1c8640c1ae859663312f5bb36a0[m
+Merge: 1bbc933a7 99b4084ba
+Author: root <root@ip-172-31-0-225.ap-south-1.compute.internal>
+Date:   Tue Dec 4 12:11:57 2018 +0000
+
+    Merge branch 'marketplace_extension' of https://github.com/sunilasm/kirana into marketplace_extension
+
+[33mcommit 1bbc933a75bf2653e771a91f3abcb26041f9f35b[m
+Author: root <root@ip-172-31-0-225.ap-south-1.compute.internal>
+Date:   Tue Dec 4 12:11:35 2018 +0000
+
+    site updates.
+
+[33mcommit 99b4084ba0d34d1f269eb3c575d9c9ec2618f91b[m
+Author: sunilasm <sunil.n@altencalsoftlabs.com>
+Date:   Tue Dec 4 17:40:00 2018 +0530
+
+    coupon code and apply coupon
+
+[33mcommit 00f5bbfc863dff874e620d17071cc4f731810915[m
+Merge: 0eebc02bb 364d573fd
+Author: sunilasm <sunil.n@altencalsoftlabs.com>
+Date:   Mon Dec 3 19:45:23 2018 +0530
+
+    Merge branch 'marketplace_extension' of https://github.com/sunilasm/kirana into marketplace_extension
+
+[33mcommit 0eebc02bb8bae1acc7dba969578a92ac215c14b3[m
+Author: sunilasm <sunil.n@altencalsoftlabs.com>
+Date:   Mon Dec 3 19:43:46 2018 +0530
+
+    Review issue update.
+
+[33mcommit 364d573fde51fcd82aa50168180880faac463aad[m
+Author: root <root@ip-172-31-0-225.ap-south-1.compute.internal>
+Date:   Mon Dec 3 11:24:34 2018 +0000
+
+    Display reviews on product details.
+
+[33mcommit dbb12793f9d2ebc9acbe681f9125707634652bcc[m
+Author: root <root@ip-172-31-0-225.ap-south-1.compute.internal>
+Date:   Mon Dec 3 06:02:44 2018 +0000
+
+    Db backup of development.
+
+[33mcommit 80285a653f970689f9696150fa2f77a242345c5b[m
+Author: root <root@ip-172-31-0-225.ap-south-1.compute.internal>
+Date:   Fri Nov 23 07:16:10 2018 +0000
+
+    M2 Markeptplace extension support team error fixes.
+
+[33mcommit 47ea34d9705773990f3b2ab43b234145b34d9300[m
+Merge: fc3195e6f 05f88c58a
+Author: root <root@ip-172-31-0-225.ap-south-1.compute.internal>
+Date:   Tue Nov 20 12:01:47 2018 +0000
+
+    Merge branch 'marketplace_extension' of https://github.com/sunilasm/kirana into marketplace_extension
+
+[33mcommit 05f88c58aa41b84d2b8e01dab6d6f7b9e294ecab[m
+Merge: c55fc1e88 7204fa4ca
+Author: sunilasm <sunil.n@altencalsoftlabs.com>
+Date:   Tue Nov 20 17:23:28 2018 +0530
+
+    Merge branch 'master' into marketplace_extension
+
+[33mcommit c55fc1e8837119284dcc0748393b7d12f0294e8b[m
+Author: sunilasm <sunil.n@altencalsoftlabs.com>
+Date:   Tue Nov 20 17:21:25 2018 +0530
+
+    Markeptplace extension installation.
+
+[33mcommit fc3195e6f2b655697ae872a51312aa3507395536[m[33m ([m[1;32mmaster[m[33m)[m
+Author: root <root@ip-172-31-0-225.ap-south-1.compute.internal>
+Date:   Tue Nov 20 11:48:27 2018 +0000
+
+    QA changes.
+
+[33mcommit 15f07d5d7dd4fc4fa9c7ff01aedbcee237db55b3[m
+Merge: 43eb3d802 7204fa4ca
+Author: root <root@ip-172-31-0-225.ap-south-1.compute.internal>
+Date:   Fri Nov 16 10:32:41 2018 +0000
+
+    Merge branch 'master' of https://github.com/sunilasm/kirana
+
+[33mcommit 43eb3d8025f7ddace1d8eaec0126e4dfa40ce228[m
+Author: root <root@ip-172-31-0-225.ap-south-1.compute.internal>
+Date:   Fri Nov 16 10:31:53 2018 +0000
+
+    Development server setup.
+
+[33mcommit 7204fa4ca4e7fb2df20b722e45bff279ecc737db[m[33m ([m[1;31morigin/master[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Merge: 03a8c1c0e dced32a4c
+Author: sunilasm <44804407+sunilasm@users.noreply.github.com>
+Date:   Fri Nov 16 16:00:04 2018 +0530
+
+    Merge pull request #2 from sunilasm/user_roles
+    
+    User roles setup database changes.
+
+[33mcommit dced32a4c7587a5f1efb1c52190bb5f2fc59cc51[m[33m ([m[1;31morigin/user_roles[m[33m)[m
+Author: sunilasm <sunil.n@altencalsoftlabs.com>
+Date:   Fri Nov 16 15:57:45 2018 +0530
+
+    User roles setting database changes.
+
+[33mcommit 03a8c1c0e63dc3d94649716b8cccbf2face96b33[m
+Merge: 706533f98 c62eb46a6
+Author: sunilasm <44804407+sunilasm@users.noreply.github.com>
+Date:   Wed Nov 14 17:43:18 2018 +0530
+
+    Merge pull request #1 from sunilasm/customer_reg_smtp_setup
+    
+    Customer reg smtp setup
+
+[33mcommit c62eb46a66c23a28a0fe52d4e44109c32873c36c[m[33m ([m[1;31morigin/customer_reg_smtp_setup[m[33m)[m
+Author: sunilasm <sunil.n@altencalsoftlabs.com>
+Date:   Wed Nov 14 17:35:35 2018 +0530
+
+    SMTP settings.
+
+[33mcommit 399629bffad12fc2642504f752ad442a0b4cf37c[m
+Merge: 8f8d326e6 706533f98
+Author: sunilasm <sunil.n@altencalsoftlabs.com>
+Date:   Wed Nov 14 14:53:07 2018 +0530
+
+    Merge branch 'master' into customer_reg_smtp_setup
+
+[33mcommit 706533f980ba042b358cadb962eabbcf42c883d9[m
+Author: sunilasm <sunil.n@altencalsoftlabs.com>
+Date:   Wed Nov 14 14:52:01 2018 +0530
+
+    Added missing .htaccess file.
+
+[33mcommit 8f8d326e6d12f40949b58403f2a14f4166b6fbb0[m
+Merge: bf3897f50 208d431ea
+Author: sunilasm <sunil.n@altencalsoftlabs.com>
+Date:   Wed Nov 14 14:43:37 2018 +0530
+
+    Merge branch 'master' into customer_reg_smtp_setup
+
+[33mcommit 208d431eab76c612e0e64cb5c7c21e7588cf6ca6[m
+Merge: 7fb02b2e1 17fcc5740
+Author: sunilasm <sunil.n@altencalsoftlabs.com>
+Date:   Wed Nov 14 14:40:10 2018 +0530
+
+    Merge branch 'master' of https://github.com/sunilasm/kirana
+
+[33mcommit 7fb02b2e1755605ef5fd29b02ff60aae3185bc3e[m
+Author: sunilasm <sunil.n@altencalsoftlabs.com>
+Date:   Wed Nov 14 14:38:48 2018 +0530
+
+    gitignor changes for pub and generated folder.
+
+[33mcommit bf3897f50a6086a506552d9c923b108fff631ba8[m
+Author: sunilasm <sunil.n@altencalsoftlabs.com>
+Date:   Wed Nov 14 14:36:05 2018 +0530
+
+    smtp module installed.
+
+[33mcommit 17fcc57402a139334aca5a72af5ea3fde5d6aea7[m
+Author: sunilasm <44804407+sunilasm@users.noreply.github.com>
+Date:   Tue Nov 6 19:23:40 2018 +0530
+
+    Create README.md
+
+[33mcommit f3a73449c703e01783bbeff4882473bd9e45793a[m
+Author: sunilasm <sunil.n@altencalsoftlabs.com>
+Date:   Tue Nov 6 19:16:48 2018 +0530
+
+    Kirana store magento setup.
+
+[33mcommit cd97336b2537c57a3f96c8be99fef97972196784[m
+Author: sunilasm <44804407+sunilasm@users.noreply.github.com>
+Date:   Tue Nov 6 18:56:08 2018 +0530
+
+    Initial commit
