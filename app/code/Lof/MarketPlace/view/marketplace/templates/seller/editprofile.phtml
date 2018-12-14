@@ -39,13 +39,16 @@
 		</div>
 	</div>
 	<div class="admin__fieldset-wrapper-content">
+		<?php //echo "<pre>".print_r($seller,true); ?>
 		<fieldset class="admin__fieldset">
 			<div class="admin__field">
 				<label class="admin__field-label">
-					<?php echo __("Contact Number"); ?>
+					<?php echo __("Contact Number"); ?><span class="required">*</span>
 				</label>
 				<div class="admin__field-control">
-					<input type="text" name="contact_number" class="admin__control-text" value="<?php echo $seller['contact_number']; ?>" />
+					<input type="text" name="contact_number" class="admin__control-text" 
+					value="<?php echo $seller['contact_number']; ?>" 
+					data-validate='{"required":true,"number":true,"maxlength":10,"minlength":10}'/>
 				</div>
 			</div>
 			<div class="admin__field">
@@ -53,7 +56,8 @@
 					<?php echo __("Shop Title"); ?>
 				</label>
 				<div class="admin__field-control">
-					<input type="text" name="shop_title" class="admin__control-text" value="<?php echo $seller['shop_title']; ?>" />
+					<input type="text" name="shop_title" class="admin__control-text" value="<?php echo $seller['shop_title']; ?>" 
+					data-validate='{"required":true,"validate-alphanum-with-spaces":true}'/>
 				</div>
 			</div>
 			<div class="admin__field">
@@ -61,7 +65,8 @@
 					<?php echo __("Company"); ?>
 				</label>
 				<div class="admin__field-control">
-					<input type="text" name="company" class="admin__control-text" value="<?php echo $seller['company']; ?>"  />
+					<input type="text" name="company" class="admin__control-text" value="<?php echo $seller['company']; ?>" 
+					data-validate='{"required":true,"validate-alphanum-with-spaces":true}' />
 				</div>
 			</div>
 			<div class="admin__field">
@@ -69,7 +74,8 @@
 					<?php echo __("Company Locality"); ?>
 				</label>
 				<div class="admin__field-control">
-					<input type="text" name="company_locality" class="admin__control-text" value="<?php echo $seller['company_locality']; ?>"  />
+					<input type="text" name="company_locality" class="admin__control-text" value="<?php echo $seller['company_locality']; ?>"  
+					data-validate='{"required":true,"validate-alphanum-with-spaces":true}'/>
 				</div>
 			</div>
 			<div class="admin__field">
@@ -77,23 +83,8 @@
 					<?php echo __("Phone Number"); ?>
 				</label>
 				<div class="admin__field-control">
-					<input type="text" name="telephone" class="admin__control-text" value="<?php echo $seller['telephone']; ?>"  />
-				</div>
-			</div>
-			<div class="admin__field">
-				<label class="admin__field-label">
-					<?php echo __("State/Province"); ?>
-				</label>
-				<div class="admin__field-control">
-					<input type="text" name="region" class="admin__control-text" value="<?php echo $seller['region']; ?>"  />
-				</div>
-			</div>
-			<div class="admin__field">
-				<label class="admin__field-label">
-					<?php echo __("City"); ?>
-				</label>
-				<div class="admin__field-control">
-					<input type="text" name="city" class="admin__control-text" value="<?php echo $seller['city']; ?>"  />
+					<input type="text" name="telephone" class="admin__control-text" value="<?php echo $seller['telephone']; ?>" 
+					data-validate='{"required":true,"number":true,"maxlength":10,"minlength":10}' />
 				</div>
 			</div>
 			<div class="admin__field">
@@ -101,7 +92,26 @@
 					<?php echo __("Address"); ?>
 				</label>
 				<div class="admin__field-control">
-					<input type="text" name="address" class="admin__control-text" value="<?php echo $seller['address']; ?>" />
+					<input type="text" name="address" class="admin__control-text" value="<?php echo $seller['address']; ?>" 
+					data-validate='{"required":true}'/>
+				</div>
+			</div>
+			<div class="admin__field">
+				<label class="admin__field-label">
+					<?php echo __("City"); ?>
+				</label>
+				<div class="admin__field-control">
+					<input type="text" name="city" class="admin__control-text" value="<?php echo $seller['city']; ?>"  
+					data-validate='{"required":true,"validate-alphanum-with-spaces":true}'/>
+				</div>
+			</div>
+			<div class="admin__field">
+				<label class="admin__field-label">
+					<?php echo __("State/Province"); ?>
+				</label>
+				<div class="admin__field-control">
+					<input type="text" name="region" class="admin__control-text" value="<?php echo $seller['region']; ?>"  
+					data-validate='{"required":true,"validate-alphanum-with-spaces":true}'/>
 				</div>
 			</div>
 			<div class="admin__field">
@@ -109,7 +119,8 @@
 					<?php echo __("Country"); ?>
 				</label>
 				<div class="admin__field-control">
-					<input type="text" name="country" class="admin__control-text" value="<?php echo $seller['country']; ?>" />
+					<input type="text" name="country" class="admin__control-text" value="<?php echo $seller['country']; ?>" 
+					data-validate='{"required":true,"validate-alphanum-with-spaces":true}'/>
 				</div>
 			</div>
 			<div class="admin__field">
@@ -117,9 +128,12 @@
 					<?php echo __("Zip/Postal Code"); ?>
 				</label>
 				<div class="admin__field-control">
-					<input type="text" name="postcode" class="admin__control-text" value="<?php echo $seller['postcode']; ?>"  />
+					<input type="text" id="postcode" name="postcode" class="admin__control-text" value="<?php echo $seller['postcode']; ?>"  
+					data-validate='{"required":true,"number":true,"maxlength":6,"minlength":6}'/>
 				</div>
 			</div>
+			<input type="hidden" id="geo_lat" name="geo_lat" title="Geo Latitude" value="<?php echo $seller['geo_lat']; ?>" />
+			<input type="hidden" id="geo_lng" name="geo_lng" title="Geo Longitude" value="<?php echo $seller['geo_lng']; ?>" />
 			<div class="admin__field">
 				<label class="admin__field-label">
 					<?php echo __("Company Description"); ?>
@@ -373,6 +387,37 @@
 				    );
 				} 
         	});
-        });
+			jQuery("#postcode").change(function(){
+				var address = jQuery('#address').val();
+				var city = jQuery('#city').val();
+				var state = jQuery('#region').val();
+				var country = jQuery('#country').val();
+				var postcode = jQuery('#postcode').val();
+    			var param = "{address:'"+address+"',city:'"+city+"',state:'"+state+"',country:'"+country+"',pincode:'"+postcode+"'}";
+				jQuery.ajax({
+                                showLoader: true,
+                                url: "<?php  echo $block->getBaseUrl(); ?>geolocation",
+                                data: {address: 'Prabhvee techpark baner', 
+								city:'Pune',
+								state: 'Maharashtra',
+								country:'India',
+								Pincode:'4111028'},
+                                type: "POST",
+                                dataType: 'json',
+							}).done(function (data) {
+                                if(data.status == 'success')
+								{
+									jQuery('#geo_lat').val(data.geo.lat);
+									jQuery('#geo_lng').val(data.geo.lng);
+								}
+								else
+								{
+									console.log("Geolocatiopn failed.");
+								}
+							}).fail(function (jqXhr) {
+								console.log(jqXhr.responseText);
+                    		});
+			});
+		});//
     });
 </script>
