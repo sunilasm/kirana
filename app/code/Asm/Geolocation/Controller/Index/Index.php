@@ -33,25 +33,27 @@ class Index extends \Magento\Framework\App\Action\Action
             $url = $this->_appUrl;
             $address = '?address=';
            
-            $address .= (isset($parameters['address'])) ? urlencode($parameters['address']).',' : '';
-            $address .= (isset($parameters['city'])) ? $parameters['city'].',' : '';
-            $address .= (isset($parameters['state'])) ? urlencode($parameters['state']).',' : '';
-            $address .= (isset($parameters['country'])) ? urlencode($parameters['country']) : '';
+            $address .= (isset($parameters['address'])) ? urlencode($parameters['address']).',' : urlencode('Gondhale Nagar Hadapsar');
+            $address .= (isset($parameters['city'])) ? $parameters['city'].',' : 'Pune';
+            $address .= (isset($parameters['state'])) ? urlencode($parameters['state']).',' : 'Maharashtra';
+            $address .= (isset($parameters['country'])) ? urlencode($parameters['country']) : 'India';
             
             $url .= $address."&key=".$this->_key;
             $this->_curl->get($url);
             $response = $this->_curl->getBody();
             $response = new \SimpleXMLElement($response);
+            //echo "<pre>".print_r($str,true); exit;
             $output = array();
             if($response->status == 'OK'){
                 $output['status'] = 'success';
                 $output['geo']= $response->result->geometry->location;
-                $output[''] = isset($response->result->geometry->location->lat) ? $response->result->geometry->location->lat : '';
-                $output['lng'] = isset($response->result->geometry->location->lng) ? $response->result->geometry->location->lng : '';                 
+                //$output['lat'] = isset($response->result->geometry->location->lat) ? $response->result->geometry->location->lat : '';
+                //$output['lng'] = isset($response->result->geometry->location->lng) ? $response->result->geometry->location->lng : '';                 
             }
             else
             {
-                $output['status'] = 'error';
+                $output['status'] = (string) $response->status;
+                $output['message'] = (string) $response->error_message;
             }
             $result->setData($output);
         }
