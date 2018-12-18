@@ -44,7 +44,7 @@
 
 /generated/
 generated/*
-/pub/
-pub/*
+/pub/static
+pub/static/*
 mantis/*
 mantis/
