@@ -421,6 +421,264 @@ class UpgradeSchema implements UpgradeSchemaInterface
                 'comment'  => 'total amount sold'
             ]
         );
+        if (version_compare($context->getVersion(), '1.0.7') <= 0) {
+
+            /* table lof_sellerr */
+            $table = $installer->getTable('lof_marketplace_seller');
+
+            $installer->getConnection()->addColumn(
+                $table,
+                'geo_lat',
+                [
+                'type'     => \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+                    'length'   => 255,
+                    'nullable' => true,
+                    'comment'  => 'Goe Latitude'
+                ]
+            );
+
+            $installer->getConnection()->addColumn(
+                $table,
+                'geo_lng',
+                [
+                'type'     => \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+                    'length'   => 255,
+                    'nullable' => true,
+                    'comment'  => 'Goe Longitude'
+                ]
+            );
+
+            $installer->getConnection()->addColumn(
+                $table,
+                'store_type',
+                [
+                'type'     => \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+                    'length'   => 255,
+                    'nullable' => true,
+                    'comment'  => 'Store Type'
+                ]
+            );
+
+            $installer->getConnection()->addColumn(
+                $table,
+                '24by7_shop',
+                [
+                'type'     => \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+                    'length'   => 255,
+                    'nullable' => true,
+                    'comment'  => '24*7 Shop'
+                ]
+            );
+
+            $installer->getConnection()->addColumn(
+                $table,
+                'opening_time',
+                [
+                'type'     => \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+                    'length'   => 255,
+                    'nullable' => true,
+                    'comment'  => 'Opening Time'
+                ]
+            );
+
+            $installer->getConnection()->addColumn(
+                $table,
+                'closeing_time',
+                [
+                'type'     => \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+                    'length'   => 255,
+                    'nullable' => true,
+                    'comment'  => 'Closeing Time'
+                ]
+            );
+
+            $installer->getConnection()->addColumn(
+                $table,
+                'non_working_days',
+                [
+                'type'     => \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+                    'length'   => 255,
+                    'nullable' => true,
+                    'comment'  => 'Days Not Working'
+                ]
+            );
+
+            $installer->getConnection()->addColumn(
+                $table,
+                'lsn',
+                [
+                'type'     => \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+                    'length'   => 255,
+                    'nullable' => true,
+                    'comment'  => 'LSN'
+                ]
+            );
+
+            $installer->getConnection()->addColumn(
+                $table,
+                'cst',
+                [
+                'type'     => \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+                    'length'   => 255,
+                    'nullable' => true,
+                    'comment'  => 'CST'
+                ]
+            );
+
+            $installer->getConnection()->addColumn(
+                $table,
+                'pan',
+                [
+                'type'     => \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+                    'length'   => 255,
+                    'nullable' => true,
+                    'comment'  => 'PAN'
+                ]
+            );
+
+            $installer->getConnection()->addColumn(
+                $table,
+                'vat',
+                [
+                'type'     => \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+                    'length'   => 255,
+                    'nullable' => true,
+                    'comment'  => 'VAT'
+                ]
+            );
+
+            $installer->getConnection()->addColumn(
+                $table,
+                'tin',
+                [
+                'type'     => \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+                    'length'   => 255,
+                    'nullable' => true,
+                    'comment'  => 'TIN'
+                ]
+            );
+
+            $installer->getConnection()->addColumn(
+                $table,
+                'gst',
+                [
+                'type'     => \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+                    'length'   => 255,
+                    'nullable' => true,
+                    'comment'  => 'gst'
+                ]
+            );
+
+            $installer->getConnection()->addColumn(
+                $table,
+                'digital_verification',
+                [
+                'type'     => \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+                    'length'   => 255,
+                    'nullable' => true,
+                    'comment'  => 'Digital Verification'
+                ]
+            );
+
+            $installer->getConnection()->addColumn(
+                $table,
+                'physical_verification',
+                [
+                'type'     => \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+                    'length'   => 255,
+                    'nullable' => true,
+                    'comment'  => 'Physical Verification'
+                ]
+            );
+
+            $installer->getConnection()->addColumn(
+                $table,
+                'smart_phone',
+                [
+                'type'     => \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+                    'length'   => 255,
+                    'nullable' => true,
+                    'comment'  => 'Smart phone wih data'
+                ]
+            );
+
+            $installer->getConnection()->addColumn(
+                $table,
+                'knows_english',
+                [
+                'type'     => \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+                    'length'   => 255,
+                    'nullable' => true,
+                    'comment'  => 'Knows English'
+                ]
+            );
+
+            $installer->getConnection()->addColumn(
+                $table,
+                'parent_store',
+                [
+                'type'     => \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+                    'length'   => 255,
+                    'nullable' => true,
+                    'comment'  => 'Parent Store'
+                ]
+            );
+
+            $installer->getConnection()->addColumn(
+                $table,
+                'parent_store_id',
+                [
+                'type'     => \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+                    'length'   => 255,
+                    'nullable' => true,
+                    'comment'  => 'ParentSore ID'
+                ]
+            );
+
+            $installer->getConnection()->addColumn(
+                $table,
+                'kirana_type',
+                [
+                'type'     => \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+                    'length'   => 255,
+                    'nullable' => true,
+                    'comment'  => 'Kirana Type'
+                ]
+            );
+
+            $installer->getConnection()->addColumn(
+                $table,
+                'kirana_locality',
+                [
+                'type'     => \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+                    'length'   => 255,
+                    'nullable' => true,
+                    'comment'  => 'Kirana Locality'
+                ]
+            );
+
+            $installer->getConnection()->addColumn(
+                $table,
+                'kirana_owner',
+                [
+                'type'     => \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+                    'length'   => 255,
+                    'nullable' => true,
+                    'comment'  => 'Kirana Owner'
+                ]
+            );
+
+            $installer->getConnection()->addColumn(
+                $table,
+                'kirana_fixed_line',
+                [
+                'type'     => \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+                    'length'   => 255,
+                    'nullable' => true,
+                    'comment'  => 'Kirans Fixed Line'
+                ]
+            );
+        }
          $installer->endSetup();  
     }
 }

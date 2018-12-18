@@ -42,7 +42,9 @@
 /var/package/*
 !/var/package/*.xml
 
-generated/
-pub/
+/generated/
+generated/*
+/pub/
+pub/*
 mantis/*
 mantis/
