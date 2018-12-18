@@ -1,5 +1,0 @@
-/** custom less file test */
-@fontColor: red;
-.page-header .panel.wrapper, .page-header .panel.wrapper * {
-    color: @fontColor !important;
-}
