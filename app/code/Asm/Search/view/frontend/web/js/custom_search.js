@@ -10,7 +10,7 @@ require([
             latitude:'',
             longitude:''
         };
-
+        var flag = true;
         if (navigator.geolocation){
         navigator.geolocation.getCurrentPosition(showPosition);
         }
@@ -25,6 +25,7 @@ require([
             //document.getElementById("lng") = position.coords.latitude;
             $("#lat").val(position.coords.latitude);
             $("#lng").val(position.coords.longitude);
+            flag = false;
             /*latitudeAndLongitude.="Latitude: " + position.coords.latitude + 
             "<br>Longitude: " + position.coords.longitude; */
             var geocoder = new google.maps.Geocoder();
@@ -52,15 +53,38 @@ require([
             modalClass: 'custom-modal',
             buttons: [{
                 text: $.mage.__('Continue'),
-                class: '',
+                class: 'getaddressdetails',
                 click: function () {
+                    var address = jQuery('#autocomplete').val();
+                    var param = "{address:'"+address+"'}";
+                    jQuery.ajax({
+                              showLoader: true,
+                              url: "http://127.0.0.1/kirana_store/geolocation",
+                              data: param,
+                              type: "POST",
+                              dataType: 'json',
+                          }).done(function (data) {
+                            if(data.status == 'success')
+                            {
+                              jQuery('#lat').val(data.geo.lat);
+                              jQuery('#lng').val(data.geo.lng);
+                            }
+                            else
+                            {
+                          console.log("Geolocatiopn failed. :"+data.status+":"+ data.message);
+                        }
+                          }).fail(function (jqXhr) {
+                            console.log(jqXhr.responseText);
+                        });
+
                     this.closeModal();
                     $('#popup-modal').html(" ");
                 }
             }]
         };
         // Disallow location 
-        if($("#lat").val() == '' && $("#lng").val() == ''){
+        console.log("flag-->"+flag);
+        if($("#lat").val() == '' && $("#lng").val() == '' && flag){
                 var popup = modal(options, $('#popup-modal'));
                 $("#popup-modal").modal('openModal');
         }
