@@ -11,6 +11,7 @@ namespace Asm\Search\Controller\Index;
 
 use Magento\Framework\App\Action\Context;
 use Asm\Search\Model\SearchFactory;
+use Magento\Framework\Controller\ResultFactory;     
 
 class Save extends \Magento\Framework\App\Action\Action
 {
@@ -18,16 +19,20 @@ class Save extends \Magento\Framework\App\Action\Action
      * @var Search
      */
     protected $_search;
+    protected $_productCollectionFactory;
 
     public function __construct(
 		Context $context,
+         \Magento\Catalog\Model\ResourceModel\Product\CollectionFactory $productCollectionFactory,
         SearchFactory $search
     ) {
         $this->_search = $search;
+        $this->_productCollectionFactory = $productCollectionFactory; 
         parent::__construct($context);
     }
 	public function execute()
     {
+        $result = $this->resultFactory->create(ResultFactory::TYPE_JSON);
         $data = $this->getRequest()->getParams();
     	$search = $this->_search->create();
         $search->setData($data);
@@ -36,8 +41,25 @@ class Save extends \Magento\Framework\App\Action\Action
         }else{
             $this->messageManager->addErrorMessage(__('Data was not saved.'));
         }
-        $resultRedirect = $this->resultRedirectFactory->create();
-        $resultRedirect->setPath('search/index/index');
-        return $resultRedirect;
+        //print_r($data['title']);
+        $collection = $this->_productCollectionFactory->create();
+        $collection->addAttributeToSelect('*');
+        $collection->addFieldToFilter([['attribute' => 'name', 'like' => '%'.$data['title'].'%']]);
+       // print_r($collection->getData());die;
+
+        $output = array();
+        $output  = $collection;
+        $result->setData($output);
+
+        
+        // $resultRedirect = $this->resultRedirectFactory->create();
+        // $resultRedirect->setPath('search/index/index');
+        // return $resultRedirect;
+
+        $this->_view->loadLayout();
+        $this->_view->getLayout()->initMessages();
+        $this->_view->renderLayout();
+
+        return $result;
     }
 }

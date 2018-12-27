@@ -14,9 +14,13 @@ namespace Asm\Search\Block;
  */
 class Search extends \Magento\Framework\View\Element\Template
 {
+    protected $_productCollectionFactory;
+
     public function __construct(
+        \Magento\Catalog\Model\ResourceModel\Product\CollectionFactory $productCollectionFactory,
         \Magento\Framework\View\Element\Template\Context $context
     ) {
+        $this->_productCollectionFactory = $productCollectionFactory; 
         parent::__construct($context);
     }
 
@@ -25,5 +29,25 @@ class Search extends \Magento\Framework\View\Element\Template
         $this->pageConfig->getTitle()->set(__('Product Search'));
         
         return parent::_prepareLayout();
+    }
+
+    public function searchResult()
+    {
+        $title = $this->getRequest()->getParam('title');
+        if($title){
+            $collection = $this->_productCollectionFactory->create();
+            $collection->addAttributeToSelect('*');
+            $collection->addFieldToFilter([['attribute' => 'name', 'like' => '%'.$title.'%']]);
+        }else{
+            $collection = '';
+        }
+        
+        
+        return $collection;
+    }
+    public function searchTeam()
+    {
+        $title = $this->getRequest()->getParam('title');
+        return $title;
     }
 }
