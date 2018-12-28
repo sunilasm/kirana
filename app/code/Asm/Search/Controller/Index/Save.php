@@ -42,14 +42,14 @@ class Save extends \Magento\Framework\App\Action\Action
             $this->messageManager->addErrorMessage(__('Data was not saved.'));
         }
         //print_r($data['title']);
-        $collection = $this->_productCollectionFactory->create();
-        $collection->addAttributeToSelect('*');
-        $collection->addFieldToFilter([['attribute' => 'name', 'like' => '%'.$data['title'].'%']]);
-       // print_r($collection->getData());die;
+       //  $collection = $this->_productCollectionFactory->create();
+       //  $collection->addAttributeToSelect('*');
+       //  $collection->addFieldToFilter([['attribute' => 'name', 'like' => '%'.$data['title'].'%']]);
+       // // print_r($collection->getData());die;
 
-        $output = array();
-        $output  = $collection;
-        $result->setData($output);
+       //  $output = array();
+       //  $output  = $collection;
+       //  $result->setData($output);
 
         
         // $resultRedirect = $this->resultRedirectFactory->create();
@@ -60,6 +60,6 @@ class Save extends \Magento\Framework\App\Action\Action
         $this->_view->getLayout()->initMessages();
         $this->_view->renderLayout();
 
-        return $result;
+        //return $result;
     }
 }

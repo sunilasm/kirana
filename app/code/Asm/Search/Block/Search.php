@@ -15,12 +15,16 @@ namespace Asm\Search\Block;
 class Search extends \Magento\Framework\View\Element\Template
 {
     protected $_productCollectionFactory;
+    protected $_sellerCollection;
 
     public function __construct(
         \Magento\Catalog\Model\ResourceModel\Product\CollectionFactory $productCollectionFactory,
+        \Lof\MarketPlace\Model\Seller $sellerCollection,
         \Magento\Framework\View\Element\Template\Context $context
     ) {
         $this->_productCollectionFactory = $productCollectionFactory; 
+        $this->_sellerCollection = $sellerCollection;
+
         parent::__construct($context);
     }
 
@@ -33,21 +37,57 @@ class Search extends \Magento\Framework\View\Element\Template
 
     public function searchResult()
     {
+        $centerpointLang = $this->getRequest()->getParam('lng');
+        $centerpointLat = $this->getRequest()->getParam('lat');
         $title = $this->getRequest()->getParam('title');
-        if($title){
+        $selerIdArray = array();
+
+        $lat = $centerpointLat; //latitude
+        $lon = $centerpointLang; //longitude
+        $distance = 1; //your distance in KM
+        $R = 6371; //constant earth radius. You can add precision here if you wish
+
+        $maxLat = $lat + rad2deg($distance/$R);
+        $minLat = $lat - rad2deg($distance/$R);
+        $maxLon = $lon + rad2deg(asin($distance/$R) / cos(deg2rad($lat)));
+        $minLon = $lon - rad2deg(asin($distance/$R) / cos(deg2rad($lat)));
+
+        // filter collection in range of lat and long
+        $sellerCollection = $this->_sellerCollection->getCollection()
+        ->setOrder('position','ASC')
+        ->addFieldToFilter('geo_lat',array('gteq'=>$minLat))
+        ->addFieldToFilter('geo_lng',array('gteq'=>$minLon))
+        ->addFieldToFilter('geo_lat',array('lteq'=>$maxLat))
+        ->addFieldToFilter('geo_lng',array('lteq'=>$maxLon))
+        ->addFieldToFilter('status',1);
+        // get Seller id's
+        $sellerData = $sellerCollection->getData();
+        foreach($sellerData as $seldata):
+            $selerIdArray[] = $seldata['seller_id'];
+        endforeach;
+        //print_r($selerIdArray);exit;
+        // filter prodcut collection as seller wise and name wise
+         if($title){
             $collection = $this->_productCollectionFactory->create();
             $collection->addAttributeToSelect('*');
+            $collection->addFieldToFilter('seller_id', array('in' => $selerIdArray));
+            $collection->addAttributeToSort('price', 'asc');
             $collection->addFieldToFilter([['attribute' => 'name', 'like' => '%'.$title.'%']]);
-        }else{
-            $collection = '';
-        }
-        
-        
-        return $collection;
+            //print_r($collection->getData());exit;
+         }else{
+             $collection = '';
+         }
+         return $collection;
     }
     public function searchTeam()
     {
         $title = $this->getRequest()->getParam('title');
         return $title;
+    }
+    public function getToolbarHtml()
+    {
+        //return $this->getChildHtml('toolbar');
+         include ($this->getTemplateFile('toolbar.phtml'));
+        //print_r("Hrerer");
     }
 }
