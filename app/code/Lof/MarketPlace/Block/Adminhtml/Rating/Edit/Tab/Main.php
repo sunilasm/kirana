@@ -108,6 +108,7 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
                 'label' => __('Email'),
                 'title' => __('Email'),
                 'required' => true,
+                'class' => 'required-entry validate-email',
                 'disabled' => $isElementDisabled
             ]
             );
@@ -140,6 +141,7 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
                 'name' => 'seller_id',
                 'label' => __('Seller Id'),
                 'title' => __('Seller Id'),
+                'class' => 'required-entry validate-number validate-not-negative-number',
                 'required' => true,
                 'disabled' => $isElementDisabled
             ]
@@ -151,6 +153,8 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
                 'name' => 'rate1',
                 'label' => __('Rate 1'),
                 'title' => __('Rate 1'),
+                'class' => 'integer validate-number validate-not-negative-number validate-number-range number-range-0-5',
+                'note' => 'Valid non negative integer number between range 0-5',
                 'disabled' => $isElementDisabled
             ]
             );
@@ -161,6 +165,8 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
                 'name' => 'rate2',
                 'label' => __('Rate 2'),
                 'title' => __('Rate 2'),
+                'class' => 'integer validate-number validate-not-negative-number validate-number-range number-range-0-5',
+                'note' => 'Valid non negative integer number between range 0-5',
                 'disabled' => $isElementDisabled
             ]
             );
@@ -171,6 +177,8 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
                 'name' => 'rate3',
                 'label' => __('Rate 3'),
                 'title' => __('Rate 3'),
+                'class' => 'integer validate-number validate-not-negative-number validate-number-range number-range-0-5',
+                'note' => 'Valid non negative integer number between range 0-5',
                 'disabled' => $isElementDisabled
             ]
             );
