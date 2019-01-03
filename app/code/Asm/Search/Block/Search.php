@@ -67,13 +67,30 @@ class Search extends \Magento\Framework\View\Element\Template
         endforeach;
         //print_r($selerIdArray);exit;
         // filter prodcut collection as seller wise and name wise
+        $arratAttributes = array();
          if($title){
             $collection = $this->_productCollectionFactory->create();
             $collection->addAttributeToSelect('*');
             $collection->addFieldToFilter('seller_id', array('in' => $selerIdArray));
             $collection->addAttributeToSort('price', 'asc');
             $collection->addFieldToFilter([['attribute' => 'name', 'like' => '%'.$title.'%']]);
-            //print_r($collection->getData());exit;
+
+            // $custom = [];
+            // //print_r($collection->getData());
+            // foreach($collection as $_product):
+
+            //     $attributes = $_product->getCustomAttributes(); 
+
+            //     foreach ($attributes as $attribute) {  
+            //        $custom[$attribute->getAttributeCode()] = $attribute->getValue(); 
+            //     }
+            //                     // foreach($_product->getCustomAttributes() as $attr):
+            //     //         //$arratAttributes[] = $attr->getAttributeCode();
+            //     //         print_r($attr->getCustomAttribute($attr->));
+            //     //         $collection->addAttributeToFilter("'".$attr->getCustomAttribute()."'", array('like' => '%'.$title.'%'));
+            //     // endforeach;
+            // endforeach;
+            // print_r($custom);exit;
          }else{
              $collection = '';
          }

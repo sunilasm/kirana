@@ -14,15 +14,31 @@
  * @var $block \Magento\CatalogSearch\Block\Advanced\Form
  */
 ?>
+<?php
+//  $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+// $cookieManager = $objectManager->get('Magento\Framework\Stdlib\CookieManagerInterface');
+
+// // Set cookie
+// $CookieData = $cookieManager->setPublicCookie('cookiename', 'cookievalue');
+
+// // Get cookie
+// //echo $CookieData;exit;
+
+// print_r($cookieManager->getCookie('lat').'--'.$cookieManager->getCookie('lng'));
+?>
+<!-- AIzaSyD-_0vriuYY2qKxzK82yvVqgUeo-bqayDk ||  AIzaSyCoLbQMJVrWfwYGdNOWxOVz3NMzYjCRhQg-->
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD-_0vriuYY2qKxzK82yvVqgUeo-bqayDk&libraries=places&callback=initAutocomplete"
+        async defer></script>
 <?php $maxQueryLength = $this->helper('Magento\CatalogSearch\Helper\Data')->getMaxQueryLength();?>
 <form class="form search advanced" action="<?= /* @escapeNotVerified */ $block->getSearchPostUrl() ?>" method="get" id="form-validate">
 <fieldset class="fieldset">
     <legend class="legend"><span><?= /* @escapeNotVerified */ __('Search Settings') ?></span></legend><br />
     <?php foreach ($block->getSearchableAttributes() as $_attribute): ?>
     <?php $_code = $_attribute->getAttributeCode() ?>
+        <?php if($_code == 'name'){ ?>
         <div class="field <?= /* @escapeNotVerified */ $_code ?>">
             <label class="label" for="<?= /* @escapeNotVerified */ $_code ?>">
-                <span><?= $block->escapeHtml(__($block->getAttributeLabel($_attribute))) ?></span>
+                <span>Search:</span>
             </label>
             <div class="control">
             <?php switch ($block->getAttributeInputType($_attribute)):
@@ -119,6 +135,7 @@
             <?php endswitch; ?>
             </div>
         </div>
+         <?php } ?>
     <?php endforeach; ?>
 </fieldset>
  <input type="hidden" id="lat" name="lat" title="Lat" value=""/>
@@ -131,6 +148,12 @@
         <span><?= /* @escapeNotVerified */ __('Search') ?></span>
     </button>
   </div>
+</div>
+<div id="popup-modal" class="modal fade" >
+    <div id="locationField">
+      <input id="autocomplete" placeholder="Enter your address"
+             type="text"/>
+    </div>
 </div>
 </form>
 <script>
@@ -155,3 +178,51 @@ require([
         });
 });
 </script>
+
+<script>
+
+      var placeSearch, autocomplete;
+      var componentForm = {
+        street_number: 'short_name',
+        route: 'long_name',
+        locality: 'long_name',
+        administrative_area_level_1: 'short_name',
+        country: 'long_name',
+        postal_code: 'short_name'
+      };
+
+      function initAutocomplete() {
+        // Create the autocomplete object, restricting the search to geographical
+        // location types.
+        autocomplete = new google.maps.places.Autocomplete(
+            /** @type {!HTMLInputElement} */(document.getElementById('autocomplete')),
+            {types: ['geocode']});
+
+        // When the user selects an address from the dropdown, populate the address
+        // fields in the form.
+        autocomplete.addListener('place_changed', fillInAddress);
+      }
+
+      function fillInAddress() {
+        // Get the place details from the autocomplete object.
+        var place = autocomplete.getPlace();
+
+        for (var component in componentForm) {
+          document.getElementById(component).value = '';
+          document.getElementById(component).disabled = false;
+        }
+
+        // Get each component of the address from the place details
+        // and fill the corresponding field on the form.
+        for (var i = 0; i < place.address_components.length; i++) {
+          var addressType = place.address_components[i].types[0];
+          if (componentForm[addressType]) {
+            var val = place.address_components[i][componentForm[addressType]];
+            document.getElementById(addressType).value = val;
+          }
+        }
+      }
+      
+      
+       
+    </script>
