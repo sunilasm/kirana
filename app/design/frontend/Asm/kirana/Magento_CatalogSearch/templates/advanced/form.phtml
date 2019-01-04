@@ -15,16 +15,24 @@
  */
 ?>
 <?php
-//  $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
-// $cookieManager = $objectManager->get('Magento\Framework\Stdlib\CookieManagerInterface');
+$objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+$customerSession = $objectManager->create('Magento\Customer\Model\Session');
+    if(($customerSession->isLoggedIn())){
+        $billingID =  $customerSession->getCustomer()->getDefaultBilling();
+        $address = $objectManager->create('Magento\Customer\Model\Address')->load($billingID);
+        //echo "<pre>";print_r($address->getData());exit;
+    }else{
+       //echo "Not Login";
+    }
 
-// // Set cookie
-// $CookieData = $cookieManager->setPublicCookie('cookiename', 'cookievalue');
-
-// // Get cookie
-// //echo $CookieData;exit;
-
-// print_r($cookieManager->getCookie('lat').'--'.$cookieManager->getCookie('lng'));
+// $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+// $customerSession = $objectManager->get('Magento\Customer\Model\Session');
+// if($customerSession->isLoggedIn()) {
+//   echo "Login";
+//    print_r($customerSession);exit;
+// }else{
+//   echo "Not Login";
+// }
 ?>
 <!-- AIzaSyD-_0vriuYY2qKxzK82yvVqgUeo-bqayDk ||  AIzaSyCoLbQMJVrWfwYGdNOWxOVz3NMzYjCRhQg-->
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD-_0vriuYY2qKxzK82yvVqgUeo-bqayDk&libraries=places&callback=initAutocomplete"
@@ -140,6 +148,8 @@
 </fieldset>
  <input type="hidden" id="lat" name="lat" title="Lat" value=""/>
  <input type="hidden" id="lng" name="lng" title="Lng" value=""/>
+ <input type="hidden" id="loninlat" name="loninlat" title="LoninLat" value="<?php //if($address->getLat()){echo $address->getLat(); }else{ echo '0';}?>"/>
+ <input type="hidden" id="loninlng" name="loninlng" title="LoninLng" value="<?php //if($address->getLng()){echo $address->getLng(); }else{echo '0';}?>"/>
 <div class="actions-toolbar">
   <div class="primary">
     <button type="submit"

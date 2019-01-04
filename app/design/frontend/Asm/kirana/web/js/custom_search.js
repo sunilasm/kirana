@@ -13,7 +13,8 @@ require([
         };
         //var flag;
         if (navigator.geolocation){
-                if($.cookie('latitude') == '' && $.cookie('longitude') == ''){
+             //alert($.cookie('longitude'));
+                if($.cookie('latitude') == null && $.cookie('longitude') == null){
                     navigator.geolocation.getCurrentPosition(showPosition);
                 }
         }
@@ -38,7 +39,7 @@ require([
                  $.cookie('latitude', latitude );
                  $.cookie('longitude', longitude );
 
-                 console.log('hhhh--'+$.cookie('latitude')+'--'+$.cookie('longitude'));
+                 //console.log('hhhh--'+$.cookie('latitude')+'--'+$.cookie('longitude'));
 
             /*latitudeAndLongitude.="Latitude: " + position.coords.latitude + 
             "<br>Longitude: " + position.coords.longitude; */
@@ -94,7 +95,7 @@ require([
             };
             // Disallow location 
             //console.log("flag-->"+$.cookie('latnew'));
-            if($("#lat").val() == '' && $("#lng").val() == '' && $.cookie('latnew') == '' && $.cookie('lngnew') == ''){
+            if($("#lat").val() == '' && $("#lng").val() == '' && $.cookie('latitude') == '' && $.cookie('longitude') == ''){
                     //$('#popup-modal').removeClass('hidden')
                     var popup = modal(options, $('#popup-modal'));
                     setTimeout(function() {

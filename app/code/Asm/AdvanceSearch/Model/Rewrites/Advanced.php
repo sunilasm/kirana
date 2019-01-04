@@ -292,12 +292,14 @@ class Advanced extends \Magento\Framework\Model\AbstractModel
        //$centerpointLang = $this->getRequest()->getParam('lng');
         //$centerpointLat = $this->getRequest()->getParam('lat');
         //$title = $this->getRequest()->getParam('title');
+        $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+        $cookieManager = $objectManager->get('Magento\Framework\Stdlib\CookieManagerInterface');
         $selerIdArray = array();
 
         //$lat = $centerpointLat; //latitude
-        $lat = '18.564688'; //latitude
+        $lat = $cookieManager->getCookie('latnew'); //latitude
         //$lon = $centerpointLang; //longitude
-        $lon = '73.7783712'; //longitude
+        $lon = $cookieManager->getCookie('lngnew'); //longitude
         $distance = 1; //your distance in KM
         $R = 6371; //constant earth radius. You can add precision here if you wish
 
@@ -326,7 +328,7 @@ class Advanced extends \Magento\Framework\Model\AbstractModel
             ->addMinimalPrice()
             ->addTaxPercents()
             ->addStoreFilter()
-            ->addAttributeToSort('price', 'asc')
+            // ->addAttributeToSort('price', 'asc')
             ->addFieldToFilter('seller_id', array('in' => $selerIdArray))
             ->setVisibility($this->_catalogProductVisibility->getVisibleInSearchIds());
 
