@@ -154,6 +154,7 @@ class Collection extends AbstractCollection
     protected function _renderFiltersBefore()
     { 
         $product = $this->getTable('catalog_product_entity_varchar');
+        $eav =  $this->getTable('eav_attribute');
         $this->getSelect('*')->join(
             $product.' as abc',
             'main_table.product_id = abc.entity_id',
@@ -161,7 +162,7 @@ class Collection extends AbstractCollection
                 "name" => "value",
             ]
         )->join(
-            'eav_attribute as a',
+            $eav.' as a',
             'a.attribute_id = abc.attribute_id',
             []
         )->where('abc.store_id = 0 AND a.attribute_code = "name" AND a.entity_type_id = 4');
