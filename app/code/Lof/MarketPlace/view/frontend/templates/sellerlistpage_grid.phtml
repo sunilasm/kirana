@@ -15,12 +15,14 @@ $sm_column = 12/$sm_column_item;
 $xs_column = 12/$xs_column_item;
 $i = 1;
 $x = 0;
+
 ?>
 <?php if ( $_sellerCollection->count() ){ ?>
 <?php $total = $_sellerCollection->count(); ?>
 <div class="sellerlist">
 	<div class="block-content">
-		<?php foreach ($_sellerCollection as $_seller) { ?>
+		<?php foreach ($_sellerCollection as $_seller) {
+		$per_rate = round($this->getRate($_seller->getData('seller_id'))['average']/5*100); ?>
 		<?php if( $lg_column_item == 1 || $x%$lg_column_item == 0){ ?>
 		<!-- ROW -->
 		<div class="row">
@@ -31,6 +33,75 @@ $x = 0;
 					<?php if($show_seller_name){ ?>
 					<div class="seller-name"><a href="<?php echo $_seller->getUrl(); ?>" title="<?php echo $_seller->getName(); ?>"><?php echo $_seller->getName() ?></a></div>
 					<?php } ?>
+
+					<div class="mkpl-review">
+						<div class="review-average-info">
+							<div class="average-rating">
+								<div class="ratings">
+									<div class="rating-box">
+										<div class="rating" style="width: <?php echo $per_rate;?>%;"></div>
+									</div>
+									<div class="rating-links"> 
+										<a id="lof-rating" href="javascript:;"><?php echo count($this->getRating($_seller->getData('seller_id'))); ?><?php echo __(' Rating(s)'); ?></a>
+									</div>
+									<div class="clearfix"></div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="mkpl-sale seller-info">
+						<i class="fa fa-shopping-cart"></i> <?php echo $this->getTotalSales($_seller->getData('seller_id'))." sales"; ?>
+					</div>
+
+					<div class="mkpl-address seller-info">
+						<i class="fa fa-map-marker"></i> <?php echo $_seller->getAddress();?>
+					</div>
+
+					<div class="mkpl-socialnetworks">
+					<ul class="list-social">
+						<?php if($_seller->getData('fb_active')) { ?>
+						<li class="icon-social">
+							<a class="facebook" href="<?php echo $_seller->getData('facebook_id');?>"> <i class="fa fa-facebook"></i> </a>
+						</li>	
+						<?php } ?>
+						<?php if($_seller->getData('gplus_active')) { ?>						
+						<li class="icon-social">
+							<a class="google" href="<?php echo $_seller->getData('gplus_id');?>"> <i class="fa fa-google-plus"></i></a>
+						</li>
+						<?php } ?>	
+						<?php if($_seller->getData('tw_active')) { ?>						
+						<li class="icon-social">
+							<a class="twitter" href="<?php echo $_seller->getData('twitter_id');?>"> <i class="fa fa-twitter"></i></a>
+						</li>
+						<?php } ?>	
+						<?php if($_seller->getData('youtube_active')) { ?>
+						<li class="icon-social">
+							<a class="youtube" href="<?php echo $_seller->getData('youtube_id');?>"> <i class="fa fa-youtube"></i> </a>
+						</li>
+						<?php } ?>	
+						<?php if($_seller->getData('linkedin_active')) { ?>							
+						<li class="icon-social">
+							<a class="linkedin" href="<?php echo $_seller->getData('linkedin_id');?>"> <i class="fa fa-linkedin"></i></a>
+						</li>							
+						<?php } ?>	
+						<?php if($_seller->getData('vimeo_active')) { ?>
+						<li class="icon-social">
+							<a class="vimeo" href="<?php echo $_seller->getData('vimeo_id');?>"> <i class="fa fa-vimeo"></i> </a>
+						</li>
+						<?php } ?>	
+						<?php if($_seller->getData('instagram_active')) { ?>
+						<li class="icon-social">
+							<a class="instagram" href="<?php echo $_seller->getData('instagram_id');?>"> <i class="fa fa-instagram"></i> </a>
+						</li>
+						<?php } ?>
+						<?php if($_seller->getData('pinterest_active')) { ?>
+						<li class="icon-social">
+							<a class="pinterest" href="<?php echo $_seller->getData('pinterest_id');?>"> <i class="fa fa-pinterest"></i> </a>
+						</li>
+						<?php } ?>	
+					</ul>
+				</div>
 				</div>
 			</div>
 			<?php if( $lg_column_item == 1 || ($x+1)%$lg_column_item == 0 || $i == $total ) {  ?>

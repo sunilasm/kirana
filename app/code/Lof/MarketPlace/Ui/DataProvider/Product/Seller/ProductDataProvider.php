@@ -37,7 +37,7 @@ class ProductDataProvider extends \Magento\Catalog\Ui\DataProvider\Product\Produ
         array $data = []
     ) {
         parent::__construct($name, $primaryFieldName, $requestFieldName, $collectionFactory,$addFieldStrategies,$addFilterStrategies,$meta,$data);
-     
+        
         if($helper->getSellerId()) {
             $this->collection->addAttributeToFilter('seller_id',$helper->getSellerId());
         } else {

@@ -153,6 +153,7 @@
                     <item name="component" xsi:type="string">Lof_MarketPlace/js/grid/columns/link</item>
                     <item name="label" xsi:type="string" translate="true">Seller</item>
                     <item name="sortOrder" xsi:type="number">25</item>
+                    <item name="sortable" xsi:type="boolean">false</item>
                 </item>
             </argument>
         </column>

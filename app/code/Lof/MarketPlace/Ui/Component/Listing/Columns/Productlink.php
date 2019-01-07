@@ -67,11 +67,19 @@ class Productlink extends Column
      */
     public function prepareDataSource(array $dataSource)
     {
+        $objectManager       = \Magento\Framework\App\ObjectManager::getInstance ();
+        
         if (isset($dataSource['data']['items'])) {
             $fieldName = $this->getData('name');
             foreach ($dataSource['data']['items'] as &$item) {
                 if (isset($item['product_id'])) {
+
                     $product = $this->_productloader->create()->load($item['product_id']);
+                   
+                     if(!$item['product_id']) {
+                        $sellerProduct = $objectManager->create('Lof\MarketPlace\Model\SellerProduct')->load($item['product_id'],'product_id');
+                       $sellerProduct->setProductName($product->getName())->save();
+                    }
                     $item[$fieldName] = "<a href='".$this->urlBuilder->getUrl('catalog/product/edit', ['id' => $item['product_id']])."' target='blank' title='".__('View Product')."'>".$product->getName().'</a>';
 
                 }

@@ -1731,8 +1731,29 @@ class InstallSchema implements InstallSchemaInterface
         );
         $setup->getConnection()->createTable($table);
 
-        $setup->getConnection()->addColumn($setup->getTable('catalog_product_entity'), 'seller_id', 'int(10) unsigned NOT NULL DEFAULT 0 AFTER type_id');
-        $setup->getConnection()->addColumn($setup->getTable('catalog_product_entity'), 'approval', 'int(10) unsigned NOT NULL DEFAULT 0 AFTER type_id');
+        $setup->getConnection()
+            ->addColumn($setup->getTable('catalog_product_entity'), 
+                'seller_id',
+                [
+                'type'     => \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
+                'length'   => 10,
+                'nullable' => false,
+                'default'  => 0,
+                'unsigned' => true,
+                'comment'  => 'Master Seller Id'
+                ]);
+
+        $setup->getConnection()
+                ->addColumn($setup->getTable('catalog_product_entity'), 
+                    'approval',
+                    [
+                        'type'     => \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
+                        'length'   => 10,
+                        'nullable' => false,
+                        'default'  => 0,
+                        'unsigned' => true,
+                        'comment'  => 'Product approval'
+                    ]);
         /**
          * Create table 'lof_marketplace_message_detail'
          */

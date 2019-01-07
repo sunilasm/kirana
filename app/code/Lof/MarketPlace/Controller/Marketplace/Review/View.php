@@ -24,7 +24,7 @@ namespace Lof\MarketPlace\Controller\Marketplace\Review;
 use Magento\Framework\App\Action\Context;
 use Magento\Framework\Registry;
 
-abstract class View  extends \Magento\Customer\Controller\AbstractAccount 
+class View  extends \Magento\Customer\Controller\AbstractAccount 
 {
       /**
      *
