@@ -28,9 +28,9 @@ use Magento\Ui\Component\MassAction\Filter;
 use Lof\MarketPlace\Model\ResourceModel\SellerProduct\CollectionFactory;
 
 /**
- * Class Deny.
+ * Class Commission.
  */
-class Deny extends \Magento\Backend\App\Action
+class Commission extends \Magento\Backend\App\Action
 {
     /**
      * @var Filter
@@ -93,6 +93,7 @@ class Deny extends \Magento\Backend\App\Action
     public function execute()
     {
         $data = $this->getRequest()->getParams();
+
         $collection = $this->_objectManager->create(
             'Lof\MarketPlace\Model\SellerProduct'
         )->getCollection()

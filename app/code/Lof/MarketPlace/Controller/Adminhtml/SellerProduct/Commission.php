@@ -99,12 +99,11 @@ class Commission extends \Magento\Backend\App\Action
     public function execute()
     {
         $data = $this->getRequest()->getParams();
-   
+ 
         $collection = $this->_objectManager->create(
             'Lof\MarketPlace\Model\SellerProduct'
         )->getCollection()
-        ->addFieldToFilter('product_id', $data['product_id'])
-        ->addFieldToFilter('seller_id', $data['seller_id']);
+        ->addFieldToFilter('product_id', $data['product_id']);
        
         if ($collection->getSize()) {
             $model = $this->_objectManager->create('Lof\MarketPlace\Model\SellerProduct');

@@ -392,6 +392,46 @@ class Sender
             return;
         }
     }
+     public function approveProduct($data) {
+        try {
+            
+            $postObject = new \Magento\Framework\DataObject();
+    
+            $postObject->setData($data);
+            $storeScope = \Magento\Store\Model\ScopeInterface::SCOPE_STORE;
+          
+            $transport = $this->_transportBuilder
+            ->setTemplateIdentifier($this->helper->getConfig('email_settings/approve_product_template'))
+
+            ->setTemplateOptions(
+                [
+                'area' => \Magento\Framework\App\Area::AREA_FRONTEND,
+                'store' => \Magento\Store\Model\Store::DEFAULT_STORE_ID,
+            ])
+            ->setTemplateVars(['data' => $postObject])
+            ->setFrom($this->helper->getConfig('email_settings/sender_email_identity'))
+            ->addTo($data['email'])
+            ->setReplyTo($data['email'])
+            ->getTransport();
+            try  {
+                $transport->sendMessage();
+                $this->inlineTranslation->resume();
+                
+            } catch(\Exception $e){
+                $error = true;
+                $this->messageManager->addError(
+                    __('We can\'t process your request right now. Sorry, that\'s all we know.')
+                    );
+            }
+
+        } catch (\Exception $e) {
+            $this->inlineTranslation->resume();
+            $this->messageManager->addError(
+                __('We can\'t process your request right now. Sorry, that\'s all we know.')
+                );
+            return;
+        }
+    }
      public function unapproveSeller($data) {
         try {
             
@@ -402,6 +442,46 @@ class Sender
           
             $transport = $this->_transportBuilder
             ->setTemplateIdentifier($this->helper->getConfig('email_settings/unapprove_seller_template'))
+
+            ->setTemplateOptions(
+                [
+                'area' => \Magento\Framework\App\Area::AREA_FRONTEND,
+                'store' => \Magento\Store\Model\Store::DEFAULT_STORE_ID,
+            ])
+            ->setTemplateVars(['data' => $postObject])
+            ->setFrom($this->helper->getConfig('email_settings/sender_email_identity'))
+            ->addTo($data['email'])
+            ->setReplyTo($data['email'])
+            ->getTransport();
+            try  {
+                $transport->sendMessage();
+                $this->inlineTranslation->resume();
+                
+            } catch(\Exception $e){
+                $error = true;
+                $this->messageManager->addError(
+                    __('We can\'t process your request right now. Sorry, that\'s all we know.')
+                    );
+            }
+
+        } catch (\Exception $e) {
+            $this->inlineTranslation->resume();
+            $this->messageManager->addError(
+                __('We can\'t process your request right now. Sorry, that\'s all we know.')
+                );
+            return;
+        }
+    }
+    public function unapproveProduct($data) {
+        try {
+            
+            $postObject = new \Magento\Framework\DataObject();
+    
+            $postObject->setData($data);
+            $storeScope = \Magento\Store\Model\ScopeInterface::SCOPE_STORE;
+          
+            $transport = $this->_transportBuilder
+            ->setTemplateIdentifier($this->helper->getConfig('email_settings/unapprove_product_template'))
 
             ->setTemplateOptions(
                 [

@@ -33,10 +33,10 @@ if(!in_array($customerId,$this->getSellerId())) {
 <div class="col-main">
 	<div class="my-account">
 		<div class="box-account box-info">
-			<p><?php echo __('Turn in to a kirana today and enjoy some incredible benefits like
+			<p><?php echo __('Turn in to a seller today and enjoy some incredible benefits like
 				adding logo to your profile page for better branding, setting up
 				multiple products to improve conversions, etc.');?></p>
-			<p><?php echo __('Click the button to become a Kirana');?></p>
+			<p><?php echo __('Click the button to become a Seller');?></p>
 			<form data-mage-init='{"validation":{}}' name="buyer-seller" id="buyer-seller" action="<?php  echo $block->getUrl('*/*/saveseller')?>" method="post">
 				<?php if($seller_membership) { ?>
 					<input name="group" type="hidden" value="<?php echo $helper->getConfig('seller_settings/default_seller_group') ?>" />
@@ -53,7 +53,7 @@ if(!in_array($customerId,$this->getSellerId())) {
 				<div class="input-box" >
 					<label for="url"><?php echo __('Url Key'); ?><em>*</em></label>
 					<input type="text" id="url" name="url" class="input-text required-entry"/>
-					<span class="help-block" style=""><?php echo __('Example: Insert yourstore,url shop will').' '.$url->getUrl().'yourstore'; ?></span>
+					<span class="help-block" style=""><?php echo __('Example: Insert landofcoder,url shop will').' '.$url->getUrl().'landofcoder'; ?></span>
 				</div>
 				<div class="input-box">
 					<input type="checkbox" id="privacy_policy" name="privacy_policy"
@@ -75,6 +75,6 @@ if(!in_array($customerId,$this->getSellerId())) {
 </div>
 <?php
 } elseif(in_array($customerId,$this->getSellerId()) || $approval==0) {
-     echo __ ( 'Admin Approval is required. Please wait until admin confirms your kirana account.');
+     echo __ ( 'Admin Approval is required. Please wait until admin confirms your seller account.');
 }
  ?>

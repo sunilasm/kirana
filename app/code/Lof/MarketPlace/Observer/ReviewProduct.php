@@ -1,5 +1,4 @@
 <?php
-namespace Lof\MarketPlace\Observer;
 /**
  * Landofcoder
  * 
@@ -19,11 +18,13 @@ namespace Lof\MarketPlace\Observer;
  * @copyright  Copyright (c) 2014 Landofcoder (http://www.landofcoder.com/)
  * @license    http://www.landofcoder.com/LICENSE-1.0.html
  */
+namespace Lof\MarketPlace\Observer;
+
 use Magento\Framework\Event\ObserverInterface;
 
 class ReviewProduct implements ObserverInterface
 {
-	 /**
+     /**
      * @var helper
      */
     protected $helper;
@@ -32,11 +33,11 @@ class ReviewProduct implements ObserverInterface
      */
     private $customerSession;
 
-	public function __construct(
+    public function __construct(
         \Magento\Customer\Model\Session $customerSession,
         \Magento\Framework\App\ResourceConnection $resource,
         \Lof\MarketPlace\Helper\Data $helper)
-   	{
+    {
         $this->customerSession = $customerSession;
         $this->helper          = $helper;
          $this->_resource = $resource;
@@ -50,7 +51,7 @@ class ReviewProduct implements ObserverInterface
      */
     public function execute(\Magento\Framework\Event\Observer $observer)
     {
-    	$config_event = $this->helper->getConfig('general_settings/enable');
+        $config_event = $this->helper->getConfig('general_settings/enable');
         if($config_event) {
              /**
              * Create object instance
@@ -72,7 +73,9 @@ class ReviewProduct implements ObserverInterface
                 if($data = $reviewFactory->getCollection()->addFieldToFilter('entity_pk_value',$product->getId())->getLastItem()->getData()) {
 
                     $rating = $connection->fetchCol(" SELECT value FROM ".$table_name." WHERE entity_pk_value = ".$product->getId()." AND review_id=".$data['review_id']);
-                    $data['rating'] = (isset($rating[0])) ? $rating[0] : '';
+                    if($rating) {
+                        $data['rating'] = $rating[0];
+                    }
                     $data['product_id'] = $product->getId();
                     $data['status'] = $data['status_id'];
                     $data['seller_id'] = $this->helper->getSellerIdByProduct($product->getId());

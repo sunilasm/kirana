@@ -46,7 +46,7 @@ echo $block->getChildHtml('form_fields_before')?>
     </fieldset>
     <fieldset class="fieldset create info">
 		<legend class="legend">
-			<span><?php /* @escapeNotVerified */ echo __('Kirana General') ?></span>
+			<span><?php /* @escapeNotVerified */ echo __('Seller General') ?></span>
 		</legend>
 		<?php if($seller_membership) { ?>
 			<input name="group" type="hidden" value="<?php echo $helper->getConfig('seller_settings/default_seller_group') ?>" />
@@ -186,25 +186,31 @@ echo $block->getChildHtml('form_fields_before')?>
 		<br>
 
 		<div class="field password required">
-			<label for="password" class="label"><span><?php /* @escapeNotVerified */ echo __('Password') ?></span></label>
-			<div class="control">
-				<input type="password" name="password" id="password"
-					title="<?php /* @escapeNotVerified */ echo __('Password') ?>"
-					class="input-text"
-					data-validate="{required:true, 'validate-password':true}"
-					autocomplete="off">
-			</div>
-		</div>
-		<div class="field confirmation required">
-			<label for="password-confirmation" class="label"><span><?php /* @escapeNotVerified */ echo __('Confirm Password') ?></span></label>
-			<div class="control">
-				<input type="password" name="password_confirmation"
-					title="<?php /* @escapeNotVerified */ echo __('Confirm Password') ?>"
-					id="password-confirmation" class="input-text"
-					data-validate="{required:true, equalTo:'#password'}"
-					autocomplete="off">
-			</div>
-		</div>
+            <label for="password" class="label"><span><?= $block->escapeHtml(__('Password')) ?></span></label>
+            <div class="control">
+                <input type="password" name="password" id="password"
+                       title="<?= $block->escapeHtmlAttr(__('Password')) ?>"
+                       class="input-text"
+                       data-password-min-length="8"
+                       data-password-min-character-sets="3"
+                       data-validate="{required:true, 'validate-customer-password':true}"
+                       autocomplete="off">
+                <div id="password-strength-meter-container" data-role="password-strength-meter" aria-live="polite">
+                    <div id="password-strength-meter" class="password-strength-meter">
+                        <?= $block->escapeHtml(__('Password Strength')) ?>:
+                        <span id="password-strength-meter-label" data-role="password-strength-meter-label">
+                            <?= $block->escapeHtml(__('No Password')) ?>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="field confirmation required">
+            <label for="password-confirmation" class="label"><span><?= $block->escapeHtml(__('Confirm Password')) ?></span></label>
+            <div class="control">
+                <input type="password" name="password_confirmation" title="<?= $block->escapeHtmlAttr(__('Confirm Password')) ?>" id="password-confirmation" class="input-text" data-validate="{required:true, equalTo:'#password'}" autocomplete="off">
+            </div>
+        </div>
 		<div class="privacy_policy">
 
 			<div class="control">

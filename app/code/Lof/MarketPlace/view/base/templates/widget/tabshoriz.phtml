@@ -1,0 +1,44 @@
+<?php
+/**
+ * Copyright © 2015 Magento. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+
+// @codingStandardsIgnoreFile
+
+?>
+
+<?php if (!empty($tabs)): ?>
+<div  id="<?php /* @escapeNotVerified */ echo $block->getId() ?>" class="<?php echo $this->getClass()?>">
+    <ul class="nav nav-tabs">
+        <?php $i = 0;?>
+        <?php foreach ($tabs as $_tab): ?>
+            <?php $_tabClass = 'tab-item-link ' . $block->getTabClass($_tab) . ' ' . (preg_match('/\s?ajax\s?/', $_tab->getClass()) ? 'notloaded' : '') ?>
+            <?php $_tabType = (!preg_match('/\s?ajax\s?/', $_tabClass) && $block->getTabUrl($_tab) != '#') ? 'link' : '' ?>
+            <?php $_tabHref = $block->getTabUrl($_tab) == '#' ? '#' . $block->getTabId($_tab) . '_content' : $block->getTabUrl($_tab) ?>
+            <li><a href="<?php /* @escapeNotVerified */ echo $_tabHref?>" title="<?php /* @escapeNotVerified */ echo $block->getTabTitle($_tab) ?>" class="<?php $_tabClass ?>" data-tab-type="<?php $_tabType ?>"><?php /* @escapeNotVerified */ echo $block->getTabLabel($_tab) ?></a></li>
+        <?php endforeach;?>
+    </ul>
+    <div class="tab-content">
+    <?php $i = 0;?>
+    <?php foreach ($tabs as $_tab): ?>
+        <div class="tab-pane<?php if($i++==0):?> active<?php endif;?>" id="<?php /* @escapeNotVerified */ echo $block->getTabId($_tab) ?>_content">
+            <?php /* @escapeNotVerified */ echo $block->getTabContent($_tab) ?>
+        </div><!-- /.tab-pane -->
+    <?php endforeach;?>
+    </div><!-- /.tab-content -->
+</div><!-- nav-tabs-custom -->
+
+<script>
+require(["jquery","mage/backend/tabs"], function($){
+    $(function() {
+        $('#<?php /* @escapeNotVerified */ echo $block->getId() ?>').tabs({
+            active: '<?php /* @escapeNotVerified */ echo $block->getActiveTabId() ?>',
+            destination: '#<?php /* @escapeNotVerified */ echo $block->getDestElementId() ?>',
+            shadowTabs: <?php /* @escapeNotVerified */ echo $block->getAllShadowTabs()?>
+        });
+    });
+});
+</script>
+<?php endif;?>
+
