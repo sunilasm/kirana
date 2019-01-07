@@ -31,4 +31,6 @@
     <template id="lofmarketplace_email_settings_register_seller_template" label="Register Seller" file="register_seller_template.html" type="html" module="Lof_MarketPlace" area="frontend"/>
     <template id="lofmarketplace_email_settings_approve_seller_template" label="Approve Seller" file="approve_seller_template.html" type="html" module="Lof_MarketPlace" area="frontend"/>
     <template id="lofmarketplace_email_settings_unapprove_seller_template" label="Unapprove Seller" file="unapprove_seller_template.html" type="html" module="Lof_MarketPlace" area="frontend"/>
+     <template id="lofmarketplace_email_settings_approve_product_template" label="Approve Product" file="approve_product_template.html" type="html" module="Lof_MarketPlace" area="frontend"/>
+    <template id="lofmarketplace_email_settings_unapprove_product_template" label="Unapprove Product" file="unapprove_product_template.html" type="html" module="Lof_MarketPlace" area="frontend"/>
 </config>

@@ -134,14 +134,16 @@ class Uploadimage extends \Magento\Framework\App\Helper\AbstractHelper
      */
     public function moveImageFromTmp($file)
     {
+
         if (strrpos($file, '.tmp') == strlen($file) - 4) {
             $file = substr($file, 0, strlen($file) - 4);
         }
-      
+       
         $destinationFile = $this->getUniqueFileName($file);
+
         /** @var $storageHelper \Magento\MediaStorage\Helper\File\Storage\Database */
         $storageHelper = $this->fileStorageDb;
-
+      
         if ($storageHelper->checkDbUsage()) {
             $storageHelper->renameFile(
                 $this->mediaConfig->getTmpMediaShortUrl($file),
@@ -159,7 +161,34 @@ class Uploadimage extends \Magento\Framework\App\Helper\AbstractHelper
   
         return str_replace('\\', '/', $destinationFile);
     }
+     public function moveImageFromZip($file)
+    {
+        if (strrpos($file, '.tmp') == strlen($file) - 4) {
+            $file = substr($file, 0, strlen($file) - 4);
+        }
+       
+        $destinationFile = $this->getUniqueFileName($file);
 
+        /** @var $storageHelper \Magento\MediaStorage\Helper\File\Storage\Database */
+        $storageHelper = $this->fileStorageDb;
+      
+        if ($storageHelper->checkDbUsage()) {
+            $storageHelper->renameFile(
+                $this->mediaConfig->getTmpMediaShortUrl($file),
+                $this->mediaConfig->getMediaShortUrl($destinationFile)
+            );
+
+            $this->mediaDirectory->delete($this->mediaConfig->getTmpMediaPath($file));
+            $this->mediaDirectory->delete($this->getAttributeSwatchPath($destinationFile));
+        } else {
+            $this->mediaDirectory->renameFile(
+                $this->mediaConfig->getTmpMediaPath($file),
+                $this->getAttributeSwatchPath($destinationFile)
+            );
+        }
+  
+        return str_replace('\\', '/', $destinationFile);
+    }
     /**
      * Check whether file to move exists. Getting unique name
      *

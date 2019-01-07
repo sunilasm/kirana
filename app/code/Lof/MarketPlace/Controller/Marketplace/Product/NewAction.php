@@ -22,7 +22,6 @@
 namespace Lof\MarketPlace\Controller\Marketplace\Product;
 
 use Magento\Framework\App\Action\Context;
-
 class NewAction extends \Magento\Framework\App\Action\Action  
 { 
     /**

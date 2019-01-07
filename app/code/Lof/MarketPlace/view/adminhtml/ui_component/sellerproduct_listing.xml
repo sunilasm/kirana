@@ -6,6 +6,10 @@
             <item name="deps" xsi:type="string">sellerproduct_listing.sellerproduct_listing_data_source</item>
         </item>
         <item name="spinner" xsi:type="string">sellerproduct_columns</item>
+        <item name="buttons" xsi:type="array">
+            <item name="add" xsi:type="array">
+            </item>
+        </item>
     </argument>
     <dataSource name="sellerproduct_listing_data_source">
         <argument name="dataProvider" xsi:type="configurableObject">
@@ -54,18 +58,6 @@
                 </item>
             </argument>
         </columnsControls>
-        <filterSearch name="fulltext">
-            <argument name="data" xsi:type="array">
-                <item name="config" xsi:type="array">
-                    <item name="provider" xsi:type="string">bg.brrand_listinand_listing_data_source</item>
-                    <item name="chipsProvider" xsi:type="string">sellerproduct_listing.sellerproduct_listing.listing_top.listing_filters_chips</item>
-                    <item name="storageConfig" xsi:type="array">
-                        <item name="provider" xsi:type="string">sellerproduct_listing.sellerproduct_listing.listing_top.bookmarks</item>
-                        <item name="namespace" xsi:type="string">current.search</item>
-                    </item>
-                </item>
-            </argument>
-        </filterSearch>
         <filters name="listing_filters">
             <argument name="data" xsi:type="array">
                 <item name="config" xsi:type="array">
@@ -210,7 +202,6 @@
         <column name="seller_link" class="Lof\MarketPlace\Ui\Component\Listing\Columns\Seller">
              <argument name="data" xsi:type="array">
                 <item name="config" xsi:type="array">
-                    <item name="filter" xsi:type="string">text</item>
                     <item name="component" xsi:type="string">Lof_MarketPlace/js/grid/columns/link</item>
                     <item name="label" xsi:type="string" translate="true">Seller</item>
                     <item name="sortOrder" xsi:type="number">6</item>

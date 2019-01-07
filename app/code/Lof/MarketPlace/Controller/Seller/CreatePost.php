@@ -276,7 +276,7 @@ class CreatePost extends \Magento\Customer\Controller\AbstractAccount {
                 $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
                 $sellerModel = $objectManager->get('Lof\MarketPlace\Model\Seller');
                 try {
-                    $sellerModel->setCity($data['city'])->setCommany($data['company'])->setTelephone($data['telephone'])->setAddress($street)->setRegion($data['region'])->setRegionId($data['region_id'])->setPostcode($data['postcode'])->setCountry($country)->setName($customerName)->setEmail($customerEmail)->setStatus(1)->setGroupId($group)->setCustomerId($customerId)->setUrlKey($url)->save();
+                    $sellerModel->setCity($data['city'])->setCommany($data['company'])->setTelephone($data['telephone'])->setAddress($street)->setRegion($data['region'])->setRegionId($data['region_id'])->setPostcode($data['postcode'])->setCountry($country)->setName($customerName)->setEmail($customerEmail)->setStatus(1)->setGroupId($group)->setCustomerId($customerId)->setStores($stores)->setUrlKey($url)->setPageLayout($layout)->save();
                   
                     $this->_redirect ('marketplace/catalog/dashboard');
 

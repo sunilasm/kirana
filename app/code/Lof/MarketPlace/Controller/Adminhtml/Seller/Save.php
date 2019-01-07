@@ -29,6 +29,7 @@ class Save extends \Magento\Customer\Controller\AbstractAccount
      */
     protected $_fileSystem;
 
+    protected $helper;
     /**
      * @param \Magento\Backend\App\Action\Context $context
      * @param \Magento\Framework\ObjectManagerInterface $objectManager
@@ -37,8 +38,10 @@ class Save extends \Magento\Customer\Controller\AbstractAccount
     public function __construct(
         \Magento\Backend\App\Action\Context $context,
         \Magento\Framework\Filesystem $filesystem,
-        \Magento\Backend\Helper\Js $jsHelper
+        \Magento\Backend\Helper\Js $jsHelper,
+        \Lof\MarketPlace\Helper\Data $helper
         ) {
+        $this->helper = $helper;
         $this->_fileSystem = $filesystem;
         $this->jsHelper = $jsHelper;
         parent::__construct($context);
@@ -61,7 +64,7 @@ class Save extends \Magento\Customer\Controller\AbstractAccount
     {
         
     	$data = $this->getRequest()->getPostValue();
-
+     
         /** @var \Magento\Backend\Model\View\Result\Redirect $resultRedirect */
         $resultRedirect = $this->resultRedirectFactory->create();
         if ($data) {  
@@ -72,6 +75,7 @@ class Save extends \Magento\Customer\Controller\AbstractAccount
             !isset($data['youtube_active'])?$data['youtube_active'] = 0:$data['youtube_active'] = 1;
             !isset($data['vimeo_active'])?$data['vimeo_active'] = 0:$data['vimeo_active'] = 1;
             !isset($data['instagram_active'])?$data['instagram_active'] = 0:$data['instagram_active'] = 1;
+            !isset($data['linkedin_active'])?$data['linkedin_active'] = 0:$data['linkedin_active'] = 1;
             !isset($data['pinterest_active'])?$data['pinterest_active'] = 0:$data['pinterest_active'] = 1;
            
             $model = $this->_objectManager->create('Lof\MarketPlace\Model\Seller');
@@ -129,9 +133,11 @@ class Save extends \Magento\Customer\Controller\AbstractAccount
                 $products = $this->jsHelper->decodeGridSerializedInput($links['related']);
                 $data['products'] = $products;
             }
-
+            $customer = $this->helper->getCustomerById($data['customer_id']);
+            $data['email'] = $customer->getData('email');
             $model->setData($data);
             try {
+                  
                 $model->save();
                 $this->messageManager->addSuccess(__('You saved this seller.'));
                 $this->_objectManager->get('Magento\Backend\Model\Session')->setFormData(false);

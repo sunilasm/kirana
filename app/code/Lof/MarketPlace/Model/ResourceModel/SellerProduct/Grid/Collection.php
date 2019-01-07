@@ -161,50 +161,27 @@ class Collection extends ProductCollection implements SearchResultInterface
     {
     	return $this;
     }
-    
-    /**
+     /**
      * Join store relation table if there is store filter
      *
      * @return void
      */
-    // protected function _renderFiltersBefore()
-    // {
-    //     $eavAttribute = $this->_objectManager->get('Magento\Eav\Model\ResourceModel\Entity\Attribute');
-    //     $proAttrId = $eavAttribute->getIdByCode("catalog_product", "name");
-    //     $proPriceAttrId = $eavAttribute->getIdByCode("catalog_product", "price");
-        
-    //     $customerGridFlat = $this->getTable('customer_grid_flat');
-    //     $catalogProductEntityVarchar = $this->getTable('catalog_product_entity_varchar');
-    //     $catalogProductEntityDecimal = $this->getTable('catalog_product_entity_decimal');
-    //     $catalogInventoryStockItem = $this->getTable('cataloginventory_stock_item');
-        
-    //     $this->getSelect()->join(
-    //         $customerGridFlat.' as cgf',
-    //         'main_table.seller_id = cgf.entity_id',
-    //         ["name" => "name"]
-    //     );
-    //     $this->addFilterToMap("name", "cgf.name");
-
-    //     $this->getSelect()->join(
-    //         $catalogProductEntityVarchar.' as cpev',
-    //         'main_table.product_id = cpev.entity_id',
-    //         ["product_name" => "value"]
-    //     )->where("cpev.store_id = 0 AND cpev.attribute_id = ".$proAttrId);
-    //     $this->addFilterToMap("product_name", "cpev.value");
-
-    //     $this->getSelect()->join(
-    //         $catalogProductEntityDecimal.' as cped',
-    //         'main_table.product_id = cped.entity_id',
-    //         ["product_price" => "value"]
-    //     )->where("cped.store_id = 0 AND cped.attribute_id = ".$proPriceAttrId);
-    //     $this->addFilterToMap("product_price", "cped.value");
-
-    //     $this->getSelect()->join(
-    //         $catalogInventoryStockItem.' as csi',
-    //         'main_table.product_id = csi.product_id',
-    //         ["qty" => "qty"]
-    //     )->where("csi.website_id = 0 OR csi.website_id = 1");
-    //     $this->getSelect()->group('product_id');
-    //     parent::_renderFiltersBefore();
-    // }
+    protected function _renderFiltersBefore()
+    { 
+        $product = $this->getTable('catalog_product_entity_varchar');
+        $eav =  $this->getTable('eav_attribute');
+        $seller = $this->getTable('lof_marketplace_seller');
+        $this->getSelect('*')->join(
+            $product.' as abc',
+            'main_table.product_id = abc.entity_id',
+            [
+                "name" => "value",
+            ]
+        )->join(
+            $eav.' as a',
+            'a.attribute_id = abc.attribute_id',
+            []
+        )->where('abc.store_id = 0 AND a.attribute_code = "name" AND a.entity_type_id = 4');
+        parent::_renderFiltersBefore();
+    }
 }

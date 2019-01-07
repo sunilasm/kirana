@@ -23,12 +23,12 @@ namespace Lof\MarketPlace\Block\Seller;
 
 class Info extends \Magento\Framework\View\Element\Template {
 
-	/**
+    /**
      * Core registry
      *
      * @var \Magento\Framework\Registry
      */
-	protected $_coreRegistry = null;
+    protected $_coreRegistry = null;
     /**
      * @var \Lof\MarketPlace\Model\Seller
      */
@@ -57,9 +57,9 @@ class Info extends \Magento\Framework\View\Element\Template {
      * @param \Magento\Framework\App\ResourceConnection
      * @param array
     */
-	public function __construct(
-    	\Magento\Framework\View\Element\Template\Context $context,
-    	\Magento\Framework\Registry $registry,
+    public function __construct(
+        \Magento\Framework\View\Element\Template\Context $context,
+        \Magento\Framework\Registry $registry,
         \Lof\MarketPlace\Model\Seller $sellerFactory,
         \Lof\MarketPlace\Helper\Data $helper,
         \Magento\Framework\App\ResourceConnection $resource,
@@ -68,10 +68,10 @@ class Info extends \Magento\Framework\View\Element\Template {
         array $data = []
         ) {
 
-		$this->_helper        = $helper;
-		$this->_coreRegistry  = $registry;
-		$this->_sellerFactory = $sellerFactory;
-		$this->_resource      = $resource;
+        $this->_helper        = $helper;
+        $this->_coreRegistry  = $registry;
+        $this->_sellerFactory = $sellerFactory;
+        $this->_resource      = $resource;
         $this->rating = $rating;
         $this->orderitems     = $orderitems;
         parent::__construct($context);

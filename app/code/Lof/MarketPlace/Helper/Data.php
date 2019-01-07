@@ -21,6 +21,8 @@
 
 namespace Lof\MarketPlace\Helper;
 use Magento\Framework\Pricing\PriceCurrencyInterface;
+use Magento\Framework\App\Filesystem\DirectoryList;
+
 class Data extends \Magento\Framework\App\Helper\AbstractHelper
 {
     
@@ -109,6 +111,32 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
     protected $_countryFactory;
 
     protected $_frontendUrl;
+
+    /**
+     * @var \Lof\MarketPlace\Model\Zip
+     */
+    protected $_zip;
+        /**
+     * @var \Magento\Framework\Filesystem
+     */
+    protected $_filesystem;
+
+    /**
+     * @var \Magento\MediaStorage\Model\File\UploaderFactory
+     */
+    protected $_fileUploader;
+
+    /**
+     * @var \Magento\Framework\Filesystem\Driver\File
+     */
+    protected $_fileDriver;
+
+    protected $_fileSystem;
+
+
+    protected $_directoryList;
+
+     protected $uploadimage;
 	   /**
      * Initialize dependencies.
      *
@@ -122,28 +150,39 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
         \Lof\MarketPlace\Model\Group $groupCollection,
         \Lof\MarketPlace\Model\Commission $commissionCollection,
         \Lof\MarketPlace\Helper\DataRule $dataRule,
+        \Lof\MarketPlace\Model\Zip $zip,
+        \Magento\Framework\Filesystem $filesystem,
         \Magento\Cms\Model\Template\FilterProvider $filterProvider,
         \Lof\MarketPlace\App\Area\FrontNameResolver $frontNameResolver,
         \Magento\Catalog\Model\ProductFactory $productCollectionFactory,
         \Magento\Framework\ObjectManagerInterface $objectManager,
         \Magento\Framework\Pricing\PriceCurrencyInterface $priceCurrency,
         \Magento\Framework\Stdlib\DateTime\TimezoneInterface $localeDate,
+        \Magento\MediaStorage\Model\File\UploaderFactory $fileUploaderFactory,
+        \Magento\Framework\Filesystem\Driver\File $fileDriver,
         PriceCurrencyInterface $priceFormatter,
         \Magento\Framework\Url $frontendUrl,
         \Magento\Customer\Model\CustomerFactory $customer,
         \Magento\Customer\Model\Session $customerSession,
+        \Magento\Framework\Filesystem\Io\File $filesystemIo,
+        \Magento\Framework\App\Filesystem\DirectoryList $directoryList,
         //\Magento\Framework\Module\Manager $moduleManager,
         \Magento\Directory\Model\CountryFactory $countryFactory,
+        \Lof\MarketPlace\Helper\Uploadimage $uploadimage,
          array $modulesUseTemplateFromAdminhtml=[],
         array $blocksUseTemplateFromAdminhtml =[]
         ) {
         parent::__construct($context);
+        $this->_directoryList = $directoryList;
+         $this->uploadimage = $uploadimage;
         $this->_frontendUrl = $frontendUrl;
         $this->_countryFactory = $countryFactory;
         $this->_moduleManager = $context->getModuleManager();
+        $this->_fileDriver = $fileDriver;
         $this->dataRule = $dataRule;
         $this->customer = $customer;
         $this->_localeDate = $localeDate;
+        $this->_fileUploader = $fileUploaderFactory;
         $this->_filterProvider          = $filterProvider;
         $this->_storeManager            = $storeManager;
         $this->_groupCollection         = $groupCollection;
@@ -154,9 +193,162 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
         $this->_objectManager  = $objectManager;
         $this->_priceCurrency = $priceCurrency;
         $this->priceFormatter = $priceFormatter;
+        $this->filesystemIo = $filesystemIo;
         $this->_blocksUseTemplateFromAdminhtml = $blocksUseTemplateFromAdminhtml;
         $this->_modulesUseTemplateFromAdminhtml = $modulesUseTemplateFromAdminhtml;
+        $this->_zip = $zip;
+        $this->_filesystem = $filesystem;
 
+    }
+     /**
+     * Upload Images Zip File
+     *
+     * @param array $result
+     *
+     * @return array
+     */
+    public function uploadZip($strtotime)
+    {
+        $profileId = $strtotime;
+        try {
+            $zipModel = $this->_zip;
+            $basePath = $this->getBasePath($profileId);
+            $imageUploadPath = $basePath.'zip/';
+            $imageUploader = $this->_fileUploader->create(['fileId' => 'massupload_image']);
+            $validateData = $imageUploader->validateFile();
+            $imageUploader->setAllowedExtensions(['zip']);
+            $imageUploader->setAllowRenameFiles(true);
+            $imageUploader->setFilesDispersion(false);
+            $imageUploader->save($imageUploadPath);
+            $fileName = $imageUploader->getUploadedFileName();
+            $source = $imageUploadPath.$fileName;
+            $destination = $basePath.'images';
+
+            $zipModel->unzipImages($source, $destination);
+            $this->arrangeFiles($destination);
+
+            $this->flushFilesCache($destination);
+            $result = ['error' => false];
+        } catch (\Exception $e) {
+            $this->flushData($profileId);
+            $msg = 'There is some problem in uploading image zip file.';
+            $result = ['error' => true, 'msg' => $msg];
+        }
+        return $result;
+    }
+
+      /**
+     * Delte Extra Images and Folder
+     *
+     * @param string $path
+     * @param bool $removeParent [optional]
+     */
+    public function flushFilesCache($path, $removeParent = false)
+    {
+        $entries = $this->_fileDriver->readDirectory($path);
+        foreach ($entries as $entry) {
+            if ($this->_fileDriver->isDirectory($entry)) {
+                $this->removeDir($entry);
+            }
+        }
+        if ($removeParent) {
+            $this->removeDir($path);
+        }
+    }
+    
+    /**
+     * Remove Folder and Its Content
+     *
+     * @param string $dir
+     */
+    public function removeDir($dir)
+    {
+        if ($this->_fileDriver->isDirectory($dir)) {
+            $entries = $this->_fileDriver->readDirectory($dir);
+            foreach ($entries as $entry) {
+                if ($this->_fileDriver->isFile($entry)) {
+                    $this->_fileDriver->deleteFile($entry);
+                } else {
+                    $this->removeDir($entry);
+                }
+            }
+            $this->_fileDriver->deleteDirectory($dir);
+        }
+    }
+    /**
+     * Flush Unwanted Data
+     *
+     * @param int $profileId
+     */
+    public function flushData($profileId)
+    {
+       /* $this->_profile->create()->load($profileId)->delete();
+        $path = $this->getBasePath($profileId);
+        $this->flushFilesCache($path, true);*/
+    }
+     /**
+     * Get Base Path
+     *
+     * @param int $profileId
+     *
+     * @return string
+     */
+    public function getBasePath($profileId)
+    {
+        $mediaPath = $this->getMediaPath();
+        $basePath = $mediaPath.'marketplace/massupload/'.$profileId."/";
+        return $basePath;
+    }
+     /**
+     * Get Media Path
+     *
+     * @return string
+     */
+    public function getMediaPath()
+    {
+        return $this->_filesystem->getDirectoryRead(DirectoryList::MEDIA)->getAbsolutePath();
+    }
+     /**
+     * Rearrange Images of Product to upload
+     *
+     * @param string $path
+     * @param string $originalPath [Optional]
+     * @param array  $result [Optional]
+     */
+    public function arrangeFiles($path, $originalPath = '', $result = [])
+    {
+        if ($originalPath == '') {
+            $originalPath = $path;
+        }
+
+        $entries = $this->_fileDriver->readDirectory($path);
+
+        foreach ($entries as $file) {
+            $tmp = explode("/", $file);
+            $fileName = end($tmp);
+            $sourcePath = $path.'/'.$fileName;
+          
+           
+            $destinationPath = $originalPath.'/'.$fileName;
+            $path1 = $this->getMediaPath().'tmp/catalog/product/'.strtolower($fileName[0]).'/'.strtolower($fileName[1]);
+            $lof_path = $path1.'/'.strtolower($fileName);  
+    
+            if ($this->_fileDriver->isDirectory($file)) {
+                $result = $this->arrangeFiles($file, $originalPath, $result);
+            } else {
+                if (!$this->_fileDriver->isExists($destinationPath)) {
+                    $result[$sourcePath] = $destinationPath;
+                    $this->_fileDriver->copy($sourcePath, $destinationPath);
+                }
+            }
+            if (!is_dir('pub/media/tmp/catalog/product/'.strtolower($fileName[0]).'/'.strtolower($fileName[1]))) {
+                mkdir('pub/media/tmp/catalog/product/'.strtolower($fileName[0]).'/'.strtolower($fileName[1]), 0777, true);
+            }
+            $this->_fileDriver->copy($sourcePath,$lof_path);
+            $file = '/'.strtolower($fileName[0]).'/'.strtolower($fileName[1]).'/'.strtolower($fileName).'.tmp';
+            $this->uploadimage->moveImageFromTmp($file);
+          
+        } 
     }
     public function getFrontendUrl($route = '', $params = []){
         return $this->_frontendUrl->getUrl($route,$params);
@@ -312,6 +504,14 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
      */
     public function getAttributeSetRestriction(){
         return explode(",",$this->scopeConfig->getValue(self::XML_CATALOG_ATTRIBUTE_SET_RESTRICTION));
+    }
+
+     public function getUrlShortcut()
+    {
+        if ($this->getConfig('general_settings/route')) {
+            return $this->getConfig('general_settings/route');
+        }
+        return false;
     }
     /**
      * Return seller config value by key and store

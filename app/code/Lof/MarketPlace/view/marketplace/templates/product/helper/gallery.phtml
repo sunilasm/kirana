@@ -240,7 +240,8 @@ $formName = $block->getFormName();
             </div>
           </div>
           
-        </form>  
+        </form> 
+       
       </div>
     </div>
   </div>
@@ -250,4 +251,37 @@ $formName = $block->getFormName();
     jQuery('body').trigger('contentUpdated');
   });
 </script> 
+<div class="clearfix"></div>
+<div class="row">
+  <div class="col-md-12 col-sm-12 col-xs-12">
+    <div class="x_panel">
+      <div class="x_title">
+        <h2><?php echo __('Upload Image Zip'); ?></h2>
+        <div class="clearfix"></div>
+      </div>
+      <div class="x_content">
+           <form method="post" action="<?php echo $this->getUrl('catalog/product/upload'); ?>" id="lofmp_massupload_form" enctype="multipart/form-data" data-mage-init='{"validation":{}}'>
+           <fieldset class="fieldset">
+              <div class="field required form-group">
+                <label for="massupload_image" class="label">
+                    <span><?php echo __("Upload Images Zip"); ?></span>
+                </label>
+                <div class="control">
+                    <input type="file" data-validate="{required:true}" class="input-text required-entry" title="<?php echo __("Images Zip"); ?>" name="massupload_image" id="massupload_image" aria-required="true">
+                </div>
+              </div>
+              <div class="form-group">  
+              <div class="col-md-6 col-sm-6 col-xs-12">        
+                <button class="action- scalable btn btn-success" type="submit"><span><?php
+                /* @escapeNotVerified */ echo __('Upload') ?></span></button>
+              </div>
+            </div>  
+           </fieldset>
+        </form> 
+      </div>
+    </div>
+  </div>
+</div>    
+
+
         
