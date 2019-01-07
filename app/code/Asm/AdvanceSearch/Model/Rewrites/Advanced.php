@@ -297,9 +297,9 @@ class Advanced extends \Magento\Framework\Model\AbstractModel
         $selerIdArray = array();
 
         //$lat = $centerpointLat; //latitude
-        $lat = $cookieManager->getCookie('latnew'); //latitude
+        $lat = $cookieManager->getCookie('latitude'); //latitude
         //$lon = $centerpointLang; //longitude
-        $lon = $cookieManager->getCookie('lngnew'); //longitude
+        $lon = $cookieManager->getCookie('longitude'); //longitude
         $distance = 1; //your distance in KM
         $R = 6371; //constant earth radius. You can add precision here if you wish
 

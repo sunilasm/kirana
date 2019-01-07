@@ -18,11 +18,18 @@
 $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
 $customerSession = $objectManager->create('Magento\Customer\Model\Session');
     if(($customerSession->isLoggedIn())){
+        $customerLogin = 1;
         $billingID =  $customerSession->getCustomer()->getDefaultBilling();
         $address = $objectManager->create('Magento\Customer\Model\Address')->load($billingID);
-        //echo "<pre>";print_r($address->getData());exit;
+        $addressLat = $address->getLat();
+        $addressLng = $address->getLng();
+        $streetArray = $address->getStreet();
+        $addressFull = $streetArray['0'].','.$address->getCity().','.$address->getRegion().','.$address->getCountry_id().','.$address->getPostcode();
     }else{
-       //echo "Not Login";
+      $customerLogin = 0;
+      $addressLat  = '';
+      $addressLng  = '';
+      $addressFull  = '';
     }
 
 // $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
@@ -148,8 +155,10 @@ $customerSession = $objectManager->create('Magento\Customer\Model\Session');
 </fieldset>
  <input type="hidden" id="lat" name="lat" title="Lat" value=""/>
  <input type="hidden" id="lng" name="lng" title="Lng" value=""/>
- <input type="hidden" id="loninlat" name="loninlat" title="LoninLat" value="<?php //if($address->getLat()){echo $address->getLat(); }else{ echo '0';}?>"/>
- <input type="hidden" id="loninlng" name="loninlng" title="LoninLng" value="<?php //if($address->getLng()){echo $address->getLng(); }else{echo '0';}?>"/>
+ <input type="hidden" id="customerLogin" name="customerLogin" title="addressFull" value="<?php if($customerLogin){echo $customerLogin; }else{echo '';}?>"/>
+ <input type="hidden" id="loninlat" name="loninlat" title="LoninLat" value="<?php if($addressLat){echo $addressLat; }else{ echo '0';}?>"/>
+ <input type="hidden" id="loninlng" name="loninlng" title="LoninLng" value="<?php if($addressLng){echo $addressLng; }else{echo '0';}?>"/>
+ <input type="hidden" id="addressFull" name="addressFull" title="addressFull" value="<?php if($addressFull){echo $addressFull; }else{echo '';}?>"/>
 <div class="actions-toolbar">
   <div class="primary">
     <button type="submit"
@@ -159,12 +168,30 @@ $customerSession = $objectManager->create('Magento\Customer\Model\Session');
     </button>
   </div>
 </div>
-<div id="popup-modal" class="modal fade" >
+<div id="popup-modal" class="modal" style="display: none">
     <div id="locationField">
       <input id="autocomplete" placeholder="Enter your address"
              type="text"/>
     </div>
 </div>
+
+<div id="popup-modal-islogin" class="modal" style="display: none">
+    <div id="locationField" class="row">
+      <div class="col-md-6 col-sm-6 col-lg-6">
+        <label><strong>Current Address</strong></label>
+      </div>
+      <div class="col-md-6 col-sm-6 col-lg-6">
+        <label><strong>Logedin User Default Address</strong></label>
+      </div>
+      <div class="col-md-6 col-sm-6 col-lg-6">
+        <input type="radio" name="checkaddress" id="currentAddval" value="" checked> <span id="currentAdd" ></span><?php //echo $addressFull ?>
+      </div>
+      <div class="col-md-6 col-sm-6 col-lg-6">
+        <input type="radio" name="checkaddress" id="defaultAddval" value=""> <span id="defaultAdd"></span> <?php //echo $addressFull ?>
+      </div>
+    </div>
+</div>
+
 </form>
 <script>
 require([

@@ -13,7 +13,6 @@ require([
         };
         //var flag;
         if (navigator.geolocation){
-             //alert($.cookie('longitude'));
                 if($.cookie('latitude') == null && $.cookie('longitude') == null){
                     navigator.geolocation.getCurrentPosition(showPosition);
                 }
@@ -28,21 +27,16 @@ require([
         function showPosition(position){ 
             location.latitude=position.coords.latitude;
             location.longitude=position.coords.longitude;
-            //document.getElementById("lat") = position.coords.latitude;
-            //document.getElementById("lng") = position.coords.latitude;
                 $("#lat").val(position.coords.latitude);
                 $("#lng").val(position.coords.longitude);
-
                 var latitude = $('#lat').val();
                 var longitude = $('#lng').val();
-                //console.log(lat+'--'+lng);
+                
                  $.cookie('latitude', latitude );
                  $.cookie('longitude', longitude );
+                 $.cookie('custmerloginstatus', 'false' );
+                 console.log($.cookie('latitude')+'--'+$.cookie('longitude'));
 
-                 //console.log('hhhh--'+$.cookie('latitude')+'--'+$.cookie('longitude'));
-
-            /*latitudeAndLongitude.="Latitude: " + position.coords.latitude + 
-            "<br>Longitude: " + position.coords.longitude; */
             var geocoder = new google.maps.Geocoder();
             var latLng = new google.maps.LatLng(location.latitude, location.longitude);
 
@@ -64,12 +58,43 @@ require([
 
 
         } //showPosition
-        
+       // Customer is login 
+        if(jQuery('#customerLogin').val()){
+            //if($.cookie('latitude') == '' && $.cookie('longitude') == ''){
+                var geocoder = new google.maps.Geocoder();
+                var addressLog = jQuery('#addressFull').val();
+                 var latLng = new google.maps.LatLng($.cookie('latitude'), $.cookie('longitude'));
+                 geocoder.geocode( { 'latLng': latLng}, function(results, status) {
+                       if (status == google.maps.GeocoderStatus.OK) {
+                        $('#currentAdd').html(results[0].formatted_address);
+                        $('#currentAddval').val(results[0].formatted_address);
+                      }
+                    });
+                 // Get Default Logedin User Address
+                geocoder.geocode( { 'address': addressLog}, function(results, status) {
+                if (status == google.maps.GeocoderStatus.OK) {
+                    $('#defaultAdd').html(addressLog);
+                    $('#defaultAddval').val(addressLog);
+                    addresslatitude =  results[0].geometry.location.lat();
+                    addresslongitude = results[0].geometry.location.lng();
+                    } 
+                    console.log($.cookie('custmerloginstatus'));
+                    if($.cookie('latitude') != addresslatitude && $.cookie('longitude') != addresslongitude && $.cookie('custmerloginstatus') == 'false'){
+                        var popup = modal(optionsnew, $('#popup-modal-islogin'));
+                            $('#popup-modal-islogin').modal('openModal');
+                    }else{
+                        $("#lat").val(addresslatitude);
+                        $("#lng").val(addresslongitude); 
+                    }   
+                });
+             //}
+        }
+        // Rgister user or non registered user popup
          var options = {
                 type: 'popup',
                 responsive: true,
                 innerScroll: true,
-                title: 'Modal Title',
+                title: 'Address',
                 modalClass: 'custom-modal',
                 buttons: [{
                     text: $.mage.__('Continue'),
@@ -93,10 +118,42 @@ require([
                     }
                 }]
             };
-            // Disallow location 
-            //console.log("flag-->"+$.cookie('latnew'));
-            if($("#lat").val() == '' && $("#lng").val() == '' && $.cookie('latitude') == '' && $.cookie('longitude') == ''){
+
+            // Registered user popup
+            var optionsnew = {
+                type: 'popup',
+                responsive: true,
+                innerScroll: true,
+                title: 'Confirm Address',
+                modalClass: 'custom-modal-login',
+                buttons: [{
+                    text: $.mage.__('Confirm'),
+                    class: 'getaddressdetailslogin',
+                    click: function () {
+                        //alert($("input[name='checkaddress']:checked").val());
+                        var geocoder = new google.maps.Geocoder();
+                            var address = $("input[name='checkaddress']:checked").val();
+
+                            geocoder.geocode( { 'address': address}, function(results, status) {
+                               if (status == google.maps.GeocoderStatus.OK) {
+                                var latitude = results[0].geometry.location.lat();
+                                var longitude = results[0].geometry.location.lng();
+                                 $.cookie('latitude', latitude );
+                                 $.cookie('longitude', longitude );
+                                 $.cookie('custmerloginstatus', 'true' );
+                                jQuery('#lat').val(latitude);
+                                jQuery('#lng').val(longitude);
+                              }
+                            });
+                        this.closeModal();
+                        $('#popup-modal-islogin').html(" ");
+                    }
+                }]
+            };
+ // alert($("#lat").val()+'--'+$("#lng").val()+'--'+$.cookie('latitude')+'--'+$.cookie('longitude'));
+            if($("#lat").val() == '' && $("#lng").val() == '' && $.cookie('latitude') == null && $.cookie('longitude') == null){
                     //$('#popup-modal').removeClass('hidden')
+                    //alert('kk');
                     var popup = modal(options, $('#popup-modal'));
                     setTimeout(function() {
                     $('#popup-modal').modal('openModal');
