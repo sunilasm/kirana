@@ -64,11 +64,13 @@ class MassReject extends \Magento\Backend\App\Action
         $collection = $this->filter->getCollection($this->collectionFactory->create());
         $objectManager = \Magento\Framework\App\ObjectManager::getInstance ();
         $reviewFactory = $objectManager->create('Magento\Review\Model\Review');
+
         foreach ($collection as $item) {
             $reviewFactory->load($item->getReviewId(),'review_id');
             $reviewFactory->setData('status_id',3);
             $reviewFactory->save();
-         
+            $item->setData('status',3);
+            $item->save();
             
         }
 

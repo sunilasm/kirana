@@ -170,15 +170,19 @@
                     <label>Choose email template for unapprove seller</label>
                     <source_model>\Lof\MarketPlace\Model\Config\Source\EmailTemplate</source_model>
                 </field>
+                 <field id="approve_product_template" translate="label" type="select" sortOrder="120" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Choose email template for approve product</label>
+                    <source_model>\Lof\MarketPlace\Model\Config\Source\EmailTemplate</source_model>
+                </field>
+                <field id="unapprove_product_template" translate="label" type="select" sortOrder="130" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Choose email template for unapprove product</label>
+                    <source_model>\Lof\MarketPlace\Model\Config\Source\EmailTemplate</source_model>
+                </field>
             </group>
 			<group id="product_view_page" translate="label" type="text" sortOrder="6" showInDefault="1" showInWebsite="1" showInStore="1">
 				<label>Seller Info On Product View Page</label>
 				<field id="enable_seller_info" translate="label comment" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
 					<label>Enabled Seller Block</label>
-					<source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
-				</field>
-				<field id="seller_layout_listing" translate="label comment" type="select" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
-					<label>Show Seller As Listing</label>
 					<source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
 				</field>
 				<field id="show_seller_text" translate="label comment" type="select" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">

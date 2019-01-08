@@ -1965,7 +1965,8 @@ label {
 .admin__fieldset > .admin__field {
     margin-bottom: 3rem;
     /*display: inline-block;*/
-    position: relative
+    position: relative;
+    width: 100%;
 }
 
 .admin__field legend.admin__field-label {

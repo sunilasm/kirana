@@ -74,7 +74,7 @@ class TopLink extends \Magento\Framework\View\Element\Html\Link {
      * @return string
      */
     public function getLabel() {
-        return __ ( 'Sell On AHA ' );
+        return __ ( 'Sell On Marketplace ' );
     }
     
 }

@@ -179,9 +179,10 @@ class Router implements RouterInterface
                         );
                 }
             }
- 
+
             // Check Seller Url Key
-            if( (count($identifiers) == 2 && $identifiers[0] == $url_prefix && strpos($identifiers[1], $url_suffix)) || (trim($url_prefix) == '' && count($identifiers) == 1)){
+            if( (count($identifiers) == 2 && $identifiers[0] == $url_prefix && (strpos($identifiers[1], $url_suffix) || !$url_suffix) ) || (trim($url_prefix) == '' && count($identifiers) == 1)){
+
                 if(count($identifiers) == 2){
                     $sellerUrl = str_replace($url_suffix, '', $identifiers[1]);
                 }

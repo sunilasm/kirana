@@ -86,7 +86,11 @@ class View extends \Magento\Framework\View\Element\Template
         $sellerRoute = $sellerRoute?$sellerRoute:"lofmarketplace/index/index";
         $page_title = $this->_sellerHelper->getConfig('seller_list_page/page_title');
         $seller = $this->getCurrentSeller();
-
+        if($seller->getData('shop_title')) {
+            $page_title = $seller->getData('shop_title');
+        } else {
+            $page_title = $seller->getName();
+        }
         $group = false;
         if($groupId = $seller->getGroupId()){
             $group = $this->_groupModel->load($groupId);
@@ -125,8 +129,8 @@ class View extends \Magento\Framework\View\Element\Template
         $breadcrumbsBlock->addCrumb(
             'seller',
             [
-                'label' => $seller->getName(),
-                'title' => $seller->getName(),
+                'label' => $page_title,
+                'title' => $page_title,
                 'link' => ''
             ]
             );
@@ -167,7 +171,11 @@ class View extends \Magento\Framework\View\Element\Template
     protected function _prepareLayout()
     {
         $seller = $this->getCurrentSeller();
-        $page_title = $seller->getName();
+        if($seller->getData('shop_title')) {
+            $page_title = $seller->getData('shop_title');
+        } else {
+            $page_title = $seller->getName();
+        }
         $meta_description = $seller->getMetaDescription();
         $meta_keywords = $seller->getMetaKeywords();
         $this->_addBreadcrumbs();
