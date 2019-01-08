@@ -62,10 +62,10 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
      * @return $this
      */
     protected function _prepareForm(){
-      
+        
     	/** @var $model \Lof\MarketPlace\Model\Payment */
     	$model = $this->_coreRegistry->registry('lof_marketplace_payment');
-
+        
     	/**
     	 * Checking if user have permission to save information
     	 */

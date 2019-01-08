@@ -71,18 +71,6 @@
                 </item>
             </argument>
         </columnsControls>
-        <filterSearch name="fulltext">
-            <argument name="data" xsi:type="array">
-                <item name="config" xsi:type="array">
-                    <item name="provider" xsi:type="string">bg.brrand_listinand_listing_data_source</item>
-                    <item name="chipsProvider" xsi:type="string">amount_listing.amount_listing.listing_top.listing_filters_chips</item>
-                    <item name="storageConfig" xsi:type="array">
-                        <item name="provider" xsi:type="string">amount_listing.amount_listing.listing_top.bookmarks</item>
-                        <item name="namespace" xsi:type="string">current.search</item>
-                    </item>
-                </item>
-            </argument>
-        </filterSearch>
         <filters name="listing_filters">
             <argument name="data" xsi:type="array">
                 <item name="config" xsi:type="array">
@@ -196,6 +184,7 @@
                     <item name="component" xsi:type="string">Lof_MarketPlace/js/grid/columns/link</item>
                     <item name="label" xsi:type="string" translate="true">Seller</item>
                     <item name="sortOrder" xsi:type="number">30</item>
+                    <item name="sortable" xsi:type="boolean">false</item>
                 </item>
             </argument>
         </column>

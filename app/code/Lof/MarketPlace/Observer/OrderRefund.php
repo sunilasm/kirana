@@ -55,6 +55,7 @@ class OrderRefund implements ObserverInterface {
      * @return $resultPage
      */
     public function execute(\Magento\Framework\Event\Observer $observer) {
+
     	 /**
          * Get Order Details
          * 
@@ -218,7 +219,6 @@ class OrderRefund implements ObserverInterface {
 	        $total_sold = $sellerData->getData('total_sold') +  $refund;
             $sellerData->setSale($sale)->setTotalSold($total_sold)->save();
         }
-      
 
     }
      /**

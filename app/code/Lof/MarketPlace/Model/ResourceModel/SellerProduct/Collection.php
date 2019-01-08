@@ -146,5 +146,27 @@ class Collection extends AbstractCollection
             $where = $condition
         );
     }
+    /**
+     * Join store relation table if there is store filter
+     *
+     * @return void
+     */
+    protected function _renderFiltersBefore()
+    { 
+        $product = $this->getTable('catalog_product_entity_varchar');
+        $eav =  $this->getTable('eav_attribute');
+        $this->getSelect('*')->join(
+            $product.' as abc',
+            'main_table.product_id = abc.entity_id',
+            [
+                "name" => "value",
+            ]
+        )->join(
+            $eav.' as a',
+            'a.attribute_id = abc.attribute_id',
+            []
+        )->where('abc.store_id = 0 AND a.attribute_code = "name" AND a.entity_type_id = 4');
+        parent::_renderFiltersBefore();
+    }
 }
 

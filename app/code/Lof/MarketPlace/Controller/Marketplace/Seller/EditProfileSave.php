@@ -128,7 +128,7 @@ class EditProfileSave extends \Magento\Framework\App\Action\Action {
                         $data['thumpnail'] = $thumbnail;
                     }
                    
-
+                    $data['stores'] = $sellerModel->getData('store_id');
                     $sellerModel->setData($data);
                     $sellerModel->save();
                      $this->messageManager->addException($e, __('Something went wrong while saving the seller.'));

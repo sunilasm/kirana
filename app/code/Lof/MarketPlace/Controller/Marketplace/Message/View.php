@@ -24,51 +24,89 @@ namespace Lof\MarketPlace\Controller\Marketplace\Message;
 use Magento\Framework\App\Action\Context;
 use Magento\Framework\Registry;
 
-abstract class View  extends \Magento\Customer\Controller\AbstractAccount 
+class View  extends \Magento\Customer\Controller\AbstractAccount 
 {
     /**
-     * @var Registry
+     *
+     * @var Magento\Framework\App\Action\Session
      */
-    protected $registry;
-
+    protected $session;
+    
     /**
-     * @var \Magento\Backend\Model\View\Result\ForwardFactory
+     *
+     * @var Magento\Framework\View\Result\PageFactory
      */
     protected $resultPageFactory;
+    /**
+     *
+     * @var \Lof\MarketPlace\Model\SalesFactory 
+     */
+    protected $sellerFactory;
+
+    const FLAG_IS_URLS_CHECKED = 'check_url_settings';
+    
+    protected $_frontendUrl;
 
     /**
-     * @param Context $context
-     * @param Registry $registry
-     * @param \Magento\Backend\Model\View\Result\ForwardFactory $resultForwardFactory
+     * @var \Magento\Framework\App\ActionFlag
+     */
+    protected $_actionFlag;
+    /**
+     *
+     * @param Context $context            
+     * @param Magento\Framework\App\Action\Session $customerSession            
+     * @param PageFactory $resultPageFactory            
      */
     public function __construct(
-        Context $context,
-        Registry $registry,
+        Context $context, 
+        \Magento\Customer\Model\Session $customerSession, 
+        \Lof\MarketPlace\Model\SellerFactory $sellerFactory,
+        \Magento\Framework\Url $frontendUrl,
         \Magento\Framework\View\Result\PageFactory $resultPageFactory
     ) {
-        $this->registry = $registry;
-        parent::__construct($context);
+         parent::__construct ($context);
+
+        $this->_frontendUrl = $frontendUrl;
+         $this->_actionFlag = $context->getActionFlag();
+        $this->sellerFactory     = $sellerFactory;
+        $this->session           = $customerSession;
         $this->resultPageFactory = $resultPageFactory;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function _isAllowed()
-    {
-        return true;
-    }
-
-    /**
-     * Message information page
-     *
-     * @return \Magento\Backend\Model\View\Result\Forward
-     */
-    public function execute()
-    {
        
-         $resultPage = $this->resultPageFactory->create();
-     
-        return $resultPage;
+       
+    }
+    public function getFrontendUrl($route = '', $params = []){
+        return $this->_frontendUrl->getUrl($route,$params);
+    }
+    /**
+     * Redirect to URL
+     * @param string $url
+     * @return \Magento\Framework\App\ResponseInterface
+     */
+    protected function _redirectUrl($url){
+        $this->getResponse()->setRedirect($url);
+        $this->session->setIsUrlNotice($this->_actionFlag->get('', self::FLAG_IS_URLS_CHECKED));
+        return $this->getResponse();
+    }
+   
+    /**
+     * Customer login form page
+     *
+     * @return \Magento\Framework\Controller\Result\Redirect|\Magento\Framework\View\Result\Page
+     */
+    public function execute() {
+      
+        $customerSession = $this->session;
+        $customerId = $customerSession->getId();
+        $status = $this->sellerFactory->create()->load($customerId,'customer_id')->getStatus();
+        
+        if ($customerSession->isLoggedIn() && $status == 1) {
+            $this->_view->loadLayout();
+            $this->_view->renderLayout();
+        } elseif($customerSession->isLoggedIn() && $status == 0) {
+            $this->_redirectUrl ( $this->getFrontendUrl('lofmarketplace/seller/becomeseller') );
+        } else {
+            $this->messageManager->addNotice(__( 'You must have a seller account to access' ) );
+            $this->_redirectUrl ($this->getFrontendUrl('lofmarketplace/seller/login'));
+        }
     }
 }
