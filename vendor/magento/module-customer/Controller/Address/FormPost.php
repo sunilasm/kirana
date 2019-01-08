@@ -196,6 +196,7 @@ class FormPost extends \Magento\Customer\Controller\Address
 
         try {
             $address = $this->_extractAddress();
+            print_r($address);exit;
             $this->_addressRepository->save($address);
             $this->messageManager->addSuccessMessage(__('You saved the address.'));
             $url = $this->_buildUrl('*/*/index', ['_secure' => true]);
