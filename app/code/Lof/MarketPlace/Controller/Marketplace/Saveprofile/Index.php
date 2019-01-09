@@ -77,21 +77,18 @@ class Index extends \Magento\Customer\Controller\AbstractAccount  {
         $customerSession = $this->session;
         $customerId = $customerSession->getId();
         $status = $this->sellerFactory->create()->load($customerId,'customer_id')->getStatus();
-      
+        
         if ($customerSession->isLoggedIn() && $status == 1) {
             // $this->_view->loadLayout();
             // $this->_view->renderLayout();
             $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
-            
 
             $data = $this->getRequest()->getPostValue();
-  
+            
             if ($data) {
                 $id = $this->getRequest()->getParam('seller_id');
                 $sellerModel = $objectManager->get('Lof\MarketPlace\Model\Seller')->load($id);
-
-            
-                
+               
                 try {
                     /** @var \Magento\Framework\Filesystem\Directory\Read $mediaDirectory */
                     $mediaDirectory = $this->_objectManager->get('Magento\Framework\Filesystem')
@@ -134,12 +131,13 @@ class Index extends \Magento\Customer\Controller\AbstractAccount  {
                     $sellerModel->save();
                     $this->messageManager->addSuccess('Save Profile Success');
                     $this->_redirect ( 'catalog/seller/index/status/1' );
-                   } catch (\Magento\Framework\Exception\LocalizedException $e) {
+
+                } catch (\Magento\Framework\Exception\LocalizedException $e) {
                     $this->messageManager->addError($e->getMessage());
                 } catch (\RuntimeException $e) {
                     $this->messageManager->addError($e->getMessage());
                 } catch (\Exception $e) {
-                    $this->messageManager->addException($e, __('Something went wrong while saving the seller.'));
+                    $this->messageManager->addException($e, __($e.'Something went wrong while saving the seller.'));
                 }   
             } 
         } elseif($customerSession->isLoggedIn() && $status == 0) {
