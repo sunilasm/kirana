@@ -115,7 +115,7 @@ class Index extends \Magento\Customer\Controller\AbstractAccount  {
     
             if ($data) {
                 if(($data['min_amount'] <= $data['amount'] && $data['amount'] <= $data['max_amount']) && ($data['amount'] <= $data['balance'])) {
-                    $data['status'] = 0;
+                    $data['status'] = 0; 
                     $data['fee'] = $data['fee'] + $data['amount']*$data['fee_percent']/100;
                     $data['net_amount'] = $data['amount'] - $data['fee'];
                     $withdrawalModel = $objectManager->get('Lof\MarketPlace\Model\Withdrawal');

@@ -39,6 +39,7 @@
 }
 .admin__field.field.required {
     display: inline-block;
+    width: 100%;
 }
 
 .fileupload-buttonbar .toggle {

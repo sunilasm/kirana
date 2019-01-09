@@ -38,6 +38,14 @@ class Sellerpage extends \Magento\Framework\View\Element\Template
      * @var \Lof\MarketPlace\Model\Seller
      */
     protected $_seller;
+       /**
+     * @var \Lof\MarketPlace\Model\Orderitems
+     */
+    protected $orderitems;
+    /**
+     * @var \Lof\MarketPlace\Model\Rating
+     */
+    protected $rating;    
 
     /**
      * @param \Magento\Framework\View\Element\Template\Context $context      
@@ -52,14 +60,99 @@ class Sellerpage extends \Magento\Framework\View\Element\Template
         \Magento\Framework\Registry $registry,
         \Lof\MarketPlace\Helper\Data $sellerHelper,
         \Lof\MarketPlace\Model\Seller $seller,
+         \Lof\MarketPlace\Model\Orderitems $orderitems,
+          \Lof\MarketPlace\Model\Rating $rating,
         array $data = []
         ) {
         $this->_seller = $seller;
         $this->_coreRegistry = $registry;
         $this->_sellerHelper = $sellerHelper;
+         $this->orderitems     = $orderitems;
+         $this->rating = $rating;
         parent::__construct($context, $data);
     }
+    public function getTotalSales($seller_id) {
+        $total = 0;
+        $orderitems = $this->orderitems->getCollection()->addFieldToFilter('seller_id',$seller_id)->addFieldToFilter('status','complete');
+        foreach ($orderitems as $key => $_orderitems) {
+            $total = $total + $_orderitems->getProductQty();
+        }
+        return $total;
+    }
+     public function getRating($seller_id) {
+        $rating = $this->rating->getCollection()->addFieldToFilter('seller_id',$seller_id);
+        return $rating;
+    }
 
+    public function getRate($seller_id) {
+       
+        $count = $total_rate = 0;
+        $rate1 = $rate2 =$rate3 = $rate4 = $rate5 = 0;
+        foreach ($this->getRating($seller_id) as $key => $rating) {
+            if($rating->getData('rate1') > 0) {
+                $count ++;
+                $total_rate = $total_rate + $rating->getData('rate1');
+                if($rating->getData('rate1') == 1) {
+                    $rate1 ++;
+                }elseif($rating->getData('rate1') == 2) {
+                    $rate2 ++;
+                }elseif($rating->getData('rate1') == 3) {
+                    $rate3 ++;
+                }elseif($rating->getData('rate1') == 4) {
+                    $rate4 ++;
+                }elseif($rating->getData('rate1') == 5) {
+                    $rate5 ++;
+                }
+            }
+            if($rating->getData('rate2') > 0) {
+                $count ++;
+                $total_rate = $total_rate + $rating->getData('rate2');
+                if($rating->getData('rate2') == 1) {
+                    $rate1 ++;
+                }elseif($rating->getData('rate2') == 2) {
+                    $rate2 ++;
+                }elseif($rating->getData('rate2') == 3) {
+                    $rate3 ++;
+                }elseif($rating->getData('rate2') == 4) {
+                    $rate4 ++;
+                }elseif($rating->getData('rate2') == 5) {
+                    $rate5 ++;
+                }
+            }
+            if($rating->getData('rate3') > 0) {
+                $count ++;
+                $total_rate = $total_rate + $rating->getData('rate3');
+                if($rating->getData('rate3') == 1) {
+                    $rate1 ++;
+                }elseif($rating->getData('rate3') == 2) {
+                    $rate2 ++;
+                }elseif($rating->getData('rate3') == 3) {
+                    $rate3 ++;
+                }elseif($rating->getData('rate3') == 4) {
+                    $rate4 ++;
+                }elseif($rating->getData('rate3') == 5) {
+                    $rate5 ++;
+                }
+            }
+        }
+        $data = [];
+        if($count>0) {
+            $average = ($total_rate/$count);
+        } else {
+            $average = 0;
+        }
+        $data['count'] = $count;
+        $data['total_rate'] = $total_rate;
+        $data['average'] = $average;
+        $data['rate'] =[];
+        $data['rate'][1] = $rate1;
+        $data['rate'][2] = $rate2;
+        $data['rate'][3] = $rate3;
+        $data['rate'][4] = $rate4;
+        $data['rate'][5] = $rate5;
+        return $data;
+
+    }
     public function _construct()
     {
         if(!$this->getConfig('general_settings/enable')) return;
@@ -83,7 +176,7 @@ class Sellerpage extends \Magento\Framework\View\Element\Template
         }
     }
 
-	/**
+    /**
      * Prepare breadcrumbs
      *
      * @param \Magento\Cms\Model\Page $seller

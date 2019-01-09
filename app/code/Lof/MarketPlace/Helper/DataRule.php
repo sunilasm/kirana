@@ -179,7 +179,7 @@ Class DataRule extends \Magento\Framework\App\Helper\AbstractHelper
                     $collection->getSelect()->where('e.entity_id IN (?) ',$entity_id)->where($this->sqlBuilder->attachConditionToCollection($collection, $conditions));
                     if(count($collection->getData())>0) {
                         return $commissionRule;
-                    }  
+                    } 
                } 
            }
         } 

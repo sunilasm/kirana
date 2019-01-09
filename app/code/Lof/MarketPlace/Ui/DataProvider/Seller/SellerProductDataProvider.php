@@ -76,12 +76,12 @@ class SellerProductDataProvider extends \Magento\Ui\DataProvider\AbstractDataPro
      */
     public function getData()
     {
-        if (!$this->getCollection()->addFieldToFilter('seller_id',array('neq' => 0))->isLoaded()) {
-            $this->getCollection()->addFieldToFilter('seller_id',array('neq' => 0))->load();
+        if (!$this->getCollection()->isLoaded()) {
+            $this->getCollection()->load();
         }
-        $items = $this->getCollection()->addFieldToFilter('seller_id',array('neq' => 0))->toArray();
+        $items = $this->getCollection()->toArray();
         return [
-            'totalRecords' => $this->getCollection()->addFieldToFilter('seller_id',array('neq' => 0))->getSize(),
+            'totalRecords' => $this->getCollection()->getSize(),
             'items' => array_values($items['items']),
         ];
     }
