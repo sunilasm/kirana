@@ -24,7 +24,7 @@
 	xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
 	<body>
 		<referenceContainer name="content">
-			<container name="seller.login.container" label="Seller Login Container"
+			<container name="seller.login.container" label="Kirana Login Container"
 				htmlTag="div" htmlClass="login-container">
 				<block class="Lof\MarketPlace\Block\Seller\Login" name="marketplace_seller_login"
 					template="Lof_MarketPlace::seller/login.phtml">
