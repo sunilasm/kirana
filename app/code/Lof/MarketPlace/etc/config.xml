@@ -32,7 +32,7 @@
 			<product_view_page>
 				<enable_seller_info>1</enable_seller_info>
 				<show_seller_text>1</show_seller_text>
-				<seller_text>Sellers: </seller_text>
+				<seller_text>Kiranas: </seller_text>
 				<show_seller_image>1</show_seller_image>
 				<show_seller_name>1</show_seller_name>
 			</product_view_page>
@@ -63,8 +63,8 @@
 				<layout>grid</layout>
 				<show_seller_name>1</show_seller_name>
 				<item_per_page>8</item_per_page>
-				<page_title>All Sellers</page_title>
-				<meta_description>All Sellers</meta_description>
+				<page_title>All Kirana</page_title>
+				<meta_description>All Kirana</meta_description>
 				<meta_keywords>fashion, kitchen, sport, soccer</meta_keywords>
 				<lg_column_item>4</lg_column_item>
 				<md_column_item>4</md_column_item>
@@ -84,7 +84,7 @@
 			</group_page>
 			<seller_block>
 				<enable>1</enable>
-				<title>Top Sellers</title>
+				<title>Top Kiranas</title>
 				<seller_groups>1,2</seller_groups>
 				<show_seller_name>0</show_seller_name>
 				<number_item>12</number_item>
