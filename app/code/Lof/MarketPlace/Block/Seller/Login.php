@@ -64,7 +64,7 @@ class Login extends \Magento\Framework\View\Element\Template {
      * @return $this
      */
     protected function _prepareLayout() {
-        $this->pageConfig->getTitle ()->set ( __ ( 'Kirana Login' ) );
+        $this->pageConfig->getTitle ()->set ( __ ( 'Seller Login' ) );
         return parent::_prepareLayout ();
     }
    

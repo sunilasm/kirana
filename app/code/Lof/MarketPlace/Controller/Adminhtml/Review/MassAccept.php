@@ -68,6 +68,8 @@ class MassAccept extends \Magento\Backend\App\Action
             $reviewFactory->load($item->getReviewId(),'review_id');
             $reviewFactory->setData('status_id',1);
             $reviewFactory->save();
+             $item->setData('status',1);
+            $item->save();
         }
 
         $this->messageManager->addSuccess(__('A total of %1 record(s) have been approved.', $collection->getSize()));

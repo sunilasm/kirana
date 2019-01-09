@@ -81,7 +81,9 @@ class ReviewStatus extends Column
                         $status = __('Approved');
                     } elseif ($status_id == 2) {
                         $status = __('Pending');
-                    } 
+                    } elseif ($status_id == 3) {
+                        $status = __('Unapproved');
+                    }
                     $item[$fieldName] = $status;
                 }
             }

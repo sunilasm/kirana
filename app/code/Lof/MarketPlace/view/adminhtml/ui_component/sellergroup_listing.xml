@@ -64,18 +64,6 @@
                 </item>
             </argument>
         </columnsControls>
-        <filterSearch name="fulltext">
-            <argument name="data" xsi:type="array">
-                <item name="config" xsi:type="array">
-                    <item name="provider" xsi:type="string">bg.brrand_listinand_listing_data_source</item>
-                    <item name="chipsProvider" xsi:type="string">sellergroup_listing.sellergroup_listing.listing_top.listing_filters_chips</item>
-                    <item name="storageConfig" xsi:type="array">
-                        <item name="provider" xsi:type="string">sellergroup_listing.sellergroup_listing.listing_top.bookmarks</item>
-                        <item name="namespace" xsi:type="string">current.search</item>
-                    </item>
-                </item>
-            </argument>
-        </filterSearch>
         <filters name="listing_filters">
             <argument name="data" xsi:type="array">
                 <item name="config" xsi:type="array">
@@ -103,18 +91,6 @@
                     <item name="column" xsi:type="string">column</item>
                 </item>
             </argument>
-            <filterSelect name="store_id">
-                <argument name="optionsProvider" xsi:type="configurableObject">
-                    <argument name="class" xsi:type="string">Magento\Cms\Ui\Component\Listing\Column\Cms\Options</argument>
-                </argument>
-                <argument name="data" xsi:type="array">
-                    <item name="config" xsi:type="array">
-                        <item name="dataScope" xsi:type="string">store_id</item>
-                        <item name="label" xsi:type="string" translate="true">Store View</item>
-                        <item name="captionValue" xsi:type="string">0</item>
-                    </item>
-                </argument>
-            </filterSelect>
         </filters>
         <massaction name="listing_massaction">
             <argument name="data" xsi:type="array">
