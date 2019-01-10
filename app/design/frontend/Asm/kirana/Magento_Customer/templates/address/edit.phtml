@@ -7,6 +7,7 @@
 // @codingStandardsIgnoreFile
 
 /** @var \Magento\Customer\Block\Address\Edit $block */
+//print_r("hhhh--".$block->escapeHtmlAttr($block->getAddress()->getAttribute('customer_address', 'geo_lat')));
 ?>
 <?php $_company = $block->getLayout()->createBlock(\Magento\Customer\Block\Widget\Company::class) ?>
 <?php $_telephone = $block->getLayout()->createBlock(\Magento\Customer\Block\Widget\Telephone::class) ?>
@@ -137,16 +138,27 @@
 
         <div class="field geo_lat">
                 <label for="geo_lat" class="label"><span><?= /* @noEscape */ $block->getAttributeData()->getFrontendLabel('geo_lat') ?></span></label>
-                <div class="control">
-                    <input type="text" id="geo_lat_new" name="geo_lat" value="" title="<?= /* @noEscape */ $block->getAttributeData()->getFrontendLabel('geo_lat') ?>" class="input-text <?= $block->escapeHtmlAttr($this->helper('Magento\Customer\Helper\Address')->getAttributeValidationClass('geo_lat')) ?>" disabled>
+                 <div class="control">
+                <input type="text"
+                           name="geo_lat"
+                            value="<?php //echo $this->helper(\Magento\Customer\Helper\Address::class)->escapeHtmlAttr($block->getAddress()->getCustomAttribute('geo_lat')->getValue()) ?>"
+                           title="<?= $block->escapeHtmlAttr(__('geo_lat')) ?>"
+                           class="input-text <?= $block->escapeHtmlAttr($this->helper(\Magento\Customer\Helper\Address::class)->getAttributeValidationClass('geo_lat')) ?>"
+                           id="geo_lat_new" readonly="true">
                 </div>
             </div>
             <div class="field geo_lng">
                 <label for="geo_lng" class="label"><span><?= /* @noEscape */ $block->getAttributeData()->getFrontendLabel('geo_lng') ?></span></label>
                 <div class="control">
-                    <input type="text" id="geo_lng_new" name="geo_lng" value="" title="<?= /* @noEscape */ $block->getAttributeData()->getFrontendLabel('geo_lng') ?>" class="input-text <?= $block->escapeHtmlAttr($this->helper('Magento\Customer\Helper\Address')->getAttributeValidationClass('geo_lng')) ?>" disabled>
+                    <input type="text"
+                           name="geo_lng"
+                           value="<?= $block->escapeHtmlAttr($block->getAddress()->getCity()) ?>"
+                           title="<?= $block->escapeHtmlAttr(__('geo_lng')) ?>"
+                           class="input-text <?= $block->escapeHtmlAttr($this->helper(\Magento\Customer\Helper\Address::class)->getAttributeValidationClass('geo_lng')) ?>"
+                           id="geo_lng_new" readonly="true">
                 </div>
             </div>
+
 
         <?php if ($block->isDefaultBilling()): ?>
             <div class="message info">

@@ -85,7 +85,6 @@ return [
         'Magento_Persistent' => 1,
         'Magento_Reports' => 1,
         'Lof_MarketPlace' => 1,
-        'Asm_CustomerAddressAttributes' => 1,
         'Magento_QuoteAnalytics' => 1,
         'Magento_ReleaseNotification' => 1,
         'Magento_Review' => 1,
