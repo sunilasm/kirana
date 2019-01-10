@@ -23,7 +23,7 @@
         <add id="Lof_MarketPlace::configurable_product" title="Add Configurable Product" module="Lof_MarketPlace"  action="catalog/product/new/set/4/type/configurable" sortOrder="45" parent="Lof_MarketPlace::catalog" resource="Lof_MarketPlace::configurable_product"/>
           <add id="Lof_MarketPlace::bundle_product" title="Add Bundle Product" module="Lof_MarketPlace"  action="catalog/product/new/set/4/type/bundle" sortOrder="46" parent="Lof_MarketPlace::catalog" resource="Lof_MarketPlace::bundle_product"/>
 
-        <add id="Lof_MarketPlace::withdrawals" icon="fa fa-usd" title="Withdrawals" module="Lof_MarketPlace" action="catalog/withdrawals" sortOrder="50" resource="Lof_MarketPlace::withdrawals"/>
+       <!--  <add id="Lof_MarketPlace::withdrawals" icon="fa fa-usd" title="Withdrawals" module="Lof_MarketPlace" action="catalog/withdrawals" sortOrder="50" resource="Lof_MarketPlace::withdrawals"/>
 
         <add id="Lof_MarketPlace::message" icon="fa fa-envelope-o" title="Messages" module="Lof_MarketPlace" action="catalog/message" sortOrder="60" resource="Lof_MarketPlace::message"/>
 
@@ -39,6 +39,6 @@
         <add id="Lof_MarketPlace::export" title="Export" module="Lof_MarketPlace"  action="catalog/product/export" sortOrder="104" parent="Lof_MarketPlace::upload" resource="Lof_MarketPlace::export"/>
 
         <add id="Lof_MarketPlace::report" icon="fa fa-area-chart" title="Advanced Report" module="Lof_MarketPlace" action="catalog/report" sortOrder="110" resource="Lof_MarketPlace::report"/>
-        <add id="Lof_MarketPlace::shipping" icon="fa fa-truck" title="Shipping" module="Lof_MarketPlace" sortOrder="140" resource="Lof_MarketPlace::shipping"/>
+        <add id="Lof_MarketPlace::shipping" icon="fa fa-truck" title="Shipping" module="Lof_MarketPlace" sortOrder="140" resource="Lof_MarketPlace::shipping"/> -->
     </menu>
 </config>
