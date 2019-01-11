@@ -53,7 +53,7 @@ class TopLink extends \Magento\Framework\View\Element\Html\Link {
 			}else{
 				$url = $this->getUrl ( 'lofmarketplace/seller/login' );
 			}
-			return $url;
+			//return $url;
 		}
 	}
 	/**
@@ -65,7 +65,7 @@ class TopLink extends \Magento\Framework\View\Element\Html\Link {
 	{	
 		
 		if(!$this->helper->getConfig('general_settings/enable')) return;
-		return '<li><a href="' . $this->getHref() . '"> ' . $this->getLabel() . ' </a></li>';
+		//return '<li><a href="' . $this->getHref() . '"> ' . $this->getLabel() . ' </a></li>';
 	}
 
 	 /**
@@ -74,7 +74,7 @@ class TopLink extends \Magento\Framework\View\Element\Html\Link {
      * @return string
      */
     public function getLabel() {
-        return __ ( 'Sell On Marketplace ' );
+        return __ ( 'Marketplace ' );
     }
     
 }

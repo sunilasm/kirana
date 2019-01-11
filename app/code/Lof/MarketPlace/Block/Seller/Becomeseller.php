@@ -115,7 +115,7 @@ class Becomeseller extends \Magento\Framework\View\Element\Template {
      * @return Object
      */
     public function _prepareLayout() {
-        $this->pageConfig->getTitle ()->set(__('Become a Seller'));
+        $this->pageConfig->getTitle ()->set(__('Become a Kirana'));
         return parent::_prepareLayout ();
     }
 }

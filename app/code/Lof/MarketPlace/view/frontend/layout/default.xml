@@ -30,15 +30,15 @@
 	</head>
 	<body>
 		<referenceBlock name="header.links">
-			<block class="Lof\MarketPlace\Block\Seller\Link" name="seller_list"
+			<!-- <block class="Lof\MarketPlace\Block\Seller\Link" name="seller_list"
 				after="-"  ifconfig="lofmarketplace/general_settings/enable">
 				 <arguments>
-                    <argument name="label" xsi:type="string" translate="true">List Seller</argument>
+                    <argument name="label" xsi:type="string" translate="true">List Kirana</argument>
                     <argument name="path" xsi:type="helper" helper="Lof\MarketPlace\Helper\Data::getUrlShortcut">
                         <param name="name">value</param>
                     </argument>
                 </arguments>
-			</block>
+			</block> -->
 			<block class="Lof\MarketPlace\Block\Seller\TopLink" name="sellerlink"
 				after="-"  ifconfig="lofmarketplace/general_settings/enable"  />
 			<block class="Lof\MarketPlace\Block\Message\Link" name="marketplace.seller.messages" after="-" template="message/link.phtml" ifconfig="lofmarketplace/general_settings/enable" />
