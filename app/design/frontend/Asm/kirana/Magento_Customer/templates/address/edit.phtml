@@ -7,7 +7,6 @@
 // @codingStandardsIgnoreFile
 
 /** @var \Magento\Customer\Block\Address\Edit $block */
-//print_r("hhhh--".$block->escapeHtmlAttr($block->getAddress()->getAttribute('customer_address', 'geo_lat')));
 ?>
 <?php $_company = $block->getLayout()->createBlock(\Magento\Customer\Block\Widget\Company::class) ?>
 <?php $_telephone = $block->getLayout()->createBlock(\Magento\Customer\Block\Widget\Telephone::class) ?>
@@ -136,30 +135,30 @@
             </div>
         </div>
 
-        <div class="field geo_lat">
-                <label for="geo_lat" class="label"><span><?= /* @noEscape */ $block->getAttributeData()->getFrontendLabel('geo_lat') ?></span></label>
-                 <div class="control">
+        <div class="field latitude">
+            <label for="latitude" class="label"><span><?= /* @noEscape */ $block->getAttributeData()->getFrontendLabel('latitude') ?></span></label>
+            <div class="control">
                 <input type="text"
-                           name="geo_lat"
-                            value="<?php //echo $this->helper(\Magento\Customer\Helper\Address::class)->escapeHtmlAttr($block->getAddress()->getCustomAttribute('geo_lat')->getValue()) ?>"
-                           title="<?= $block->escapeHtmlAttr(__('geo_lat')) ?>"
-                           class="input-text <?= $block->escapeHtmlAttr($this->helper(\Magento\Customer\Helper\Address::class)->getAttributeValidationClass('geo_lat')) ?>"
-                           id="geo_lat_new" readonly="true">
-                </div>
+                       name="latitude"
+                       value="<?= $block->escapeHtmlAttr($block->getAddress()->getLatitude()) ?>"
+                       title="<?= $block->escapeHtmlAttr(__('latitude')) ?>"
+                       class="input-text <?= $block->escapeHtmlAttr($this->helper(\Magento\Customer\Helper\Address::class)->getAttributeValidationClass('latitude')) ?>"
+                       id="geo_lat_new" readonly="true">
             </div>
-            <div class="field geo_lng">
-                <label for="geo_lng" class="label"><span><?= /* @noEscape */ $block->getAttributeData()->getFrontendLabel('geo_lng') ?></span></label>
-                <div class="control">
-                    <input type="text"
-                           name="geo_lng"
-                           value="<?= $block->escapeHtmlAttr($block->getAddress()->getCity()) ?>"
-                           title="<?= $block->escapeHtmlAttr(__('geo_lng')) ?>"
-                           class="input-text <?= $block->escapeHtmlAttr($this->helper(\Magento\Customer\Helper\Address::class)->getAttributeValidationClass('geo_lng')) ?>"
-                           id="geo_lng_new" readonly="true">
-                </div>
-            </div>
+        </div>
 
 
+        <div class="field longitude">
+            <label for="longitude" class="label"><span><?= /* @noEscape */ $block->getAttributeData()->getFrontendLabel('longitude') ?></span></label>
+             <div class="control">
+            <input type="text"
+                       name="longitude"
+                       value="<?= $block->escapeHtmlAttr($block->getAddress()->getLongitude()) ?>"
+                       title="<?= $block->escapeHtmlAttr(__('longitude')) ?>"
+                       class="input-text <?= $block->escapeHtmlAttr($this->helper(\Magento\Customer\Helper\Address::class)->getAttributeValidationClass('longitude')) ?>"
+                       id="geo_lng_new" readonly="true">
+            </div>
+        </div>
         <?php if ($block->isDefaultBilling()): ?>
             <div class="message info">
                 <span><?= $block->escapeHtml(__("It's a default billing address.")) ?></span>
@@ -239,7 +238,7 @@
                 var country = jQuery("#country option:selected").html(); //jQuery('#country').val();
                 var postcode = jQuery('#zip').val();
                 //console.log(address+'--'+city+'--'+state+'--'+country+'--'+postcode);
-                var param = "{address:'"+address+"',city:'"+city+"',state:'"+state+"',country:'"+country+"',pincode:'"+postcode+"'}";
+                var param = 'address='+address+'&city='+city+'&state='+state+'&country='+country+'&pincode='+postcode;
                 jQuery.ajax({
                                 showLoader: true,
                                 url: "<?php  echo $block->getBaseUrl(); ?>geolocation",

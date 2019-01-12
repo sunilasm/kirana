@@ -5,7 +5,7 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-namespace Magento\Customer\Model\Data;
+namespace Asm\Addressattribute\Model\Rewrite;
 
 use Magento\Customer\Api\Data\RegionInterface;
 use \Magento\Framework\Api\AttributeValueFactory;
@@ -17,7 +17,7 @@ use \Magento\Framework\Api\AttributeValueFactory;
  * @api
  * @since 100.0.2
  */
-class Address extends \Magento\Framework\Api\AbstractExtensibleObject implements
+class Addressview extends \Magento\Framework\Api\AbstractExtensibleObject implements
     \Magento\Customer\Api\Data\AddressInterface
 {
     /**
@@ -152,9 +152,25 @@ class Address extends \Magento\Framework\Api\AbstractExtensibleObject implements
         return $this->_get(self::CITY);
     }
 
+    /**
+     * Get latitude
+     *
+     * @return string|null
+     */
     public function getLatitude()
     {
         return $this->_get('latitude');
+    }
+
+    /**
+     * Get first name
+     *
+     * @return string|null
+     */
+
+    public function getLongitude()
+    {
+        return $this->_get('longitude');
     }
 
     /**
@@ -366,6 +382,18 @@ class Address extends \Magento\Framework\Api\AbstractExtensibleObject implements
     public function setCity($city)
     {
         return $this->setData(self::CITY, $city);
+    }
+
+    /* Set longitude */
+    public function setLatitude($latitude)
+    {
+        return $this->setData('latitude', $latitude);
+    }
+
+    /* Set longitude */
+    public function setLongitude($longitude)
+    {
+        return $this->setData('longitude', $longitude);
     }
 
     /**
