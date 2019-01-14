@@ -67,7 +67,7 @@ class Router extends \Magento\Framework\App\Router\Base
      */
     protected function parseRequest(\Magento\Framework\App\RequestInterface $request)
     {
-        
+
         $output = [];
         $path = trim($request->getPathInfo(), '/');
         $params = explode('/', $path ? $path : $this->pathConfig->getDefaultPath());

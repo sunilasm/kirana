@@ -145,7 +145,7 @@ class Navigation extends \Magento\Framework\View\Element\Html\Link\Current
                 $html .= '<strong>';
             }
 
-            $html .= '<span>'.__("Become A Seller").'</span>';
+            $html .= '<span>'.__("Become A Kirana").'</span>';
 
             if ($this->getIsHighlighted()) {
                 $html .= '</strong>';

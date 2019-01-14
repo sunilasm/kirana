@@ -36,11 +36,11 @@ $isSellerGroup = 1; //$_helper->isSellerGroupModuleInstalled();
                         </li>
                         <li class="nav item <?php echo strpos($magentoCurrentUrl,'lofmarketplace/account/editprofile')? "current":"";?>">     
                             <?php if(strpos($magentoCurrentUrl,'lofmarketplace/account/editprofile') !== false){ ?>
-                                <strong><?php echo __('Seller Profile') ?></strong>
+                                <strong><?php echo __('Kirana Profile') ?></strong>
                             <?php 
                             } else{ ?>
                                 <a href="<?php echo $block->getUrl('lofmarketplace/seller/editprofile', ['_secure' => $this->getRequest()->isSecure()]); ?>">
-                                    <?php echo __('Seller Profile') ?>
+                                    <?php echo __('Kirana Profile') ?>
                                 </a>
                             <?php 
                             } ?>
