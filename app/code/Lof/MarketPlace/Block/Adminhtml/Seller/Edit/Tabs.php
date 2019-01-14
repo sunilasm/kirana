@@ -47,17 +47,24 @@ class Tabs extends \Magento\Backend\Block\Widget\Tabs
         $this->addTab(
                 'general',
                 [
-                    'label' => __('Seller Information'),
+                    'label' => __('Kirana Information'),
                     'content' => $this->getLayout()->createBlock('Lof\MarketPlace\Block\Adminhtml\Seller\Edit\Tab\Main')->toHtml()
                 ]
             );
-        $this->addTab(
-                'social',
+            $this->addTab(
+                'kirana',
                 [
-                    'label' => __('Social Information'),
-                    'content' => $this->getLayout()->createBlock('Lof\MarketPlace\Block\Adminhtml\Seller\Edit\Tab\Social')->toHtml()
+                    'label' => __('Kirana Attributes'),
+                    'content' => $this->getLayout()->createBlock('Lof\MarketPlace\Block\Adminhtml\Seller\Edit\Tab\Kirana')->toHtml()
                 ]
             );
+        // $this->addTab(
+        //         'social',
+        //         [
+        //             'label' => __('Social Information'),
+        //             'content' => $this->getLayout()->createBlock('Lof\MarketPlace\Block\Adminhtml\Seller\Edit\Tab\Social')->toHtml()
+        //         ]
+        //     );
         $this->addTab(
                 'products',
                 [
