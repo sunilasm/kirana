@@ -51,9 +51,9 @@
 			<input type="hidden" id="seller_id" name="seller_id" title="Seller ID" value="<?php echo $sellerId; ?>" />
 			<input type="hidden" id="group_id" name="group_id" title="Group ID" value="<?php echo $seller['group_id']; ?>" />
 			<fieldset class="admin__fieldset">
-				<div class="admin__field">
+				<div class="admin__field required">
 					<label class="admin__field-label">
-						<?php echo __("Contact Number"); ?><span class="required">*</span>
+					<span><?php echo __("Contact Number"); ?></span>
 					</label>
 					<div class="admin__field-control">
 						<input type="text" name="contact_number" class="admin__control-text" 
@@ -61,109 +61,109 @@
 						data-validate='{"required":true,"number":true,"maxlength":10,"minlength":10}'/>
 					</div>
 				</div>
-				<div class="admin__field">
+				<div class="admin__field required">
 					<label class="admin__field-label">
-						<?php echo __("Shop Title"); ?>
+					<span><?php echo __("Shop Title"); ?></span>
 					</label>
 					<div class="admin__field-control">
 						<input type="text" name="shop_title" class="admin__control-text" value="<?php echo $seller['shop_title']; ?>" 
 						data-validate='{"required":true,"validate-alphanum-with-spaces":true}'/>
 					</div>
 				</div>
-				<div class="admin__field">
+				<div class="admin__field required">
 					<label class="admin__field-label">
-						<?php echo __("Company"); ?>
+					<span><?php echo __("Company"); ?></span>
 					</label>
 					<div class="admin__field-control">
 						<input type="text" name="company" class="admin__control-text" value="<?php echo $seller['company']; ?>" 
 						data-validate='{"required":true,"validate-alphanum-with-spaces":true}' />
 					</div>
 				</div>
-				<div class="admin__field">
+				<div class="admin__field required">
 					<label class="admin__field-label">
-						<?php echo __("Company Locality"); ?>
+					<span><?php echo __("Company Locality"); ?></span>
 					</label>
 					<div class="admin__field-control">
 						<input type="text" name="company_locality" class="admin__control-text" value="<?php echo $seller['company_locality']; ?>"  
 						data-validate='{"required":true,"validate-alphanum-with-spaces":true}'/>
 					</div>
 				</div>
-				<div class="admin__field">
+				<div class="admin__field required">
 					<label class="admin__field-label">
-						<?php echo __("Phone Number"); ?>
+					<span><?php echo __("Phone Number"); ?></span>
 					</label>
 					<div class="admin__field-control">
 						<input type="text" name="telephone" class="admin__control-text" value="<?php echo $seller['telephone']; ?>" 
 						data-validate='{"required":true,"number":true,"maxlength":10,"minlength":10}' />
 					</div>
 				</div>
-				<div class="admin__field">
+				<div class="admin__field required">
 					<label class="admin__field-label">
-						<?php echo __("Address"); ?>
+					<span><?php echo __("Address"); ?></span>
 					</label>
 					<div class="admin__field-control">
 						<input type="text" id="address" name="address" class="admin__control-text" value="<?php echo $seller['address']; ?>" 
 						data-validate='{"required":true}'/>
 					</div>
 				</div>
-				<div class="admin__field">
+				<div class="admin__field required">
 					<label class="admin__field-label">
-						<?php echo __("City"); ?>
+					<span><?php echo __("City"); ?></span>
 					</label>
 					<div class="admin__field-control">
 						<input type="text" name="city" id="city" class="admin__control-text" value="<?php echo $seller['city']; ?>"  
 						data-validate='{"required":true,"validate-alphanum-with-spaces":true}'/>
 					</div>
 				</div>
-				<div class="admin__field">
+				<div class="admin__field required">
 					<label class="admin__field-label">
-						<?php echo __("State/Province"); ?>
+					<span><?php echo __("State/Province"); ?></span>
 					</label>
 					<div class="admin__field-control">
 						<input type="text" name="region" id="region" class="admin__control-text" value="<?php echo $seller['region']; ?>"  
 						data-validate='{"required":true,"validate-alphanum-with-spaces":true}'/>
 					</div>
 				</div>
-				<div class="admin__field">
+				<div class="admin__field required">
 					<label class="admin__field-label">
-						<?php echo __("Country"); ?>
+					<span><?php echo __("Country"); ?></span>
 					</label>
 					<div class="admin__field-control">
 						<input type="text" name="country" id="country" class="admin__control-text" value="<?php echo $seller['country']; ?>" 
 						data-validate='{"required":true,"validate-alphanum-with-spaces":true}'/>
 					</div>
 				</div>
-				<div class="admin__field">
+				<div class="admin__field required">
 					<label class="admin__field-label">
-						<?php echo __("Zip/Postal Code"); ?>
+					<span><?php echo __("Zip/Postal Code"); ?></span>
 					</label>
 					<div class="admin__field-control">
 						<input type="text" id="postcode" name="postcode" class="admin__control-text" value="<?php echo $seller['postcode']; ?>"  
 						data-validate='{"required":true,"number":true,"maxlength":6,"minlength":6}'/>
 					</div>
 				</div>
-				<div class="admin__field">
+				<div class="admin__field required">
 					<label class="admin__field-label">
-						<?php echo __("Geo Latitude"); ?>
+					<span><?php echo __("Geo Latitude"); ?></span>
 					</label>
 					<div class="admin__field-control">
 						<input type="text" id="geo_lat" name="geo_lat" title="Geo Latitude" 
 						value="<?php echo $seller['geo_lat']; ?>" 
 						class="admin__control-text" 
 						data-validate='{"required":true}' 
-						readonly="true" disabled />
+						readonly="true" />
 					</div>
 				</div>
-				<div class="admin__field">
+				<div class="admin__field required">
 					<label class="admin__field-label">
-						<?php echo __("Geo Longitude"); ?>
+					<span><?php echo __("Geo Longitude"); ?></span>
 					</label>
 					<div class="admin__field-control">
 						<input type="text" id="geo_lng" name="geo_lng" title="Geo Longitude" 
 						value="<?php echo $seller['geo_lng']; ?>" 
 						class="admin__control-text" 
 						data-validate='{"required":true}' 
-						readonly="true" disabled />
+						readonly="true"/>
 					</div>
 				</div>
 				<div class="admin__field">
@@ -202,7 +202,7 @@
 		</div>
 		<div id="kirana"  class="admin__fieldset-wrapper-content admin__collapsible-content">
 			<fieldset class="admin__fieldset">
-				<fieldset class="admin__field">
+				<fieldset class="admin__field required">
 					<label class="admin__field-label">
 						<span><?php echo __('Store Type') ?></span>
 					</label>
@@ -215,7 +215,7 @@
 						</select>
 					</div>
 				</fieldset>
-				<fieldset class="admin__field">
+				<fieldset class="admin__field required">
 					<label class="admin__field-label">
 						<span><?php echo __('24*7 Shop') ?></span>
 					</label>
@@ -229,7 +229,7 @@
 				</fieldset>
 				<fieldset class="admin__field">
 					<label class="admin__field-label">
-						<span><?php echo __('Openning Time') ?></span>
+						<span><?php echo __('Opening Time') ?></span>
 					</label>
 					<div class="admin__field-control">
 						<input type="text" id="opening_time" name="opening_time" title="Opening Time" 
@@ -299,7 +299,7 @@
 						data-validate='{"required":false,"validate-alphanum-with-spaces":true}' />
 					</div>
 				</fieldset>
-				<fieldset class="admin__field">
+				<!-- <fieldset class="admin__field">
 					<label class="admin__field-label">
 						<span><?php echo __('VAT') ?></span>
 					</label>
@@ -310,8 +310,8 @@
 						class="admin__control-text" 
 						data-validate='{"required":false,"validate-alphanum-with-spaces":true}' />
 					</div>
-				</fieldset>
-				<fieldset class="admin__field">
+				</fieldset> -->
+				<!-- <fieldset class="admin__field">
 					<label class="admin__field-label">
 						<span><?php echo __('TIN') ?></span>
 					</label>
@@ -322,7 +322,7 @@
 						class="admin__control-text" 
 						data-validate='{"required":false,"validate-alphanum-with-spaces":true}' />
 					</div>
-				</fieldset>
+				</fieldset> -->
 				<fieldset class="admin__field">
 					<label class="admin__field-label">
 						<span><?php echo __('GST') ?></span>
@@ -397,18 +397,18 @@
 				</fieldset>
 				<fieldset class="admin__field">
 					<label class="admin__field-label">
-						<span><?php echo __('ParentSore ID') ?></span>
+						<span><?php echo __('Parent  Store ID') ?></span>
 					</label>
 					<div class="admin__field-control">
 						<input type="text" id="parent_store_id" name="parent_store_id" 
-						title="ParentSore ID" 
+						title="Parent Store ID" 
 						value="<?php echo $seller['parent_store_id']; ?>" 
 						class="admin__control-text" 
 						<?php if($seller['parent_store'] == 'No') : echo "disabled"; endif; ?>
 						data-validate='{"required":false,"number":true}' />
 					</div>
 				</fieldset>
-				<fieldset class="admin__field">
+				<fieldset class="admin__field required">
 					<label class="admin__field-label">
 						<span><?php echo __('Kirana Type') ?></span>
 					</label>
@@ -422,7 +422,7 @@
 						</select>
 					</div>
 				</fieldset>
-				<fieldset class="admin__field">
+				<fieldset class="admin__field required">
 					<label class="admin__field-label">
 						<span><?php echo __('Kirana Locality') ?></span>
 					</label>
@@ -435,7 +435,7 @@
 						</select>
 					</div>
 				</fieldset>
-				<fieldset class="admin__field">
+				<fieldset class="admin__field required">
 					<label class="admin__field-label">
 						<span><?php echo __('Kirana Owner') ?></span>
 					</label>
@@ -447,7 +447,7 @@
 						data-validate='{"required":true,"validate-alphanum-with-spaces":true}' />
 					</div>
 				</fieldset>
-				<fieldset class="admin__field">
+				<fieldset class="admin__field required">
 					<label class="admin__field-label">
 						<span><?php echo __('Kirans Fixed Line') ?></span>
 					</label>
@@ -721,7 +721,7 @@
 				var state = jQuery('#region').val();
 				var country = jQuery('#country').val();
 				var postcode = jQuery('#postcode').val();
-    			var param = "{address:'"+address+"',city:'"+city+"',state:'"+state+"',country:'"+country+"',pincode:'"+postcode+"'}";
+    			var param = 'address='+address+'&city='+city+'&state='+state+'&country='+country+'&pincode='+postcode;
 				jQuery.ajax({
                                 showLoader: true,
                                 url: "<?php  echo $block->getBaseUrl(); ?>geolocation",

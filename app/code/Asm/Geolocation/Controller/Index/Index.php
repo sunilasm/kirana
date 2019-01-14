@@ -31,6 +31,7 @@ class Index extends \Magento\Framework\App\Action\Action
         if ($this->getRequest()->isAjax())
         {
             $parameters = $this->request->getParams();
+            //echo "<pre>".print_r($parameters,true); exit;
             $url = $this->_appUrl;
             $address = '?address=';
            
