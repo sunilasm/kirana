@@ -19,7 +19,7 @@ $connection = $resource->getConnection();
 $tableName = $resource->getTableName('customer_address_entity');
 
 //Select Data from table
-$sql = "SELECT * FROM ". $tableName ." WHERE entity_id = ".$words[6];
+$sql = "SELECT * FROM ". $tableName ." WHERE entity_id = ".$words[5];
 $result = $connection->fetchAll($sql);
 //print_r($result);exit;
 
