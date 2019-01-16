@@ -114,6 +114,19 @@
                     <?= $block->getCountryHtmlSelect() ?>
                 </div>
             </div>
+            <div class="field geo_lat required">
+                <label for="geo_lat" class="label"><span><?= /* @noEscape */ $block->getAttributeData()->getFrontendLabel('geo_lat') ?></span></label>
+                <div class="control">
+                    <input type="text" id="geo_lat" name="geo_lat" value="" title="<?= /* @noEscape */ $block->getAttributeData()->getFrontendLabel('geo_lat') ?>" class="input-text <?= $block->escapeHtmlAttr($this->helper('Magento\Customer\Helper\Address')->getAttributeValidationClass('geo_lat')) ?>" readonly>
+                </div>
+            </div>
+            <div class="field geo_lng required">
+                <label for="geo_lng" class="label"><span><?= /* @noEscape */ $block->getAttributeData()->getFrontendLabel('geo_lng') ?></span></label>
+                <div class="control">
+                    <input type="text" id="geo_lng" name="geo_lng" value="" title="<?= /* @noEscape */ $block->getAttributeData()->getFrontendLabel('geo_lng') ?>" class="input-text <?= $block->escapeHtmlAttr($this->helper('Magento\Customer\Helper\Address')->getAttributeValidationClass('geo_lng')) ?>" readonly>
+                </div>
+            </div>
+
             <?php $addressAttributes = $block->getChildBlock('customer_form_address_user_attributes');?>
             <?php if ($addressAttributes): ?>
                 <?php $addressAttributes->setEntityType('customer_address'); ?>
