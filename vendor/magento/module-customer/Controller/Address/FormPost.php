@@ -117,6 +117,7 @@ class FormPost extends \Magento\Customer\Controller\Address
             array_merge($existingAddressData, $attributeValues),
             \Magento\Customer\Api\Data\AddressInterface::class
         );
+        //print_r($addressDataObject);exit;
         $addressDataObject->setCustomerId($this->_getSession()->getCustomerId())
             ->setIsDefaultBilling($this->getRequest()->getParam('default_billing', false))
             ->setIsDefaultShipping($this->getRequest()->getParam('default_shipping', false));
@@ -196,6 +197,7 @@ class FormPost extends \Magento\Customer\Controller\Address
 
         try {
             $address = $this->_extractAddress();
+            //print_r($address);exit;
             $this->_addressRepository->save($address);
             $this->messageManager->addSuccessMessage(__('You saved the address.'));
             $url = $this->_buildUrl('*/*/index', ['_secure' => true]);

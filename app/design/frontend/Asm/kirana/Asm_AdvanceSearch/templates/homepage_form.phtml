@@ -1,0 +1,193 @@
+<?php
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+
+// @codingStandardsIgnoreFile
+
+?>
+<?php
+/**
+ * Catalog advanced search form
+ *
+ * @var $block \Magento\CatalogSearch\Block\Advanced\Form
+ */
+?>
+<?php
+$objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+$customerSession = $objectManager->create('Magento\Customer\Model\Session');
+    if(($customerSession->isLoggedIn())){
+        $customerLogin = 1;
+        $billingID =  $customerSession->getCustomer()->getDefaultBilling();
+        $address = $objectManager->create('Magento\Customer\Model\Address')->load($billingID);
+        $addressLat = $address->getLat();
+        $addressLng = $address->getLng();
+        $streetArray = $address->getStreet();
+        $addressFull = $streetArray['0'].','.$address->getCity().','.$address->getRegion().','.$address->getCountry_id().','.$address->getPostcode();
+    }else{
+      $customerLogin = 0;
+      $addressLat  = '';
+      $addressLng  = '';
+      $addressFull  = '';
+    }
+
+// $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+// $customerSession = $objectManager->get('Magento\Customer\Model\Session');
+// if($customerSession->isLoggedIn()) {
+//   echo "Login";
+//    print_r($customerSession);exit;
+// }else{
+//   echo "Not Login";
+// }
+?>
+<!-- AIzaSyD-_0vriuYY2qKxzK82yvVqgUeo-bqayDk ||  AIzaSyCoLbQMJVrWfwYGdNOWxOVz3NMzYjCRhQg-->
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD-_0vriuYY2qKxzK82yvVqgUeo-bqayDk&libraries=places&callback=initAutocomplete"
+        async defer></script>
+<?php $maxQueryLength = $this->helper('Magento\CatalogSearch\Helper\Data')->getMaxQueryLength();?>
+<form class="form search advanced" action="<?= /* @escapeNotVerified */ $block->getSearchPostUrl() ?>" method="get" id="form-validate">
+   <div class="row">
+        <div class="col-md-10 col-lg-10 col-sm-10 col-xs-12">
+          <fieldset class="fieldset">
+             <?php foreach ($block->getSearchableAttributes() as $_attribute): ?>
+              <?php $_code = $_attribute->getAttributeCode() ?>
+                  <?php if($_code == 'name'){ ?>
+                        <div class="field <?= /* @escapeNotVerified */ $_code ?>">
+                            <div class="control">
+                                <input type="text"
+                                       name="<?= /* @escapeNotVerified */ $_code ?>"
+                                       id="<?= /* @escapeNotVerified */ $_code ?>"
+                                       value="<?= $block->escapeHtml($block->getAttributeValue($_attribute)) ?>"
+                                       title="<?= $block->escapeHtml($block->getAttributeLabel($_attribute)) ?>"
+                                       class="input-text <?= /* @escapeNotVerified */ $block->getAttributeValidationClass($_attribute) ?>"
+                                       Placeholder="Search entire store here..."
+                                       maxlength="<?= /* @escapeNotVerified */ $maxQueryLength ?>" />
+                            </div>
+                        </div>
+                     <?php } ?>
+                <?php endforeach; ?>
+          </fieldset>
+         <input type="hidden" id="lat" name="lat" title="Lat" value=""/>
+         <input type="hidden" id="lng" name="lng" title="Lng" value=""/>
+         <input type="hidden" id="customerLogin" name="customerLogin" title="addressFull" value="<?php if($customerLogin){echo $customerLogin; }else{echo '';}?>"/>
+         <input type="hidden" id="loninlat" name="loninlat" title="LoninLat" value="<?php if($addressLat){echo $addressLat; }else{ echo '0';}?>"/>
+         <input type="hidden" id="loninlng" name="loninlng" title="LoninLng" value="<?php if($addressLng){echo $addressLng; }else{echo '0';}?>"/>
+         <input type="hidden" id="addressFull" name="addressFull" title="addressFull" value="<?php if($addressFull){echo $addressFull; }else{echo '';}?>"/>
+        </div>
+        <div class="col-md-2 col-lg-2 col-sm-2 col-xs-4">  
+          <div class="actions-toolbar custom-serach-action">
+            <div class="primary">
+              <button type="submit"
+                      class="action search primary"
+                      title="<?= $block->escapeHtml(__('Search')) ?>">
+                  <span><?= /* @escapeNotVerified */ __('Search') ?></span>
+              </button>
+            </div>
+          </div>
+       </div>
+ </div>
+<div id="popup-modal" class="modal" style="display: none">
+    <div id="locationField">
+      <input id="autocomplete" placeholder="Enter your address"
+             type="text"/>
+    </div>
+</div>
+
+<div id="popup-modal-islogin" class="modal" style="display: none">
+    <div id="locationField" class="row">
+      <div class="col-md-6 col-sm-6 col-lg-6">
+        <label><strong>Current Address</strong></label>
+      </div>
+      <div class="col-md-6 col-sm-6 col-lg-6">
+        <label><strong>Logedin User Default Address</strong></label>
+      </div>
+      <div class="col-md-6 col-sm-6 col-lg-6">
+        <input type="radio" name="checkaddress" id="currentAddval" value="" checked> <span id="currentAdd" ></span><?php //echo $addressFull ?>
+      </div>
+      <div class="col-md-6 col-sm-6 col-lg-6">
+        <input type="radio" name="checkaddress" id="defaultAddval" value=""> <span id="defaultAdd"></span> <?php //echo $addressFull ?>
+      </div>
+    </div>
+</div>
+
+</form>
+<script>
+require([
+    "jquery",
+    "mage/mage",
+    "mage/validation"
+], function($){
+    $('#form-validate').mage('validation', {
+            errorPlacement: function (error, element) {
+                var parent = element.parent();
+                if (parent.hasClass('range')) {
+                    parent.find(this.errorElement + '.' + this.errorClass).remove().end().append(error);
+                } else {
+                    error.insertAfter(element);
+                }
+            },
+            messages: {
+                'price[to]': {'greater-than-equals-to': 'Please enter a valid price range.'},
+                'price[from]': {'less-than-equals-to': 'Please enter a valid price range.'}
+            }
+        });
+});
+</script>
+
+<script>
+
+      var placeSearch, autocomplete;
+      var componentForm = {
+        street_number: 'short_name',
+        route: 'long_name',
+        locality: 'long_name',
+        administrative_area_level_1: 'short_name',
+        country: 'long_name',
+        postal_code: 'short_name'
+      };
+
+      function initAutocomplete() {
+        // Create the autocomplete object, restricting the search to geographical
+        // location types.
+        autocomplete = new google.maps.places.Autocomplete(
+            /** @type {!HTMLInputElement} */(document.getElementById('autocomplete')),
+            {types: ['geocode']});
+
+        // When the user selects an address from the dropdown, populate the address
+        // fields in the form.
+        autocomplete.addListener('place_changed', fillInAddress);
+      }
+
+      function fillInAddress() {
+        // Get the place details from the autocomplete object.
+        var place = autocomplete.getPlace();
+
+        for (var component in componentForm) {
+          document.getElementById(component).value = '';
+          document.getElementById(component).disabled = false;
+        }
+
+        // Get each component of the address from the place details
+        // and fill the corresponding field on the form.
+        for (var i = 0; i < place.address_components.length; i++) {
+          var addressType = place.address_components[i].types[0];
+          if (componentForm[addressType]) {
+            var val = place.address_components[i][componentForm[addressType]];
+            document.getElementById(addressType).value = val;
+          }
+        }
+      }
+      
+      
+       
+    </script>
+
+  <style>
+  #form-validate {
+    float: right;
+    margin-right: 60px !important;
+  }
+  .custom-serach-action{
+    margin-left: -30px;
+  }
+  </style>
