@@ -241,10 +241,10 @@
 				</fieldset>
 				<fieldset class="admin__field">
 					<label class="admin__field-label">
-						<span><?php echo __('Closeing Time') ?></span>
+						<span><?php echo __('Closing Time') ?></span>
 					</label>
 					<div class="admin__field-control">
-						<input type="text" id="closeing_time" name="closeing_time" title="Closeing Time" 
+						<input type="text" id="closeing_time" name="closeing_time" title="Closing Time" 
 						value="<?php echo $seller['closeing_time']; ?>" 
 						<?php if($seller['24by7_shop'] == 'Yes') : echo "disabled"; endif; ?>
 						class="admin__control-text" 
@@ -361,10 +361,10 @@
 				</fieldset>
 				<fieldset class="admin__field">
 					<label class="admin__field-label">
-						<span><?php echo __('Smart phone wih data') ?></span>
+						<span><?php echo __('Smartphone wih data') ?></span>
 					</label>
 					<div class="admin__field-control">
-						<select id="smart_phone" name="smart_phone" title="Smart phone wih data" 
+						<select id="smart_phone" name="smart_phone" title="Smartphone wih data" 
 						class="admin__control-select" data-validate='{"required":false}'>
                     		<option value="No" <?php if($seller['smart_phone'] == 'No') : echo "selected"; endif; ?>>No</option>
 							<option value="Yes" <?php if($seller['smart_phone'] == 'Yes') : echo "selected"; endif; ?>>Yes</option>
@@ -449,7 +449,7 @@
 				</fieldset>
 				<fieldset class="admin__field required">
 					<label class="admin__field-label">
-						<span><?php echo __('Kirans Fixed Line') ?></span>
+						<span><?php echo __('Kirana Fixed Line') ?></span>
 					</label>
 					<div class="admin__field-control">
 						<input type="text" id="kirana_fixed_line" name="kirana_fixed_line" 
