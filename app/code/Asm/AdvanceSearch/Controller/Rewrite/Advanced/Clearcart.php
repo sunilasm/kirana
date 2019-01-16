@@ -5,7 +5,7 @@ use Magento\Framework\App\Action\Action;
 class Clearcart extends Action
 {
 	protected  $_modelCart;
-	protected $ checkoutSession;
+	protected $checkoutSession;
 	public function __construct(CheckoutSession $checkoutSession,Cart $modelCart)
         {
         	$this->checkoutSession = $checkoutSession;
