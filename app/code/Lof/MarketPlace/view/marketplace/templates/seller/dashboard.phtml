@@ -80,42 +80,6 @@
     </div>
     <div class="row">
 
-      <div class="col-md-12 col-sm-12 col-xs-12">
-        <div class="x_panel">
-          <div class="x_title">
-            <h2><?php echo __('Your top countries');?></h2>
-            <div class="clearfix"></div>
-          </div>
-          <div class="x_content">
-            <div class="dashboard-widget-content">
-              <div class="col-md-4 hidden-small">
-                <h2 class="line_30"><?php echo __('Earning '.$this->getPriceFomat($this->getDataCountry()['amount']).' from '.$this->getDataCountry()['country'].' countries');?></h2>
-
-                <table class="countries_list">
-                  <thead>
-                    <tr>
-                      <td><?php echo __('Country');?></td>
-                      <td class="fs15 fw700 text-right"><?php echo __('Total Order');?></td>
-                      <td class="fs15 fw700 text-right"><?php echo __('Total Earning');?></td>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <?php foreach ($this->getTopCountries() as $key => $country) { ?>
-                    <tr>
-                      <td><?php echo $this->getCountry($country['country_id']);?></td>
-                      <td class="fs15 fw700 text-right"><?php echo $country['orders_count'];?></td>
-                      <td class="fs15 fw700 text-right"><?php echo $this->getPriceFomat($country['seller_amount']);?></td>
-                    </tr> 
-                    <?php } ?>
-                    
-                  </tbody>
-                </table>
-              </div>
-              <div id="world-map-gdp" class="col-md-8 col-sm-12 col-xs-12" style="height:420px;"></div>
-            </div>
-          </div>
-        </div>
-      </div>
    
       <!-- line graph -->
       <div class="col-md-12 col-sm-12 col-xs-12">

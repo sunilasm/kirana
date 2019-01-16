@@ -8,7 +8,8 @@ class Index extends \Magento\Framework\App\Action\Action
 {
     protected $_curl;
     // protected $_key = 'AIzaSyA2bRGYQUYqiVZj4SBYAjWvx-3eVqW3Yh4';
-    protected $_key = 'AIzaSyCoLbQMJVrWfwYGdNOWxOVz3NMzYjCRhQg';
+    protected $_key = 'AIzaSyD-_0vriuYY2qKxzK82yvVqgUeo-bqayDk';
+
     protected $_appUrl= 'https://maps.googleapis.com/maps/api/geocode/xml';
     protected $request;
     public function __construct(\Magento\Framework\App\Action\Context $context,
@@ -31,6 +32,7 @@ class Index extends \Magento\Framework\App\Action\Action
         if ($this->getRequest()->isAjax())
         {
             $parameters = $this->request->getParams();
+            //echo "<pre>".print_r($parameters,true); exit;
             $url = $this->_appUrl;
             $address = '?address=';
            
