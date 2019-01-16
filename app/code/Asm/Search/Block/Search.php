@@ -37,13 +37,28 @@ class Search extends \Magento\Framework\View\Element\Template
 
     public function searchResult()
     {
-        $centerpointLang = $this->getRequest()->getParam('lng');
-        $centerpointLat = $this->getRequest()->getParam('lat');
+        $lat = $this->getRequest()->getParam('latitude');
+        $lon = $this->getRequest()->getParam('longitude');
         $title = $this->getRequest()->getParam('title');
+        // check current page
+        $current_page = $this->getRequest()->getParam('current_page');
+        if($current_page == ''){
+            $current_page = 1;
+        }else{
+            $current_page = $this->getRequest()->getParam('current_page');
+        }
+        // Check page size
+        $page_size = $this->getRequest()->getParam('page_size');
+        if($page_size == ''){
+            $page_size = 10;
+        }else{
+            $page_size = $this->getRequest()->getParam('page_size');
+        }
         $selerIdArray = array();
+        $productCollectionArray = array();
 
-        $lat = $centerpointLat; //latitude
-        $lon = $centerpointLang; //longitude
+        //$lat = '18.5647387'; //latitude
+        //$lon = '73.77837559999999'; //longitude
         $distance = 1; //your distance in KM
         $R = 6371; //constant earth radius. You can add precision here if you wish
 
@@ -74,27 +89,25 @@ class Search extends \Magento\Framework\View\Element\Template
             $collection->addFieldToFilter('seller_id', array('in' => $selerIdArray));
             $collection->addAttributeToSort('price', 'asc');
             $collection->addFieldToFilter([['attribute' => 'name', 'like' => '%'.$title.'%']]);
-
-            // $custom = [];
-            // //print_r($collection->getData());
-            // foreach($collection as $_product):
-
-            //     $attributes = $_product->getCustomAttributes(); 
-
-            //     foreach ($attributes as $attribute) {  
-            //        $custom[$attribute->getAttributeCode()] = $attribute->getValue(); 
-            //     }
-            //                     // foreach($_product->getCustomAttributes() as $attr):
-            //     //         //$arratAttributes[] = $attr->getAttributeCode();
-            //     //         print_r($attr->getCustomAttribute($attr->));
-            //     //         $collection->addAttributeToFilter("'".$attr->getCustomAttribute()."'", array('like' => '%'.$title.'%'));
-            //     // endforeach;
-            // endforeach;
-            // print_r($custom);exit;
+            $collection->setCurPage($current_page)->setPageSize($page_size);
+            foreach ($collection as $product){
+                $productCollectionArray[$product->getId()] = $product->getData();
+            } 
+         //print_r($productCollectionArray);exit;
          }else{
              $collection = '';
          }
-         return $collection;
+
+         if($productCollectionArray){
+            $data = array('status' => 1,'message' => 'Search result','product_collection' => $productCollectionArray);
+        }else{
+            $data = array('status' => 0,'message' => 'No Search result','product_collection' => array());
+        }
+
+       // echo '<pre>';print_r($data);exit;
+        echo json_encode($data);die;
+
+         //return $collection;
     }
     public function searchTeam()
     {
