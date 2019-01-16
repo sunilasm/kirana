@@ -21,8 +21,6 @@
  */
 -->
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
-    
-
     <preference for="Magento\Framework\UrlInterface" type="Lof\MarketPlace\Model\UrlInterface" />
     <preference for="Magento\Framework\View\Page\FaviconInterface" type="Lof\MarketPlace\Model\Favicon" />
     <preference for="Magento\Backend\Model\Menu\Item" type="Lof\MarketPlace\Model\Menu\Item" />
@@ -50,7 +48,7 @@
             <argument name="area" xsi:type="string">marketplace</argument>
         </arguments>
     </type>
-	<preference for="Magento\Catalog\Ui\Component\Listing\Attribute\RepositoryInterface" type="Magento\Catalog\Ui\Component\Listing\Attribute\Repository"/>
+    <preference for="Magento\Catalog\Ui\Component\Listing\Attribute\RepositoryInterface" type="Magento\Catalog\Ui\Component\Listing\Attribute\Repository"/>
     <preference for="Magento\Ui\DataProvider\Modifier\PoolInterface" type="Magento\Ui\DataProvider\Modifier\Pool"/>
     <preference for="Magento\Catalog\Model\Locator\LocatorInterface" type="Magento\Catalog\Model\Locator\RegistryLocator"/>
     
@@ -195,6 +193,13 @@
     <type name="Magento\Catalog\Ui\DataProvider\Product\Form\ProductDataProvider">
         <arguments>
             <argument name="pool" xsi:type="object">Magento\Catalog\Ui\DataProvider\Product\Form\Modifier\Pool</argument>
+        </arguments>
+    </type>
+    <type name="Magento\Catalog\Ui\DataProvider\Product\Form\Modifier\Eav\CompositeConfigProcessor">
+        <arguments>
+            <argument name="eavWysiwygDataProcessors" xsi:type="array">
+                <item name="default" xsi:type="object">Magento\Catalog\Ui\DataProvider\Product\Form\Modifier\Eav\WysiwygConfigDataProcessor</item>
+            </argument>
         </arguments>
     </type>
     <type name="Magento\Catalog\Ui\DataProvider\Product\Form\Modifier\CustomOptions">

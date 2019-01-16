@@ -4,12 +4,12 @@ return [
         'Magento_Store' => 1,
         'Magento_Directory' => 1,
         'Magento_Eav' => 1,
+        'Magento_Customer' => 1,
         'Asm_AdvanceSearch' => 1,
         'Asm_Geolocation' => 1,
         'Asm_Search' => 1,
         'Magento_Theme' => 1,
         'Magento_Cms' => 1,
-        'Magento_Customer' => 1,
         'Magento_AdminNotification' => 1,
         'Magento_Indexer' => 1,
         'Lof_All' => 1,
@@ -59,6 +59,7 @@ return [
         'Magento_Downloadable' => 1,
         'Magento_ImportExport' => 1,
         'Amazon_Login' => 1,
+        'Asm_Addressattribute' => 1,
         'Magento_Newsletter' => 1,
         'Magento_EncryptionKey' => 1,
         'Magento_Fedex' => 1,
@@ -87,7 +88,11 @@ return [
         'Magento_Persistent' => 1,
         'Magento_Reports' => 1,
         'Lof_MarketPlace' => 1,
+<<<<<<< HEAD
         'Asm_Setsellerid' => 1,
+=======
+        'Klarna_Ordermanagement' => 1,
+>>>>>>> product_search
         'Magento_QuoteAnalytics' => 1,
         'Magento_ReleaseNotification' => 1,
         'Magento_Review' => 1,
@@ -134,6 +139,7 @@ return [
         'Magento_WishlistAnalytics' => 1,
         'Mageplaza_Core' => 1,
         'Mageplaza_Smtp' => 1,
+        'Ranosys_CancelOrder' => 1,
         'Temando_Shipping' => 1,
         'Vertex_Tax' => 1
     ]

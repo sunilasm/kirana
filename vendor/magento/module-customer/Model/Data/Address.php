@@ -152,6 +152,11 @@ class Address extends \Magento\Framework\Api\AbstractExtensibleObject implements
         return $this->_get(self::CITY);
     }
 
+    public function getLatitude()
+    {
+        return $this->_get('latitude');
+    }
+
     /**
      * Get first name
      *

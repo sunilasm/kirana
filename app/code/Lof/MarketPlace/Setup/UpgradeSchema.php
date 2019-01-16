@@ -421,7 +421,7 @@ class UpgradeSchema implements UpgradeSchemaInterface
                 'comment'  => 'total amount sold'
             ]
         );
-        if (version_compare($context->getVersion(), '1.0.7') <= 0) {
+            if (version_compare($context->getVersion(), '1.0.7') <= 0) {
 
             /* table lof_sellerr */
             $table = $installer->getTable('lof_marketplace_seller');

@@ -5,6 +5,9 @@ if($payment['max_amount'] >= $this->getAmount()) {
 } else {
   $withdrawal = $payment['max_amount'];
 }
+if(!$payment['fee_percent']) {
+  $payment['fee_percent'] = 0;
+}
 $fee_fixed = $this->getPriceFomat($payment['fee'],$this->getCurrentCurrencyCode());
 $fee_percent = $payment['fee_percent'].'%';
 if($payment['fee_by'] == 'all') {
@@ -54,10 +57,10 @@ if($payment['fee_by'] == 'all') {
             <label class="control-label col-md-3 col-sm-3 col-xs-12"><?php echo __('Min amount ').$this->getPriceFomat($payment['min_amount'],$this->getCurrentCurrencyCode()).(', Max amount ').$this->getPriceFomat($payment['max_amount'],$this->getCurrentCurrencyCode());?></span>
             </label>
             <div class="col-md-6 col-sm-6 col-xs-12">
-              <input type="hidden" id="fee" name="fee" required="required" class="form-control col-md-7 col-xs-12 validate-number required-entry" value="<?php echo $payment['fee']; ?>">
+              <input type="hidden" id="fee" name="fee" class="form-control col-md-7 col-xs-12" value="<?php echo $payment['fee']; ?>">
             </div>
              <div class="col-md-6 col-sm-6 col-xs-12">
-              <input type="hidden" id="fee_percent" name="fee_percent" required="required" class="form-control col-md-7 col-xs-12 validate-number required-entry" value="<?php echo $payment['fee_percent']; ?>">
+              <input type="hidden" id="fee_percent" name="fee_percent" class="form-control col-md-7 col-xs-12" value="<?php echo $payment['fee_percent']; ?>">
             </div>
           </div> 
           <div class="form-group">
