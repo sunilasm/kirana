@@ -45,7 +45,7 @@ $customerSession = $objectManager->create('Magento\Customer\Model\Session');
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD-_0vriuYY2qKxzK82yvVqgUeo-bqayDk&libraries=places&callback=initAutocomplete"
         async defer></script>
 <?php $maxQueryLength = $this->helper('Magento\CatalogSearch\Helper\Data')->getMaxQueryLength();?>
-<form class="form search advanced" action="<?= /* @escapeNotVerified */ $block->getSearchPostUrl() ?>" method="get" id="form-validate">
+<form class="form search advanced custom-search-form" action="<?= /* @escapeNotVerified */ $block->getSearchPostUrl() ?>" method="get" id="form-validate">
    <div class="row">
         <div class="col-md-10 col-lg-10 col-sm-10 col-xs-12">
           <fieldset class="fieldset">
@@ -183,7 +183,7 @@ require([
     </script>
 
   <style>
-  #form-validate {
+  .custom-search-form {
     float: right;
     margin-right: 60px !important;
   }
