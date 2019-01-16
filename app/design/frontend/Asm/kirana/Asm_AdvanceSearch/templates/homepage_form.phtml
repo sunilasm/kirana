@@ -73,6 +73,7 @@ $customerSession = $objectManager->create('Magento\Customer\Model\Session');
          <input type="hidden" id="loninlat" name="loninlat" title="LoninLat" value="<?php if($addressLat){echo $addressLat; }else{ echo '0';}?>"/>
          <input type="hidden" id="loninlng" name="loninlng" title="LoninLng" value="<?php if($addressLng){echo $addressLng; }else{echo '0';}?>"/>
          <input type="hidden" id="addressFull" name="addressFull" title="addressFull" value="<?php if($addressFull){echo $addressFull; }else{echo '';}?>"/>
+         <input type="hidden" id="currenttime" name="currenttime" title="currenttime" value="<?php echo strtotime("now"); ?>"/>
         </div>
         <div class="col-md-2 col-lg-2 col-sm-2 col-xs-4">  
           <div class="actions-toolbar custom-serach-action">

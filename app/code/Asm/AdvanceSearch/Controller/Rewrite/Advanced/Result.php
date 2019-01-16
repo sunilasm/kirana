@@ -49,7 +49,7 @@ class Result extends \Magento\Framework\App\Action\Action
     public function execute()
     {
         try {
-            // print_r($this->getRequest()->getQueryValue('name'));exit;
+             //print_r($this->getRequest()->getQueryValue('name'));exit;
             $this->_catalogSearchAdvanced->addFilters($this->getRequest()->getQueryValue());
             $this->_view->loadLayout();
             $this->_view->renderLayout();

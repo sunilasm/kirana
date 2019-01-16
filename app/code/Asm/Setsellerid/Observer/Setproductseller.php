@@ -36,7 +36,8 @@ class Setproductseller implements \Magento\Framework\Event\ObserverInterface
  	$cart = $observer->getEvent()->getData('cart');
     $cartItems = $cart->getItems();
     foreach($cartItems as $item){
-    	if($seller_id){
+
+    	if(isset($seller_id["value"])){
 	    	if($item->getProductId() == $seller_id["product"]){
 	    		//print_r($seller_id["value"]);
 	    		$item->setSellerId($seller_id["value"]);

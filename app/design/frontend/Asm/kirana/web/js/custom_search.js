@@ -103,7 +103,7 @@ require([
                         var address = jQuery('#autocomplete').val();
                            var geocoder = new google.maps.Geocoder();
                             //var address = "new york";
-
+                        //console.log("Addd--->"+address);
                             geocoder.geocode( { 'address': address}, function(results, status) {
                               //console.log('status-->'+status);
                                if (status == google.maps.GeocoderStatus.OK) {
@@ -111,6 +111,9 @@ require([
                                 var longitude = results[0].geometry.location.lng();
                                 jQuery('#lat').val(latitude);
                                 jQuery('#lng').val(longitude);
+                                $.cookie('latitude', latitude );
+                                $.cookie('longitude', longitude );
+                                $.cookie('custmerloginstatus', 'true' );
                               }
                             });
                         this.closeModal();
