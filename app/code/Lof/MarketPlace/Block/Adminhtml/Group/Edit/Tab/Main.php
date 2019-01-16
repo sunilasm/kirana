@@ -116,7 +116,9 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
 	    		'name' => 'position',
 	    		'label' => __('Position'),
 	    		'title' => __('Position'),
-	    		'disabled' => $isElementDisabled
+                'disabled' => $isElementDisabled,
+                'required' => false, 
+                'class' => 'validate-not-negative-number'
     		]
     		);
 

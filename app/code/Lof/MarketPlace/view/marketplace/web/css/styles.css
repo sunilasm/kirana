@@ -39,6 +39,7 @@
 }
 .admin__field.field.required {
     display: inline-block;
+    width: 100%;
 }
 
 .fileupload-buttonbar .toggle {
@@ -97,6 +98,11 @@ table.qty-table th {
 .sticky-header {
     left: 23rem;
 }
+
+/* .required > .admin__field-label > span::after
+{
+    margin-top: -7px;
+} */
 @media screen and (max-width: 768px) {
     .editprofile .admin__field:not(.admin__field-option) > .admin__field-label,
     .editprofile .admin__fieldset > .admin__field > .admin__field-control {

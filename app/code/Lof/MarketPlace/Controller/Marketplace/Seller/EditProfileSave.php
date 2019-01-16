@@ -88,8 +88,6 @@ class EditProfileSave extends \Magento\Framework\App\Action\Action {
             if ($data) {
                 $id = $this->getRequest()->getParam('seller_id');
                 $sellerModel = $objectManager->get('Lof\MarketPlace\Model\Seller')->load($id);
-
-            
                 
                 try {
                     /** @var \Magento\Framework\Filesystem\Directory\Read $mediaDirectory */
@@ -128,7 +126,7 @@ class EditProfileSave extends \Magento\Framework\App\Action\Action {
                         $data['thumpnail'] = $thumbnail;
                     }
                    
-
+                    $data['stores'] = $sellerModel->getData('store_id');
                     $sellerModel->setData($data);
                     $sellerModel->save();
                      $this->messageManager->addException($e, __('Something went wrong while saving the seller.'));

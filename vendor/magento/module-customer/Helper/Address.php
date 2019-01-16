@@ -254,6 +254,7 @@ class Address extends \Magento\Framework\App\Helper\AbstractHelper
         try {
             /** @var $attribute AttributeMetadataInterface */
             $attribute = isset($this->_attributes[$attributeCode])
+            // print_r($attribute);exit;
                 ? $this->_attributes[$attributeCode]
                 : $this->_addressMetadataService->getAttributeMetadata($attributeCode);
 

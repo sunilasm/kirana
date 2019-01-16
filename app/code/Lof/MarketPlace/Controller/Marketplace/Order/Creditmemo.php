@@ -36,7 +36,7 @@ class Creditmemo extends \Lof\MarketPlace\Controller\Marketplace\Order {
       
 
         if ($order = $this->_initOrder()) { 
-            //try {
+            try {
                  $creditmemo = $this->_initOrderCreditmemo($order);
                
                 if ($creditmemo) {
@@ -81,13 +81,13 @@ class Creditmemo extends \Lof\MarketPlace\Controller\Marketplace\Order {
 
                     $this->messageManager->addSuccess(__('You created the credit memo.'));
                 }
-           /* } catch (\Magento\Framework\Exception\LocalizedException $e) {
+            } catch (\Magento\Framework\Exception\LocalizedException $e) {
                 $this->messageManager->addError($e->getMessage());
             } catch (\Exception $e) {
                 $this->messageManager->addError(
                     __('We can\'t create credit memo for order right now.')
                 );
-            }*/
+            }
 
             return $this->resultRedirectFactory->create()->setPath(
                 'catalog/sales/orderview/view',

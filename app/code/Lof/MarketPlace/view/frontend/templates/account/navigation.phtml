@@ -129,11 +129,11 @@ $isSellerGroup = 1; //$_helper->isSellerGroupModuleInstalled();
                     <?php echo $block->getChildHtml();?>
                     <li class="nav item <?php echo strpos($magentoCurrentUrl,'marketplace/seller/becomepartner')? "current":"";?>">
                         <?php if(strpos($magentoCurrentUrl,'lofmarketplace/seller/becomeseller') !== false){ ?> 
-                            <strong><?php echo __('Become Kirana') ?></strong>    
+                            <strong><?php echo __('Become Seller') ?></strong>    
                         <?php }         
                         else{ ?>    
                             <a href="<?php echo $block->getUrl('lofmarketplace/seller/becomeseller', ['_secure' => $this->getRequest()->isSecure()]); ?>">
-                                <?php echo __('Become A Kirana') ?>
+                                <?php echo __('Become Seller') ?>
                             </a>                    
                         <?php } ?>      
                     </li>       
