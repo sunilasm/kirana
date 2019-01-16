@@ -87,12 +87,7 @@ return [
         'Magento_Braintree' => 1,
         'Magento_Persistent' => 1,
         'Magento_Reports' => 1,
-        'Lof_MarketPlace' => 1,
-<<<<<<< HEAD
         'Asm_Setsellerid' => 1,
-=======
-        'Klarna_Ordermanagement' => 1,
->>>>>>> product_search
         'Magento_QuoteAnalytics' => 1,
         'Magento_ReleaseNotification' => 1,
         'Magento_Review' => 1,
