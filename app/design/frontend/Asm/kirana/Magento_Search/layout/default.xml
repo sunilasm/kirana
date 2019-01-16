@@ -8,7 +8,7 @@
 <page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
     <body>
         <referenceContainer name="header-wrapper">
-            <block class="Magento\CatalogSearch\Block\Advanced\Form" name="catalogsearch_advanced_form" template="Magento_CatalogSearch::advanced/form.phtml"/>
+            <block class="Asm\AdvanceSearch\Block\Rewrite\Advanced\Form" name="asm_advanceserach_form" template="Asm_AdvanceSearch::homepage_form.phtml"/>
         </referenceContainer>
         <referenceBlock name="footer_links">
             <block class="Magento\Framework\View\Element\Html\Link\Current" ifconfig="catalog/seo/search_terms" name="search-term-popular-link">
