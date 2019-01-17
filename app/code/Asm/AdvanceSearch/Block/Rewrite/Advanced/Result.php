@@ -68,23 +68,23 @@ class Result extends Template
     protected function _prepareLayout()
     {
         $this->pageConfig->getTitle()->set($this->getPageTitle());
-        $breadcrumbs = $this->getLayout()->getBlock('breadcrumbs');
-        if ($breadcrumbs) {
-            $breadcrumbs->addCrumb(
-                'home',
-                [
-                    'label' => __('Home'),
-                    'title' => __('Go to Home Page'),
-                    'link' => $this->_storeManager->getStore()->getBaseUrl()
-                ]
-            )->addCrumb(
-                'search',
-                ['label' => __('Catalog Advanced Search'), 'link' => $this->getUrl('*/*/')]
-            )->addCrumb(
-                'search_result',
-                ['label' => __('Results')]
-            );
-        }
+        // $breadcrumbs = $this->getLayout()->getBlock('breadcrumbs');
+        // if ($breadcrumbs) {
+        //     $breadcrumbs->addCrumb(
+        //         'home',
+        //         [
+        //             'label' => __('Home'),
+        //             'title' => __('Go to Home Page'),
+        //             'link' => $this->_storeManager->getStore()->getBaseUrl()
+        //         ]
+        //     )->addCrumb(
+        //         'search',
+        //         ['label' => __('Catalog Advanced Search'), 'link' => $this->getUrl('*/*/')]
+        //     )->addCrumb(
+        //         'search_result',
+        //         ['label' => __('Results')]
+        //     );
+        // }
         return parent::_prepareLayout();
     }
 
