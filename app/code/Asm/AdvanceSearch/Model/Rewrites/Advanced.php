@@ -139,6 +139,7 @@ class Advanced extends \Magento\Framework\Model\AbstractModel
         ProductCollectionFactory $productCollectionFactory,
         AdvancedFactory $advancedFactory,
         \Lof\MarketPlace\Model\Seller $sellerCollection,
+        \Lof\MarketPlace\Model\SellerProduct $sellerProductCollection,
         array $data = []
     ) {
         $this->_attributeCollectionFactory = $attributeCollectionFactory;
@@ -148,6 +149,7 @@ class Advanced extends \Magento\Framework\Model\AbstractModel
         $this->_productFactory = $productFactory;
         $this->_storeManager = $storeManager;
         $this->_sellerCollection = $sellerCollection;
+        $this->_sellerProductCollection = $sellerProductCollection;
         $this->productCollectionFactory = $productCollectionFactory;
         parent::__construct(
             $context,
@@ -291,10 +293,11 @@ class Advanced extends \Magento\Framework\Model\AbstractModel
        //$selerIdArray = array('11','39','40');
        //$centerpointLang = $this->getRequest()->getParam('lng');
         //$centerpointLat = $this->getRequest()->getParam('lat');
-        //$title = $this->getRequest()->getParam('title');
+        $title = 'maggi';
         $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
         $cookieManager = $objectManager->get('Magento\Framework\Stdlib\CookieManagerInterface');
         $selerIdArray = array();
+        $sellerProductsArray = array();
 
         //$lat = $centerpointLat; //latitude
         $lat = $cookieManager->getCookie('latitude'); //latitude
@@ -321,17 +324,25 @@ class Advanced extends \Magento\Framework\Model\AbstractModel
         foreach($sellerData as $seldata):
             $selerIdArray[] = $seldata['seller_id'];
         endforeach;
-        
+
+        //print_r($selerIdArray);exit;
+        $sellerProductCollection = $this->_sellerProductCollection->getCollection()
+                                        ->addFieldToFilter('seller_id', array('in' => $selerIdArray));
+
+        $sellerProductData = $sellerProductCollection->getData();
+        foreach($sellerProductData as $prodata):
+            $sellerProductsArray[] = $prodata['product_id'];
+        endforeach;
+
+
         $collection
             ->addAttributeToSelect($this->_catalogConfig->getProductAttributes())
             ->setStore($this->_storeManager->getStore())
             ->addMinimalPrice()
             ->addTaxPercents()
             ->addStoreFilter()
-            // ->addAttributeToSort('price', 'asc')
-            ->addFieldToFilter('seller_id', array('in' => $selerIdArray))
+            ->addFieldToFilter('entity_id', array('in' => $sellerProductsArray))
             ->setVisibility($this->_catalogProductVisibility->getVisibleInSearchIds());
-        //print_r($collection->getData());exit;
         return $this;
     }
 
