@@ -321,7 +321,7 @@ class Advanced extends \Magento\Framework\Model\AbstractModel
         foreach($sellerData as $seldata):
             $selerIdArray[] = $seldata['seller_id'];
         endforeach;
-
+        
         $collection
             ->addAttributeToSelect($this->_catalogConfig->getProductAttributes())
             ->setStore($this->_storeManager->getStore())
@@ -331,7 +331,7 @@ class Advanced extends \Magento\Framework\Model\AbstractModel
             // ->addAttributeToSort('price', 'asc')
             ->addFieldToFilter('seller_id', array('in' => $selerIdArray))
             ->setVisibility($this->_catalogProductVisibility->getVisibleInSearchIds());
-
+        //print_r($collection->getData());exit;
         return $this;
     }
 
