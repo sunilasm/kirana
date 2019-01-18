@@ -19,8 +19,8 @@ $connection = $resource->getConnection();
 $tableName = $resource->getTableName('customer_address_entity');
 
 //Select Data from table
-$sql = "SELECT * FROM ". $tableName ." WHERE entity_id = ".$words[6];
-$result = $connection->fetchAll($sql);
+//$sql = "SELECT * FROM ". $tableName ." WHERE entity_id = ".$words[5];
+//$result = $connection->fetchAll($sql);
 //print_r($result);exit;
 
 ?>
@@ -153,7 +153,7 @@ $result = $connection->fetchAll($sql);
             <div class="control">
                 <input type="text"
                        name="latitude"
-                       value="<?php echo $result[0]['latitude'] ?>"
+                       value="<?php //echo $result[0]['latitude'] ?>"
                        title="<?= $block->escapeHtmlAttr(__('latitude')) ?>"
                        class="input-text <?= $block->escapeHtmlAttr($this->helper(\Magento\Customer\Helper\Address::class)->getAttributeValidationClass('latitude')) ?>"
                        id="geo_lat_new" readonly="true">
@@ -166,7 +166,7 @@ $result = $connection->fetchAll($sql);
              <div class="control">
             <input type="text"
                        name="longitude"
-                       value="<?php echo $result[0]['longitude'] ?>"
+                       value="<?php //echo $result[0]['longitude'] ?>"
                        title="<?= $block->escapeHtmlAttr(__('longitude')) ?>"
                        class="input-text <?= $block->escapeHtmlAttr($this->helper(\Magento\Customer\Helper\Address::class)->getAttributeValidationClass('longitude')) ?>"
                        id="geo_lng_new" readonly="true">

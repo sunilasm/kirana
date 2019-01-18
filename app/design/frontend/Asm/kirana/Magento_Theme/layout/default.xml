@@ -23,6 +23,10 @@
         <referenceContainer name="footer">
             <block class="Magento\Store\Block\Switcher" name="store_switcher" as="store_switcher" after="footer_links" template="Magento_Store::switch/stores.phtml"/>
         </referenceContainer>
+         <referenceContainer name="before.body.end">
+            <block class="Magento\Framework\View\Element\Template" template="Asm_Search::addjs.phtml" name="before_body_js"/>
+        </referenceContainer>
+    
         <referenceBlock name="report.bugs" remove="true"/>
         <move element="copyright" destination="before.body.end"/>
     </body>

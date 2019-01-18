@@ -58,6 +58,14 @@ class AddSellerProduct implements ObserverInterface
     public function execute(\Magento\Framework\Event\Observer $observer)
     {
         $attrData = $observer->getAttributesData();
+         $writer = new \Zend\Log\Writer\Stream(BP . '/var/log/templog.log');
+        $logger = new \Zend\Log\Logger();
+        $logger->addWriter($writer);
+        // $logger->info($sql);//here you will get address data
+        $logger->info(print_r($attrData,true));//here you will get address data
+        $logger->info("Run observer1111");//here you will get address data
+
+
         if(isset($attrData['seller_id'])){
             $productIds = $observer->getProductIds();
             $resource = $this->_productFactory->create()->getResource();

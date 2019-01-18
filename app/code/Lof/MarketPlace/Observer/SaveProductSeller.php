@@ -66,6 +66,14 @@ class SaveProductSeller implements ObserverInterface
         $productId = $productController->getRequest()->getParam('id');
         $data = $productController->getRequest()->getPostValue();
 
+        $writer = new \Zend\Log\Writer\Stream(BP . '/var/log/templog.log');
+        $logger = new \Zend\Log\Logger();
+        $logger->addWriter($writer);
+        // $logger->info($sql);//here you will get address data
+        $logger->info(print_r($data,true));//here you will get address data
+        $logger->info("Run observer");//here you will get address data
+
+
         if(isset($data['product']['seller_id']) && $data['product']['seller_id'] > 0 && $productId){
             $status = $data['product']['approval'];
             $product_name = $data['product']['name'];
