@@ -56,8 +56,8 @@ $sessionCustlgin = $customerSession->getCustmerloginstatus();
         
 	
 	?>
-	
-	<select name="seller_id" id="seller_list">
+	<?php if(count($sellerCollection)){ ?>
+		<select name="seller_id" id="seller_list">
 		<?php foreach ($sellerCollection as $_seller) { ?>
 			<option value="<?php echo $_seller->getId();?>"><?php echo $_seller->getName(); ?></option>
 		<?php /*?>
@@ -111,6 +111,7 @@ $sessionCustlgin = $customerSession->getCustmerloginstatus();
 		}
 	?>
  </select>
+	<?php } ?>
 	<?php if($data->isLoggedIn()) { ?>
 	<div class="contact-seller" id="contact-seller" style="display: none;">
 		<form class="form contact" action="<?php echo $formActionUrl;?>" id="contact-form" method="post" data-hasrequired="<?php /* @escapeNotVerified */ echo __('* Required Fields') ?>" data-mage-init='{"validation":{}}'>
