@@ -29,5 +29,9 @@
     
         <referenceBlock name="report.bugs" remove="true"/>
         <move element="copyright" destination="before.body.end"/>
+        <referenceContainer name="main" >
+            <container name="content.top" label="Main Content Top" before="-"/>
+        </referenceContainer>
+        
     </body>
 </page>

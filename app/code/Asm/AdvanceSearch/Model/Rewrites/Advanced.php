@@ -141,7 +141,7 @@ class Advanced extends \Magento\Framework\Model\AbstractModel
         AdvancedFactory $advancedFactory,
         \Lof\MarketPlace\Model\Seller $sellerCollection,
         \Lof\MarketPlace\Model\SellerProduct $sellerProductCollection,
-        \Magento\Customer\Model\Session $customerSession,
+        Magento\Framework\Session\SessionManagerInterface $customerSession,
         array $data = []
     ) {
         $this->_attributeCollectionFactory = $attributeCollectionFactory;
@@ -296,7 +296,6 @@ class Advanced extends \Magento\Framework\Model\AbstractModel
        //$selerIdArray = array('11','39','40');
        //$centerpointLang = $this->getRequest()->getParam('lng');
         //$centerpointLat = $this->getRequest()->getParam('lat');
-        // $title = 'maggi';
         $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
         $cookieManager = $objectManager->get('Magento\Framework\Stdlib\CookieManagerInterface');
         $selerIdArray = array();

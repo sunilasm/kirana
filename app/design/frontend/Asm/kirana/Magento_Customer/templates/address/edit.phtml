@@ -18,10 +18,14 @@ $resource = $objectManager->get('Magento\Framework\App\ResourceConnection');
 $connection = $resource->getConnection();
 $tableName = $resource->getTableName('customer_address_entity');
 
-//Select Data from table
-//$sql = "SELECT * FROM ". $tableName ." WHERE entity_id = ".$words[5];
-//$result = $connection->fetchAll($sql);
-//print_r($result);exit;
+$index = ($words[1] == 'kirana_store') ? '6' : '5';
+if(isset($words[$index]))
+{   
+    //Select Data from table
+    $sql = "SELECT * FROM ". $tableName ." WHERE entity_id = ".$words[$index];
+    $result = $connection->fetchAll($sql);
+    //print_r($result);exit;
+}
 
 ?>
 <form class="form-address-edit"
@@ -153,7 +157,8 @@ $tableName = $resource->getTableName('customer_address_entity');
             <div class="control">
                 <input type="text"
                        name="latitude"
-                       value="<?php //echo $result[0]['latitude'] ?>"
+
+                       value="<?php if(isset($result[0]['latitude'])) : echo $result[0]['latitude']; endif;  ?>"
                        title="<?= $block->escapeHtmlAttr(__('latitude')) ?>"
                        class="input-text <?= $block->escapeHtmlAttr($this->helper(\Magento\Customer\Helper\Address::class)->getAttributeValidationClass('latitude')) ?>"
                        id="geo_lat_new" readonly="true">
@@ -166,7 +171,8 @@ $tableName = $resource->getTableName('customer_address_entity');
              <div class="control">
             <input type="text"
                        name="longitude"
-                       value="<?php //echo $result[0]['longitude'] ?>"
+
+                       value="<?php if(isset($result[0]['longitude'])) : echo $result[0]['longitude']; endif;  ?>"
                        title="<?= $block->escapeHtmlAttr(__('longitude')) ?>"
                        class="input-text <?= $block->escapeHtmlAttr($this->helper(\Magento\Customer\Helper\Address::class)->getAttributeValidationClass('longitude')) ?>"
                        id="geo_lng_new" readonly="true">

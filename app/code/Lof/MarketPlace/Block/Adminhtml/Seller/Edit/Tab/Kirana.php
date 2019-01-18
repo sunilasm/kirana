@@ -101,7 +101,7 @@ class Kirana extends \Magento\Backend\Block\Widget\Form\Generic implements \Mage
                 'title' => __('Store Type'),
                 'value' => '',
                 'values' => '',
-	    		// 'required' => true,
+	    		//'required' => true,
 	    		'disabled' => $isElementDisabled
     		]
     	);
@@ -114,7 +114,7 @@ class Kirana extends \Magento\Backend\Block\Widget\Form\Generic implements \Mage
                 'title' => __('24*7 Shop'),
                 'value' => '',
                 'values' => '',
-                // 'required' => true,
+                //'required' => true,
 	    		'disabled' => $isElementDisabled
     		]
     	);
@@ -204,7 +204,7 @@ class Kirana extends \Magento\Backend\Block\Widget\Form\Generic implements \Mage
                 'name' => 'digital_verification',
                 'value' => '',
                 'values' => '',
-                // 'required' => true,
+                //'required' => true,
                 'disabled' => $isElementDisabled
             ]
         );
@@ -217,7 +217,7 @@ class Kirana extends \Magento\Backend\Block\Widget\Form\Generic implements \Mage
                 'name' => 'physical_verification',
                 'value' => '',
                 'values' => '',
-                // 'required' => true,
+                //'required' => true,
                 'disabled' => $isElementDisabled
             ]
         );
@@ -230,7 +230,7 @@ class Kirana extends \Magento\Backend\Block\Widget\Form\Generic implements \Mage
                 'name' => 'smart_phone',
                 'value' => '',
                 'values' => '',
-                // 'required' => true,
+                //'required' => true,
                 'disabled' => $isElementDisabled
             ]
         );
@@ -255,7 +255,7 @@ class Kirana extends \Magento\Backend\Block\Widget\Form\Generic implements \Mage
                 'name' => 'parent_store',
                 'value' => '',
                 'values' => '',
-                // 'required' => true,
+                //'required' => true,
                 'disabled' => $isElementDisabled
             ]
         );
@@ -278,7 +278,7 @@ class Kirana extends \Magento\Backend\Block\Widget\Form\Generic implements \Mage
                 'name' => 'kirana_type',
                 'value' => '',
                 'values' => '',
-                // 'required' => true,
+                //'required' => true,
                 'disabled' => $isElementDisabled
             ]
         );

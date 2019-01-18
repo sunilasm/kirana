@@ -74,11 +74,14 @@ require([
                     });
                  // Get Default Logedin User Address
                 geocoder.geocode( { 'address': addressLog}, function(results, status) {
+
                 if (status == google.maps.GeocoderStatus.OK) {
+                    var addresslatitude = '';
+                    var addresslongitude = '';
                     $('#defaultAdd').html(addressLog);
-                    $('#defaultAddval').val(addressLog);
-                    addresslatitude =  results[0].geometry.location.lat();
-                    addresslongitude = results[0].geometry.location.lng();
+                        $('#defaultAddval').val(addressLog);
+                        addresslatitude =  results[0].geometry.location.lat();
+                        addresslongitude = results[0].geometry.location.lng();
                     } 
                     //console.log($.cookie('custmerloginstatus'));
                     if($.cookie('latitude') != addresslatitude && $.cookie('longitude') != addresslongitude && $.cookie('custmerloginstatus') == 'false'){
