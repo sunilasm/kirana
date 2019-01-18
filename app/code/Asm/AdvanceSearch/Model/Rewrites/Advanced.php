@@ -109,6 +109,7 @@ class Advanced extends \Magento\Framework\Model\AbstractModel
      */
     protected $productCollectionFactory;
     protected $_sellerCollection;
+    protected $customerSession;
 
     /**
      * Construct
@@ -140,6 +141,7 @@ class Advanced extends \Magento\Framework\Model\AbstractModel
         AdvancedFactory $advancedFactory,
         \Lof\MarketPlace\Model\Seller $sellerCollection,
         \Lof\MarketPlace\Model\SellerProduct $sellerProductCollection,
+        Magento\Framework\Session\SessionManagerInterface $customerSession,
         array $data = []
     ) {
         $this->_attributeCollectionFactory = $attributeCollectionFactory;
@@ -151,6 +153,7 @@ class Advanced extends \Magento\Framework\Model\AbstractModel
         $this->_sellerCollection = $sellerCollection;
         $this->_sellerProductCollection = $sellerProductCollection;
         $this->productCollectionFactory = $productCollectionFactory;
+        $this->customerSession = $customerSession;
         parent::__construct(
             $context,
             $registry,
@@ -293,16 +296,15 @@ class Advanced extends \Magento\Framework\Model\AbstractModel
        //$selerIdArray = array('11','39','40');
        //$centerpointLang = $this->getRequest()->getParam('lng');
         //$centerpointLat = $this->getRequest()->getParam('lat');
-        $title = 'maggi';
         $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
         $cookieManager = $objectManager->get('Magento\Framework\Stdlib\CookieManagerInterface');
         $selerIdArray = array();
         $sellerProductsArray = array();
 
         //$lat = $centerpointLat; //latitude
-        $lat = $cookieManager->getCookie('latitude'); //latitude
+        $lat = $this->customerSession->getLatitude(); //latitude
         //$lon = $centerpointLang; //longitude
-        $lon = $cookieManager->getCookie('longitude'); //longitude
+        $lon = $this->customerSession->getLongitude(); //longitude
         $distance = 1; //your distance in KM
         $R = 6371; //constant earth radius. You can add precision here if you wish
 
