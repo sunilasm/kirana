@@ -19,7 +19,8 @@ use Magento\Framework\Model\Context;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Registry;
 use Magento\Store\Model\StoreManagerInterface;
-
+use \Magento\Framework\Session\SessionManagerInterface;
+use Magento\Customer\Model\Session;
 /**
  * Catalog advanced search model
  * @method int getEntityTypeId()
@@ -141,7 +142,7 @@ class Advanced extends \Magento\Framework\Model\AbstractModel
         AdvancedFactory $advancedFactory,
         \Lof\MarketPlace\Model\Seller $sellerCollection,
         \Lof\MarketPlace\Model\SellerProduct $sellerProductCollection,
-        Magento\Framework\Session\SessionManagerInterface $customerSession,
+        SessionManagerInterface $customerSession,
         array $data = []
     ) {
         $this->_attributeCollectionFactory = $attributeCollectionFactory;
@@ -303,6 +304,7 @@ class Advanced extends \Magento\Framework\Model\AbstractModel
 
         //$lat = $centerpointLat; //latitude
         $lat = $this->customerSession->getLatitude(); //latitude
+        // print_r($lat); exit;
         //$lon = $centerpointLang; //longitude
         $lon = $this->customerSession->getLongitude(); //longitude
         $distance = 1; //your distance in KM
@@ -326,6 +328,7 @@ class Advanced extends \Magento\Framework\Model\AbstractModel
         foreach($sellerData as $seldata):
             $selerIdArray[] = $seldata['seller_id'];
         endforeach;
+
         //print_r($selerIdArray);exit;
         $sellerProductCollection = $this->_sellerProductCollection->getCollection()
                                         ->addFieldToFilter('seller_id', array('in' => $selerIdArray));
@@ -334,6 +337,8 @@ class Advanced extends \Magento\Framework\Model\AbstractModel
         foreach($sellerProductData as $prodata):
             $sellerProductsArray[] = $prodata['product_id'];
         endforeach;
+
+        // print_r("herer");exit;
 
         $collection
             ->addAttributeToSelect($this->_catalogConfig->getProductAttributes())
