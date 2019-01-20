@@ -100,6 +100,7 @@ class Searchview implements SearchInterface
                 foreach ($collection as $product){
                     $productCollectionArray[$product->getId()] = $product->getData();
                 }
+                print_r($productCollectionArray);exit;
 
              if($productCollectionArray){
                 $data = array('status' => 1,'message' => 'Search result','product_collection' => $productCollectionArray);
