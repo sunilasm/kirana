@@ -18,11 +18,13 @@ class Searchview implements SearchInterface
     public function __construct(
        \Magento\Framework\App\RequestInterface $request,
        \Magento\Catalog\Model\ResourceModel\Product\CollectionFactory $productCollectionFactory,
-       \Lof\MarketPlace\Model\Seller $sellerCollection
+       \Lof\MarketPlace\Model\Seller $sellerCollection,
+       \Lof\MarketPlace\Model\SellerProduct $sellerProductCollection
     ) {
        $this->request = $request;
        $this->_productCollectionFactory = $productCollectionFactory; 
        $this->_sellerCollection = $sellerCollection;
+       $this->_sellerProductCollection = $sellerProductCollection;
     }
 
     public function name() {
@@ -48,6 +50,7 @@ class Searchview implements SearchInterface
             }
            
             $productCollectionArray = array();
+            $sellerProductsArray = array();
             // filter prodcut collection as seller wise and name wise
             $arratAttributes = array();
                 $collection = $this->_productCollectionFactory->create();
@@ -80,8 +83,16 @@ class Searchview implements SearchInterface
                     foreach($sellerData as $seldata):
                         $selerIdArray[] = $seldata['seller_id'];
                     endforeach;
+                     $sellerProductCollection = $this->_sellerProductCollection->getCollection()
+                                        ->addFieldToFilter('seller_id', array('in' => $selerIdArray));
 
-                    $collection->addFieldToFilter('seller_id', array('in' => $selerIdArray));
+                    $sellerProductData = $sellerProductCollection->getData();
+                    foreach($sellerProductData as $prodata):
+                        $sellerProductsArray[] = $prodata['product_id'];
+                    endforeach;
+
+
+                    $collection->addFieldToFilter('entity_id', array('in' => $sellerProductsArray));
                 }
                 $collection->addAttributeToSort('price', 'asc');
                 $collection->addFieldToFilter([['attribute' => 'name', 'like' => '%'.$title.'%']]);
