@@ -10,8 +10,7 @@
  -->
 <page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" layout="2columns-left" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
 	<!-- <head>
-	    <css src="Asm_Search::css/custom_search.css" />
-	    <script src="Asm_Search::js/custom_search.js"/>
+	    <script src="Asm_Search::js/customer-data.js"/>
 	</head> -->
     <body>
         <referenceContainer name="content">

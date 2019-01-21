@@ -175,6 +175,26 @@ require([
                                 var latitude = results[0].geometry.location.lat();
                                 var longitude = results[0].geometry.location.lng();
                                 var custmerloginstatus = 'true';
+                                // Clear cart
+                                jQuery.ajax({
+                                    url: '<?php  echo $baseUrl; ?>search/index/clearcart',
+                                    type: 'POST',
+                                    showLoader: true,
+                                    success: function (res) {
+                                        if (res.messages) {
+                                            jQuery('[data-placeholder="messages"]').html(res.messages);
+                                        }
+
+                                        if (res.minicart) {
+                                            jQuery('[data-block="minicart"]').replaceWith(res.minicart);
+                                            jQuery('[data-block="minicart"]').trigger('contentUpdated');
+                                        }
+                                    },
+                                    complete:function(){
+                                        location.reload();
+                                    }
+                                });
+
                                 // Set session
                                 setsession(latitude, longitude, custmerloginstatus, address);
                                  // $.cookie('latitude', latitude );
@@ -223,12 +243,10 @@ require([
                         {
                             console.log("some problem to set session data");
                         }
-                    }).fail(function (jqXhr) {
-                        console.log(jqXhr.responseText);
                     });
                 } //endif
             }//end function setsession
-        
     });
 });
+
 </script>
