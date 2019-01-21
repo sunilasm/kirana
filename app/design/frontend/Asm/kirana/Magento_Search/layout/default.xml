@@ -10,6 +10,9 @@
         <referenceContainer name="header-wrapper">
             <block class="Asm\AdvanceSearch\Block\Rewrite\Advanced\Form" name="asm_advanceserach_form" template="Asm_AdvanceSearch::homepage_form.phtml"/>
         </referenceContainer>
+        <referenceContainer name="header_links">
+            <block class="Asm\AdvanceSearch\Block\Rewrite\Advanced\Form" name="asm_advanceserach_address" template="Asm_AdvanceSearch::address.phtml"/>
+        </referenceContainer>
         <referenceBlock name="footer_links">
             <block class="Magento\Framework\View\Element\Html\Link\Current" ifconfig="catalog/seo/search_terms" name="search-term-popular-link">
                 <arguments>

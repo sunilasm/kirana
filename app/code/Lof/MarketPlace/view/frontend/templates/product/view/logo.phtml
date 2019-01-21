@@ -15,15 +15,49 @@ $show_seller_contact = $data->getConfig("product_view_page/show_seller_contact")
 $text_contact = $data->getConfig("product_view_page/text_contact");
 $formActionUrl = $this->getUrl('lofmarketplace/seller/savemessage');
 $href = '#';
+
+$objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+$customerSession = $objectManager->create('Magento\Framework\Session\SessionManagerInterface');
+$sessionLat = $customerSession->getLatitude();
+$sessionLng = $customerSession->getLongitude();
+$sessionCustlgin = $customerSession->getCustmerloginstatus();
+
 ?>
 <?php if($sellerCollection && $sellerCollection->count()){
 	$sellerId = $sellerCollection->getFirstItem()->getData('seller_id');  ?>
 	<?php
-	$total = $sellerCollection->count();
+		$total = $sellerCollection->count();
+
+		$objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+        $cookieManager = $objectManager->get('Magento\Framework\Stdlib\CookieManagerInterface');
+        $selerIdArray = array();
+        //$lat = $centerpointLat; //latitude
+        $lat = $sessionLat; //latitude
+        //$lon = $centerpointLang; //longitude
+        $lon = $sessionLng; //longitude
+        $distance = 1; //your distance in KM
+        $R = 6371; //constant earth radius. You can add precision here if you wish
+
+        $maxLat = $lat + rad2deg($distance/$R);
+        $minLat = $lat - rad2deg($distance/$R);
+        $maxLon = $lon + rad2deg(asin($distance/$R) / cos(deg2rad($lat)));
+        $minLon = $lon - rad2deg(asin($distance/$R) / cos(deg2rad($lat)));
+
+        // print_r("latitude----".$lat.'--longitude--'.$lon);
+        if(isset($lat) && isset($lon)){
+        	$sellerCollection = $this->getSellerCollection()
+	        ->setOrder('position','ASC')
+	        ->addFieldToFilter('geo_lat',array('gteq'=>$minLat))
+	        ->addFieldToFilter('geo_lng',array('gteq'=>$minLon))
+	        ->addFieldToFilter('geo_lat',array('lteq'=>$maxLat))
+	        ->addFieldToFilter('geo_lng',array('lteq'=>$maxLon))
+	        ->addFieldToFilter('status',1);
+        }
+        
 	
 	?>
-	
-	<select name="seller_id" id="seller_list">
+	<?php if(count($sellerCollection)){ ?>
+		<select name="seller_id" id="seller_list">
 		<?php foreach ($sellerCollection as $_seller) { ?>
 			<option value="<?php echo $_seller->getId();?>"><?php echo $_seller->getName(); ?></option>
 		<?php /*?>
@@ -77,6 +111,7 @@ $href = '#';
 		}
 	?>
  </select>
+	<?php } ?>
 	<?php if($data->isLoggedIn()) { ?>
 	<div class="contact-seller" id="contact-seller" style="display: none;">
 		<form class="form contact" action="<?php echo $formActionUrl;?>" id="contact-form" method="post" data-hasrequired="<?php /* @escapeNotVerified */ echo __('* Required Fields') ?>" data-mage-init='{"validation":{}}'>
