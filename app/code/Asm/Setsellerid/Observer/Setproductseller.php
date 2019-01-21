@@ -1,10 +1,8 @@
 <?php
 namespace Asm\Setsellerid\Observer;
-
 class Setproductseller implements \Magento\Framework\Event\ObserverInterface
 {
 	protected $_request;
-
 	/*public function __construct(
 	    \Magento\Framework\App\RequestInterface $request,
 	    \Psr\Log\LoggerInterface $logger,
@@ -16,7 +14,6 @@ class Setproductseller implements \Magento\Framework\Event\ObserverInterface
 	    $this->_historyFactory = $historyFactory;
 	    $this->_orderFactory = $orderFactory;
 	}*/
-
   public function execute(\Magento\Framework\Event\Observer $observer)
   {
   	$objectManager = \Magento\Framework\App\ObjectManager::getInstance();
@@ -36,7 +33,7 @@ class Setproductseller implements \Magento\Framework\Event\ObserverInterface
  	$cart = $observer->getEvent()->getData('cart');
     $cartItems = $cart->getItems();
     foreach($cartItems as $item){
-    	if($seller_id){
+    	if(isset($seller_id["value"])){
 	    	if($item->getProductId() == $seller_id["product"]){
 	    		//print_r($seller_id["value"]);
 	    		$item->setSellerId($seller_id["value"]);
