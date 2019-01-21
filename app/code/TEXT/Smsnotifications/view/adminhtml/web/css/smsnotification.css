@@ -1,0 +1,117 @@
+body .open-popop {
+    display: block !important;
+    width: 100%;
+    position: fixed;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: 9999;
+    background: rgba(0, 0, 0, 0.3);
+}
+.open-popop .popop-model-inner-wrap {
+    width: 1000px;
+    background: white;
+    height: 530px;
+    margin: auto;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    overscroll-behavior: auto;
+    overscroll-behavior: contain;
+    overscroll-behavior: none;
+    top: 16%;
+    position: relative;
+    box-shadow: 1px 1px 1px 1px grey;
+    padding: 30px;
+}
+.close-popop {
+    cursor: pointer;
+    text-align: right;
+    font-size: 28px;
+    position: absolute;
+    right: 0;
+    top: 0;
+    background: #eb5202;
+    width: 28px;
+    color: white;
+    text-align: center;
+    height: 28px;
+    line-height: 16px;
+    margin-right: 0;
+    margin-left: auto;
+}
+.close-popop span {
+    display: block;
+    transform: rotate(45deg);
+    position: relative;
+    top: 4px;
+    left: 3px;
+}
+input#text_smsnotifications_admins_admin_configuration_smsnotifications_log_history,.popup-mpdal {
+    display: none;
+}
+
+.click-me {
+    cursor: pointer;
+    text-decoration: underline;
+    font-size: 15px;
+    font-weight: 700;
+}
+
+td.use-default input  , td.use-default label{
+    display: inline-block;
+}
+
+ td.use-default label {
+   
+    font-size: 11px;
+    line-height: 15px;
+}
+
+tbody#log_history {
+    font-size: 13px;
+}
+
+.table thead th {
+        font-size: 12px;
+    text-transform: uppercase;color: #eb5202
+}
+
+.exportlink a {
+    font-size: 12px;
+    padding-top: 10px;
+    display: block;
+    text-align: center;
+    font-weight: 700;
+}
+
+.open-popop .popop-model-inner-wrap .pagination-sm .page-link {
+    padding: 5px 10px;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+div#pager {
+    padding-top: 24px;
+}
+
+
+.pagination li {
+    display: inline-block;
+    vertical-align: top;
+}
+
+
+.open-popop .popop-model-inner-wrap .pagination {
+    display: -webkit-block;
+   
+    display: -ms-block;
+    display: block;
+    padding-left: 0;
+   
+    text-align: center;
+}
+
+.admin__page-nav-link {
+   
+    font-size: 13px;
+}

@@ -136,6 +136,7 @@ return [
         'Mageplaza_Core' => 1,
         'Mageplaza_Smtp' => 1,
         'Ranosys_CancelOrder' => 1,
+        'TEXT_Smsnotifications' => 1,
         'Temando_Shipping' => 1,
         'Vertex_Tax' => 1
     ]
