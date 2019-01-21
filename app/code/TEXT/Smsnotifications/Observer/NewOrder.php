@@ -121,52 +121,42 @@ public function __construct(
      */
     public function execute(Observer $observer)
     {
-          $settings = $this->_helper->getSettings();
+        $settings = $this->_helper->getSettings();
            /*For multiselect array */
         $arr= $settings['order_statuss'];
-         $a = explode(',', $settings['order_statuss']);
-         $b = explode(',', $settings['order_statuss']);
-         $final_array = array_combine($a, $b);
-         $writer = new \Zend\Log\Writer\Stream(BP . '/var/log/templog.log');
-         $logger = new \Zend\Log\Logger();
-         $logger->addWriter($writer);
-         $logger->info('observer');
-         $logger->info(print_r($settings,true));
-          /*get order details */
-          $orderId = $observer->getEvent()->getOrderIds();
-          $order = $this->order->load($orderId);
-                    $orderId       =  $order->getIncrementId();
-                    $firstname     =  $order->getBillingAddress()->getFirstName();
-                    $middlename    =  $order->getBillingAddress()->getMiddlename();
-                    $lastname      =  $order->getBillingAddress()->getLastname();
-                    $totalPrice    =  number_format($order->getGrandTotal(), 2);
-                    $countryCode   =  $order->getOrderCurrencyCode();
-                    $customerEmail =  $order->getCustomerEmail();
-            $logger->info('Order Id:'.$orderId);
-            /*Get telephone number of order customer*/
-            $telephone = $this->destination  = $order->getBillingAddress()->getTelephone();
-            $logger->info('Phone:'.$telephone);
-            if(in_array('placeorder', $final_array))
+        $a = explode(',', $settings['order_statuss']);
+        $b = explode(',', $settings['order_statuss']);
+        $final_array = array_combine($a, $b);
+        /*get order details */
+        $orderId = $observer->getEvent()->getOrderIds();
+        $order = $this->order->load($orderId);
+        $orderId       =  $order->getIncrementId();
+        $firstname     =  $order->getBillingAddress()->getFirstName();
+        $middlename    =  $order->getBillingAddress()->getMiddlename();
+        $lastname      =  $order->getBillingAddress()->getLastname();
+        $totalPrice    =  number_format($order->getGrandTotal(), 2);
+        $countryCode   =  $order->getOrderCurrencyCode();
+        $customerEmail =  $order->getCustomerEmail();
+        /*Get telephone number of order customer*/
+        $telephone = $this->destination  = $order->getBillingAddress()->getTelephone();
+        if(in_array('placeorder', $final_array))
+        {
+            if ($telephone)     
             {
-                if ($telephone)     
-                {
-                    $text= $settings['new_order'];
-                    $text = str_replace('{order_id}', $orderId, $text);
-                    $text = str_replace('{firstname}', $firstname, $text);
-                    $text = str_replace('{lastname}', $lastname, $text);
-                    $text = str_replace('{price}',  $totalPrice, $text);
-                    $text = str_replace('{emailid}',  $customerEmail, $text);
-                    $text = str_replace('{country_code}',  $countryCode, $text);
-                    $logger->info(print_r($text,true));
-                } 
-                $admin_recipients[]=$settings['admin_recipients'];
-                array_push($admin_recipients, $telephone);
-                $object_manager = \Magento\Framework\App\ObjectManager ::getInstance();
-                $result = $object_manager->get('TEXT\Smsnotifications\Helper\Data')->sendSms($text,$admin_recipients);
-                $logger->info('Result:'.result);
-                return($result);
-            }
-            $logger->info('End:');
+                $text= $settings['new_order'];
+                $text = str_replace('{order_id}', $orderId, $text);
+                $text = str_replace('{firstname}', $firstname, $text);
+                $text = str_replace('{lastname}', $lastname, $text);
+                $text = str_replace('{price}',  $totalPrice, $text);
+                $text = str_replace('{emailid}',  $customerEmail, $text);
+                $text = str_replace('{country_code}',  $countryCode, $text);
+            } 
+            $admin_recipients[]=$settings['admin_recipients'];
+            array_push($admin_recipients, $telephone);
+            $object_manager = \Magento\Framework\App\ObjectManager ::getInstance();
+            $result = $object_manager->get('TEXT\Smsnotifications\Helper\Data')->sendSms($text,$admin_recipients);
+            return($result);
+        }
     }
 }
 
