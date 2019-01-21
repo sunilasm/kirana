@@ -84,7 +84,7 @@ class Searchview implements SearchInterface
                     foreach($sellerData as $seldata):
                         $selerIdArray[] = $seldata['seller_id'];
                     endforeach;
-                    print_r($selerIdArray);exit;
+                    //print_r($selerIdArray);exit;
                      $sellerProductCollection = $this->_sellerProductCollection->getCollection()
                                         ->addFieldToFilter('seller_id', array('in' => $selerIdArray));
 
