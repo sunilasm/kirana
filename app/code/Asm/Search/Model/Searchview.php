@@ -58,7 +58,6 @@ class Searchview implements SearchInterface
                 // Check lat and lng is set or not
                 if($lat != '' && $lon != ''){
                     $selerIdArray = array();
-                    $productCollectionArray = array();
 
                     //$lat = '18.5647387'; //latitude
                     //$lon = '73.77837559999999'; //longitude
@@ -91,8 +90,8 @@ class Searchview implements SearchInterface
                         $sellerProductsArray[] = $prodata['product_id'];
                     endforeach;
 
-
                     $collection->addFieldToFilter('entity_id', array('in' => $sellerProductsArray));
+                    //print_r($collection->getData());exit;
                 }
                 $collection->addAttributeToSort('price', 'asc');
                 $collection->addFieldToFilter([['attribute' => 'name', 'like' => '%'.$title.'%']]);
@@ -100,7 +99,7 @@ class Searchview implements SearchInterface
                 foreach ($collection as $product){
                     $productCollectionArray[$product->getId()] = $product->getData();
                 }
-                print_r($productCollectionArray);exit;
+                //print_r($productCollectionArray);exit;
 
              if($productCollectionArray){
                 $data = array('status' => 1,'message' => 'Search result','product_collection' => $productCollectionArray);
