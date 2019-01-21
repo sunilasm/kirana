@@ -32,6 +32,7 @@ class Searchview implements SearchInterface
         $title = $this->request->getParam('title');
         $lat = $this->request->getParam('latitude');
         $lon = $this->request->getParam('longitude');
+        //print_r($title.'--'.$lat.'--'.$lon);exit;
         // Check search term 
         if($title){
             // check current page
@@ -79,9 +80,11 @@ class Searchview implements SearchInterface
                     ->addFieldToFilter('status',1);
                     // get Seller id's
                     $sellerData = $sellerCollection->getData();
+                    //print_r($sellerData);exit;
                     foreach($sellerData as $seldata):
                         $selerIdArray[] = $seldata['seller_id'];
                     endforeach;
+                    print_r($selerIdArray);exit;
                      $sellerProductCollection = $this->_sellerProductCollection->getCollection()
                                         ->addFieldToFilter('seller_id', array('in' => $selerIdArray));
 
@@ -89,9 +92,9 @@ class Searchview implements SearchInterface
                     foreach($sellerProductData as $prodata):
                         $sellerProductsArray[] = $prodata['product_id'];
                     endforeach;
+               
 
                     $collection->addFieldToFilter('entity_id', array('in' => $sellerProductsArray));
-                    //print_r($collection->getData());exit;
                 }
                 $collection->addAttributeToSort('price', 'asc');
                 $collection->addFieldToFilter([['attribute' => 'name', 'like' => '%'.$title.'%']]);
@@ -99,8 +102,7 @@ class Searchview implements SearchInterface
                 foreach ($collection as $product){
                     $productCollectionArray[$product->getId()] = $product->getData();
                 }
-                //print_r($productCollectionArray);exit;
-
+                 //print_r($productCollectionArray);exit;
              if($productCollectionArray){
                 $data = array('status' => 1,'message' => 'Search result','product_collection' => $productCollectionArray);
             }else{
