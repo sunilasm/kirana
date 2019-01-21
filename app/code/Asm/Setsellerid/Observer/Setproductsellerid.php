@@ -82,26 +82,31 @@ class Setproductsellerid implements \Magento\Framework\Event\ObserverInterface
         $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
         $request = $objectManager->get('\Magento\Framework\Webapi\Rest\Request');
         $seller_id = array();
-        $variable = $request->getParams();
-        $post = $request->getBodyParams();
-        $seller_id["product_id"] = $post['product_id'];
-        $seller_id["seller_id"] = $post['seller_id'];
-        $logger->info("seller_id");
-        $logger->info($seller_id);
-        $quote = $observer->getQuote();
-         $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
-        $customerSession = $objectManager->create('Magento\Customer\Model\Session');
-        foreach ($quote->getAllItems() as $quoteItem) {
-            if($seller_id["product_id"] == $quoteItem->getProductId()){
-                $logger->info("quoteItem");
-                $logger->info($quoteItem->getProductId());
-                $quoteItem->setSellerId($seller_id["seller_id"]);
-                $itemExtAttr = $quoteItem->getExtensionAttributes();
-                if ($itemExtAttr === null) {
-                    $itemExtAttr = $this->extensionFactory->create();
+        if($request->getBodyParams())
+        {
+            $post = $request->getBodyParams();
+            $seller_id["product_id"] = $post['product_id'];
+            $seller_id["seller_id"] = $post['seller_id'];
+        
+            $logger->info("seller_id");
+            $logger->info($seller_id);
+            $quote = $observer->getQuote();
+             $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+            $customerSession = $objectManager->create('Magento\Customer\Model\Session');
+            foreach ($quote->getAllItems() as $quoteItem) {
+                if($seller_id["product_id"]){
+                    if($seller_id["product_id"] == $quoteItem->getProductId()){
+                        $logger->info("quoteItem");
+                        $logger->info($quoteItem->getProductId());
+                        $quoteItem->setSellerId($seller_id["seller_id"]);
+                        $itemExtAttr = $quoteItem->getExtensionAttributes();
+                        if ($itemExtAttr === null) {
+                            $itemExtAttr = $this->extensionFactory->create();
+                        }
+                        $itemExtAttr->setSellerId($seller_id["seller_id"]);
+                        $quoteItem->setExtensionAttributes($itemExtAttr);
+                    }
                 }
-                $itemExtAttr->setSellerId($seller_id["seller_id"]);
-                $quoteItem->setExtensionAttributes($itemExtAttr);
             }
         }
         return $this;
