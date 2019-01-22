@@ -62,7 +62,7 @@ class Searchview implements SearchInterface
 
                     //$lat = '18.5647387'; //latitude
                     //$lon = '73.77837559999999'; //longitude
-                    $distance = 10; //your distance in KM
+                    $distance = 1; //your distance in KM
                     $R = 6371; //constant earth radius. You can add precision here if you wish
 
                     $maxLat = $lat + rad2deg($distance/$R);
