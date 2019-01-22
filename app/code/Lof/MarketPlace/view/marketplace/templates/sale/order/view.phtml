@@ -92,7 +92,7 @@ if($tracking!=""){
                 <?php if($item_ship_status!="Shipped" && $item_refund_status!="Refunded"  && $item_cancel_status!="1" && $order->canShip() && $can_ship){ ?>
                 <button type="button" class="btn btn-primary lof_ship"><?php echo __('Ship'); ?></button>
                 <div id="lof_ship">
-                  <div><?php echo __('Are you sure you want to create ship for order?'); ?></div>
+                  <div><?php echo __('Are you sure you want to create shipment for the Order?'); ?></div>
                 </div>
                 <?php } ?>
                
