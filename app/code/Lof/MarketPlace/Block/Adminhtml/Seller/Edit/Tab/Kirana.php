@@ -162,28 +162,28 @@ class Kirana extends \Magento\Backend\Block\Widget\Form\Generic implements \Mage
                 'disabled' => $isElementDisabled
             ]
         );
-        $fieldset->addField(
-            'vat',
-            'text',
-            [
-                'name' => 'pan',
-                'label' => __('VAT'),
-                'title' => __('VAT'),
-                'class' => 'alphanumeric',
-                'disabled' => $isElementDisabled
-            ]
-        );
-        $fieldset->addField(
-            'tin',
-            'text',
-            [
-                'name' => 'tin',
-                'label' => __('TIN'),
-                'title' => __('TIN'),
-                'class' => 'alphanumeric',
-                'disabled' => $isElementDisabled
-            ]
-        );
+        // $fieldset->addField(
+        //     'vat',
+        //     'text',
+        //     [
+        //         'name' => 'pan',
+        //         'label' => __('VAT'),
+        //         'title' => __('VAT'),
+        //         'class' => 'alphanumeric',
+        //         'disabled' => $isElementDisabled
+        //     ]
+        // );
+        // $fieldset->addField(
+        //     'tin',
+        //     'text',
+        //     [
+        //         'name' => 'tin',
+        //         'label' => __('TIN'),
+        //         'title' => __('TIN'),
+        //         'class' => 'alphanumeric',
+        //         'disabled' => $isElementDisabled
+        //     ]
+        // );
         $fieldset->addField(
             'gst',
             'text',
@@ -225,8 +225,8 @@ class Kirana extends \Magento\Backend\Block\Widget\Form\Generic implements \Mage
             'smart_phone',
             'select',
             [
-                'label' => __('Smartphone wih data'),
-                'title' => __('Smartphone wih data'),
+                'label' => __('Smartphone with data'),
+                'title' => __('Smartphone with data'),
                 'name' => 'smart_phone',
                 'value' => '',
                 'values' => '',
