@@ -70,6 +70,15 @@ $_item = $block->getItem();
         <?php endif; ?>
         </ul>
     </td>
+    <td class="col price" data-th="<?= $block->escapeHtml(__('Kirana Name')) ?>">
+        <?php  
+        if($_item->getSellerId()){
+        $objectManager = \Magento\Framework\App\ObjectManager::getInstance ();
+        $seller = $objectManager->get('Lof\MarketPlace\Model\Seller')->load($_item->getSellerId(),'seller_id');
+        $customer =  $objectManager->create('Magento\Customer\Model\Customer')->load($seller->getCustomerId());
+        echo $customer->getName(); 
+    }?>
+    </td>
     <td class="col subtotal" data-th="<?= $block->escapeHtml(__('Subtotal')) ?>">
         <?= $block->getItemRowTotalHtml() ?>
     </td>

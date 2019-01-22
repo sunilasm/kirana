@@ -5,5 +5,8 @@
        <observer name="asm_setsellerid_observer_setproductseller" instance="Asm\Setsellerid\Observer\Setproductseller" />
    </event>
 
-
+	<!-- <event name="sales_quote_load_after">
+		<observer name="asm_setsellerid_observer_setproductsellerid" instance="Asm\Setsellerid\Observer\Setproductsellerid" />
+	</event>
+ -->
 </config>

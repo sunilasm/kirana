@@ -1,0 +1,163 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../Magento/Config/etc/system_file.xsd">
+    <system>
+        <tab id="text_smsnotifications" sortOrder="2000">
+            <label>Smsnotifications SMS</label>
+        </tab>
+        <section id="text_Smsnotifications_configuration" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+
+            <label>Basic Configuration</label>
+            <tab>text_smsnotifications</tab>
+            <resource>TEXT_Smsnotifications::sms</resource>
+            <group id="basic_configuration" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label><![CDATA[Basic Configuration&nbsp;&nbsp;<i>Setting API Account</i>]]></label>
+                <field id="smsnotifications_username" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Enter Textlocal Api key</label>
+                   <comment><![CDATA[<a href='https://control.textlocal.in/settings/apikeys/' target="_blank">Click Here</a> to create/manage your API Keys]]></comment>
+                    <!-- <validate>required-entry</validate> -->
+                </field>
+                <field id="smsnotifications_password" type="text" translate="label" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Enter Textlocal SenderId</label>
+                    <comment>Enter your Textlocal SMS API SenderId</comment>
+                     <source_model>TEXT\Smsnotifications\Model\Config\Source\Senderid</source_model>
+                    <!-- <validate>required-entry</validate> -->
+                </field>
+            </group>
+        </section>
+
+        <section id="text_smsnotifications_admins" type="text" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Admin Configuration</label>
+            <tab>text_smsnotifications</tab>
+            <resource>TEXT_Smsnotifications::sms</resource>
+            <group id="admin_configuration" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Admin Configuration</label>
+                <field id="smsnotifications_admin_enabled" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                  <label>Enable Admin Notifications</label>
+                    <comment>This option will send SMS to the admin when an Order is Placed</comment>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                 <field id="smsnotifications_admin_mobile" type="text" sortOrder="15" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Admin Mobile</label>
+                    <comment>Admin Mobile(s): Enter as many numbers as you like here, comma seperated if multiple e.g. 09900978965,09900936985</comment>
+                    <depends><field id="smsnotifications_admin_enabled">1</field></depends>
+                </field>
+               <!--  <field id="smsnotifications_log_history"  sortOrder="15" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Show Your Log History</label>
+                     <comment><![CDATA[<div class="click-me">Click Me for log history</div>
+                           <div  style="display:none;">
+                           
+                            <div class="popop-model-inner-wrap">  <div class="close-popop">X</div>
+                            </div>
+                              </div>]]></comment>
+                          <source_model>TEXT\Smsnotifications\Model\Config\Source\Loghistory</source_model>
+                           <depends><field id="smsnotifications_admin_enabled">1</field></depends>
+                 </field> -->
+
+                <field id="order_status" translate="label" type="multiselect" sortOrder="15" showInDefault="50" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>New Order Status</label>
+                    <source_model>TEXT\Smsnotifications\Model\Config\Source\Custom</source_model>
+                     <depends><field id="smsnotifications_admin_enabled">1</field></depends>
+                </field> 
+
+                <field id="neworder_status" translate="label" type="multiselect" sortOrder="15" showInDefault="50" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Default Order Status</label>
+                <source_model>Magento\Sales\Model\Config\Source\Order\Status\NewStatus</source_model>
+                <depends><field id="smsnotifications_admin_enabled">1</field></depends>
+                </field> 
+
+                <field id="smsnotifications_new_order_admin_message" type="textarea"  sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Enter the Message for New Order</label>
+                    <comment>Enter your default message. You can use {firstname} for Firstname, {lastname} for Lastname, {emailid} for EmailAddress , {country_code} for Country Code and {order_id} for Order Number.</comment>
+                    <depends><field id="smsnotifications_admin_enabled">1</field></depends>
+                 <!--    <field id="smsnotifications_new_order_admin_message" type="checkbox" sortOrder="15" showInDefault="1" showInWebsite="1" showInStore="1">
+                    </field> -->
+                </field>
+                <field id="smsnotifications_hold_admin_message" type="textarea" sortOrder="25" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Enter the Message for Order Hold</label>
+                   <comment>Enter your default message. You can use {firstname} for Firstname, {lastname} for Lastname, {emailid} for EmailAddress , {country_code} for Country Code and {order_id} for Order Number.</comment>
+                    <depends><field id="smsnotifications_admin_enabled">1</field></depends>
+                </field>
+                <field id="smsnotifications_unhold_admin_message" type="textarea" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Enter the Message for Order UnHold</label>
+                    <comment>Enter your default message. You can use {firstname} for Firstname, {lastname} for Lastname, {emailid} for EmailAddress , {country_code} for Country Code and {order_id} for Order Number</comment>
+                    <depends><field id="smsnotifications_admin_enabled">1</field></depends>
+                </field>
+                <field id="smsnotifications_cancelled_admin_message" type="textarea" sortOrder="35" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Enter the Message for Order Cancelled</label>
+                   <comment>Enter your default message. You can use {firstname} for Firstname, {lastname} for Lastname, {emailid} for EmailAddress , {country_code} for Country Code and {order_id} for Order Number</comment>
+                    <depends><field id="smsnotifications_admin_enabled">1</field></depends>
+                </field>
+                <field id="smsnotifications_invoiced_admin_message" type="textarea" sortOrder="35" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Enter the Message for Invoice Created</label>
+                  <comment>Enter your default message. You can use {firstname} for Firstname, {lastname} for Lastname, {emailid} for EmailAddress , {country_code} for Country Code and {order_id} for Order Number.</comment>
+                    <depends><field id="smsnotifications_admin_enabled">1</field></depends>
+                </field>
+            <field id="smsnotifications_shiped_admin_message" type="textarea" sortOrder="35" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Enter the Message for Shipped Created</label>
+                    <comment>Enter your default message. You can use {firstname} for Firstname, {lastname} for Lastname, {emailid} for EmailAddress , {country_code} for Country Code and {order_id} for Order Number</comment>
+                    <depends><field id="smsnotifications_admin_enabled">1</field></depends>
+                </field> 
+
+                 <field id="smsnotifications_payment_review_message" type="textarea" sortOrder="35" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Enter the Message for Payment Review</label>
+                    <comment>Enter your default message. You can use {firstname} for Firstname, {lastname} for Lastname, {emailid} for EmailAddress , {country_code} for Country Code and {order_id} for Order Number</comment>
+                    <depends><field id="smsnotifications_admin_enabled">1</field></depends>
+                </field> 
+                <field id="smsnotifications_paypal_canceled" type="textarea" sortOrder="35" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Enter the Message for Paypal Canceled Reversal</label>
+                    <comment>Enter your default message. You can use {firstname} for Firstname, {lastname} for Lastname, {emailid} for EmailAddress , {country_code} for Country Code and {order_id} for Order Number.</comment>
+                    <depends><field id="smsnotifications_admin_enabled">1</field></depends>
+                </field> 
+                <field id="smsnotifications_paypal_reversed" type="textarea" sortOrder="35" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Enter the Message for Paypal Reversed</label>
+                    <comment>Enter your default message. You can use {firstname} for Firstname, {lastname} for Lastname, {emailid} for EmailAddress , {country_code} for Country Code and {order_id} for Order Number</comment>
+                    <depends><field id="smsnotifications_admin_enabled">1</field></depends>
+                </field>
+                <field id="smsnotifications_pending_payment" type="textarea" sortOrder="35" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Enter the Message for Pending Payment</label>
+                    <comment>Enter your default message. You can use {firstname} for Firstname, {lastname} for Lastname, {emailid} for EmailAddress , {country_code} for Country Code and {order_id} for Order Number.</comment>
+                    <depends><field id="smsnotifications_admin_enabled">1</field></depends>
+                </field> 
+                 <field id="smsnotifications_pending_paypal" type="textarea" sortOrder="35" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Enter the Message for Pending Paypal</label>
+                    <comment>Enter your default message. You can use {firstname} for Firstname, {lastname} for Lastname, {emailid} for EmailAddress , {country_code} for Country Code and {order_id} for Order Number.</comment>
+                    <depends><field id="smsnotifications_admin_enabled">1</field></depends>
+                </field> 
+                  <field id="smsnotifications_suspected_fraud" type="textarea" sortOrder="35" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Enter the Message for Suspected Fraud</label>
+                    <comment>Enter your default message. You can use {firstname} for Firstname, {lastname} for Lastname, {emailid} for EmailAddress , {country_code} for Country Code and {order_id} for Order Number.</comment>
+                    <depends><field id="smsnotifications_admin_enabled">1</field></depends>
+                </field> 
+
+
+                <field id="smsnotifications_register_admin_message" type="textarea" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Enter the Message for Customer Registration</label>
+                  <comment>Enter your default message. You can use {firstname} for Customer firstname , {lastname} for Customer lastname and {emailid}  for EmailAddress.</comment>
+                    <depends><field id="smsnotifications_admin_enabled">1</field></depends>
+                </field>
+    
+                <field id="smsnotifications_forgotpwd_admin_message" type="textarea" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Enter the Message for Customer Forgot password</label>
+                   <comment>Enter your default message. You can use {firstname} for  first name, {lastname} for last name and {emailid}  for EmailAddress.</comment>
+                    <depends><field id="smsnotifications_admin_enabled">1</field></depends>
+                </field> 
+                <field id="smsnotifications_review_admin_message" type="textarea" sortOrder="45" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Enter the Message for Customer Review Submit</label>
+                   <comment>Enter your default message. You can use {name} for Customer full name, {customer_id} for Customer id and {emailid}  for EmailAddress.</comment>
+                    <depends><field id="smsnotifications_admin_enabled">1</field></depends>
+                </field>
+                <field id="smsnotifications_newslettersubs_admin_message" type="textarea" sortOrder="45" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Enter the Message for Customer Newsletter Subscription</label>
+                   <comment>Enter your default message. You can use {name} for Customer full name, {customer_id} for Customer id and {emailid}  for EmailAddress.</comment>
+                  
+                    <depends><field id="smsnotifications_admin_enabled">1</field></depends>
+                </field>
+                 <field id="smsnotifications_couponcode_admin_message" type="textarea" sortOrder="45" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Enter the Message for Customer Coupon Code</label>
+                   <comment>Enter your default message. You can use {firstname} for Customer Firstname name, {lastname} for Customer lastname.</comment>
+                    <depends><field id="smsnotifications_admin_enabled">1</field></depends>
+                </field>
+          </group>
+        </section>
+    </system>
+</config>
