@@ -113,6 +113,8 @@ class ProductsList extends \Magento\Catalog\Block\Product\AbstractProduct implem
         \Magento\Rule\Model\Condition\Sql\Builder $sqlBuilder,
         \Magento\CatalogWidget\Model\Rule $rule,
         \Magento\Widget\Helper\Conditions $conditionsHelper,
+        \Lof\MarketPlace\Model\Seller $sellerCollection,
+        \Lof\MarketPlace\Model\SellerProduct $sellerProductCollection,
         array $data = [],
         Json $json = null
     ) {
@@ -122,6 +124,8 @@ class ProductsList extends \Magento\Catalog\Block\Product\AbstractProduct implem
         $this->sqlBuilder = $sqlBuilder;
         $this->rule = $rule;
         $this->conditionsHelper = $conditionsHelper;
+        $this->_sellerCollection = $sellerCollection;
+        $this->_sellerProductCollection = $sellerProductCollection;
         $this->json = $json ?: ObjectManager::getInstance()->get(Json::class);
         parent::__construct(
             $context,
@@ -244,6 +248,9 @@ class ProductsList extends \Magento\Catalog\Block\Product\AbstractProduct implem
          * several allowed values from condition simultaneously
          */
         $collection->distinct(true);
+
+        //print_r($collection->getData());exit;
+
 
         return $collection;
     }
@@ -397,5 +404,18 @@ class ProductsList extends \Magento\Catalog\Block\Product\AbstractProduct implem
                 ->get(PriceCurrencyInterface::class);
         }
         return $this->priceCurrency;
+    }
+
+    public function getSellerCollection()
+    {
+        $sellerCollection = $this->_sellerCollection->getCollection();
+        //print_r($sellerProductCollection->getData());exit;
+        return $sellerCollection;
+    }
+    public function getSellerPrdocutCollection()
+    {
+        $sellerProductCollection = $this->_sellerProductCollection->getCollection();
+        //print_r($sellerProductCollection->getData());exit;
+        return $sellerProductCollection;
     }
 }

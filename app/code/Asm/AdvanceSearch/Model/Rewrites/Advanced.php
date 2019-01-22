@@ -307,14 +307,13 @@ class Advanced extends \Magento\Framework\Model\AbstractModel
         // print_r($lat); exit;
         //$lon = $centerpointLang; //longitude
         $lon = $this->customerSession->getLongitude(); //longitude
-        $distance = 1; //your distance in KM
+        $distance = 10; //your distance in KM
         $R = 6371; //constant earth radius. You can add precision here if you wish
 
         $maxLat = $lat + rad2deg($distance/$R);
         $minLat = $lat - rad2deg($distance/$R);
         $maxLon = $lon + rad2deg(asin($distance/$R) / cos(deg2rad($lat)));
         $minLon = $lon - rad2deg(asin($distance/$R) / cos(deg2rad($lat)));
-
         // filter collection in range of lat and long
         $sellerCollection = $this->_sellerCollection->getCollection()
         ->setOrder('position','ASC')

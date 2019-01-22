@@ -84,7 +84,18 @@ class Searchview implements SearchInterface
                     $collection->addFieldToFilter('seller_id', array('in' => $selerIdArray));
                 }
                 $collection->addAttributeToSort('price', 'asc');
-                $collection->addFieldToFilter([['attribute' => 'name', 'like' => '%'.$title.'%']]);
+                //$collection->addFieldToFilter([['attribute' => 'name', 'like' => '%'.$title.'%']]);
+                $collection->addAttributeToFilter('name', array(
+                    array('like' => '% '.$title.' %'), //spaces on each side
+                    array('like' => '% '.$title), //space before and ends with $needle
+                    array('like' => $title.' %') // starts with needle and space after
+                ));  
+
+                $collection->addAttributeToFilter('description', array(
+                    array('like' => '% '.$title.' %'), //spaces on each side
+                    array('like' => '% '.$title), //space before and ends with $needle
+                    array('like' => $title.' %') // starts with needle and space after
+                ));
                 $collection->setCurPage($current_page)->setPageSize($page_size);
                 foreach ($collection as $product){
                     $productCollectionArray[$product->getId()] = $product->getData();
