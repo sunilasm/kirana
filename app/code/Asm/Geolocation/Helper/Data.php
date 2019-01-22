@@ -44,21 +44,22 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
         $this->request = $request;
         parent::__construct($context);
     }
-    public function getLatlng($address, $city, $state, $country, $postcode){
+    public function getLatlng($address1, $city, $state, $country, $postcode){
         //$result = $this->resultFactory->create(ResultFactory::TYPE_JSON);
-        if ($address || $city || $state || $country || $postcode)
+        if ($address1 || $city || $state || $country || $postcode)
         {
-            $url = $this->_appUrl;
+            //print_r($address1."--".$city."--".$state."--".$country."--".$postcode);exit;
+        $url = $this->_appUrl;
             $address = '?address=';
            
-            $address .= (isset($address)) ? urlencode($address).',' : urlencode('Gondhale Nagar Hadapsar');
+            $address .= (isset($address1)) ? urlencode($address1).',' : urlencode('Gondhale Nagar Hadapsar');
             $address .= (isset($city)) ? $city.',' : 'Pune';
             $address .= (isset($state)) ? urlencode($state).',' : 'Maharashtra';
             $address .= (isset($country)) ? urlencode($country) : 'India';
             $address .= (isset($postcode)) ? urlencode($postcode) : '411001';
             
             $url .= $address."&key=".$this->_key;
-            // print_r($url);exit;
+            //print_r($url);exit;
             $this->_curl->get($url);
             $response = $this->_curl->getBody();
             $response = new \SimpleXMLElement($response);
