@@ -35,7 +35,7 @@ $sessionCustlgin = $customerSession->getCustmerloginstatus();
         $lat = $sessionLat; //latitude
         //$lon = $centerpointLang; //longitude
         $lon = $sessionLng; //longitude
-        $distance = 1; //your distance in KM
+        $distance = 10; //your distance in KM
         $R = 6371; //constant earth radius. You can add precision here if you wish
 
         $maxLat = $lat + rad2deg($distance/$R);
