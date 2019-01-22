@@ -1,10 +1,8 @@
 <?php
 namespace Asm\Setsellerid\Observer;
-
 class Setproductseller implements \Magento\Framework\Event\ObserverInterface
 {
 	protected $_request;
-
 	public function __construct(
 	    \Magento\Framework\App\RequestInterface $request,
 	    \Psr\Log\LoggerInterface $logger,
@@ -45,7 +43,6 @@ class Setproductseller implements \Magento\Framework\Event\ObserverInterface
  	$cart = $observer->getEvent()->getData('cart');
     $cartItems = $cart->getItems();
     foreach($cartItems as $item){
-
     	if(isset($seller_id["value"])){
 	    	if($item->getProductId() == $seller_id["product"]){
 	    		$item->setSellerId($seller_id["value"]);
