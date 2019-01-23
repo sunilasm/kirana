@@ -20,12 +20,13 @@ class Model implements \Magento\Framework\Event\ObserverInterface
     {
 		$customerAddress = $observer->getCustomerAddress();
         $address = $customerAddress->getStreet();
+        $addressnew = implode(", ", $address);
         $city = $customerAddress->getCity();
         $state = $customerAddress->getRegion();
         $country = $customerAddress->getCountryId();
         $postcode = $customerAddress->getPostcode();
 
-        $resultdata = $this->helperData->getLatlng($address, $city, $state, $country, $postcode);
+        $resultdata = $this->helperData->getLatlng($addressnew, $city, $state, $country, $postcode);
 
         //$decodedData = $this->jsonHelper->jsonDecode($resultdata);
         if($customerAddress->getEntityId()){
