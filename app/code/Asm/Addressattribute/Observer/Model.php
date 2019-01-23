@@ -18,36 +18,26 @@ class Model implements \Magento\Framework\Event\ObserverInterface
 	}
     public function execute(\Magento\Framework\Event\Observer $observer)
     {
-		$writer = new \Zend\Log\Writer\Stream(BP . '/var/log/templog.log');
-                $logger = new \Zend\Log\Logger();
-                $logger->addWriter($writer);
-                $logger->info('in oberver');
-		$customerAddress = $observer->getCustomerAddress();
-        	$address = $customerAddress->getStreet();
-		$addressnew = implode(", ",$address);
-        	$city = $customerAddress->getCity();
-        	$state = $customerAddress->getRegion();
-        	$country = $customerAddress->getCountryId();
-       		$postcode = $customerAddress->getPostcode();
-		
-		$resultdata = $this->helperData->getLatlng($addressnew, $city, $state, $country, $postcode);
+	$customerAddress = $observer->getCustomerAddress();
+        $address = $customerAddress->getStreet();
+        $addressnew = implode(", ", $address);
+        $city = $customerAddress->getCity();
+        $state = $customerAddress->getRegion();
+        $country = $customerAddress->getCountryId();
+        $postcode = $customerAddress->getPostcode();
 
-        	//$decodedData = $this->jsonHelper->jsonDecode($resultdata);
-        	if($customerAddress->getEntityId()){
+        $resultdata = $this->helperData->getLatlng($addressnew, $city, $state, $country, $postcode);
 
-	        	$objectManager = \Magento\Framework\App\ObjectManager::getInstance();
-	       		$resource = $objectManager->get('\Magento\Framework\App\ResourceConnection');
-	        	$connection = $resource->getConnection();
-	        	$tableName = $resource->getTableName('customer_address_entity');
+        //$decodedData = $this->jsonHelper->jsonDecode($resultdata);
+        if($customerAddress->getEntityId()){
 
-	        	$sql = "UPDATE " . $tableName . " SET latitude = '" . $resultdata['geo']->lat . "', longitude = '" . $resultdata['geo']->lng . "'  WHERE entity_id = " . $customerAddress->getEntityId();
-	        	$connection->query($sql);
-    		}
-		$logger->info($sql);//here you will get address data
-		$logger->info($addressnew);//here you will get address data
-		$logger->info($city);//here you will get address data
-		$logger->info($state);//here you will get address data
-		$logger->info($country);//here you will get address data
-		$logger->info($postcode);//here you will get address data
+	        $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+	        $resource = $objectManager->get('\Magento\Framework\App\ResourceConnection');
+	        $connection = $resource->getConnection();
+	        $tableName = $resource->getTableName('customer_address_entity');
+
+	        $sql = "UPDATE " . $tableName . " SET latitude = '" . $resultdata['geo']->lat . "', longitude = '" . $resultdata['geo']->lng . "'  WHERE entity_id = " . $customerAddress->getEntityId();
+	        $connection->query($sql);
+    	}
     }
 }
