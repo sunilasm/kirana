@@ -16,9 +16,7 @@
 
     $image = 'new_products_content_widget_grid';
     $items = $block->getProductCollection()->getItems();
-    $sellerCollcetion = $block->getSellerPrdocutCollection();
-    $sellerColl = $block->getSellerCollection();
-    //print_r($sellerColl->getData());exit;
+
     $showWishlist = true;
     $showCompare = true;
     $showCart = true;
@@ -36,18 +34,7 @@
             <div class="products-<?= /* @noEscape */ $mode ?> <?= /* @noEscape */ $mode ?>">
                 <ol class="product-items <?= /* @noEscape */ $type ?>">
                     <?php $iterator = 1; ?>
-                    <?php foreach ($items as $_item): //print_r($_item->getEntityId());
-                                $sellerProductCollection = $sellerCollcetion->addFieldToFilter('product_id', $_item->getEntityId());
-
-                                // print_r($sellerProductCollection->getData());
-
-                                //print_r(count($sellerProductCollection));
-                            //foreach($sellerProductCollection as $sell): 
-                                // $sellerCollectionData = $sellerColl->addFieldToFilter('seller_id', $sell->getSellerId());
-                                // $sellerDetail = $sellerCollectionData->getData();
-                                 //print_r($sell->getSellerId());
-                            //endforeach;
-                            ?>
+                    <?php foreach ($items as $_item): ?>
                         <?= /* @noEscape */ ($iterator++ == 1) ? '<li class="product-item">' : '</li><li class="product-item">' ?>
                         <div class="product-item-info">
                             <a href="<?= $block->escapeUrl($block->getProductUrl($_item)) ?>" class="product-item-photo">
@@ -59,12 +46,6 @@
                                        href="<?= $block->escapeUrl($block->getProductUrl($_item)) ?>"
                                        class="product-item-link">
                                         <?= $block->escapeHtml($_item->getName()) ?>
-                                    </a>
-                                </strong>
-                                <strong class="product-item-name">
-                                    <a title="<?php //echo $sell->getSellerId(); ?>"
-                                       class="product-item-link">
-                                        <?php //echo $sell->getSellerId(); ?>
                                     </a>
                                 </strong>
                                 <?php
@@ -123,7 +104,6 @@
                             </div>
                         </div>
                         <?= ($iterator == count($items)+1) ? '</li>' : '' ?>
-                        <?php //endforeach ?>
                     <?php endforeach ?>
                 </ol>
             </div>

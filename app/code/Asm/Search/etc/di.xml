@@ -11,7 +11,7 @@
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
 	<preference for="Asm\Search\Api\SearchInterface"
                 type="Asm\Search\Model\Searchview" />
-
+    <preference for="Magento\Catalog\Block\Product\ListProduct" type="Asm\Search\Block\Rewrite\Product\ListProduct" />
 	<virtualType name="AsmSearchGridFilterPool" type="Magento\Framework\View\Element\UiComponent\DataProvider\FilterPool">
 		<arguments>
 			<argument name="appliers" xsi:type="array">
