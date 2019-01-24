@@ -288,8 +288,13 @@ class Products extends Extended
             [
                 'header' => __('SKU'),
                 'index' => 'sku',
+                'name' => 'sku',
+                'type' => 'string',
+                'validate_class' => 'validate-string',
                 'header_css_class' => 'col-sku',
-                'column_css_class' => 'col-sku'
+                'column_css_class' => 'col-sku asm_float_left',
+                'editable' => !$this->getSeller()->getRelatedReadonly(),
+                'edit_only' => !$this->getSeller()->getId()
             ]
         );
 
@@ -297,14 +302,19 @@ class Products extends Extended
             'product_price',
             [
                 'header' => __('Price'),
-                'type' => 'currency',
+               /* 'type' => 'currency',
                 'currency_code' => (string)$this->_scopeConfig->getValue(
                     \Magento\Directory\Model\Currency::XML_PATH_CURRENCY_BASE,
                     \Magento\Store\Model\ScopeInterface::SCOPE_STORE
-                ),
+                ),*/
+                'name' => 'price',
+                'type' => 'number',
+                'validate_class' => 'validate-number',
                 'index' => 'price',
+                'editable' => !$this->getSeller()->getRelatedReadonly(),
+                'edit_only' => !$this->getSeller()->getId(),
                 'header_css_class' => 'col-price',
-                'column_css_class' => 'col-price'
+                'column_css_class' => 'col-price asm_float_left'
             ]
         );
 
@@ -367,7 +377,7 @@ class Products extends Extended
         $products = [];
         if(!empty($this->_coreRegistry->registry('current_seller')->getData('products'))){
         foreach ($this->_coreRegistry->registry('current_seller')->getData('products') as $product) {
-            $products[$product['product_id']] = ['product_position' => $product['position']];
+            $products[$product['product_id']] = ['product_position' => $product['position'],'product_sku' => $product['sku'],'product_price' => $product['price']];
         }
     }
         return $products;

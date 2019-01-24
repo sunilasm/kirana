@@ -59,7 +59,10 @@ class SaveProductSeller implements ObserverInterface
      */
     public function execute(\Magento\Framework\Event\Observer $observer)
     {
- 
+        $writer = new \Zend\Log\Writer\Stream(BP . '/var/log/test1234.log');
+        $logger = new \Zend\Log\Logger();
+        $logger->addWriter($writer);
+        $logger->info('Lof\MarketPlace\Observer\SaveProductSeller');
         $connection = $this->_resource->getConnection();
         $table_name = $this->_resource->getTableName('lof_marketplace_product');
         $productController = $observer->getController();
@@ -70,6 +73,8 @@ class SaveProductSeller implements ObserverInterface
             $status = $data['product']['approval'];
             $product_name = $data['product']['name'];
             $productSellers = $data['product']['seller_id'];
+            $product_sku = $data['product']['sku'];
+            $product_price = $data['product']['price'];
             if(!is_array($productSellers)){
                 $productSellers = array();
                 $productSellers[] = (int)$data['product']['seller_id'];
@@ -78,12 +83,12 @@ class SaveProductSeller implements ObserverInterface
 
             if(count($sellerproduct->getData()) >0) {
                 foreach ($productSellers as $k => $v) {
-                $connection->query('UPDATE ' . $table_name . ' SET seller_id = '.$v.',status = '.$status.' WHERE  product_id = '.(int)$productId);
+                $connection->query('UPDATE ' . $table_name . ' SET sku =  "'.$product_sku.'",price =  "'.$product_price.'",  product_name = "'.$product_name.'", status = '.$status.' WHERE seller_id = '.$v.' AND product_id = '.(int)$productId);
                 }
             } else {
                 $connection->query('DELETE FROM ' . $table_name . ' WHERE product_id =  ' . (int)$productId . ' ');
                 foreach ($productSellers as $k => $v) {
-                    $connection->query('INSERT INTO ' . $table_name . ' (seller_id,product_id,status,product_name) VALUES ( ' . $v . ', ' . (int)$productId . ', '.$status.', "'.$product_name.'")');
+                    $connection->query('INSERT INTO ' . $table_name . ' (seller_id,product_id,status,product_name,price,sku) VALUES ( ' . $v . ', ' . (int)$productId . ', '.$status.', "'.$product_name.'", "'.$product_price.'", "'.$product_sku.'")');
                 }
             }
 

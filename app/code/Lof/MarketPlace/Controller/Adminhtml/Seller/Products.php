@@ -45,8 +45,13 @@ class Products extends \Magento\Catalog\Controller\Adminhtml\Product
      * @return \Magento\Framework\View\Result\Layout
      */
     public function execute()
-    {
+    {   
+        $writer = new \Zend\Log\Writer\Stream(BP . '/var/log/test1234.log');
+        $logger = new \Zend\Log\Logger();
+        $logger->addWriter($writer);
+        $logger->info('Lof\MarketPlace\Controller\Adminhtml\Seller\Products');
         $id = $this->getRequest()->getparam('seller_id');
+        $logger->info($id);
         $seller = $this->_objectManager->create('Lof\MarketPlace\Model\Seller');
         $seller->load($id);
         $registry = $this->_objectManager->get('Magento\Framework\Registry');
@@ -54,6 +59,8 @@ class Products extends \Magento\Catalog\Controller\Adminhtml\Product
 
         $this->productBuilder->build($this->getRequest());
         $resultLayout = $this->resultLayoutFactory->create();
+        $logger->info($this->getRequest());
+        $logger->info($this->getRequest()->getPost('products', null));
         $resultLayout->getLayout()->getBlock('seller.edit.tab.products')->setProductsRelated($this->getRequest()->getPost('products', null));
         return $resultLayout;
     }

@@ -73,6 +73,28 @@ class UpgradeSchema implements UpgradeSchemaInterface
          /**
          *  setup for Seller Settings
          */
+          if (version_compare($context->getVersion(), '1.0.8', '<')) {
+          $installer->getConnection()->addColumn(
+                $installer->getTable('lof_marketplace_product'),
+                'price',
+                [
+                    'type' => \Magento\Framework\DB\Ddl\Table::TYPE_FLOAT,
+                    'length' => 10,
+                    'nullable' => true,
+                    'comment' => 'seller price'
+                ]
+            );
+            $installer->getConnection()->addColumn(
+                $installer->getTable('lof_marketplace_product'),
+                'sku',
+                [
+                    'type' => \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+                    'length' => 255,
+                    'nullable' => true,
+                    'comment' => 'seller sku'
+                ]
+            );
+        }
         $table = $installer->getConnection()->newTable(
             $installer->getTable('lof_marketplace_seller_settings')
         )->addColumn(

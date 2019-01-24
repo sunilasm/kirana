@@ -236,7 +236,12 @@ class Seller extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
             $this->getConnection()->insertMultiple($table, $data);
         }
 
-
+         $writer = new \Zend\Log\Writer\Stream(BP . '/var/log/test1234.log');
+        $logger = new \Zend\Log\Logger();
+        $logger->addWriter($writer);
+        $logger->info('Lof\MarketPlace\Model\ResourceModel\seller');
+        $logger->info($object->getData('products'));
+        $logger->info("sssssssssssssssssssssqqqqq");
         // Products Related
         if(null !== ($object->getData('products'))  && isset($object->getData()['in_products'])){
             $table = $this->getTable('lof_marketplace_product');
@@ -257,6 +262,8 @@ class Seller extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
                     $data[] = [
                     'seller_id' => (int)$object->getId(),
                     'product_id' => $k,
+                    'sku' => $_post['product_sku'],
+                    'price' => $_post['product_price'],
                     'position' => $_post['product_position']
                     ];
                       $product_data2 = [
