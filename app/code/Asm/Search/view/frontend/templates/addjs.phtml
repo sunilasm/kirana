@@ -176,24 +176,24 @@ require([
                                 var longitude = results[0].geometry.location.lng();
                                 var custmerloginstatus = 'true';
                                 // Clear cart
-                                jQuery.ajax({
-                                    url: '<?php  echo $baseUrl; ?>search/index/clearcart',
-                                    type: 'POST',
-                                    showLoader: true,
-                                    success: function (res) {
-                                        if (res.messages) {
-                                            jQuery('[data-placeholder="messages"]').html(res.messages);
-                                        }
+                                // jQuery.ajax({
+                                //     url: '<?php  //echo $baseUrl; ?>search/index/clearcart',
+                                //     type: 'POST',
+                                //     showLoader: true,
+                                //     success: function (res) {
+                                //         if (res.messages) {
+                                //             jQuery('[data-placeholder="messages"]').html(res.messages);
+                                //         }
 
-                                        if (res.minicart) {
-                                            jQuery('[data-block="minicart"]').replaceWith(res.minicart);
-                                            jQuery('[data-block="minicart"]').trigger('contentUpdated');
-                                        }
-                                    },
-                                    complete:function(){
-                                        location.reload();
-                                    }
-                                });
+                                //         if (res.minicart) {
+                                //             jQuery('[data-block="minicart"]').replaceWith(res.minicart);
+                                //             jQuery('[data-block="minicart"]').trigger('contentUpdated');
+                                //         }
+                                //     },
+                                //     complete:function(){
+                                //         location.reload();
+                                //     }
+                                // });
 
                                 // Set session
                                 setsession(latitude, longitude, custmerloginstatus, address);
