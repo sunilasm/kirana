@@ -81,12 +81,12 @@ class Searchview implements SearchInterface
                 }
                  //print_r($productCollectionArray);exit;
              if($productCollectionArray){
-                $data = array('status' => 1,'message' => 'Search result','product_collection' => $productCollectionArray);
+                $data = $productCollectionArray;
             }else{
-                $data = array('status' => 1,'message' => 'No Search result','product_collection' => array());
+                $data = $productCollectionArray;
             }
         }else{
-             $data = array('status' => 0,'message' => 'Please specify at least one search term');
+             $data = array('message' => 'Please specify at least one search term');
         }
         
         return $data;
