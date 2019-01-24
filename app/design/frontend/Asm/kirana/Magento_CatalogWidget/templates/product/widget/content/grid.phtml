@@ -1,4 +1,7 @@
 <?php
+$objectManager = \Magento\Framework\App\ObjectManager::getInstance ();
+$sellerPrdocutAllCollection = $block->getSellerPrdocutAllCollection();
+ // print_r($sellerPrdocutAllCollection);exit;
 /**
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
@@ -34,7 +37,13 @@
             <div class="products-<?= /* @noEscape */ $mode ?> <?= /* @noEscape */ $mode ?>">
                 <ol class="product-items <?= /* @noEscape */ $type ?>">
                     <?php $iterator = 1; ?>
-                    <?php foreach ($items as $_item): ?>
+                    <?php foreach ($items as $_item): 
+                            foreach($sellerPrdocutAllCollection as $sell): 
+                                //print_r($sell);
+                            //print_r($sell->getProductId()."---".$_item->getEntityId());
+                             if($sell->getProductId() == $_item->getEntityId()):
+                                  $seller = $objectManager->create('Lof\MarketPlace\Model\Seller')->load($sell->getSellerId(), 'seller_id');
+                        ?>
                         <?= /* @noEscape */ ($iterator++ == 1) ? '<li class="product-item">' : '</li><li class="product-item">' ?>
                         <div class="product-item-info">
                             <a href="<?= $block->escapeUrl($block->getProductUrl($_item)) ?>" class="product-item-photo">
@@ -46,6 +55,12 @@
                                        href="<?= $block->escapeUrl($block->getProductUrl($_item)) ?>"
                                        class="product-item-link">
                                         <?= $block->escapeHtml($_item->getName()) ?>
+                                    </a>
+                                </strong>
+                                <strong class="product-item-name">
+                                    <a title="<?php echo $seller->getName(); ?>"
+                                       class="product-item-link">
+                                       <strong><?php echo $seller->getName(); ?></strong>
                                     </a>
                                 </strong>
                                 <?php
@@ -104,6 +119,7 @@
                             </div>
                         </div>
                         <?= ($iterator == count($items)+1) ? '</li>' : '' ?>
+                        <?php  endif; endforeach; ?>
                     <?php endforeach ?>
                 </ol>
             </div>
