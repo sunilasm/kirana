@@ -109,7 +109,6 @@ class Setproductsellerid implements \Magento\Framework\Event\ObserverInterface
                     }
                 }
             }
-            }
         }
         return $this;
     }
