@@ -13,7 +13,7 @@ return [
                 'host' => 'localhost',
                 'dbname' => 'kirana_qa',
                 'username' => 'kirana',
-                'password' => 'kirana@aws123',
+                'password' => 'Kirana@aws123',
                 'active' => '1'
             ]
         ]
