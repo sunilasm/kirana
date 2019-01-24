@@ -11,7 +11,7 @@ return [
         'connection' => [
             'default' => [
                 'host' => 'localhost',
-                'dbname' => 'kirana_store',
+                'dbname' => 'kirana_qa',
                 'username' => 'kirana',
                 'password' => 'Kirana@aws123',
                 'active' => '1'
@@ -41,7 +41,8 @@ return [
         'config_integration_api' => 1,
         'full_page' => 1,
         'config_webservice' => 1,
-        'translate' => 1
+        'translate' => 1,
+        'compiled_config' => 1
     ],
     'install' => [
         'date' => 'Tue, 06 Nov 2018 13:45:04 +0000'
