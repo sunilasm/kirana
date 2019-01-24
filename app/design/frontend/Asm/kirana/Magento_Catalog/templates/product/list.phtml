@@ -66,7 +66,7 @@ $_helper = $this->helper('Magento\Catalog\Helper\Output');
                     }
                     ?>
                     <?php // Product Image ?>
-                    <a href="<?= /* @escapeNotVerified */ $_product->getProductUrl() ?>" class="product photo product-item-photo" tabindex="-1">
+                    <a href="<?= /* @escapeNotVerified */ $_product->getProductUrl() ?>?seller_id=<?php echo $sell->getSellerId() ?>" class="product photo product-item-photo" tabindex="-1">
                         <?= $productImage->toHtml() ?>
                     </a>
                     <div class="product details product-item-details">
@@ -75,7 +75,7 @@ $_helper = $this->helper('Magento\Catalog\Helper\Output');
                         ?>
                         <strong class="product name product-item-name">
                             <a class="product-item-link"
-                               href="<?= /* @escapeNotVerified */ $_product->getProductUrl() ?>">
+                               href="<?= /* @escapeNotVerified */ $_product->getProductUrl() ?>?seller_id=<?php echo $sell->getSellerId() ?>">
                                 <?= /* @escapeNotVerified */ $_helper->productAttribute($_product, $_product->getName(), 'name') ?>
                             </a>
                         </strong>
@@ -97,6 +97,7 @@ $_helper = $this->helper('Magento\Catalog\Helper\Output');
                                         <?php $postParams = $block->getAddToCartPostParams($_product); ?>
                                         <form data-role="tocart-form" data-product-sku="<?= $block->escapeHtml($_product->getSku()) ?>" action="<?= /* @NoEscape */ $postParams['action'] ?>" method="post">
                                             <input type="hidden" name="product" value="<?= /* @escapeNotVerified */ $postParams['data']['product'] ?>">
+                                             <input type="hidden" name="seller_id" value="<?= /* @escapeNotVerified */ $sell->getSellerId() ?>">
                                             <input type="hidden" name="<?= /* @escapeNotVerified */ Action::PARAM_NAME_URL_ENCODED ?>" value="<?= /* @escapeNotVerified */ $postParams['data'][Action::PARAM_NAME_URL_ENCODED] ?>">
                                             <?= $block->getBlockHtml('formkey') ?>
                                             <button type="submit"
@@ -122,7 +123,7 @@ $_helper = $this->helper('Magento\Catalog\Helper\Output');
                             <?php if ($showDescription):?>
                                 <div class="product description product-item-description">
                                     <?= /* @escapeNotVerified */ $_helper->productAttribute($_product, $_product->getShortDescription(), 'short_description') ?>
-                                    <a href="<?= /* @escapeNotVerified */ $_product->getProductUrl() ?>" title="<?= /* @escapeNotVerified */ $_productNameStripped ?>"
+                                    <a href="<?= /* @escapeNotVerified */ $_product->getProductUrl() ?>?seller_id=<?php echo $sell->getSellerId() ?>" title="<?= /* @escapeNotVerified */ $_productNameStripped ?>"
                                        class="action more"><?= /* @escapeNotVerified */ __('Learn More') ?></a>
                                 </div>
                             <?php endif; ?>
