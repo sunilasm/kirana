@@ -85,8 +85,10 @@ class Setproductsellerid implements \Magento\Framework\Event\ObserverInterface
         if($request->getBodyParams())
         {
             $post = $request->getBodyParams();
-            $seller_id["product_id"] = $post['product_id'];
-            $seller_id["seller_id"] = $post['seller_id'];
+            if(isset($post['product_id'])){
+                $seller_id["product_id"] = $post['product_id'];
+                $seller_id["seller_id"] = $post['seller_id'];
+
         
             $logger->info("seller_id");
             $logger->info($seller_id);
@@ -107,6 +109,7 @@ class Setproductsellerid implements \Magento\Framework\Event\ObserverInterface
                         $quoteItem->setExtensionAttributes($itemExtAttr);
                     }
                 }
+            }
             }
         }
         return $this;
