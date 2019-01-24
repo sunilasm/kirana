@@ -136,9 +136,15 @@ class Data extends AbstractHelper
 
         $settings = $this->getSettings();
         $errors = array();
+        $writer = new \Zend\Log\Writer\Stream(BP . '/var/log/templog.log');
+		$logger = new \Zend\Log\Logger();
+		$logger->addWriter($writer);
+        $logger->info("---- Send SMS ----");
         $apiuri = $settings['sms_gateway_url'];
         $apiurl = $apiuri."send?&apiKey=".urlencode($settings['sms_auth_token'])."&sender=".urlencode($settings['sms_sender_name'])."&numbers=".urlencode(implode(',', $admin_recipients))."&message=".urlencode($body);
+        $logger->info("API URL :".$apiurl);
         $result = file_get_contents($apiurl);
+        $logger->info("Result :".$result);
         $rows = json_decode($result, true);
         if ($rows['status'] != 'success') {
             return false;

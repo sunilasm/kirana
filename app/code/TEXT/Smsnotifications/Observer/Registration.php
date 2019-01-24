@@ -111,28 +111,29 @@ class Registration implements ObserverInterface
     public function execute(Observer $observer)
     {
         $settings = $this->_helper->getSettings();
-         $objectManager = \Magento\Framework\App\ObjectManager ::getInstance();
-            $CustomerModel = $objectManager->create('Magento\Customer\Model\Customer');
-    
-      $telephone = $_POST['telephone'];
-
-     
-     
-        if ($telephone) {
-                              $text=$settings['customer_register'];
-
-                             } 
-$admin_recipients[]=$settings['admin_recipients'];
- 
-    array_push($admin_recipients, $telephone);
-
-       $object_manager = \Magento\Framework\App\ObjectManager ::getInstance();
-        $result = $object_manager->get('TEXT\Smsnotifications\Helper\Data')->sendSms($text,$admin_recipients);
-        
-     return;
-
-       
-        }
-    
+        $objectManager = \Magento\Framework\App\ObjectManager ::getInstance();
+        $writer = new \Zend\Log\Writer\Stream(BP . '/var/log/templog.log');
+		$logger = new \Zend\Log\Logger();
+		$logger->addWriter($writer);
+        $logger->info("---- Customer Reg ----");
+        $logger->info(print_r($settings,true));
+        $CustomerModel = $objectManager->create('Magento\Customer\Model\Customer');
+        $telephone = $_POST['telephone'];
+        $logger->info("Telephone : ".$_POST['telephone']);
+        if ($telephone) 
+        {
+            $text = $settings['customer_register'];
+            $logger->info("Text : ".$text);
+        } 
+        $admin_recipients[]=$settings['admin_recipients'];
+        array_push($admin_recipients, $telephone);
+        $logger->info(print_r($admin_recipients,true));
+        $object_manager = \Magento\Framework\App\ObjectManager ::getInstance();
+        $result = $object_manager->get('TEXT\Smsnotifications\Helper\Data')->sendSms($text,
+        $admin_recipients);
+        $logger->info("Reg : ". $result);
+        $logger->info("---- Customer Reg End----");
+        return;
+    }
 }
     
