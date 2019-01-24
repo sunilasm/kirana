@@ -4,13 +4,14 @@
  * See COPYING.txt for license details.
  */
 
-namespace Magento\CatalogWidget\Block\Product;
+namespace Asm\Search\Block\Rewrite\Product;
 
 use Magento\Framework\App\ObjectManager;
 use Magento\Framework\DataObject\IdentityInterface;
 use Magento\Framework\Pricing\PriceCurrencyInterface;
 use Magento\Framework\Serialize\Serializer\Json;
 use Magento\Widget\Block\BlockInterface;
+use \Magento\Framework\Session\SessionManagerInterface;
 
 /**
  * Catalog Products List widget block
@@ -113,6 +114,10 @@ class ProductsList extends \Magento\Catalog\Block\Product\AbstractProduct implem
         \Magento\Rule\Model\Condition\Sql\Builder $sqlBuilder,
         \Magento\CatalogWidget\Model\Rule $rule,
         \Magento\Widget\Helper\Conditions $conditionsHelper,
+        \Lof\MarketPlace\Model\Seller $sellerCollection,
+        \Lof\MarketPlace\Model\SellerProduct $sellerProductCollection,
+        \Asm\Search\Model\Searchview $inRanageseller,
+        SessionManagerInterface $customerSession,
         array $data = [],
         Json $json = null
     ) {
@@ -122,6 +127,10 @@ class ProductsList extends \Magento\Catalog\Block\Product\AbstractProduct implem
         $this->sqlBuilder = $sqlBuilder;
         $this->rule = $rule;
         $this->conditionsHelper = $conditionsHelper;
+        $this->_sellerCollection = $sellerCollection;
+        $this->_sellerProductCollection = $sellerProductCollection;
+        $this->_inRanageseller = $inRanageseller;
+        $this->customerSession = $customerSession;
         $this->json = $json ?: ObjectManager::getInstance()->get(Json::class);
         parent::__construct(
             $context,
@@ -243,8 +252,10 @@ class ProductsList extends \Magento\Catalog\Block\Product\AbstractProduct implem
          * Prevent retrieval of duplicate records. This may occur when multiselect product attribute matches
          * several allowed values from condition simultaneously
          */
-        $collection->distinct(true);
+        $productSellerColl = $this->getSellerPrdocutCollection();
+        $collection->addFieldToFilter('entity_id', array('in' => $productSellerColl));
 
+        $collection->distinct(true);
         return $collection;
     }
 
@@ -398,4 +409,46 @@ class ProductsList extends \Magento\Catalog\Block\Product\AbstractProduct implem
         }
         return $this->priceCurrency;
     }
+
+    public function getSellerCollection()
+    {
+        $sellerCollection = $this->_sellerCollection->getCollection();
+        //print_r($sellerProductCollection->getData());exit;
+        return $sellerCollection;
+    }
+    public function getSellerPrdocutCollection()
+    {
+        $sellerProductsArray = array();
+        //$lat = '18.5646886'; //latitude
+        // $lat = $this->customerSession->getLatitude(); //latitude
+        //$lon = '73.7783342'; 
+        $lat = $this->customerSession->getLatitude(); //latitude
+        $lon = $this->customerSession->getLongitude(); //longitude
+        $sellerProductCollection = $this->_sellerProductCollection->getCollection();
+        if($lat != '' && $lon != ''){
+            $ranageSeller = $this->getInRange($lat, $lon);
+            $sellerProductCollection->addFieldToFilter('seller_id', array('in' => $ranageSeller));
+        }
+        $sellerProductData = $sellerProductCollection->getData();
+        foreach($sellerProductData as $prodata):
+            $sellerProductsArray[] = $prodata['product_id'];
+        endforeach;
+
+        //print_r($sellerProductCollection->getData());exit;
+        return $sellerProductsArray;
+    }
+
+    public function getInRange($lat, $lon)
+    {
+        $ranageSeller = $this->_inRanageseller->getInRangeSeller($lat, $lon);
+        return $ranageSeller;
+    }
+
+     public function getSellerPrdocutAllCollection()
+    {
+        $sellerProductCollection = $this->_sellerProductCollection->getCollection();
+        // print_r($sellerProductCollection->getData());exit;
+        return $sellerProductCollection;
+    }
+
 }

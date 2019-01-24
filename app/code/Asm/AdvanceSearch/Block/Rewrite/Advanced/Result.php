@@ -54,11 +54,13 @@ class Result extends Template
         Advanced $catalogSearchAdvanced,
         LayerResolver $layerResolver,
         UrlFactory $urlFactory,
+        \Lof\MarketPlace\Model\SellerProduct $sellerProductCollection,
         array $data = []
     ) {
         $this->_catalogSearchAdvanced = $catalogSearchAdvanced;
         $this->_catalogLayer = $layerResolver->get();
         $this->_urlFactory = $urlFactory;
+        $this->_sellerProductCollection = $sellerProductCollection;
         parent::__construct($context, $data);
     }
 
@@ -165,6 +167,7 @@ class Result extends Template
      */
     public function getProductListHtml()
     {
+        $this->getSellerPrdocutCollection();
         return $this->getChildHtml('search_result_list');
     }
 
@@ -192,5 +195,12 @@ class Result extends Template
         $right = array_slice($searchCriterias, $middle);
 
         return ['left' => $left, 'right' => $right];
+    }
+
+    public function getSellerPrdocutCollection()
+    {
+        $sellerProductCollection = $this->_sellerProductCollection->getCollection();
+        //print_r($sellerProductCollection->getData());exit;
+        return $sellerProductCollection;
     }
 }

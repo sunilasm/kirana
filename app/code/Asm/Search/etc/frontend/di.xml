@@ -10,4 +10,6 @@
  -->
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
     <preference for="Magento\Catalog\Block\Product\ListProduct" type="Asm\Search\Block\Rewrite\Product\ListProduct" />
+    <preference for="Magento\CatalogSearch\Block\SearchResult\ListProduct" type="Asm\Search\Block\Rewrite\Product\ListProduct" />
+    <preference for="Magento\CatalogWidget\Block\Product\ProductsList" type="Asm\Search\Block\Rewrite\Product\ProductsList" />
 </config>

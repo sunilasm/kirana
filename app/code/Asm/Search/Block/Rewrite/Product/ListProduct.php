@@ -82,12 +82,16 @@ class ListProduct extends AbstractProduct implements IdentityInterface
         Resolver $layerResolver,
         CategoryRepositoryInterface $categoryRepository,
         Data $urlHelper,
+        \Lof\MarketPlace\Model\SellerProduct $sellerProductCollection,
+        \Asm\Search\Block\Rewrite\Product\ProductsList $productCollectionAscondition,
         array $data = []
     ) {
         $this->_catalogLayer = $layerResolver->get();
         $this->_postDataHelper = $postDataHelper;
         $this->categoryRepository = $categoryRepository;
         $this->urlHelper = $urlHelper;
+        $this->_sellerProductCollection = $sellerProductCollection;
+        $this->_sellerCondtionCollection = $productCollectionAscondition;
         parent::__construct(
             $context,
             $data
@@ -112,11 +116,9 @@ class ListProduct extends AbstractProduct implements IdentityInterface
      */
     protected function _getProductCollection()
     {
-        
         if ($this->_productCollection === null) {
             $this->_productCollection = $this->initializeProductCollection();
         }
-
         return $this->_productCollection;
     }
 
@@ -137,6 +139,7 @@ class ListProduct extends AbstractProduct implements IdentityInterface
      */
     public function getLoadedProductCollection()
     {
+        $productSellerColl = array();
        return $this->_getProductCollection();
     }
 
@@ -186,7 +189,10 @@ class ListProduct extends AbstractProduct implements IdentityInterface
     protected function _beforeToHtml()
     {
         $collection = $this->_getProductCollection();
-
+        // Set location wise collection
+        $productSellerColl = array();
+        $productSellerColl = $this->_sellerCondtionCollection->getSellerPrdocutCollection();
+        $collection->addAttributeToFilter('entity_id', array('in' => $productSellerColl));
         $this->addToolbarBlock($collection);
 
         $collection->load();
@@ -457,8 +463,12 @@ class ListProduct extends AbstractProduct implements IdentityInterface
                 $layer->setCurrentCategory($category);
             }
         }
-        $collection = $layer->getProductCollection();
-
+        $collection = $layer->getProductCollection();  
+         // Set location wise collection
+        $productSellerColl = array();
+        $productSellerColl = $this->_sellerCondtionCollection->getSellerPrdocutCollection();
+        $collection->addAttributeToFilter('entity_id', array('in' => $productSellerColl));
+        
         $this->prepareSortableFieldsByCategory($layer->getCurrentCategory());
 
         if ($origCategory) {
@@ -466,7 +476,6 @@ class ListProduct extends AbstractProduct implements IdentityInterface
         }
         
         $this->addToolbarBlock($collection);
-
         $this->_eventManager->dispatch(
             'catalog_block_product_list_collection',
             ['collection' => $collection]
@@ -508,5 +517,11 @@ class ListProduct extends AbstractProduct implements IdentityInterface
         // set collection to toolbar and apply sort
         $toolbar->setCollection($collection);
         $this->setChild('toolbar', $toolbar);
+    }
+
+     public function getSellerPrdocutCollection()
+    {
+        $sellerProductCollection = $this->_sellerProductCollection->getCollection();
+        return $sellerProductCollection;
     }
 }
