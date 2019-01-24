@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+     <page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_layout.xsd">
+       <head>
+          <css src="TEXT_Smsnotifications::css/bootstrap.min.css"/> 
+          <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js" src_type="url" />
+          <css src="TEXT_Smsnotifications::css/smsnotification.css" />
+          <script src="TEXT_Smsnotifications::js/smsnotification.js" />
+       
+       </head> 
+     </page>
