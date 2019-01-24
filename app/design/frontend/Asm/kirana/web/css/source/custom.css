@@ -4,3 +4,6 @@
 .account .toolbar .limiter{
     width: 19% !important;
 }
+.page-layout-1column .block.widget .products-grid .product-item {
+    width: 16.57% !important;
+}
