@@ -134,8 +134,8 @@ class Kirana extends \Magento\Backend\Block\Widget\Form\Generic implements \Mage
     		'text',
     		[
 	    		'name' => 'closeing_time',
-	    		'label' => __('Closeing Time'),
-                'title' => __('Closeing Time'),
+	    		'label' => __('Closing Time'),
+                'title' => __('Closing Time'),
                 'class' => 'time',
                 'disabled' => $isElementDisabled
     		]
@@ -225,8 +225,8 @@ class Kirana extends \Magento\Backend\Block\Widget\Form\Generic implements \Mage
             'smart_phone',
             'select',
             [
-                'label' => __('Smart phone wih data'),
-                'title' => __('Smart phone wih data'),
+                'label' => __('Smartphone wih data'),
+                'title' => __('Smartphone wih data'),
                 'name' => 'smart_phone',
                 'value' => '',
                 'values' => '',

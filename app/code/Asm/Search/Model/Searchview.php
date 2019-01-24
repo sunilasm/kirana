@@ -73,7 +73,7 @@ class Searchview implements SearchInterface
                 // ));
                 $collection->setCurPage($current_page)->setPageSize($page_size);
                 foreach ($collection as $product){
-                    $productCollectionArray[$product->getId()] = $product->getData();
+                    $productCollectionArray[] = $product->getData();
                 }
 
              if($productCollectionArray){
@@ -85,8 +85,6 @@ class Searchview implements SearchInterface
              $data = array('status' => 0,'message' => 'Please specify at least one search term');
         }
         
-
-       // print_r($data);exit;
         return $data;
     }
     /*
