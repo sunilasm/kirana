@@ -157,7 +157,6 @@ if(isset($words[$index]))
             <div class="control">
                 <input type="text"
                        name="latitude"
-
                        value="<?php if(isset($result[0]['latitude'])) : echo $result[0]['latitude']; endif;  ?>"
                        title="<?= $block->escapeHtmlAttr(__('latitude')) ?>"
                        class="input-text <?= $block->escapeHtmlAttr($this->helper(\Magento\Customer\Helper\Address::class)->getAttributeValidationClass('latitude')) ?>"

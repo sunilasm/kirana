@@ -1,3 +1,6 @@
 .checkout-payment-method .payment-option, .checkout-payment-method .payment-option-title .action-toggle{
     display: none !important;
 }
+.account .toolbar .limiter{
+    width: 19% !important;
+}
