@@ -13,7 +13,7 @@
         <observer name="text_smsnotifications_observer_invoice_pay" instance="TEXT\Smsnotifications\Observer\InvoicePay"/>
     </event>
    
-    <event name="customer_save_after_data_object">
+    <event name="customer_register_success">
         <observer name="text_smsnotifications_observer_register_success" instance="TEXT\Smsnotifications\Observer\Registration"/>
     </event>
     <event name="admin_system_config_changed_section_text_smsnotifications_configuration">
