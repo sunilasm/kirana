@@ -59,6 +59,7 @@ if ($notice) {
     <?php echo $block->getChildHtml(); ?>
 </div>
 
+<?php if ($is_enable == 1 && ($_order->getStatusLabel() == 'Pending' || $_order->getStatusLabel() == 'Processing')) : ?>
 <script type = 'text/javascript'>
     require(
             [
@@ -94,3 +95,4 @@ if ($notice) {
             }
     );
 </script>
+ <?php endif ?>
