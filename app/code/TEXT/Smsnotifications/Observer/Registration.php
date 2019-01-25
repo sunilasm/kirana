@@ -122,7 +122,7 @@ class Registration implements ObserverInterface
         if(isset($_POST['telephone'])){
             $telephone = $_POST['telephone'];
         }
-        $logger->info("Telephone : ".$_POST['telephone']);
+        $logger->info("Telephone : ".$telephone);
         if ($telephone) 
         {
             $text = $settings['customer_register'];
