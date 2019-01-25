@@ -114,7 +114,10 @@ class ForgotPassword implements ObserverInterface
             $this->username = $this->_helper->getSmsnotificationsApiUsername();
             $this->password = $this->_helper->getSmsnotificationsApiPassword();
             
-            $customer_email =$_POST["email"];
+            $customer_email = '';
+            if(isset($_POST["email"])){
+                $customer_email = $_POST["email"];
+            }
             $objectManager = \Magento\Framework\App\ObjectManager ::getInstance();
             $CustomerModel = $objectManager->create('Magento\Customer\Model\Customer');
             $CustomerModel->setWebsiteId(1); 
