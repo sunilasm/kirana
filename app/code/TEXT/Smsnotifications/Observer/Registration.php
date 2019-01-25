@@ -118,7 +118,10 @@ class Registration implements ObserverInterface
         $logger->info("---- Customer Reg ----");
         $logger->info(print_r($settings,true));
         $CustomerModel = $objectManager->create('Magento\Customer\Model\Customer');
-        $telephone = $_POST['telephone'];
+        $telephone = '';
+        if(isset($_POST['telephone'])){
+            $telephone = $_POST['telephone'];
+        }
         $logger->info("Telephone : ".$_POST['telephone']);
         if ($telephone) 
         {
