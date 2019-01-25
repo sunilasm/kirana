@@ -142,6 +142,7 @@ class Advanced extends \Magento\Framework\Model\AbstractModel
         AdvancedFactory $advancedFactory,
         \Lof\MarketPlace\Model\Seller $sellerCollection,
         \Lof\MarketPlace\Model\SellerProduct $sellerProductCollection,
+        \Asm\Search\Model\Searchview $inRanageseller,
         SessionManagerInterface $customerSession,
         array $data = []
     ) {
@@ -155,6 +156,7 @@ class Advanced extends \Magento\Framework\Model\AbstractModel
         $this->_sellerProductCollection = $sellerProductCollection;
         $this->productCollectionFactory = $productCollectionFactory;
         $this->customerSession = $customerSession;
+        $this->_inRanageseller = $inRanageseller;
         parent::__construct(
             $context,
             $registry,
@@ -299,45 +301,18 @@ class Advanced extends \Magento\Framework\Model\AbstractModel
         //$centerpointLat = $this->getRequest()->getParam('lat');
         $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
         $cookieManager = $objectManager->get('Magento\Framework\Stdlib\CookieManagerInterface');
-        $selerIdArray = array();
-        $sellerProductsArray = array();
-
         //$lat = $centerpointLat; //latitude
         $lat = $this->customerSession->getLatitude(); //latitude
-        // print_r($lat); exit;
-        //$lon = $centerpointLang; //longitude
         $lon = $this->customerSession->getLongitude(); //longitude
-        $distance = 1; //your distance in KM
-        $R = 6371; //constant earth radius. You can add precision here if you wish
-
-        $maxLat = $lat + rad2deg($distance/$R);
-        $minLat = $lat - rad2deg($distance/$R);
-        $maxLon = $lon + rad2deg(asin($distance/$R) / cos(deg2rad($lat)));
-        $minLon = $lon - rad2deg(asin($distance/$R) / cos(deg2rad($lat)));
-
-        // filter collection in range of lat and long
-        $sellerCollection = $this->_sellerCollection->getCollection()
-        ->setOrder('position','ASC')
-        ->addFieldToFilter('geo_lat',array('gteq'=>$minLat))
-        ->addFieldToFilter('geo_lng',array('gteq'=>$minLon))
-        ->addFieldToFilter('geo_lat',array('lteq'=>$maxLat))
-        ->addFieldToFilter('geo_lng',array('lteq'=>$maxLon))
-        ->addFieldToFilter('status',1);
-        // get Seller id's
-        $sellerData = $sellerCollection->getData();
-        foreach($sellerData as $seldata):
-            $selerIdArray[] = $seldata['seller_id'];
-        endforeach;
-
-        //print_r($selerIdArray);exit;
+        $ranageSeller = $this->_inRanageseller->getInRangeSeller($lat, $lon);
+        // print_r($ranageSeller);exit;
         $sellerProductCollection = $this->_sellerProductCollection->getCollection()
-                                        ->addFieldToFilter('seller_id', array('in' => $selerIdArray));
+                                        ->addFieldToFilter('seller_id', array('in' => $ranageSeller));
 
         $sellerProductData = $sellerProductCollection->getData();
         foreach($sellerProductData as $prodata):
             $sellerProductsArray[] = $prodata['product_id'];
         endforeach;
-
         // print_r("herer");exit;
 
         $collection
