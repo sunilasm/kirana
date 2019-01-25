@@ -116,7 +116,6 @@ class Registration implements ObserverInterface
 		$logger = new \Zend\Log\Logger();
 		$logger->addWriter($writer);
         $logger->info("---- Customer Reg ----");
-        $logger->info(print_r($settings,true));
         $CustomerModel = $objectManager->create('Magento\Customer\Model\Customer');
         $telephone = '';
         if(isset($_POST['telephone'])){
@@ -127,16 +126,16 @@ class Registration implements ObserverInterface
         {
             $text = $settings['customer_register'];
             $logger->info("Text : ".$text);
+            $admin_recipients[]=$settings['admin_recipients'];
+            array_push($admin_recipients, $telephone);
+            $logger->info(print_r($admin_recipients,true));
+            $object_manager = \Magento\Framework\App\ObjectManager ::getInstance();
+            $result = $object_manager->get('TEXT\Smsnotifications\Helper\Data')->sendSms($text,
+            $admin_recipients);
+            $logger->info("Reg : ". $result);
+            $logger->info("---- Customer Reg End----");
         } 
-        $admin_recipients[]=$settings['admin_recipients'];
-        array_push($admin_recipients, $telephone);
-        $logger->info(print_r($admin_recipients,true));
-        $object_manager = \Magento\Framework\App\ObjectManager ::getInstance();
-        $result = $object_manager->get('TEXT\Smsnotifications\Helper\Data')->sendSms($text,
-        $admin_recipients);
-        $logger->info("Reg : ". $result);
-        $logger->info("---- Customer Reg End----");
-        return;
+            return;
     }
 }
     
