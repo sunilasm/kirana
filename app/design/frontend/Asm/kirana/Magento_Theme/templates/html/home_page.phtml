@@ -4,7 +4,7 @@
                     ->getStore()
                     ->getBaseUrl(\Magento\Framework\UrlInterface::URL_TYPE_MEDIA);
 
-    $catId = 2;
+    $catId = 71;
     $subcategory = $objectManager->create('Magento\Catalog\Model\Category')->load($catId);
     $subcats = $subcategory->getChildrenCategories();   
     
