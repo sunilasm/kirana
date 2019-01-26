@@ -9,7 +9,7 @@
       xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
     <body>
         <referenceContainer name="content">
-            <block template="Magento_Analytics::dashboard/section.phtml"
+            <block template="Magento_Analytics::dashboard/section.phtml" ifconfig="analytics/general/enabled"
                    class="Magento\Backend\Block\Template"
                    name="analytics_service_external_link"
                    before="-"/>
