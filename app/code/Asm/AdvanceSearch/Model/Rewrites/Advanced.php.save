@@ -308,13 +308,13 @@ class Advanced extends \Magento\Framework\Model\AbstractModel
         // print_r($ranageSeller);exit;
         $sellerProductCollection = $this->_sellerProductCollection->getCollection()
                                         ->addFieldToFilter('seller_id', array('in' => $ranageSeller));
-	$sellerProductsArray = array();
+	/var/www/html/app/code/Asm/AdvanceSearch/Model/Rewrites/Advanced.php
         $sellerProductData = $sellerProductCollection->getData();
         foreach($sellerProductData as $prodata):
             $sellerProductsArray[] = $prodata['product_id'];
         endforeach;
         // print_r("herer");exit;
-
+	
         $collection
             ->addAttributeToSelect($this->_catalogConfig->getProductAttributes())
             ->setStore($this->_storeManager->getStore())
