@@ -1,0 +1,39 @@
+<?php
+    $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+    $mediaUrl = $objectManager->get('Magento\Store\Model\StoreManagerInterface')
+                    ->getStore()
+                    ->getBaseUrl(\Magento\Framework\UrlInterface::URL_TYPE_MEDIA);
+
+    $catId = 2;
+    $subcategory = $objectManager->create('Magento\Catalog\Model\Category')->load($catId);
+    $subcats = $subcategory->getChildrenCategories();   
+    
+?>
+<div class="blocks-promo">
+    <div class="row">
+        <a class="block-promo home-main" href="#">
+            <img src="<?php echo $mediaUrl; ?>siteimages/home.jpg" alt="" style="width: 100%" /> 
+        </a>
+    </div> 
+    <h2 style="text-align: center;"><strong><u>SHOP BY CATEGORY</u></strong></h2>  
+     <div class="row"> 
+        <?php
+            foreach($subcats as $subcategorie) {
+                $_objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+                $category = $_objectManager->create('Magento\Catalog\Model\Category')
+                ->load($subcategorie->getId());?>
+                <a href="<?php echo $category->getUrl(); ?>">
+                    <div class="col-md-3">
+                        <img src="<?php echo $category->getImageUrl(); ?>" alt="" />
+                        <h4 style="text-align: center;"><?php echo $category->getName(); ?></h4>
+                    </div>
+                </a>    
+         <?php   }
+        ?>
+    </div> 
+    <div class="row"> 
+       <?php echo $this->getLayout()->createBlock("Magento\Reports\Block\Product\Widget\Viewed")->setDisplayType("recently.view.products")->setProductsCount("5")->setTemplate("widget/viewed/content/viewed_grid.phtml")->toHtml(); ?>
+    </div>
+    
+</div>
+
