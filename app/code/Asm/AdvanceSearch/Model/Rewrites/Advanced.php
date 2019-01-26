@@ -308,7 +308,7 @@ class Advanced extends \Magento\Framework\Model\AbstractModel
         // print_r($ranageSeller);exit;
         $sellerProductCollection = $this->_sellerProductCollection->getCollection()
                                         ->addFieldToFilter('seller_id', array('in' => $ranageSeller));
-
+	$sellerProductsArray = array();
         $sellerProductData = $sellerProductCollection->getData();
         foreach($sellerProductData as $prodata):
             $sellerProductsArray[] = $prodata['product_id'];
