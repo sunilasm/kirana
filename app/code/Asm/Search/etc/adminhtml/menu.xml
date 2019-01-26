@@ -9,8 +9,8 @@
  */
  -->
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../Backend/etc/menu.xsd">
-    <menu>
+   <!--  <menu>
         <add id="asm_search::core" title="Search" module="Asm_Search" sortOrder="90" resource="Asm_Search::sample"/>
         <add id="asm_search::test" title="Items" module="Asm_Search" sortOrder="10" parent="asm_search::core" action="asm_search/items/" resource="Asm_Search::items"/>
-    </menu>
+    </menu> -->
 </config>
