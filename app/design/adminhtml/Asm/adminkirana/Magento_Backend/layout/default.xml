@@ -7,7 +7,7 @@
                     <argument name="logo_img_height" xsi:type="number">300</argument>
                     <argument name="show_part" xsi:type="string">logo</argument>
                     <argument name="edition" translate="true" xsi:type="string">Community Edition</argument>
-                    <argument name="logo_image_src" xsi:type="string">images/admin_logo.png</argument>
+                    <argument name="logo_image_src" xsi:type="string">images/new-lo.svg</argument>
                 </arguments>
             </referenceBlock>
         </referenceContainer>
