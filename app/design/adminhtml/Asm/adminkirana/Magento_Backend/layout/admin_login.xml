@@ -3,7 +3,7 @@
     <body>
         <referenceBlock name="logo">
             <arguments>
-                <argument name="logo_image_src" xsi:type="string">images/admin_logo.png</argument>
+                <argument name="logo_image_src" xsi:type="string">images/new-lo.svg</argument>
             </arguments>
         </referenceBlock>
     </body>
