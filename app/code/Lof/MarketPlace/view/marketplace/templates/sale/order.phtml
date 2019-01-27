@@ -41,11 +41,12 @@
 	                    <?php foreach ($this->getOrder()->setOrder('order_id', 'desc') as $key => $order) { 
 	                    	$admin_commission = $order->getData('seller_product_total') - $order->getData('seller_amount');
 	                    	$order_data = $this->getOrderData($order->getData('order_id'));
+	                    	// print_r($order_data->getIncrementId());exit;
 	                    	
 	                    	?>
 	    					<tr class="even pointer">
 	    						<td class="hidden"></td>
-	                            <td class=" ">#<?php echo $order_data->getId(); ?></td>
+	                            <td class=" ">#<?php echo $order_data->getIncrementId(); ?></td>
 	                            <td class=" "><?php echo $this->formatDate(
 								    $this->getOrderAdminDate($order_data->getData('created_at')),
 								    \IntlDateFormatter::MEDIUM,

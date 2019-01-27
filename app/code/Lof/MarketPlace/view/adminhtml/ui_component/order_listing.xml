@@ -136,7 +136,7 @@
                 </item>
             </item>
         </argument>
-        <column name="id">
+        <!-- <column name="id">
             <argument name="data" xsi:type="array">
                 <item name="config" xsi:type="array">
                     <item name="filter" xsi:type="string">text</item>
@@ -145,7 +145,7 @@
                     <item name="sortOrder" xsi:type="number">10</item>
                 </item>
             </argument>
-        </column>
+        </column> -->
         <!-- <column name="seller_id">
             <argument name="data" xsi:type="array">
                 <item name="config" xsi:type="array">
@@ -157,7 +157,7 @@
                 </item>
             </argument>
         </column> -->
-         <column name="order_id">
+        <!--  <column name="order_id">
             <argument name="data" xsi:type="array">
                 <item name="config" xsi:type="array">
                     <item name="filter" xsi:type="string">text</item>
@@ -173,6 +173,16 @@
                     <item name="filter" xsi:type="string">text</item>
                     <item name="add_field" xsi:type="boolean">true</item>
                     <item name="label" xsi:type="string" translate="true">Increment ID</item>
+                    <item name="sortOrder" xsi:type="number">30</item>
+                </item>
+            </argument>
+        </column> -->
+         <column name="increment_id">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="filter" xsi:type="string">text</item>
+                    <item name="add_field" xsi:type="boolean">true</item>
+                    <item name="label" xsi:type="string" translate="true">Order ID</item>
                     <item name="sortOrder" xsi:type="number">30</item>
                 </item>
             </argument>
