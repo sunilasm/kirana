@@ -80,10 +80,10 @@ class Cancel extends \Magento\Framework\App\Action\Action implements OrderInterf
                 $post = $this->getRequest()->getPostValue();
                 if (!empty($post)) {
                     $comment = $post['comment'];
-                    $order->addStatusToHistory('canceled', $comment);
+                    $order->addStatusToHistory('cancelled', $comment);
                     $order->save();
                 }
-                $this->messageManager->addSuccess(__('The order has been Canceled successfully.'));
+                $this->messageManager->addSuccess(__('The order has been Cancelled successfully.'));
             } else {
                 $this->messageManager->addError(
                     __('We can\'t process your request right now. Please Try after some time.')
