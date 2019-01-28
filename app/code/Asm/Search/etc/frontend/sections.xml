@@ -3,5 +3,6 @@
     xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Customer:etc/sections.xsd">
     <action name="search/index/clearcart">
         <section name="cart"/>
+        <section name="checkout-data"/>
     </action>
 </config>

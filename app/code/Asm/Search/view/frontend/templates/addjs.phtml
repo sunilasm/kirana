@@ -169,31 +169,51 @@ require([
                         //alert($("input[name='checkaddress']:checked").val());
                         var geocoder = new google.maps.Geocoder();
                             var address = $("input[name='checkaddress']:checked").val();
-
+                           var selectedId = $("input[name='checkaddress']:checked").attr('id');
+                           // alert(selectedId);
+// 
                             geocoder.geocode( { 'address': address}, function(results, status) {
                                if (status == google.maps.GeocoderStatus.OK) {
                                 var latitude = results[0].geometry.location.lat();
                                 var longitude = results[0].geometry.location.lng();
                                 var custmerloginstatus = 'true';
-                                // Clear cart
-                                // jQuery.ajax({
-                                //     url: '<?php  //echo $baseUrl; ?>search/index/clearcart',
-                                //     type: 'POST',
-                                //     showLoader: true,
-                                //     success: function (res) {
-                                //         if (res.messages) {
-                                //             jQuery('[data-placeholder="messages"]').html(res.messages);
-                                //         }
+                                // Select current address add to new 
+                                if(selectedId == "currentAddval"){
+                                    jQuery.ajax({
+                                        url: '<?php  echo $baseUrl; ?>search/index/addnewaddress',
+                                        // data: param,
+                                        type: 'POST',
+                                        showLoader: true,
+                                        dataType: 'json',
+                                        success: function (data) {
+                                            // if (data.messages) {
+                                            //     jQuery('[data-placeholder="messages"]').html(res.messages);
+                                            // }
+                                            // if (res.minicart) {
+                                            //     jQuery('[data-block="minicart"]').replaceWith(res.minicart);
+                                            //     jQuery('[data-block="minicart"]').trigger('contentUpdated');
+                                            // }
+                                        }
+                                    });
+                                }
+                                // Select default address to Clear cart
+                                if(selectedId == "defaultAddval"){
+                                    jQuery.ajax({
+                                        url: '<?php  echo $baseUrl; ?>search/index/clearcart',
+                                        type: 'POST',
+                                        showLoader: true,
+                                        success: function (res) {
+                                            if (res.messages) {
+                                                jQuery('[data-placeholder="messages"]').html(res.messages);
+                                            }
+                                            // if (res.minicart) {
+                                            //     jQuery('[data-block="minicart"]').replaceWith(res.minicart);
+                                            //     jQuery('[data-block="minicart"]').trigger('contentUpdated');
+                                            // }
+                                        }
+                                    });
+                                }
 
-                                //         if (res.minicart) {
-                                //             jQuery('[data-block="minicart"]').replaceWith(res.minicart);
-                                //             jQuery('[data-block="minicart"]').trigger('contentUpdated');
-                                //         }
-                                //     },
-                                //     complete:function(){
-                                //         location.reload();
-                                //     }
-                                // });
 
                                 // Set session
                                 setsession(latitude, longitude, custmerloginstatus, address);
