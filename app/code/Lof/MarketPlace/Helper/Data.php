@@ -415,25 +415,11 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
     }
 
 
-    public function getSellerProductprice($sellerId,$productId) {
-        $writer = new \Zend\Log\Writer\Stream(BP . '/var/log/test1234.log');
-        $logger = new \Zend\Log\Logger();
-        $logger->addWriter($writer);
-        $objectManager = \Magento\Framework\App\ObjectManager::getInstance ();
-        $sellerProduct = $objectManager->get ( 'Lof\MarketPlace\Model\SellerProduct' )->load ( $productId, 'product_id' );
-        foreach ($sellerProduct->getCollection()->getData() as $key => $_seller) {
-            if($productId == $_seller['product_id'] && $sellerId== $_seller['seller_id']) {
-               /* $model->load($_seller['entity_id']);
-                $logger->info("_seller['entity_id']");*/
-                $logger->info($_seller['entity_id']);
-                $logger->info($_seller['price']);
-                return $_seller['price'];
-            }
-        }
-    }
+
     public function getCommission($sellerId,$productId) {
         $commission = 100;
         $objectManager       = \Magento\Framework\App\ObjectManager::getInstance ();
+
         $sellerProduct = $objectManager->get ( 'Lof\MarketPlace\Model\SellerProduct' )->load ( $productId, 'product_id' );
         $sellerCommission = $this->dataRule->getRuleProducts($sellerId,$productId);
         $productCommission = $sellerProduct->getCommission();
@@ -461,11 +447,13 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
         }
         return true;
     }
+
     public function getSellernameId($sellerid) {
         $objectManager       = \Magento\Framework\App\ObjectManager::getInstance ();
         $seller = $objectManager->get ( 'Lof\MarketPlace\Model\Seller' )->load ( $sellerid, 'seller_id' );
         return $seller->getData('name');
     }
+    
     public function getSellerId() {
         $objectManager       = \Magento\Framework\App\ObjectManager::getInstance ();
         $seller = $objectManager->create ( 'Lof\MarketPlace\Model\Seller' )->load ( $this->getCustomerId(), 'customer_id' );

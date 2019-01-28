@@ -77,6 +77,7 @@ class QuotePlugin {
                 $sellerName = $this->helperData->getSellernameId($item->getSellerId());
                 $extensionAttributes->setSellerName($sellerName);
                 $extensionAttributes->setSellerId($item->getSellerId());
+                $extensionAttributes->setProductId($item->getId());
                 $item->setExtensionAttributes($extensionAttributes);
             }
         } 
