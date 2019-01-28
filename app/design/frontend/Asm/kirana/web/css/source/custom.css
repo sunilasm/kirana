@@ -4,3 +4,10 @@
 .account .toolbar .limiter{
     width: 19% !important;
 }
+.page-products .products-grid .product-item {
+	width: 24.229% !important;
+}
+
+.shipping-address-item.not-selected-item {
+	display: none;
+}
