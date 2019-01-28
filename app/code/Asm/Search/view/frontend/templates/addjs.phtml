@@ -178,14 +178,14 @@ require([
                                 var longitude = results[0].geometry.location.lng();
                                 var custmerloginstatus = 'true';
                                 // Select current address add to new 
-                                if(selectedId == "currentAddval"){
-                                    jQuery.ajax({
-                                        url: '<?php  echo $baseUrl; ?>search/index/addnewaddress',
+                                //if(selectedId == "currentAddval"){
+                                   // jQuery.ajax({
+                                     //   url: '<?php  echo $baseUrl; ?>search/index/addnewaddress',
                                         // data: param,
-                                        type: 'POST',
-                                        showLoader: true,
-                                        dataType: 'json',
-                                        success: function (data) {
+                                       // type: 'POST',
+                                       // showLoader: true,
+                                        //dataType: 'json',
+                                        //success: function (data) {
                                             // if (data.messages) {
                                             //     jQuery('[data-placeholder="messages"]').html(res.messages);
                                             // }
@@ -193,9 +193,9 @@ require([
                                             //     jQuery('[data-block="minicart"]').replaceWith(res.minicart);
                                             //     jQuery('[data-block="minicart"]').trigger('contentUpdated');
                                             // }
-                                        }
-                                    });
-                                }
+                                        //}
+                                    //});
+                                //}
                                 // Select default address to Clear cart
                                 if(selectedId == "defaultAddval"){
                                     jQuery.ajax({
