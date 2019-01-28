@@ -448,6 +448,12 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
         return true;
     }
 
+    public function getSellernameId($sellerid) {
+        $objectManager       = \Magento\Framework\App\ObjectManager::getInstance ();
+        $seller = $objectManager->get ( 'Lof\MarketPlace\Model\Seller' )->load ( $sellerid, 'seller_id' );
+        return $seller->getData('name');
+    }
+
     public function getSellerId() {
         $objectManager       = \Magento\Framework\App\ObjectManager::getInstance ();
         $seller = $objectManager->create ( 'Lof\MarketPlace\Model\Seller' )->load ( $this->getCustomerId(), 'customer_id' );
