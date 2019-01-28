@@ -62,9 +62,12 @@ class Save extends \Magento\Customer\Controller\AbstractAccount
      */
     public function execute()
     {
-        
+        $writer = new \Zend\Log\Writer\Stream(BP . '/var/log/test1234.log');
+        $logger = new \Zend\Log\Logger();
+        $logger->addWriter($writer);
+        $logger->info('Lof\MarketPlace\Controller\Adminhtml\Seller\save');
     	$data = $this->getRequest()->getPostValue();
-     
+        $logger->info($data);
         /** @var \Magento\Backend\Model\View\Result\Redirect $resultRedirect */
         $resultRedirect = $this->resultRedirectFactory->create();
         if ($data) {  
@@ -84,6 +87,9 @@ class Save extends \Magento\Customer\Controller\AbstractAccount
             if ($id) {
                 $model->load($id);
             }
+
+            
+            $logger->info($model->getData());
 
             /** @var \Magento\Framework\Filesystem\Directory\Read $mediaDirectory */
             $mediaDirectory = $this->_objectManager->get('Magento\Framework\Filesystem')
@@ -132,6 +138,9 @@ class Save extends \Magento\Customer\Controller\AbstractAccount
             if(!empty($links) && isset($links['related'])){
                 $products = $this->jsHelper->decodeGridSerializedInput($links['related']);
                 $data['products'] = $products;
+                 $logger->info($data);
+                 $logger->info("productsssssssss");
+                 $logger->info($products);
             }
             $customer = $this->helper->getCustomerById($data['customer_id']);
             $data['email'] = $customer->getData('email');
@@ -150,7 +159,8 @@ class Save extends \Magento\Customer\Controller\AbstractAccount
             } catch (\RuntimeException $e) {
                 $this->messageManager->addError($e->getMessage());
             } catch (\Exception $e) {
-                $this->messageManager->addException($e, __('Something went wrong while saving the seller.'));
+                  $logger->info($e->getMessage());
+                $this->messageManager->addException($e, __('Something went wrong while saving the sellereeeeeeee.'));
             }
             //$this->_getSession()->setFormData($data);
             return $resultRedirect->setPath('*/*/edit', ['seller_id' => $this->getRequest()->getParam('seller_id')]);

@@ -236,7 +236,6 @@ class Seller extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
             $this->getConnection()->insertMultiple($table, $data);
         }
 
-
         // Products Related
         if(null !== ($object->getData('products'))  && isset($object->getData()['in_products'])){
             $table = $this->getTable('lof_marketplace_product');
@@ -257,6 +256,7 @@ class Seller extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
                     $data[] = [
                     'seller_id' => (int)$object->getId(),
                     'product_id' => $k,
+                    'price' => $_post['product_price'],
                     'position' => $_post['product_position']
                     ];
                       $product_data2 = [

@@ -3,4 +3,7 @@
 	<event name="sales_quote_save_before">
 		<observer name="asm_setsellerid_observer_setproductsellerid" instance="Asm\Setsellerid\Observer\Setproductsellerid" />
 	</event>
+	<event name="checkout_cart_product_add_after">
+       <observer name="asm_setsellerid_observer_setproductseller" instance="Asm\Setsellerid\Observer\Setproductsellerid" />
+    </event>
 </config>

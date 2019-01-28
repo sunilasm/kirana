@@ -41,8 +41,39 @@ class Setproductseller implements \Magento\Framework\Event\ObserverInterface
  		if($key=="product"){
  			$seller_id["product"] = $value;
  		}
+ 		if($key=="price"){
+ 			$seller_id["price"] = $value;
+ 		}
  	}
- 	$cart = $observer->getEvent()->getData('cart');
+ 	$quoteItem = $observer->getEvent()->getData('quote_item');
+    $product = $observer->getEvent()->getData('product');
+    $itemProId = $quoteItem->getProduct()->getId();
+    $logger->info($itemProId);
+    if($itemProId = $seller_id["product"]){
+    	if($seller_id){
+	    	$custom_price = $seller_id["price"];
+		    $quoteItem->setCustomPrice($custom_price);
+		    $quoteItem->setOriginalCustomPrice($custom_price);
+		    $quoteItem->setSellerId($seller_id["value"]);
+		    $quoteItem->getProduct()->setIsSuperMode(true);
+		}
+    }
+     $price ='';
+     $item = $observer->getEvent()->getData('quote_item');
+     $cartItems = [];
+        if($item->getQuote()->getItems()){
+            foreach ($item->getQuote()->getItems() as $key => $value) {
+                $cartItems[$value->getSku()] = $value->getQty();
+            }
+        }
+         $logger->info("Setproductsellerrrrrrrrrrr Setproductseller222");
+         $logger->info($cartItems);
+         
+        $price = $seller_id["price"];
+        $item->setOriginalCustomPrice($price);
+        $item->setCustomPrice($price);
+    
+ 	/*$cart = $observer->getEvent()->getData('cart');
     $cartItems = $cart->getItems();
     foreach($cartItems as $item){
     	if($seller_id){
@@ -50,7 +81,7 @@ class Setproductseller implements \Magento\Framework\Event\ObserverInterface
 	    		$item->setSellerId($seller_id["value"]);
 	    	}
     	}
-   	}
+   	}*/
     return $this;
   }
 }

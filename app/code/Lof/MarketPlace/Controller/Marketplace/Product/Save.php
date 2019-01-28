@@ -127,7 +127,10 @@ class Save extends \Lof\MarketPlace\Controller\Marketplace\Product
         $productAttributeSetId = $this->getRequest()->getParam('set');
         $productTypeId = $this->getRequest()->getParam('type');
         $seller_id = $this->helper->getSellerId();
-
+        $writer = new \Zend\Log\Writer\Stream(BP . '/var/log/test1234.log');
+        $logger = new \Zend\Log\Logger();
+        $logger->addWriter($writer);
+        $logger->info('Your text message');
         if ($data) {
             try {
 
@@ -175,18 +178,21 @@ class Save extends \Lof\MarketPlace\Controller\Marketplace\Product
                 /**
                  * Do copying data to marketplace
                  */
+
                 if($productId) {
                     $sellerProduct = $this->_objectManager->create('Lof\MarketPlace\Model\SellerProduct');
                     $model = $this->_objectManager->create('Lof\MarketPlace\Model\SellerProduct');
                     foreach ($sellerProduct->getCollection()->getData() as $key => $_seller) {
-                        if($productId == $_seller['product_id']) {
+                        if($productId == $_seller['product_id'] && $seller_id== $_seller['seller_id']) {
                             $model->load($_seller['entity_id']);
+                            $logger->info("_seller['entity_id']");
+                            $logger->info($_seller['entity_id']);
                         }
                     }
                     
                     $model->setProductId($productId)
                     ->setStoreId($this->helper->getCurrentStoreId())
-                    ->setSellerId($product->getSellerId())
+                    //->setSellerId($product->getSellerId())
                     ->save();
 
                   
@@ -205,7 +211,7 @@ class Save extends \Lof\MarketPlace\Controller\Marketplace\Product
                 }
 
                
-                $this->messageManager->addSuccess(__('You saved the product.'));
+                $this->messageManager->addSuccess(__('You saved the productssss.'));
                 if ($product->getSku() != $originalSku) {
                     $this->messageManager->addNotice(
                         __(
@@ -231,7 +237,7 @@ class Save extends \Lof\MarketPlace\Controller\Marketplace\Product
                     $model = $this->_objectManager->create('Lof\MarketPlace\Model\SellerProduct');
                     $model->setProductId($newProduct->getEntityId())
                     ->setStoreId($this->helper->getCurrentStoreId())
-                    ->setSellerId($product->getSellerId())
+                    //->setSellerId($product->getSellerId())
                     ->save();
 
                     $this->messageManager->addSuccess(__('You duplicated the product.'));

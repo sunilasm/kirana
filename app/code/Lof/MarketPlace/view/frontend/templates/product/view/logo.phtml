@@ -4,6 +4,9 @@ $sellerCollection = $this->getSellerCollection();
 
 $data = $this->helper('Lof\MarketPlace\Helper\Data');
 $currPageUrl = $data->getCurrentUrls();
+$objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+$product = $objectManager->get('Magento\Framework\Registry')->registry('current_product');//get current product
+
 //$seller_layout_listing = $data->getConfig("product_view_page/seller_layout_listing");
 $show_seller_text = $data->getConfig("product_view_page/show_seller_text");
 $show_seller_image = $data->getConfig("product_view_page/show_seller_image");
@@ -24,7 +27,7 @@ $sessionCustlgin = $customerSession->getCustmerloginstatus();
 
 ?>
 <?php if($sellerCollection && $sellerCollection->count()){
-	$sellerId = $sellerCollection->getFirstItem()->getData('seller_id');  ?>
+	$sellerId = $sellerCollection->getFirstItem()->getData('seller_id'); ?>
 	<?php
 		$total = $sellerCollection->count();
 
@@ -58,55 +61,17 @@ $sessionCustlgin = $customerSession->getCustmerloginstatus();
 	?>
 	<?php if(count($sellerCollection)){ ?>
 		<select name="seller_id" id="seller_list">
-		<?php foreach ($sellerCollection as $_seller) { ?>
-			<option value="<?php echo $_seller->getId();?>"><?php echo $_seller->getName(); ?></option>
-		<?php /*?>
-		<!-- <div class="seller-profile-container">
-			<div class="seller-image col-xs-3">
-				<?php if($show_seller_image): ?>
-				<a href="<?php echo $_seller->getUrl(); ?>" title="<?php echo $_seller->getName(); ?>">
-				<img src="<?php echo $_seller->getThumbnailUrl(); ?>" alt="<?php echo $_seller->getName(); ?>"/></a>
-				<?php endif; ?>
-			</div>
-			<div class="col-xs-9 seller-description">
-				<?php if($show_seller_name): ?>
-				<h3 class="seller_title">
-					<a href="<?php echo $_seller->getUrl(); ?>" title="<?php echo $_seller->getName(); ?>"><?php echo $_seller->getName(); ?></a>
-				</h3>
-				<?php endif; ?>
-				<?php if($show_seller_text) { ?>
-					<span class="seller-headline"><?php echo $_seller->getShopTitle();?> </span>
-				<?php } ?>
-				<?php if($show_seller_address) { ?>
-					<p class="seller-info"><span class="seller-address"><i class="fa fa-map-marker"></i><?php echo $_seller->getAddress();?>, <?php echo $_seller->getCountry();?></span></p>
-				<?php } ?>
-				<?php if($show_seller_sale) { ?>
-				<p class="seller-info">
-					<span class="seller-sales-count">
-						<i class="fa fa-shopping-cart"></i>
-						<?php if($this->getTotalSales() >1) {
-							echo $this->getTotalSales().__(" Sales");
-						} else {
-							echo $this->getTotalSales().__(" Sale");
-						} ?>
-					</span>
-					<span class="seller-joined-date"><i class="fa fa-calendar"></i><?php echo __("Joined since ").$this->formatDate($_seller->getCreationTime(),\IntlDateFormatter::MEDIUM);?></span>
-				</p>
-				<?php } ?>
-				<?php if($show_seller_phone) { ?>
-				<p class="seller-info">    
-					<span class="seller-phone"><i class="fa fa-phone"></i><?php echo $_seller->getContactNumber();?></span>
-				</p>
-				<?php } ?>
-				<?php if($show_seller_contact) { ?>
-				<div class="seller-info message-contact">
-				    <a class="btn" id="seller-contact" href="<?php echo $href;?>"><i class="fa fa-envelope-o"></i><?php echo $text_contact;?></a>
-				</div>
-				<?php } ?>
-			</div>
-		</div>	 -->
-	 <?php */?>
-	
+			<option>Please select seller</option>
+		<?php foreach ($sellerCollection as $_seller) { 
+				$getPrice = $data->getSellerProductprice($_seller->getId(),$product->getId());
+				$objectManager = \Magento\Framework\App\ObjectManager::getInstance ();
+		       	if($getPrice <= 0){
+					$getPrice = $product->getPrice();
+				}
+				$priceHelper = $objectManager->create('Magento\Framework\Pricing\Helper\Data'); 
+				$formattedCurrencyValue = $priceHelper->currency($getPrice, true, false);
+			?>
+			<option data-price="<?php echo $getPrice; ?>" value="<?php echo $_seller->getId();?>"><?php echo $_seller->getName()." ".$formattedCurrencyValue; ?></option>
 	 <?php
 		}
 	?>
@@ -206,9 +171,11 @@ $sessionCustlgin = $customerSession->getCustmerloginstatus();
             setTimeout(function(){
             	//alert("<?php //echo $sellerId; ?>");
                   $("#seller_id").val("<?php echo $sellerId; ?>");
+                  $("#seller_price").val("<?php echo $sellerId; ?>");
               },2000);
              
 	          $('#seller_list').change(function () {
+	          		$("#seller_price").val($(this).find(':selected').attr('data-price'));
 	             	$("#seller_id").val($(this).val());
 	          });
     });

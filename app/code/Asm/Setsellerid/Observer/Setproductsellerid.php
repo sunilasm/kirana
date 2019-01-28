@@ -85,28 +85,81 @@ class Setproductsellerid implements \Magento\Framework\Event\ObserverInterface
         if($request->getBodyParams())
         {
             $post = $request->getBodyParams();
-            $seller_id["product_id"] = $post['product_id'];
-            $seller_id["seller_id"] = $post['seller_id'];
-        
-            $logger->info("seller_id");
-            $logger->info($seller_id);
-            $quote = $observer->getQuote();
-             $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
-            $customerSession = $objectManager->create('Magento\Customer\Model\Session');
-            foreach ($quote->getAllItems() as $quoteItem) {
-                if($seller_id["product_id"]){
-                    if($seller_id["product_id"] == $quoteItem->getProductId()){
-                        $logger->info("quoteItem");
-                        $logger->info($quoteItem->getProductId());
-                        $quoteItem->setSellerId($seller_id["seller_id"]);
-                        $itemExtAttr = $quoteItem->getExtensionAttributes();
-                        if ($itemExtAttr === null) {
-                            $itemExtAttr = $this->extensionFactory->create();
-                        }
-                        $itemExtAttr->setSellerId($seller_id["seller_id"]);
-                        $quoteItem->setExtensionAttributes($itemExtAttr);
+            if(isset($post['product']) && isset($post['price'])){
+                $seller_id["product"] = $post['product'];
+                $seller_id["seller_id"] = $post['seller_id'];
+                $seller_id["price"] = $post['price'];
+            
+                $logger->info("seller_id");
+                $logger->info($seller_id);
+                $quote = $observer->getQuote();
+                $quote->setIsMultiShipping(false);
+                $quote->collectTotals();
+                $quote->setTotalsCollectedFlag(false);
+                $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+                $customerSession = $objectManager->create('Magento\Customer\Model\Session');
+
+                $item = $observer->getQuote();
+                $cartItems = [];
+                if($item->getQuote()->getItems()){
+                    foreach ($item->getQuote()->getItems() as $key => $value) {
+                        $cartItems[$value->getSku()] = $value->getQty();
                     }
                 }
+                $logger->info("Setproductsellerrrrrrrrrrr Setproductseller222");
+                $logger->info($cartItems);
+
+                $price = $seller_id["price"];
+                $item->setSellerId($seller_id["seller_id"]);
+                $item->setOriginalCustomPrice($price);
+                $item->setCustomPrice($price);
+                foreach ($quote->getAllVisibleItems() as $quoteItem) {
+                    if(isset($seller_id["product"]) && isset($seller_id["seller_id"]) && isset($seller_id["price"])){
+                        //if($seller_id["product"] == $quoteItem->getProductId()){
+                            $logger->info("quoteItem");
+                            $logger->info($quoteItem->getProductId());
+                           /* $quoteItem->setPrice($seller_id["price"]);
+                            $quoteItem->setCustomRowTotalPrice($seller_id["seller_id"]);
+                           */ 
+                            //$quoteItem->setSellerId($seller_id["seller_id"]);
+                           /* $quoteItem->setCustomPrice($seller_id["price"]);
+                            $quoteItem->setOriginalCustomPrice($seller_id["price"]);
+                            $quoteItem->setBaseRowTotal($seller_id["price"]);
+                            $quoteItem->setBasePrice($seller_id["price"]);
+                            $quoteItem->setRawTotal($seller_id["price"]);
+                            $quoteItem->setBaseRawTotal($seller_id["price"]);
+                            $quoteItem->setOriginalPrice($seller_id["price"]);
+                            $quoteItem->save();
+                            $quoteItem->getProduct()->setIsSuperMode(true);
+                            $quoteItem->save();*/
+                            /* $quoteItem->setCustomPrice($seller_id["price"]);
+                            //$quoteItem->setPrice($seller_id["price"]);
+                            $quoteItem->setOriginalCustomPrice($seller_id["price"]);
+                            $quoteItem->setPrice($seller_id["price"]);
+                            $quoteItem->setBasePrice($seller_id["price"]);
+                            $quoteItem->setRawTotal($seller_id["price"]);
+                            $quoteItem->setBaseRawTotal($seller_id["price"]);
+                            $quoteItem->setOriginalPrice($seller_id["price"]);
+                            $quoteItem->setOriginalBasePrice($seller_id["price"]);
+                            $quoteItem->getProduct()->setIsSuperMode(true);*/
+
+                            $itemExtAttr = $quoteItem->getExtensionAttributes();
+                            if ($itemExtAttr === null) {
+                                $itemExtAttr = $this->extensionFactory->create();
+                            }
+                            $itemExtAttr->setSellerId($seller_id["seller_id"]);
+                            $quoteItem->setExtensionAttributes($itemExtAttr);
+                            //$quoteItem->save();
+                            $logger->info("Setproductsellerrrrrrrrrrr API");
+                            //$logger->info($quoteItem->getData());
+                        //}
+                    }
+                }
+                //$quote->save();
+                $quote->getShippingAddress()->setCollectShippingRates(true);
+                $quote->setTotalsCollectedFlag(true)->collectTotals();
+                //$quote->calcRowTotal();
+                $quote->collectTotals();
             }
         }
         return $this;

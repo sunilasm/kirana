@@ -51,98 +51,98 @@
 			<input type="hidden" id="seller_id" name="seller_id" title="Seller ID" value="<?php echo $sellerId; ?>" />
 			<input type="hidden" id="group_id" name="group_id" title="Group ID" value="<?php echo $seller['group_id']; ?>" />
 			<fieldset class="admin__fieldset">
-				<div class="admin__field required">
+				<div class="admin__field ">
 					<label class="admin__field-label">
 					<span><?php echo __("Contact Number"); ?></span>
 					</label>
 					<div class="admin__field-control">
 						<input type="text" name="contact_number" class="admin__control-text" 
 						value="<?php echo $seller['contact_number']; ?>" 
-						data-validate='{"required":true,"number":true,"maxlength":10,"minlength":10}'/>
+						data-validate='{number":true,"maxlength":10,"minlength":10}'/>
 					</div>
 				</div>
-				<div class="admin__field required">
+				<div class="admin__field ">
 					<label class="admin__field-label">
 					<span><?php echo __("Shop Title"); ?></span>
 					</label>
 					<div class="admin__field-control">
 						<input type="text" name="shop_title" class="admin__control-text" value="<?php echo $seller['shop_title']; ?>" 
-						data-validate='{"required":true,"validate-alphanum-with-spaces":true}'/>
+						data-validate='{validate-alphanum-with-spaces":true}'/>
 					</div>
 				</div>
-				<div class="admin__field required">
+				<div class="admin__field ">
 					<label class="admin__field-label">
 					<span><?php echo __("Company"); ?></span>
 					</label>
 					<div class="admin__field-control">
 						<input type="text" name="company" class="admin__control-text" value="<?php echo $seller['company']; ?>" 
-						data-validate='{"required":true,"validate-alphanum-with-spaces":true}' />
+						data-validate='{validate-alphanum-with-spaces":true}' />
 					</div>
 				</div>
-				<div class="admin__field required">
+				<div class="admin__field ">
 					<label class="admin__field-label">
 					<span><?php echo __("Company Locality"); ?></span>
 					</label>
 					<div class="admin__field-control">
 						<input type="text" name="company_locality" class="admin__control-text" value="<?php echo $seller['company_locality']; ?>"  
-						data-validate='{"required":true,"validate-alphanum-with-spaces":true}'/>
+						data-validate='{validate-alphanum-with-spaces":true}'/>
 					</div>
 				</div>
-				<div class="admin__field required">
+				<div class="admin__field ">
 					<label class="admin__field-label">
 					<span><?php echo __("Phone Number"); ?></span>
 					</label>
 					<div class="admin__field-control">
 						<input type="text" name="telephone" class="admin__control-text" value="<?php echo $seller['telephone']; ?>" 
-						data-validate='{"required":true,"number":true,"maxlength":10,"minlength":10}' />
+						data-validate='{number":true,"maxlength":10,"minlength":10}' />
 					</div>
 				</div>
-				<div class="admin__field required">
+				<div class="admin__field ">
 					<label class="admin__field-label">
 					<span><?php echo __("Address"); ?></span>
 					</label>
 					<div class="admin__field-control">
 						<input type="text" id="address" name="address" class="admin__control-text" value="<?php echo $seller['address']; ?>" 
-						data-validate='{"required":true}'/>
+						/>
 					</div>
 				</div>
-				<div class="admin__field required">
+				<div class="admin__field ">
 					<label class="admin__field-label">
 					<span><?php echo __("City"); ?></span>
 					</label>
 					<div class="admin__field-control">
 						<input type="text" name="city" id="city" class="admin__control-text" value="<?php echo $seller['city']; ?>"  
-						data-validate='{"required":true,"validate-alphanum-with-spaces":true}'/>
+						data-validate='{validate-alphanum-with-spaces":true}'/>
 					</div>
 				</div>
-				<div class="admin__field required">
+				<div class="admin__field ">
 					<label class="admin__field-label">
 					<span><?php echo __("State/Province"); ?></span>
 					</label>
 					<div class="admin__field-control">
 						<input type="text" name="region" id="region" class="admin__control-text" value="<?php echo $seller['region']; ?>"  
-						data-validate='{"required":true,"validate-alphanum-with-spaces":true}'/>
+						data-validate='{validate-alphanum-with-spaces":true}'/>
 					</div>
 				</div>
-				<div class="admin__field required">
+				<div class="admin__field ">
 					<label class="admin__field-label">
 					<span><?php echo __("Country"); ?></span>
 					</label>
 					<div class="admin__field-control">
 						<input type="text" name="country" id="country" class="admin__control-text" value="<?php echo $seller['country']; ?>" 
-						data-validate='{"required":true,"validate-alphanum-with-spaces":true}'/>
+						data-validate='{validate-alphanum-with-spaces":true}'/>
 					</div>
 				</div>
-				<div class="admin__field required">
+				<div class="admin__field ">
 					<label class="admin__field-label">
 					<span><?php echo __("Zip/Postal Code"); ?></span>
 					</label>
 					<div class="admin__field-control">
 						<input type="text" id="postcode" name="postcode" class="admin__control-text" value="<?php echo $seller['postcode']; ?>"  
-						data-validate='{"required":true,"number":true,"maxlength":6,"minlength":6}'/>
+						data-validate='{number":true,"maxlength":6,"minlength":6}'/>
 					</div>
 				</div>
-				<div class="admin__field required">
+				<div class="admin__field ">
 					<label class="admin__field-label">
 					<span><?php echo __("Geo Latitude"); ?></span>
 					</label>
@@ -150,11 +150,11 @@
 						<input type="text" id="geo_lat" name="geo_lat" title="Geo Latitude" 
 						value="<?php echo $seller['geo_lat']; ?>" 
 						class="admin__control-text" 
-						data-validate='{"required":true}' 
+						 
 						readonly="true" />
 					</div>
 				</div>
-				<div class="admin__field required">
+				<div class="admin__field ">
 					<label class="admin__field-label">
 					<span><?php echo __("Geo Longitude"); ?></span>
 					</label>
@@ -162,7 +162,7 @@
 						<input type="text" id="geo_lng" name="geo_lng" title="Geo Longitude" 
 						value="<?php echo $seller['geo_lng']; ?>" 
 						class="admin__control-text" 
-						data-validate='{"required":true}' 
+						 
 						readonly="true"/>
 					</div>
 				</div>
@@ -202,26 +202,26 @@
 		</div>
 		<div id="kirana"  class="admin__fieldset-wrapper-content admin__collapsible-content">
 			<fieldset class="admin__fieldset">
-				<fieldset class="admin__field required">
+				<fieldset class="admin__field ">
 					<label class="admin__field-label">
 						<span><?php echo __('Store Type') ?></span>
 					</label>
 					<div class="admin__field-control">
 						<select id="store_type" name="store_type" title="Store Type" 
-						class="admin__control-select" data-validate='{"required":true}'>
+						class="admin__control-select" >
                     		<option value="KIR" <?php if($seller['store_type'] == 'KIR') : echo "selected"; endif; ?>>KIR</option>
 							<option value="MED" <?php if($seller['store_type'] == 'MED') : echo "selected"; endif; ?>>MED</option>
 							<option value="NA" <?php if($seller['store_type'] == 'NA') : echo "selected"; endif; ?>>NA</option>
 						</select>
 					</div>
 				</fieldset>
-				<fieldset class="admin__field required">
+				<fieldset class="admin__field ">
 					<label class="admin__field-label">
 						<span><?php echo __('24*7 Shop') ?></span>
 					</label>
 					<div class="admin__field-control">
 						<select id="24by7_shop" name="24by7_shop" title="24*7 Shop" 
-						class="admin__control-select" data-validate='{"required":true}'>
+						class="admin__control-select" >
                     		<option value="No" <?php if($seller['24by7_shop'] == 'No') : echo "selected"; endif; ?>>No</option>
 							<option value="Yes" <?php if($seller['24by7_shop'] == 'Yes') : echo "selected"; endif; ?>>Yes</option>
 						</select>
@@ -236,7 +236,7 @@
 						value="<?php echo $seller['opening_time']; ?>" 
 						<?php if($seller['24by7_shop'] == 'Yes') : echo "disabled"; endif; ?>
 						class="admin__control-text" 
-						data-validate='{"required":false,"time":true}' />
+						data-validate='{"":false,"time":true}' />
 					</div>
 				</fieldset>
 				<fieldset class="admin__field">
@@ -248,7 +248,7 @@
 						value="<?php echo $seller['closeing_time']; ?>" 
 						<?php if($seller['24by7_shop'] == 'Yes') : echo "disabled"; endif; ?>
 						class="admin__control-text" 
-						data-validate='{"required":false,"time":true}' />
+						data-validate='{"":false,"time":true}' />
 					</div>
 				</fieldset>
 				<fieldset class="admin__field">
@@ -260,7 +260,7 @@
 						title="Days Not Working" 
 						value="<?php echo $seller['non_working_days']; ?>" 
 						class="admin__control-text" 
-						data-validate='{"required":false,"number":true}' />
+						data-validate='{"":false,"number":true}' />
 					</div>
 				</fieldset>
 				<!-- <fieldset class="admin__field">
@@ -272,7 +272,7 @@
 						title="LSN" 
 						value="<?php echo $seller['lsn']; ?>" 
 						class="admin__control-text" 
-						data-validate='{"required":false,"validate-alphanum-with-spaces":true}' />
+						data-validate='{"":false,"validate-alphanum-with-spaces":true}' />
 					</div>
 				</fieldset> -->
 				<!-- <fieldset class="admin__field">
@@ -284,7 +284,7 @@
 						title="CST" 
 						value="<?php echo $seller['cst']; ?>" 
 						class="admin__control-text" 
-						data-validate='{"required":false,"validate-alphanum-with-spaces":true}' />
+						data-validate='{"":false,"validate-alphanum-with-spaces":true}' />
 					</div>
 				</fieldset> -->
 				<fieldset class="admin__field">
@@ -296,7 +296,7 @@
 						title="PAN" 
 						value="<?php echo $seller['pan']; ?>" 
 						class="admin__control-text" 
-						data-validate='{"required":false,"validate-alphanum-with-spaces":true}' />
+						data-validate='{"":false,"validate-alphanum-with-spaces":true}' />
 					</div>
 				</fieldset>
 				<!-- <fieldset class="admin__field">
@@ -308,7 +308,7 @@
 						title="VAT" 
 						value="<?php echo $seller['vat']; ?>" 
 						class="admin__control-text" 
-						data-validate='{"required":false,"validate-alphanum-with-spaces":true}' />
+						data-validate='{"":false,"validate-alphanum-with-spaces":true}' />
 					</div>
 				</fieldset> -->
 				<!-- <fieldset class="admin__field">
@@ -320,7 +320,7 @@
 						title="TIN" 
 						value="<?php echo $seller['tin']; ?>" 
 						class="admin__control-text" 
-						data-validate='{"required":false,"validate-alphanum-with-spaces":true}' />
+						data-validate='{"":false,"validate-alphanum-with-spaces":true}' />
 					</div>
 				</fieldset> -->
 				<fieldset class="admin__field">
@@ -332,7 +332,7 @@
 						title="GST" 
 						value="<?php echo $seller['gst']; ?>" 
 						class="admin__control-text" 
-						data-validate='{"required":false,"validate-alphanum-with-spaces":true}' />
+						data-validate='{"":false,"validate-alphanum-with-spaces":true}' />
 					</div>
 				</fieldset>
 				<fieldset class="admin__field">
@@ -341,7 +341,7 @@
 					</label>
 					<div class="admin__field-control">
 						<select id="digital_verification" name="digital_verification" title="Digital Verification" 
-						class="admin__control-select" data-validate='{"required":false}'>
+						class="admin__control-select" data-validate='{"":false}'>
                     		<option value="No" <?php if($seller['digital_verification'] == 'No') : echo "selected"; endif; ?>>No</option>
 							<option value="Yes" <?php if($seller['digital_verification'] == 'Yes') : echo "selected"; endif; ?>>Yes</option>
 						</select>
@@ -353,7 +353,7 @@
 					</label>
 					<div class="admin__field-control">
 						<select id="physical_verification" name="physical_verification" title="Physical Verification" 
-						class="admin__control-select" data-validate='{"required":false}'>
+						class="admin__control-select" data-validate='{"":false}'>
                     		<option value="No" <?php if($seller['physical_verification'] == 'No') : echo "selected"; endif; ?>>No</option>
 							<option value="Yes" <?php if($seller['physical_verification'] == 'Yes') : echo "selected"; endif; ?>>Yes</option>
 						</select>
@@ -365,7 +365,7 @@
 					</label>
 					<div class="admin__field-control">
 						<select id="smart_phone" name="smart_phone" title="Smartphone wih data" 
-						class="admin__control-select" data-validate='{"required":false}'>
+						class="admin__control-select" data-validate='{"":false}'>
                     		<option value="No" <?php if($seller['smart_phone'] == 'No') : echo "selected"; endif; ?>>No</option>
 							<option value="Yes" <?php if($seller['smart_phone'] == 'Yes') : echo "selected"; endif; ?>>Yes</option>
 						</select>
@@ -377,7 +377,7 @@
 					</label>
 					<div class="admin__field-control">
 						<select id="knows_english" name="knows_english" title="Knows English" 
-						class="admin__control-select" data-validate='{"required":false}'>
+						class="admin__control-select" data-validate='{"":false}'>
                     		<option value="No" <?php if($seller['knows_english'] == 'No') : echo "selected"; endif; ?>>No</option>
 							<option value="Yes" <?php if($seller['knows_english'] == 'Yes') : echo "selected"; endif; ?>>Yes</option>
 						</select>
@@ -389,7 +389,7 @@
 					</label>
 					<div class="admin__field-control">
 						<select id="parent_store" name="parent_store" title="Parent Store" 
-						class="admin__control-select" data-validate='{"required":false}'>
+						class="admin__control-select" data-validate='{"":false}'>
                     		<option value="No" <?php if($seller['parent_store'] == 'No') : echo "selected"; endif; ?>>No</option>
 							<option value="Yes" <?php if($seller['parent_store'] == 'Yes') : echo "selected"; endif; ?>>Yes</option>
 						</select>
@@ -405,16 +405,16 @@
 						value="<?php echo $seller['parent_store_id']; ?>" 
 						class="admin__control-text" 
 						<?php if($seller['parent_store'] == 'No') : echo "disabled"; endif; ?>
-						data-validate='{"required":false,"number":true}' />
+						data-validate='{"":false,"number":true}' />
 					</div>
 				</fieldset>
-				<fieldset class="admin__field required">
+				<fieldset class="admin__field ">
 					<label class="admin__field-label">
 						<span><?php echo __('Kirana Type') ?></span>
 					</label>
 					<div class="admin__field-control">
 						<select id="kirana_type" name="kirana_type" title="Kirana Type" 
-						class="admin__control-select" data-validate='{"required":true}'>
+						class="admin__control-select">
                     		<option value="RK" <?php if($seller['kirana_type'] == 'RK') : echo "selected"; endif; ?>>KIR</option>
 							<option value="SK" <?php if($seller['kirana_type'] == 'SK') : echo "selected"; endif; ?>>SK</option>
 							<option value="LK" <?php if($seller['kirana_type'] == 'LK') : echo "selected"; endif; ?>>LK</option>
@@ -422,20 +422,20 @@
 						</select>
 					</div>
 				</fieldset>
-				<fieldset class="admin__field required">
+				<fieldset class="admin__field ">
 					<label class="admin__field-label">
 						<span><?php echo __('Kirana Locality') ?></span>
 					</label>
 					<div class="admin__field-control">
 						<select id="kirana_locality" name="kirana_locality" title="Kirana Locality" 
-						class="admin__control-select" data-validate='{"required":true}'>
+						class="admin__control-select" >
                     		<option value="LMC" <?php if($seller['kirana_locality'] == 'LMC') : echo "selected"; endif; ?>>LMC</option>
 							<option value="MC" <?php if($seller['kirana_locality'] == 'MC') : echo "selected"; endif; ?>>MC</option>
 							<option value="UMC" <?php if($seller['kirana_locality'] == 'UMC') : echo "selected"; endif; ?>>UMC</option>
 						</select>
 					</div>
 				</fieldset>
-				<fieldset class="admin__field required">
+				<fieldset class="admin__field ">
 					<label class="admin__field-label">
 						<span><?php echo __('Kirana Owner') ?></span>
 					</label>
@@ -444,10 +444,10 @@
 						title="Kirana Owner" 
 						value="<?php echo $seller['kirana_owner']; ?>" 
 						class="admin__control-text" 
-						data-validate='{"required":true,"validate-alphanum-with-spaces":true}' />
+						data-validate='{validate-alphanum-with-spaces":true}' />
 					</div>
 				</fieldset>
-				<fieldset class="admin__field required">
+				<fieldset class="admin__field ">
 					<label class="admin__field-label">
 						<span><?php echo __('Kirana Fixed Line') ?></span>
 					</label>
@@ -456,7 +456,7 @@
 						title="Kirana Fixed Line" 
 						value="<?php echo $seller['kirana_fixed_line']; ?>" 
 						class="admin__control-text" 
-						data-validate='{"required":true,"number":true,"maxlength":10,"minlength":10}' />
+						data-validate='{number":true,"maxlength":10,"minlength":10}' />
 					</div>
 				</fieldset>
 			</fieldset>	

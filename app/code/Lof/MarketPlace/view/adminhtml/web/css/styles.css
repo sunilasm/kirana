@@ -69,3 +69,7 @@
     width: 300px;
     padding-top: 5px;
 }
+
+.asm_float_left .admin__grid-control span{
+    display: none;
+}

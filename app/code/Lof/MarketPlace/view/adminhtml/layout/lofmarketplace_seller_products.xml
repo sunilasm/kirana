@@ -5,12 +5,21 @@
  * See COPYING.txt for license details.
  */
 -->
+
 <layout xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/layout_generic.xsd">
+    <head>
+        <css src="Lof_MarketPlace::css/styles.css"/>
+    </head>
     <container name="root" label="Root">
         <block class="Lof\MarketPlace\Block\Adminhtml\Seller\Edit\Tab\Products" name="seller.edit.tab.products"/>
         <block class="Magento\Backend\Block\Widget\Grid\Serializer" name="related_grid_serializer">
             <arguments>
-                <argument name="input_names" xsi:type="string">product_position</argument>
+                <argument name="input_names" xsi:type="array">
+                    <item name="0" xsi:type="string">product_position</item>
+                    <item name="1" xsi:type="string">product_sku</item>
+                    <item name="2" xsi:type="string">product_price</item>
+                </argument>
+               <!--  <argument name="input_names" xsi:type="string">product_position</argument> -->
                 <argument name="grid_block" xsi:type="string">seller.edit.tab.products</argument>
                 <argument name="callback" xsi:type="string">getSelectedSellerProducts</argument>
                 <argument name="input_element_name" xsi:type="string">links[related]</argument>

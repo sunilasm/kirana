@@ -22,6 +22,7 @@
         <input type="hidden" name="product" value="<?= /* @escapeNotVerified */ $_product->getId() ?>" />
         <input type="hidden" name="selected_configurable_option" value="" />
         <input type="hidden" name="seller_id" id="seller_id" data-id="<?php echo $_product->getSellerId(); ?>" value="<?php echo $_product->getSellerId(); ?>" />
+         <input type="hidden" name="price" id="seller_price" data-price="<?php echo $_product->getPrice(); ?>" value="<?php echo $_product->getPrice(); ?>" />
         <input type="hidden" name="related_product" id="related-products-field" value="" />
         <input type="hidden" name="item"  value="<?= /* @noEscape */ $block->getRequest()->getParam('id') ?>" />
         <?= $block->getBlockHtml('formkey') ?>
