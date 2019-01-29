@@ -177,11 +177,12 @@ require([
                                 var latitude = results[0].geometry.location.lat();
                                 var longitude = results[0].geometry.location.lng();
                                 var custmerloginstatus = 'true';
+                                var param = 'latitude='+latitude+'&longitude='+longitude;
                                 // Select current address add to new 
                                 if(selectedId == "currentAddval"){
                                     jQuery.ajax({
                                         url: '<?php  echo $baseUrl; ?>search/index/addnewaddress',
-                                        // data: param,
+                                        data: param,
                                         type: 'POST',
                                         showLoader: true,
                                         dataType: 'json',
