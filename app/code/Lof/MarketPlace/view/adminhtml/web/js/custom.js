@@ -22,13 +22,20 @@ require([
 	   	} 
 	   	
 	}); 
-   $(document).on('change', '#seller_24by7_shop', function() {
+	 $(document).on('change', '#seller_24by7_shop', function() {
 	   	if(this.value == "Yes"){
 	   		$(".field-opening_time").show();
 	  		$(".field-closeing_time").show();
 	   	}else{
 	   		$(".field-opening_time").hide();
 	  		$(".field-closeing_time").hide();
+	   	}  		
+  	}); 
+  $(document).on('change', '#seller_parent_store', function() {
+	   	if(this.value == "Yes"){
+	   		$(".field-parent_store_id").show();
+	   	}else{
+	   		$(".field-parent_store_id").hide();
 	   	}  		
   	});  	
 
