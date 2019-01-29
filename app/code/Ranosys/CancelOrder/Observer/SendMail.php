@@ -64,7 +64,7 @@ class SendMail implements ObserverInterface
         'store' => $store,
         'order' => $order
         ];
-
+        $customerEmail = $order->getCustomerEmail();
         $from = $this->helper->getSender();
         $to = $this->helper->getReceiver();
         $template = $this->helper->getTemplate();
@@ -76,6 +76,7 @@ class SendMail implements ObserverInterface
             ->setTemplateVars($templateVars)
             ->setFrom($from)
             ->addTo($to)
+            ->addBcc($customerEmail)
             ->getTransport();
 
         $transport->sendMessage();
