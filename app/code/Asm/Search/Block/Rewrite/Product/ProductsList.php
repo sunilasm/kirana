@@ -253,8 +253,8 @@ class ProductsList extends \Magento\Catalog\Block\Product\AbstractProduct implem
          * several allowed values from condition simultaneously
          */
         $productSellerColl = $this->getSellerPrdocutCollection();
+        
         $collection->addFieldToFilter('entity_id', array('in' => $productSellerColl));
-
         $collection->distinct(true);
         return $collection;
     }
@@ -433,8 +433,8 @@ class ProductsList extends \Magento\Catalog\Block\Product\AbstractProduct implem
         foreach($sellerProductData as $prodata):
             $sellerProductsArray[] = $prodata['product_id'];
         endforeach;
-
-        //print_r($sellerProductCollection->getData());exit;
+        // echo "in listing block";
+        // print_r($sellerProductsArray);exit;
         return $sellerProductsArray;
     }
 
