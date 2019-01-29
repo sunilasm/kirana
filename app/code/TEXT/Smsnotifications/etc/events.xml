@@ -19,9 +19,9 @@
     <event name="admin_system_config_changed_section_text_smsnotifications_configuration">
           <observer name="text_smsnotification_observer_config_save" instance="TEXT\Smsnotifications\Observer\Configsave"/>
     </event>
-     <event name="sales_order_shipment_save_before">
+    <!-- <event name="sales_order_shipment_save_before">
          <observer name="text_smsnotifications_observer_shipment_save" instance="TEXT\Smsnotifications\Observer\Shipment"/>
-     </event>
+     </event>-->
     
       <event name="controller_action_postdispatch_customer_account_forgotpasswordpost">
         <observer name="text_smsnotifications_observer_forgot_password" instance="TEXT\Smsnotifications\Observer\ForgotPassword"/>

@@ -197,22 +197,22 @@ require([
                                     //});
                                 //}
                                 // Select default address to Clear cart
-                                if(selectedId == "defaultAddval"){
-                                    jQuery.ajax({
-                                        url: '<?php  echo $baseUrl; ?>search/index/clearcart',
-                                        type: 'POST',
-                                        showLoader: true,
-                                        success: function (res) {
-                                            if (res.messages) {
-                                                jQuery('[data-placeholder="messages"]').html(res.messages);
-                                            }
+                                //if(selectedId == "defaultAddval"){
+                                  //  jQuery.ajax({
+                                    //    url: '<?php  echo $baseUrl; ?>search/index/clearcart',
+                                      //  type: 'POST',
+                                        //showLoader: true,
+                                       // success: function (res) {
+                                         //   if (res.messages) {
+                                           //     jQuery('[data-placeholder="messages"]').html(res.messages);
+                                           // }
                                             // if (res.minicart) {
                                             //     jQuery('[data-block="minicart"]').replaceWith(res.minicart);
                                             //     jQuery('[data-block="minicart"]').trigger('contentUpdated');
                                             // }
-                                        }
-                                    });
-                                }
+                                       // }
+                                   // });
+                               // }
 
 
                                 // Set session
