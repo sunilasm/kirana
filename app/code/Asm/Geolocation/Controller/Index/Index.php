@@ -27,7 +27,7 @@ class Index extends \Magento\Framework\App\Action\Action
 
     public function execute()
     {
-        
+        //echo"wwwwwwwww";exit;
         $result = $this->resultFactory->create(ResultFactory::TYPE_JSON);
         if ($this->getRequest()->isAjax())
         {

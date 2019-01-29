@@ -19,7 +19,8 @@ use Magento\Framework\App\Action\Action;
 $objectManager = \Magento\Framework\App\ObjectManager::getInstance ();
 $_productCollection = $block->getLoadedProductCollection();
 $sellerProductCollection = $block->getSellerPrdocutCollection();
-// print_r($_productCollection1->getData());exit;
+ // echo "listing template";    
+// print_r($sellerProductCollection);exit;
 
 $_helper = $this->helper('Magento\Catalog\Helper\Output');
 ?>

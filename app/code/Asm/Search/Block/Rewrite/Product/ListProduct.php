@@ -22,6 +22,7 @@ use Magento\Framework\DataObject\IdentityInterface;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\Pricing\Render;
 use Magento\Framework\Url\Helper\Data;
+use \Magento\Framework\Session\SessionManagerInterface;
 
 /**
  * Product list
@@ -84,6 +85,8 @@ class ListProduct extends AbstractProduct implements IdentityInterface
         Data $urlHelper,
         \Lof\MarketPlace\Model\SellerProduct $sellerProductCollection,
         \Asm\Search\Block\Rewrite\Product\ProductsList $productCollectionAscondition,
+        \Asm\Search\Model\Searchview $inRanageseller,
+        SessionManagerInterface $customerSession,
         array $data = []
     ) {
         $this->_catalogLayer = $layerResolver->get();
@@ -92,6 +95,8 @@ class ListProduct extends AbstractProduct implements IdentityInterface
         $this->urlHelper = $urlHelper;
         $this->_sellerProductCollection = $sellerProductCollection;
         $this->_sellerCondtionCollection = $productCollectionAscondition;
+        $this->customerSession = $customerSession;
+        $this->_inRanageseller = $inRanageseller;
         parent::__construct(
             $context,
             $data
@@ -521,7 +526,21 @@ class ListProduct extends AbstractProduct implements IdentityInterface
 
      public function getSellerPrdocutCollection()
     {
+        $lat = $this->customerSession->getLatitude(); //latitude
+        $lon = $this->customerSession->getLongitude(); //longitude
         $sellerProductCollection = $this->_sellerProductCollection->getCollection();
+        if($lat != '' && $lon != ''){
+            $ranageSeller = $this->getInRange($lat, $lon);
+            $sellerProductCollection->addFieldToFilter('seller_id', array('in' => $ranageSeller));
+        }
+
+        //$sellerProductCollection = $this->_sellerProductCollection->getCollection();
+        // print_r($sellerProductCollection->getData());exit;
         return $sellerProductCollection;
+    }
+    public function getInRange($lat, $lon)
+    {
+        $ranageSeller = $this->_inRanageseller->getInRangeSeller($lat, $lon);
+        return $ranageSeller;
     }
 }
