@@ -113,8 +113,8 @@ class Registration implements ObserverInterface
         $settings = $this->_helper->getSettings();
         $objectManager = \Magento\Framework\App\ObjectManager ::getInstance();
         $writer = new \Zend\Log\Writer\Stream(BP . '/var/log/templog.log');
-		$logger = new \Zend\Log\Logger();
-		$logger->addWriter($writer);
+        $logger = new \Zend\Log\Logger();
+        $logger->addWriter($writer);
         $logger->info("---- Customer Reg ----");
         $CustomerModel = $objectManager->create('Magento\Customer\Model\Customer');
         $telephone = '';

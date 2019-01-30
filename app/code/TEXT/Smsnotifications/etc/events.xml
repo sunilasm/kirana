@@ -4,7 +4,7 @@
         <observer name="text_smsnotifications_observer_new_order" instance="TEXT\Smsnotifications\Observer\NewOrder"/>
     </event>
     <event name="sales_order_save_after">
-        <observer name="text_smsnotifications_observer_order_cancelled" instance="TEXT\Smsnotifications\Observer\OrderCancelled"/>
+        <!-- <observer name="text_smsnotifications_observer_order_cancelled" instance="TEXT\Smsnotifications\Observer\OrderCancelled"/> -->
         <observer name="text_smsnotifications_observer_order_hold" instance="TEXT\Smsnotifications\Observer\OrderHold"/>
         <observer name="text_smsnotifications_observer_order_un_hold" instance="TEXT\Smsnotifications\Observer\OrderUnHold"/>
        <!--   <observer name="text_smsnotifications_observer_order_payment_review" instance="TEXT\Smsnotifications\Observer\PaymentReview"/> -->
@@ -19,9 +19,9 @@
     <event name="admin_system_config_changed_section_text_smsnotifications_configuration">
           <observer name="text_smsnotification_observer_config_save" instance="TEXT\Smsnotifications\Observer\Configsave"/>
     </event>
-     <event name="sales_order_shipment_save_before">
+    <!-- <event name="sales_order_shipment_save_before">
          <observer name="text_smsnotifications_observer_shipment_save" instance="TEXT\Smsnotifications\Observer\Shipment"/>
-     </event>
+     </event>-->
     
       <event name="controller_action_postdispatch_customer_account_forgotpasswordpost">
         <observer name="text_smsnotifications_observer_forgot_password" instance="TEXT\Smsnotifications\Observer\ForgotPassword"/>
