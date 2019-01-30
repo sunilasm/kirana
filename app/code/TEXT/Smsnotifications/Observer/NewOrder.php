@@ -138,6 +138,7 @@ public function __construct(
         $countryCode   =  $order->getOrderCurrencyCode();
         $customerEmail =  $order->getCustomerEmail();
         /*Get telephone number of order customer*/
+        $text = '';
         $telephone = $this->destination  = $order->getBillingAddress()->getTelephone();
         if(in_array('placeorder', $final_array))
         {
