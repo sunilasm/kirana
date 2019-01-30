@@ -117,6 +117,26 @@ require([
                     if(sessionLat != addresslatitude && sessionLng != addresslongitude && sessionCustlgin == 'false'){
                         var popup = modal(optionsnew, $('#popup-modal-islogin'));
                             $('#popup-modal-islogin').modal('openModal');
+                            $('input[name=checkaddress]:radio').click(function () {   //Hook the click event for selected elements
+                                var selectedId = $("input[name='checkaddress']:checked").attr('id');
+                                if(selectedId == "defaultAddval"){
+                                    var popup = modal(confirmaddress, $('#popup-modal-confirm-address'));
+                                    $('#popup-modal-confirm-address').modal('openModal');
+                                    
+                                    $('input[name=confirmaddress]:radio').click(function () {
+
+                                        var selectedAddressId = $("input[name='confirmaddress']:checked").attr('id');
+                                        if(selectedAddressId == 'confirmyes'){
+                                            $('#defaultAddval').prop('checked', true);
+                                        }
+                                        if(selectedAddressId == 'confirmno'){
+                                           $('#currentAddval').prop('checked', true);
+                                        }
+                                    });   
+                                }
+
+                            });
+
                     }else{
                         $("#lat").val(addresslatitude);
                         $("#lng").val(addresslongitude); 
@@ -187,50 +207,65 @@ require([
                                         showLoader: true,
                                         dataType: 'json',
                                         success: function (data) {
-                                            // if (data.messages) {
-                                            //     jQuery('[data-placeholder="messages"]').html(res.messages);
-                                            // }
-                                            // if (res.minicart) {
-                                            //     jQuery('[data-block="minicart"]').replaceWith(res.minicart);
-                                            //     jQuery('[data-block="minicart"]').trigger('contentUpdated');
-                                            // }
+                                            console.log("Set customer address.");
                                         }
                                     });
                                 }
                                 // Select default address to Clear cart
-                                if(selectedId == "defaultAddval"){
-                                    jQuery.ajax({
-                                        url: '<?php  echo $baseUrl; ?>search/index/clearcart',
-                                        type: 'POST',
-                                        showLoader: true,
+                                 if(selectedId == "defaultAddval"){
+                                     jQuery.ajax({
+                                         url: '<?php  echo $baseUrl; ?>search/index/clearcart',
+                                         type: 'POST',
+                                         showLoader: true,
                                         success: function (res) {
-                                            if (res.messages) {
-                                                jQuery('[data-placeholder="messages"]').html(res.messages);
-                                            }
+                                             if (res.messages) {
+                                                 jQuery('[data-placeholder="messages"]').html(res.messages);
+                                             }
                                             // if (res.minicart) {
                                             //     jQuery('[data-block="minicart"]').replaceWith(res.minicart);
                                             //     jQuery('[data-block="minicart"]').trigger('contentUpdated');
                                             // }
-                                        }
-                                    });
-                                }
+                                         }
+                                     });
+                                 }
 
 
                                 // Set session
                                 setsession(latitude, longitude, custmerloginstatus, address);
-                                 // $.cookie('latitude', latitude );
-                                 // $.cookie('longitude', longitude );
-                                 // $.cookie('custmerloginstatus', 'true' );
                                 jQuery('#lat').val(latitude);
                                 jQuery('#lng').val(longitude);
                               }
                             });
-                        this.closeModal();
-                        $('#popup-modal-islogin').html(" ");
+                        // this.closeModal();
+                        // $('#popup-modal-islogin').html(" ");
                     }
                 }]
             };
-              if($("#lat").val() == '' && $("#lng").val() == '' && sessionLat == 'null' && sessionLng == 'null'){
+
+            var confirmaddress = {
+                type: 'popup',
+                responsive: true,
+                innerScroll: true,
+                title: 'Confirm Default Address',
+                modalClass: 'custom-modal',
+                buttons: [{
+                    text: $.mage.__('Continue'),
+                    class: 'confirmaddress',
+                    click: function () {
+                        var selectedAddressId = $("input[name='confirmaddress']:checked").attr('id');
+                            if(selectedAddressId == 'confirmyes'){
+                                $('#defaultAddval').prop('checked', true);
+                            }
+                            if(selectedAddressId == 'confirmno'){
+                               $('#currentAddval').prop('checked', true);
+                            }
+                        this.closeModal();
+                        //$('#popup-modal-confirm-address').html(" ");
+                    }
+                }]
+            };
+
+            if($("#lat").val() == '' && $("#lng").val() == '' && sessionLat == 'null' && sessionLng == 'null'){
                     var popup = modal(options, $('#popup-modal'));
                     setTimeout(function() {
                     $('#popup-modal').modal('openModal');

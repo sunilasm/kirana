@@ -13,7 +13,7 @@ $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
 $welcomeMessage = $block->getWelcome();
 $customerSession = $objectManager->create('Magento\Framework\Session\SessionManagerInterface');
 $sessionFullAdd = $customerSession->getFulladdress();
-// print_r($sessionFullAdd);exit;
+//print_r($sessionFullAdd);exit;
 ?>
 <?php if(isset($sessionFullAdd)){ ?>
 <li class="pull-left address-header"><span><strong>Current location:</strong></span> <?php if(isset($sessionFullAdd)){echo $sessionFullAdd;} ?> <a href="javascript:void(0)" class="change-location"><strong><u>Change</u></strong></a></li> 
