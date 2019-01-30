@@ -32,72 +32,33 @@ class Searchview implements SearchInterface
         $title = $this->request->getParam('title');
         $lat = $this->request->getParam('latitude');
         $lon = $this->request->getParam('longitude');
-        //print_r($title.'--'.$lat.'--'.$lon);exit;
-        // Check search term 
-        if($title){
-            // check current page
-            $current_page = $this->request->getParam('current_page');
-            if($current_page == ''){
-                $current_page = 1;
-            }else{
-                $current_page = $this->request->getParam('current_page');
-            }
-            // Check page size
-            $page_size = $this->request->getParam('page_size');
-            if($page_size == ''){
-                $page_size = 10;
-            }else{
-                $page_size = $this->request->getParam('page_size');
-            }
-           
-            $productCollectionArray = array();
-            $sellerProductsArray = array();
-            // filter prodcut collection as seller wise and name wise
-            $arratAttributes = array();
-                $collection = $this->_productCollectionFactory->create();
-                $collection->addAttributeToSelect('*');
-                // Check lat and lng is set or not
-                if($lat != '' && $lon != ''){
-                    $productCollectionArray = array();
-                    $ranageSeller = $this->getInRangeSeller($lat, $lon);
-                    $collection->addFieldToFilter('seller_id', array('in' => $ranageSeller));
+        $searchtermpara = $this->request->getParam('searchterm');
+        if($searchtermpara){ $searchterm = 0; }else{ $searchterm = 1; }
+        if($searchterm){
+            if($title){
+                $productCollectionArray = $this->getSearchTermData($title, $lat, $lon);
+                 if($productCollectionArray){
+                    $data = $productCollectionArray;
+                }else{
+                    $data = $productCollectionArray;
                 }
-                $collection->addAttributeToSort('price', 'asc');
-                $collection->addFieldToFilter([['attribute' => 'name', 'like' => '%'.$title.'%']]);
-                // $collection->addAttributeToFilter('name', array(
-                //     array('like' => '% '.$title.' %'), //spaces on each side
-                //     array('like' => '% '.$title), //space before and ends with $needle
-                //     array('like' => $title.' %') // starts with needle and space after
-                // ));  
-
-                // $collection->addAttributeToFilter('description', array(
-                //     array('like' => '% '.$title.' %'), //spaces on each side
-                //     array('like' => '% '.$title), //space before and ends with $needle
-                //     array('like' => $title.' %') // starts with needle and space after
-                // ));
-                $collection->setCurPage($current_page)->setPageSize($page_size);
-                foreach ($collection as $product){
-                    $productCollectionArray[] = $product->getData();
-                }
-                 //print_r($productCollectionArray);exit;
+            }else{
+                 $data = array('message' => 'Please specify at least one search term');
+            }
+        }else{
+            $productCollectionArray = $this->getSearchTermData($title = null,$lat, $lon);
              if($productCollectionArray){
                 $data = $productCollectionArray;
             }else{
                 $data = $productCollectionArray;
             }
-        }else{
-             $data = array('message' => 'Please specify at least one search term');
         }
-        
         return $data;
     }
     /*
     Get seller id's based on lat & lon.
     */
     public function getInRangeSeller($lat, $lon){
-        //$lat,  = '18.5647387'; //latitude
-        //$lon = '73.77837559999999'; //longitude
-         // print_r($lat."--".$lon);exit;
         $selerIdArray = array();
         $distance = 1; //your distance in KM
         $R = 6371; //constant earth radius. You can add precision here if you wish
@@ -121,5 +82,42 @@ class Searchview implements SearchInterface
             $selerIdArray[] = $seldata['seller_id'];
         endforeach;
         return  $selerIdArray;
+    }
+
+    public function getSearchTermData($title, $lat, $lon){
+        $productCollectionArray = array();
+            $sellerProductsArray = array();
+            $arratAttributes = array();
+            $collection = $this->_productCollectionFactory->create();
+            $collection->addAttributeToSelect('*');
+            // Check lat and lng is set or not
+            if($lat != '' && $lon != ''){
+                $productCollectionArray = array();
+                $ranageSeller = $this->getInRangeSeller($lat, $lon);
+                $collection->addFieldToFilter('seller_id', array('in' => $ranageSeller));
+            }
+            $collection->addAttributeToSort('price', 'asc');
+            if($title != null){
+                 // check current page
+                $current_page = $this->request->getParam('current_page');
+                if($current_page == ''){
+                    $current_page = 1;
+                }else{
+                    $current_page = $this->request->getParam('current_page');
+                }
+                // Check page size
+                $page_size = $this->request->getParam('page_size');
+                if($page_size == ''){
+                    $page_size = 10;
+                }else{
+                    $page_size = $this->request->getParam('page_size');
+                }
+                $collection->addFieldToFilter([['attribute' => 'name', 'like' => '%'.$title.'%']]);
+                $collection->setCurPage($current_page)->setPageSize($page_size);
+            }
+            foreach ($collection as $product){
+                $productCollectionArray[] = $product->getData();
+            }
+        return $productCollectionArray;
     }
 }
