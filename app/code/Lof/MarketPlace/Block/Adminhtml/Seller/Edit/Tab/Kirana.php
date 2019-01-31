@@ -169,6 +169,8 @@ class Kirana extends \Magento\Backend\Block\Widget\Form\Generic implements \Mage
                 'label' => __('GST'),
                 'title' => __('GST'),
                 'class' => 'alphanumeric',
+                'max_text_length' => 10
+                'min_text_length' => 10
                 'disabled' => $isElementDisabled
             ]
         );
@@ -283,7 +285,7 @@ class Kirana extends \Magento\Backend\Block\Widget\Form\Generic implements \Mage
                 'label' => __('Kirana Fixed Line'),
                 'title' => __('Kirana Fixed Line'),
                 // 'required' => true,
-                'class' => 'number validate-range validate-number-range-10-10',
+                'class' => 'number validate-range',
                 'disabled' => $isElementDisabled
             ]
         );
