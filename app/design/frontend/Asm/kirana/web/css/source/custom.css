@@ -11,3 +11,7 @@
 .shipping-address-item.not-selected-item {
 	display: none;
 }
+
+.checkout-index-index .checkout-billing-address {
+	display: none !important;
+}

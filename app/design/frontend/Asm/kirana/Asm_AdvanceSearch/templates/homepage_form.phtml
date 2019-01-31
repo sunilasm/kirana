@@ -109,6 +109,21 @@ $customerSession = $objectManager->create('Magento\Customer\Model\Session');
     </div>
 </div>
 
+<div id="popup-modal-confirm-address" class="modal" style="display: none">
+    <div id="locationField" class="row">
+      <div class="col-md-12 col-sm-12 col-lg-12">
+        <label><h2>Continue shopping with default address?</h2></label>
+      </div>
+      <div class="col-md-6 col-sm-6 col-lg-6">
+        <input type="radio" name="confirmaddress" id="confirmyes" value="" checked> <span id="confirmselectyes" ><label><strong>Yes</strong> (Currently added products from cart will be cleared.)</label></span>
+      </div>
+      <div class="col-md-6 col-sm-6 col-lg-6">
+        <input type="radio" name="confirmaddress" id="confirmno" value=""> <span id="confirmselectno"><label><strong>No</strong> (Continue shopping with current address.)</label></span>
+      </div>
+    </div>
+</div>
+
+
 </form>
 <script>
 require([

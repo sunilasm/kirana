@@ -105,6 +105,7 @@ class Addnewaddress extends \Magento\Framework\App\Action\Action
 
           $countryCollection = $this->_countryFactory->create()->loadByCode('IN')->getRegions();
           $regions = $countryCollection->loadData()->toOptionArray(false);
+          // print_r($regions);exit;
           $regionId = '533';
           $regionName = 'Andaman and Nicobar Islands';
           $countryCode = 'IN';
