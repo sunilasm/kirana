@@ -46,6 +46,7 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
     }
     public function getLatlng($address1, $city, $state, $country, $postcode){
         //$result = $this->resultFactory->create(ResultFactory::TYPE_JSON);
+        $output = array();
         if ($address1 || $city || $state || $country || $postcode)
         {
             //print_r($address1."--".$city."--".$state."--".$country."--".$postcode);exit;
@@ -62,9 +63,11 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
             //print_r($url);exit;
             $this->_curl->get($url);
             $response = $this->_curl->getBody();
+            //$data = json_decode($response);
+            //print_r($data);exit;
             $response = new \SimpleXMLElement($response);
             //echo "<pre>".print_r($str,true); exit;
-            $output = array();
+            
             if($response->status == 'OK'){
                 $output['status'] = 'success';
                 $output['geo']= $response->result->geometry->location;        
@@ -75,7 +78,8 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
                 $output['message'] = (string) $response->error_message;
             }
         }
-        //print_r($output);exit;
+
+        print_r($output);exit;
         return $output;
     }
 }

@@ -20,11 +20,17 @@ class Model implements \Magento\Framework\Event\ObserverInterface
     {
 	$customerAddress = $observer->getCustomerAddress();
         $address = $customerAddress->getStreet();
+         $city = ''; $state = ''; $country = ''; $postcode ='';
         $addressnew = implode(", ", $address);
         $city = $customerAddress->getCity();
         $state = $customerAddress->getRegion();
         $country = $customerAddress->getCountryId();
         $postcode = $customerAddress->getPostcode();
+        // if(!isset($addressnew)){$addressnew = '';}
+        // if(!isset($city)){$city = '';}
+        // if(!isset($state)){$state = '';}
+        // if(!isset($country)){$country = '';}
+        // if(!isset($postcode)){$postcode = '';}
 
         $resultdata = $this->helperData->getLatlng($addressnew, $city, $state, $country, $postcode);
 
