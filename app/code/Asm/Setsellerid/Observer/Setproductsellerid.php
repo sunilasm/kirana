@@ -85,6 +85,14 @@ class Setproductsellerid implements \Magento\Framework\Event\ObserverInterface
         if($request->getBodyParams())
         {
             $post = $request->getBodyParams();
+            $logger->info('In observer');
+            // $logger->info(print_r($post), true);
+            $logger->info(print_r($post,true));
+            $logger->info("product_id-->");
+            $logger->info($post['product_id']);
+            $logger->info("seller_id-->>");
+            $logger->info($post['seller_id']);
+
             if(isset($post['product_id'])){
                 $seller_id["product_id"] = $post['product_id'];
                 $seller_id["seller_id"] = $post['seller_id'];
