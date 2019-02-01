@@ -57,16 +57,16 @@ class Searchview implements SearchInterface
         return $data;
     }
 
-    public function clear() {
+   // public function clear() {
 
-        $quoteId = $this->request->getParam('quoteId');
-        $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
-        $quoteModel = $objectManager->create('Magento\Quote\Model\Quote');
-        $quoteItem = $quoteModel->load($quoteId);
-        $quoteItem->delete();
-        $data = array('message' => 'You have no items in your shopping cart.');
-        return $data;
-    }
+     //   $quoteId = $this->request->getParam('quoteId');
+       // $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+       // $quoteModel = $objectManager->create('Magento\Quote\Model\Quote');
+       // $quoteItem = $quoteModel->load($quoteId);
+       // $quoteItem->delete();
+       // $data = array('message' => 'You have no items in your shopping cart.');
+       // return $data;
+   // }
 
     public function deletesku() {
 
@@ -89,20 +89,21 @@ class Searchview implements SearchInterface
             $quoteItemIndexArray[$i] = $item->getItemid();
             $i++;
         endforeach;
-        // print_r($quoteItemIndexArray);exit;
+        //print_r($quoteItemIndexArray);exit;
         $data = '';
         $message = 'You have no items in your shopping cart.';
         if(count($quoteItemArray)){
             $ArrayIndex = array_search($sku, $quoteItemArray);
-           // print_r($ArrayIndex);exit;
+            //print_r($ArrayIndex);exit;
             if($ArrayIndex){
 
                 // Get base Url
                 $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
                 $storeManager = $objectManager->get('\Magento\Store\Model\StoreManagerInterface');
-                $baseUrl = $storeManager->getStore()->getBaseUrl();
-
-                $userData = array("username" => "admin", "password" => "Admin@123");
+                //$baseUrl = $storeManager->getStore()->getBaseUrl();
+		$baseUrl = "http://13.233.41.0/";
+		//print_r($baseUrl); exit;
+                $userData = array("username" => "sunil.n", "password" => "Admin@123");
                 $ch = curl_init("$baseUrl".''."rest/V1/integration/admin/token");
                 curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
                 curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($userData));
@@ -110,20 +111,20 @@ class Searchview implements SearchInterface
                 curl_setopt($ch, CURLOPT_HTTPHEADER, array("Content-Type: application/json", "Content-Lenght: " . strlen(json_encode($userData))));
 
                 $token = curl_exec($ch);
-
+		//echo $token; exit;
                 $ch = curl_init("$baseUrl".''."rest/V1/carts/".$quoteId."/items/".$quoteItemIndexArray[$ArrayIndex]);
                 curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE");
                 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
                 curl_setopt($ch, CURLOPT_HTTPHEADER, array("Content-Type: application/json", "Authorization: Bearer " . json_decode($token)));
 
                 $result = curl_exec($ch);
-
+		//print_r($result); exit;
                 $result = json_decode($result, 1);
                 $message = 'Sku is successfully removed from cart.';
             }
         }
         $data = array('status'=>'Sucess','message' => $message);
-        print_r($data);exit;
+        //print_r($data);exit;
         return $data;
     }
 

@@ -11,7 +11,7 @@ interface SearchInterface
      * @return string Greeting message with users name.
      */
     public function name();
-    public function clear();
+    //public function clear();
     public function checkcart();
     public function deletesku();
 }

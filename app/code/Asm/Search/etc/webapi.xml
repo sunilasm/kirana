@@ -6,12 +6,12 @@
             <resource ref="anonymous"/>
         </resources>
     </route>
-    <route url="/V1/clearcart/" method="GET">
+    <!--<route url="/V1/clearcart/" method="GET">
         <service class="Asm\Search\Api\SearchInterface" method="clear"/>
         <resources>
             <resource ref="anonymous"/>
         </resources>
-    </route>
+    </route>-->
     <route url="/V1/checkcart/" method="POST">
         <service class="Asm\Search\Api\SearchInterfacedeletesku" method="checkcart"/>
         <resources>
