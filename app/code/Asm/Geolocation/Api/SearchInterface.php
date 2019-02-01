@@ -1,5 +1,5 @@
 <?php
-namespace Asm\Search\Api;
+namespace Asm\Geolocation\Api;
  
 interface SearchInterface
 {
