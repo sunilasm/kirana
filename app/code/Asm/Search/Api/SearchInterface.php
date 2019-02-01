@@ -13,5 +13,5 @@ interface SearchInterface
     public function name();
     //public function clear();
     //public function checkcart();
-    //public function deletesku();
+    public function deletesku();
 }

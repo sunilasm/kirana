@@ -18,10 +18,10 @@
             <resource ref="anonymous"/>
         </resources>
     </route> -->
-    <!-- <route url="/V1/cart/delete/sku/" method="POST">
+    <route url="/V1/cart/delete/sku/" method="POST">
         <service class="Asm\Search\Api\SearchInterface" method="deletesku"/>
         <resources>
             <resource ref="anonymous"/>
         </resources>
-    </route> -->
+    </route>
 </routes>
