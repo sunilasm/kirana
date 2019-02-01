@@ -25,6 +25,7 @@ class Searchview implements SearchInterface
        $this->_productCollectionFactory = $productCollectionFactory; 
        $this->_sellerCollection = $sellerCollection;
        $this->_sellerProductCollection = $sellerProductCollection;
+
     }
 
     public function name() {
@@ -55,6 +56,156 @@ class Searchview implements SearchInterface
         }
         return $data;
     }
+
+    public function clear() {
+
+        $quoteId = $this->request->getParam('quoteId');
+        $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+        $quoteModel = $objectManager->create('Magento\Quote\Model\Quote');
+        $quoteItem = $quoteModel->load($quoteId);
+        $quoteItem->delete();
+        $data = array('message' => 'You have no items in your shopping cart.');
+        return $data;
+    }
+
+    public function deletesku() {
+
+        $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+        $request = $objectManager->get('\Magento\Framework\Webapi\Rest\Request');
+        $request->getBodyParams();
+        $post = $request->getBodyParams();
+        //print_r($post);exit;
+        $quoteId = $post['quote_id'];
+        $sku = $post['sku'];
+
+        $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+        $quoteModel = $objectManager->create('Magento\Quote\Model\Quote');
+        $quoteItems = $quoteModel->load($quoteId)->getAllVisibleItems();
+        $quoteItemArray = array();
+        $i = 1;
+        foreach($quoteItems as $item):
+            // print_r($item);
+            $quoteItemArray[$i] = $item->getSku();
+            $quoteItemIndexArray[$i] = $item->getItemid();
+            $i++;
+        endforeach;
+        // print_r($quoteItemIndexArray);exit;
+        $data = '';
+        $message = 'You have no items in your shopping cart.';
+        if(count($quoteItemArray)){
+            $ArrayIndex = array_search($sku, $quoteItemArray);
+           // print_r($ArrayIndex);exit;
+            if($ArrayIndex){
+
+                // Get base Url
+                $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+                $storeManager = $objectManager->get('\Magento\Store\Model\StoreManagerInterface');
+                $baseUrl = $storeManager->getStore()->getBaseUrl();
+
+                $userData = array("username" => "admin", "password" => "Admin@123");
+                $ch = curl_init("$baseUrl".''."rest/V1/integration/admin/token");
+                curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
+                curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($userData));
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                curl_setopt($ch, CURLOPT_HTTPHEADER, array("Content-Type: application/json", "Content-Lenght: " . strlen(json_encode($userData))));
+
+                $token = curl_exec($ch);
+
+                $ch = curl_init("$baseUrl".''."rest/V1/carts/".$quoteId."/items/".$quoteItemIndexArray[$ArrayIndex]);
+                curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE");
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                curl_setopt($ch, CURLOPT_HTTPHEADER, array("Content-Type: application/json", "Authorization: Bearer " . json_decode($token)));
+
+                $result = curl_exec($ch);
+
+                $result = json_decode($result, 1);
+                $message = 'Sku is successfully removed from cart.';
+            }
+        }
+        $data = array('status'=>'Sucess','message' => $message);
+        print_r($data);exit;
+        return $data;
+    }
+
+    public function checkcart() {
+
+        $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+        $request = $objectManager->get('\Magento\Framework\Webapi\Rest\Request');
+        $request->getBodyParams();
+        $post = $request->getBodyParams();
+        // print_r($post);exit;
+        $product_id = $post['product_id'];
+        $seller_id = $post['seller_id'];
+        $quoteId = $post['cartItem']['quote_id'];
+        $sku = $post['cartItem']['sku'];
+        $qty = $post['cartItem']['qty'];
+        // Get base Url
+        $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+        $storeManager = $objectManager->get('\Magento\Store\Model\StoreManagerInterface');
+        $baseUrl = $storeManager->getStore()->getBaseUrl();
+        // Get Quote
+        $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+        $quoteModel = $objectManager->create('Magento\Quote\Model\Quote');
+        $quoteItems = $quoteModel->load($quoteId)->getAllVisibleItems();
+        $quoteItemArray = array();
+        foreach($quoteItems as $item):
+            $quoteItemArray[] = $item->getSku();
+        endforeach;
+        $data = '';
+        $ArrayIndex = array_search($sku, array_values($quoteItemArray));
+        print_r($quoteItems[$ArrayIndex]);exit;
+        if($ArrayIndex){
+            if($qty > 0){
+                $quoteItems[$ArrayIndex]->setQty($qty);
+                $quoteItems[$ArrayIndex]->save();
+                $data = array('message' => 'True1');
+            }else{
+                if($qty == 0){
+                    $quoteItems[$ArrayIndex]->delete();
+                    $data = array('message' => 'True2');
+                }else{
+                    $data = array('message' => 'Qty can not be nigavtive.');
+                }
+            }  
+        }else{
+             if($qty > 0){
+                $userData = array("username" => "admin", "password" => "Admin@123");
+                $ch = curl_init("$baseUrl".''."rest/V1/integration/admin/token");
+                curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
+                curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($userData));
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                curl_setopt($ch, CURLOPT_HTTPHEADER, array("Content-Type: application/json", "Content-Lenght: " . strlen(json_encode($userData))));
+
+                $token = curl_exec($ch);
+                $productData['cartItem'] = array( 
+                                            "quote_id" => $quoteId,
+                                            "sku" => $sku,
+                                            "qty" => $qty
+                                        );
+               $productData['product_id'] = $product_id; 
+               $productData['seller_id'] = $seller_id; 
+               // array('product_id' => $product_id, 'seller_id' => $seller_id);
+              // print_r($productData);exit;
+
+                $ch = curl_init("$baseUrl".''."rest//V1/carts/mine/items");
+                curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($productData));
+                curl_setopt($ch, CURLOPT_HTTPHEADER, array("Content-Type: application/json", "Authorization: Bearer " . json_decode($token)));
+
+                $result = curl_exec($ch);
+
+                $result = json_decode($result, 1);
+                print_r($result);exit;
+                $data = array('message' => 'True3');  
+            }else{
+                $data = array('message' => 'No Product');  
+            }   
+        }
+        print_r($data);exit;
+        return $data;
+    }
+
     /*
     Get seller id's based on lat & lon.
     */
