@@ -1,6 +1,6 @@
 <?php
-namespace Asm\Search\Model;
-use Asm\Search\Api\SearchInterface;
+namespace Asm\AdvanceSearch\Model;
+use Asm\AdvanceSearch\Api\SearchInterface;
  
 class Searchview implements SearchInterface
 {
@@ -29,10 +29,28 @@ class Searchview implements SearchInterface
     }
 
     public function name() {
+        // print_r("herreee");exit;
         $title = $this->request->getParam('title');
         $lat = $this->request->getParam('latitude');
         $lon = $this->request->getParam('longitude');
         $searchtermpara = $this->request->getParam('searchterm');
+        $quoteId = $this->request->getParam('quote_id');
+
+        $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+        $quoteModel = $objectManager->create('Magento\Quote\Model\Quote');
+        $quoteItems = $quoteModel->load($quoteId)->getAllVisibleItems();
+        $quoteItemArray = array();
+        $i = 1;
+        foreach($quoteItems as $item):
+            $quoteItemArray[$item->getSku()] = $item->getQty();
+            //$quoteItemIndexArray[$i] = $item->getItemid();
+            $quoteItemIndexArray[$i] = $item->getItemid();
+            $i++;
+        endforeach;
+        // print_r($quoteItemArray);
+        // print_r($quoteItemIndexArray);
+
+
         if($searchtermpara){ $searchterm = 0; }else{ $searchterm = 1; }
         if($searchterm){
             if($title){
@@ -53,6 +71,17 @@ class Searchview implements SearchInterface
                 $data = $productCollectionArray;
             }
         }
+        //print_r($data);exit;
+        if(count($data)){
+             foreach($data as $key => $proData):
+                if(array_key_exists($proData['sku'], $quoteItemArray)){
+                    $data[$key] += ['quote_qty' => $quoteItemArray[$proData['sku']]];
+                }else{
+                    $data[$key] += ['quote_qty' => 0];
+                }
+            endforeach;
+        }
+
         return $data;
     }
     /*
@@ -120,4 +149,6 @@ class Searchview implements SearchInterface
             }
         return $productCollectionArray;
     }
+
+
 }

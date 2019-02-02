@@ -60,8 +60,8 @@ class Searchview implements SearchInterface
                 // Get base Url
                 $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
                 $storeManager = $objectManager->get('\Magento\Store\Model\StoreManagerInterface');
-                $baseUrl = $storeManager->getStore()->getBaseUrl();
-
+                //$baseUrl = $storeManager->getStore()->getBaseUrl();
+		$baseUrl = "http://13.233.41.0/";
                 $userData = array("username" => "admin", "password" => "Admin@123");
                 $ch = curl_init("$baseUrl".''."rest/V1/integration/admin/token");
                 curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
