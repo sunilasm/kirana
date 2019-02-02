@@ -32,7 +32,7 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
     // protected $_key = 'AIzaSyCoLbQMJVrWfwYGdNOWxOVz3NMzYjCRhQg'; //pradeep
     // protected $_key = 'AIzaSyD6iVNHsDTaqsRzmZ6-KSvdS_KG44lvf14'; //umesh
     protected $_key = 'AIzaSyD-_0vriuYY2qKxzK82yvVqgUeo-bqayDk'; //avinash sir 
-    protected $_appUrl= 'https://maps.googleapis.com/maps/api/geocode/xml';
+    protected $_appUrl= 'https://maps.googleapis.com/maps/api/geocode/json';
     protected $request;
 
     public function __construct(
@@ -58,21 +58,23 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
             $address .= (isset($country)) ? urlencode($country) : 'India';
             $address .= (isset($postcode)) ? urlencode($postcode) : '411001';
             
-            $url .= $address."&key=".$this->_key;
+            $url .= urlencode($address)."&key=".$this->_key;
             //print_r($url);exit;
             $this->_curl->get($url);
             $response = $this->_curl->getBody();
-            $response = new \SimpleXMLElement($response);
+            $data = json_decode($response);
+            // print_r($data);exit;
+            // $response = new \SimpleXMLElement($response);
             //echo "<pre>".print_r($str,true); exit;
             $output = array();
-            if($response->status == 'OK'){
+            if($data->results[0]->status == 'OK'){
                 $output['status'] = 'success';
-                $output['geo']= $response->result->geometry->location;        
+                $output['geo']= $data->results[0]->geometry->location;        
             }
             else
             {
-                $output['status'] = (string) $response->status;
-                $output['message'] = (string) $response->error_message;
+                $output['status'] = (string) $data->results[0]->status;
+                $output['message'] = (string) $data->results[0]->error_message;
             }
         }
         //print_r($output);exit;
