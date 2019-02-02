@@ -79,7 +79,7 @@ class Seller extends Column
             foreach ($dataSource['data']['items'] as &$item) {
                 if (isset($item['seller_id'])) {
                     $seller = $this->seller->create()->load($item['seller_id']);
-                    $item[$fieldName] = "<a href='".$this->urlBuilder->getUrl('lofmarketplace/seller/edit', ['seller_id' => $item['seller_id']])."' target='blank' title='".__('View Seller')."'>".$seller->getName().'</a>';
+                    $item[$fieldName] = "<a href='".$this->urlBuilder->getUrl('lofmarketplace/seller/edit', ['seller_id' => $item['seller_id']])."' target='blank' title='".__('View Seller')."'>".$seller->getId().'</a>';
                 }
             }
         }
