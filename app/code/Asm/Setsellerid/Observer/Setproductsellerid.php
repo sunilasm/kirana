@@ -97,7 +97,7 @@ class Setproductsellerid implements \Magento\Framework\Event\ObserverInterface
                 $seller_id["product_id"] = $post['product_id'];
                 $seller_id["seller_id"] = $post['seller_id'];
                 $quote = $observer->getQuote();
-                 $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+                $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
                 $customerSession = $objectManager->create('Magento\Customer\Model\Session');
                 foreach ($quote->getAllItems() as $quoteItem) {
                     if($seller_id["product_id"]){
