@@ -305,10 +305,11 @@ class Advanced extends \Magento\Framework\Model\AbstractModel
         $lat = $this->customerSession->getLatitude(); //latitude
         $lon = $this->customerSession->getLongitude(); //longitude
         $ranageSeller = $this->_inRanageseller->getInRangeSeller($lat, $lon);
-        // print_r($ranageSeller);exit;
+        
         $sellerProductCollection = $this->_sellerProductCollection->getCollection()
                                         ->addFieldToFilter('seller_id', array('in' => $ranageSeller));
-	$sellerProductsArray = array();
+
+        $sellerProductsArray = array();
         $sellerProductData = $sellerProductCollection->getData();
         foreach($sellerProductData as $prodata):
             $sellerProductsArray[] = $prodata['product_id'];
@@ -320,9 +321,11 @@ class Advanced extends \Magento\Framework\Model\AbstractModel
             ->setStore($this->_storeManager->getStore())
             ->addMinimalPrice()
             ->addTaxPercents()
-            ->addStoreFilter()
-            ->addFieldToFilter('entity_id', array('in' => $sellerProductsArray))
-            ->setVisibility($this->_catalogProductVisibility->getVisibleInSearchIds());
+            ->addStoreFilter();
+            if(count($sellerProductsArray)){
+                $collection->addFieldToFilter('entity_id', array('in' => $sellerProductsArray));
+            }
+        $collection->setVisibility($this->_catalogProductVisibility->getVisibleInSearchIds());
         return $this;
     }
 

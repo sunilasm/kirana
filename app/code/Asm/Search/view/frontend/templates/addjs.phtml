@@ -188,11 +188,12 @@ require([
                     click: function () {
                         //alert($("input[name='checkaddress']:checked").val());
                         var geocoder = new google.maps.Geocoder();
-                           var address = $("input[name='checkaddress']:checked").val();
+
+                         var address1 = $("input[name='checkaddress']:checked").val();
                            var selectedId = $("input[name='checkaddress']:checked").attr('id');
-                           // alert(selectedId);
 // 
-                            geocoder.geocode( { 'address': address}, function(results, status) {
+                            geocoder.geocode( { 'address': address1}, function(results, status) {
+                                // console.log(results);
                                if (status == google.maps.GeocoderStatus.OK) {
                                 var latitude = results[0].geometry.location.lat();
                                 var longitude = results[0].geometry.location.lng();
@@ -231,7 +232,7 @@ require([
 
 
                                 // Set session
-                                setsession(latitude, longitude, custmerloginstatus, address);
+                                setsession(latitude, longitude, custmerloginstatus, address1);
                                 jQuery('#lat').val(latitude);
                                 jQuery('#lng').val(longitude);
                               }
