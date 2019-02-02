@@ -169,7 +169,8 @@ class Kirana extends \Magento\Backend\Block\Widget\Form\Generic implements \Mage
                 'name' => 'gst',
                 'label' => __('GST'),
                 'title' => __('GST'),
-                'class' => 'alphanumeric',
+                'class' => 'alphanumeric validate-length minimum-length-15 maximum-length-15',
+                'max_text_length' => 10,
                 'disabled' => $isElementDisabled
             ]
         );

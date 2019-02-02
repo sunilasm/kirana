@@ -331,8 +331,8 @@
 						<input type="text" id="gst" name="gst" 
 						title="GST" 
 						value="<?php echo $seller['gst']; ?>" 
-						class="admin__control-text" 
-						data-validate='{"required":false,"validate-alphanum-with-spaces":true}' />
+						class="admin__control-text validate-length" 
+						data-validate='{"required":true,"validate-alphanum-with-spaces":true,"validate-length":true}' />
 					</div>
 				</fieldset>
 				<fieldset class="admin__field">
