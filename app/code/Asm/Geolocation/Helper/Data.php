@@ -49,32 +49,27 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
         if ($address1 || $city || $state || $country || $postcode)
         {
             //print_r($address1."--".$city."--".$state."--".$country."--".$postcode);exit;
-        $url = $this->_appUrl;
-            $address = '?address=';
+            $url = $this->_appUrl;
+            // $address = '?address=';
            
-            $address .= (isset($address1)) ? urlencode($address1).',' : urlencode('Gondhale Nagar Hadapsar');
-            $address .= (isset($city)) ? $city.',' : 'Pune';
-            $address .= (isset($state)) ? urlencode($state).',' : 'Maharashtra';
-            $address .= (isset($country)) ? urlencode($country) : 'India';
-            $address .= (isset($postcode)) ? urlencode($postcode) : '411001';
+            $address = (isset($parameters['address'])) ? urlencode($parameters['address']).',' : urlencode('Gondhale Nagar Hadapsar');
+            $address .= (isset($parameters['city'])) ? $parameters['city'].',' : 'Pune';
+            $address .= (isset($parameters['state'])) ? urlencode($parameters['state']).',' : 'Maharashtra';
+            $address .= (isset($parameters['country'])) ? urlencode($parameters['country']) : 'India';
             
-            $url .= urlencode($address)."&key=".$this->_key;
-            //print_r($url);exit;
-            $this->_curl->get($url);
-            $response = $this->_curl->getBody();
-            $data = json_decode($response);
-            // print_r($data);exit;
-            // $response = new \SimpleXMLElement($response);
-            //echo "<pre>".print_r($str,true); exit;
+            $url .= $address."&key=".$this->_key;
+            $formattedAddr = str_replace(' ','+',$address);
+            $data1 = file_get_contents("https://maps.google.com/maps/api/geocode/json?address=$formattedAddr&sensor=false&key=AIzaSyD-_0vriuYY2qKxzK82yvVqgUeo-bqayDk");
+            $response = json_decode($data1);
             $output = array();
-            if($data->results[0]->status == 'OK'){
+            if($response->status == 'OK'){
                 $output['status'] = 'success';
-                $output['geo']= $data->results[0]->geometry->location;        
+                $output['geo']= $response->results[0]->geometry->location;        
             }
             else
             {
-                $output['status'] = (string) $data->results[0]->status;
-                $output['message'] = (string) $data->results[0]->error_message;
+                $output['status'] = (string) $response->status;
+                $output['message'] = (string) $response->error_message;
             }
         }
         //print_r($output);exit;
