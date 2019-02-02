@@ -117,26 +117,23 @@ class UpgradeSchema implements UpgradeSchemaInterface
         $installer->getConnection()->createTable($table);
         
        if (version_compare($context->getVersion(), '1.0.8', '<')) {
+        
             $connection = $setup->getConnection();
-            $grid = $setup->getTable('lof_marketplace_sellerorder');
-            $affiliate = $setup->getTable('mglof_marketplace_seller');
+            $gridSellerProduct = $setup->getTable('lof_marketplace_product');
+            $gridSellerOrder = $setup->getTable('lof_marketplace_sellerorder');
+            $affiliate = $setup->getTable('lof_marketplace_seller');
             $columns = [
-
-                'name' => [
-
-                'type' => \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
-
-                'nullable' => true,
-
-                'comment' => 'Seller name',
-
+                    'name' => [
+                    'type' => \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+                    'nullable' => true,
+                    'comment' => 'Seller name',
                 ],
-
             ];
             $connection = $setup->getConnection();
 
             foreach ($columns as $name => $definition) {
-                $connection->addColumn($grid, $name, $definition);
+                $connection->addColumn($gridSellerOrder, $name, $definition);
+                $connection->addColumn($gridSellerProduct, $name, $definition);
             }
 
             $connection->query(
@@ -144,10 +141,21 @@ class UpgradeSchema implements UpgradeSchemaInterface
                     $connection->select()
                         ->join(
                             $affiliate,
-                            sprintf('%s.seller_id = %s.seller_id', $grid, $affiliate),
+                            sprintf('%s.seller_id = %s.seller_id', $gridSellerOrder, $affiliate),
                             'name'
                         ),
-                    $grid
+                    $gridSellerOrder
+                )
+            );
+            $connection->query(
+                $connection->updateFromSelect(
+                    $connection->select()
+                        ->join(
+                            $affiliate,
+                            sprintf('%s.seller_id = %s.seller_id', $gridSellerProduct, $affiliate),
+                            'name'
+                        ),
+                    $gridSellerProduct
                 )
             );
         }
