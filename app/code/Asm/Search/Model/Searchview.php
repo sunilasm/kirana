@@ -120,6 +120,4 @@ class Searchview implements SearchInterface
             }
         return $productCollectionArray;
     }
-
-
 }
