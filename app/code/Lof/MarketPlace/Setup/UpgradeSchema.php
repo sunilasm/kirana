@@ -116,7 +116,41 @@ class UpgradeSchema implements UpgradeSchemaInterface
         );
         $installer->getConnection()->createTable($table);
         
-       
+       if (version_compare($context->getVersion(), '1.0.8', '<')) {
+            $connection = $setup->getConnection();
+            $grid = $setup->getTable('lof_marketplace_sellerorder');
+            $affiliate = $setup->getTable('mglof_marketplace_seller');
+            $columns = [
+
+                'name' => [
+
+                'type' => \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+
+                'nullable' => true,
+
+                'comment' => 'Seller name',
+
+                ],
+
+            ];
+            $connection = $setup->getConnection();
+
+            foreach ($columns as $name => $definition) {
+                $connection->addColumn($grid, $name, $definition);
+            }
+
+            $connection->query(
+                $connection->updateFromSelect(
+                    $connection->select()
+                        ->join(
+                            $affiliate,
+                            sprintf('%s.seller_id = %s.seller_id', $grid, $affiliate),
+                            'name'
+                        ),
+                    $grid
+                )
+            );
+        }
         /* table lof_marketplace_group */
         $table = $installer->getTable('lof_marketplace_group');
         
