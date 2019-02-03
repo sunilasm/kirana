@@ -207,8 +207,14 @@ if(isset($_GET['seller_id'])){
     function ($) {
         $(document).ready(function() {
             setTimeout(function(){
+            	$("#seller_id").val("<?php echo $sellerId; ?>");
             	//alert("<?php //echo $sellerId; ?>");
-                  $("#seller_id").val("<?php echo $sellerId; ?>");
+            	<?php if(isset($_GET['seller_id'])){
+            		echo ' $("#seller_id").val('.$_GET['seller_id'].');';
+            	}
+
+            		?>
+                  
               },2000);
              
 	          $('#seller_list').change(function () {
