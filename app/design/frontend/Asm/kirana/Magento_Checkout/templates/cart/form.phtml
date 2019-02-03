@@ -53,13 +53,12 @@
             <span><?= /* @escapeNotVerified */ __('Clear Shopping Cart') ?></span>
         </button>
         <?php if ($block->getContinueShoppingUrl()): ?>
-            <button>
             <a class="action continue"
+                id="continue_shopping"
                href="<?= $block->escapeUrl($block->getContinueShoppingUrl()) ?>"
                title="<?= $block->escapeHtml(__('Continue Shopping')) ?>">
                 <span><?= /* @escapeNotVerified */ __('Continue Shopping') ?></span>
             </a>
-        </button>
         <?php endif; ?>
         <button type="submit"
                 name="update_cart_action"
@@ -80,4 +79,22 @@
     display: block !important;
     float: left;
 }
+#continue_shopping{
+    background-image: none;
+    background: #eeeeee;
+    border: 1px solid #cccccc;
+    color: #333333;
+    cursor: pointer;
+    display: inline-block;
+    font-family: 'Open Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-weight: 600;
+    margin: 0;
+    padding: 7px 15px;
+    font-size: 1.4rem;
+    line-height: 1.6rem;
+    box-sizing: border-box;
+    vertical-align: middle;
+    margin: 0 12px;
+    float: left;
+}    
 </style>
