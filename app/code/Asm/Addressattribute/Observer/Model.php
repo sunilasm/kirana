@@ -59,6 +59,5 @@ class Model implements \Magento\Framework\Event\ObserverInterface
 	        // $sql = "UPDATE " . $tableName . " SET latitude = '" . $lat . "', longitude = '" . $lng . "'  WHERE entity_id = " . $customerAddress->getEntityId();
 	        // $connection->query($sql);
     	}
-
     }
 }

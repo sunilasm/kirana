@@ -50,7 +50,7 @@ class Searchview implements SearchInterface
         // print_r($quoteItemArray);
         // print_r($quoteItemIndexArray);
 
-
+        $flag = 0;
         if($searchtermpara){ $searchterm = 0; }else{ $searchterm = 1; }
         if($searchterm){
             if($title){
@@ -60,8 +60,10 @@ class Searchview implements SearchInterface
                 }else{
                     $data = $productCollectionArray;
                 }
+                $flag = 0;
             }else{
-                 $data = array('message' => 'Please specify at least one search term');
+                $flag = 1;
+                $data = array('message' => 'Please specify at least one search term');
             }
         }else{
             $productCollectionArray = $this->getSearchTermData($title = null,$lat, $lon);
@@ -70,17 +72,20 @@ class Searchview implements SearchInterface
             }else{
                 $data = $productCollectionArray;
             }
+            $flag = 2;
+        }
+        if($flag != 1){
+            if(count($data)){
+                foreach($data as $key => $proData):
+                    if(array_key_exists($proData['sku'], $quoteItemArray)){
+                        $data[$key] += ['quote_qty' => $quoteItemArray[$proData['sku']]];
+                    }else{
+                        $data[$key] += ['quote_qty' => 0];
+                    }
+                endforeach;
+            }
         }
         //print_r($data);exit;
-        if(count($data)){
-             foreach($data as $key => $proData):
-                if(array_key_exists($proData['sku'], $quoteItemArray)){
-                    $data[$key] += ['quote_qty' => $quoteItemArray[$proData['sku']]];
-                }else{
-                    $data[$key] += ['quote_qty' => 0];
-                }
-            endforeach;
-        }
 
         return $data;
     }

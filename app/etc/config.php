@@ -7,6 +7,7 @@ return [
         'Magento_Customer' => 1,
         'Magento_Theme' => 1,
         'Asm_AdvanceSearch' => 1,
+        'Asm_Cart' => 1,
         'Asm_Geolocation' => 1,
         'Asm_Search' => 1,
         'Magento_Backend' => 1,
