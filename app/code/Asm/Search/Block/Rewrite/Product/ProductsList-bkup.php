@@ -413,7 +413,7 @@ class ProductsList extends \Magento\Catalog\Block\Product\AbstractProduct implem
     public function getSellerCollection()
     {
         $sellerCollection = $this->_sellerCollection->getCollection();
-        // print_r($sellerProductCollection->getData());exit;
+        //print_r($sellerProductCollection->getData());exit;
         return $sellerCollection;
     }
     public function getSellerPrdocutCollection()
