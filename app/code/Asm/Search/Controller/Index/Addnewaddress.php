@@ -24,10 +24,12 @@ class Addnewaddress extends \Magento\Framework\App\Action\Action
         Context $context,
         \Magento\Customer\Model\Session $customerSession,
         \Magento\Directory\Model\CountryFactory $countryFactory,
-        \Magento\Framework\App\RequestInterface $request
+        \Magento\Framework\App\RequestInterface $request,
+        \Magento\Checkout\Model\Cart $cart
     ) {
         $this->customerSession = $customerSession;
         $this->_countryFactory = $countryFactory;
+        $this->cart = $cart;
         $this->request = $request;
         parent::__construct($context);
     }
@@ -129,5 +131,11 @@ class Addnewaddress extends \Magento\Framework\App\Action\Action
           catch (Exception $e) {
                   Zend_Debug::dump($e->getMessage());
           }
+
+          // $AllItems = $this->cart->getQuote()->getAllVisibleItems();
+          // foreach($AllItems as $item):
+          //   print_r($item); 
+          // endforeach;
+          // exit;
      }               
 }     

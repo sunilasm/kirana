@@ -321,11 +321,9 @@ class Advanced extends \Magento\Framework\Model\AbstractModel
             ->setStore($this->_storeManager->getStore())
             ->addMinimalPrice()
             ->addTaxPercents()
-            ->addStoreFilter();
-            if(count($sellerProductsArray)){
-                $collection->addFieldToFilter('entity_id', array('in' => $sellerProductsArray));
-            }
-        $collection->setVisibility($this->_catalogProductVisibility->getVisibleInSearchIds());
+            ->addStoreFilter()
+            ->addFieldToFilter('entity_id', array('in' => $sellerProductsArray))
+            ->setVisibility($this->_catalogProductVisibility->getVisibleInSearchIds());
         return $this;
     }
 
