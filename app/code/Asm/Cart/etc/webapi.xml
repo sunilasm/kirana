@@ -2,12 +2,9 @@
 <routes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Webapi:etc/webapi.xsd">
     <route url="/V1/cart/quotetotal/" method="GET">
         <service class="Asm\Cart\Api\CartInterface" method="quotetotal"/>
-        <resources>
-		  <resource ref="self"/>
-		 </resources>
-		 <data>
-		  <parameter name="customerId" force="true">%customer_id%</parameter>
-		 </data>
+         <resources>
+            <resource ref="anonymous"/>
+        </resources>
     </route>
 </routes>
 
