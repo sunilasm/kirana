@@ -149,9 +149,18 @@ class Searchview implements SearchInterface
                 $collection->addFieldToFilter([['attribute' => 'name', 'like' => '%'.$title.'%']]);
                 $collection->setCurPage($current_page)->setPageSize($page_size);
             }
+            $sellerNameArray = array();
+            $sellerCollection = $this->_sellerCollection->getCollection()->addFieldToFilter('seller_id', array('in' => $ranageSeller));
+            foreach($sellerCollection as $seller):
+                $sellerNameArray[$seller->getId()] = $seller->getName();
+            endforeach;
+                
             foreach ($collection as $product){
-                $productCollectionArray[] = $product->getData();
+                $productCollectionTemp = $product->getData();
+                $productCollectionTemp['seller_name'] = $sellerNameArray[$product->getSellerId()];
+                $productCollectionArray[] = $productCollectionTemp;
             }
+            
         return $productCollectionArray;
     }
 
