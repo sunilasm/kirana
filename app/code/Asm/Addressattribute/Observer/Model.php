@@ -60,4 +60,5 @@ class Model implements \Magento\Framework\Event\ObserverInterface
 	        // $connection->query($sql);
     	}
 
+    }
 }
