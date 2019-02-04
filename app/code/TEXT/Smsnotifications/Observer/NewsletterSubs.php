@@ -123,8 +123,10 @@ class NewsletterSubs implements ObserverInterface
             $name= $customerSession->getCustomer()->getName();
             $emailid=$customerSession->getCustomer()->getEmail();
             /*get customer mobile number */
-          $telephone= $customerSession->getCustomer()->getPrimaryBillingAddress()->getTelephone();
-             if ($telephone) {
+
+          if($customer_id){
+$telephone= $customerSession->getCustomer()->getPrimaryBillingAddress()->getTelephone();  
+           if ($telephone) {
                               $text= $settings['newsletter_subs'];
                 
                               $text = str_replace('{{customer_id}}', $customer_id, $text);
@@ -143,7 +145,7 @@ $admin_recipients[]=$settings['admin_recipients'];
        
      
     
-          
+         	 }
             }
         }
     
