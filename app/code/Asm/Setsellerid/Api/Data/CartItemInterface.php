@@ -17,6 +17,7 @@ interface CartItemInterface
 
     /**#@-*/
 
+
     /**
      * Returns the item seller_id.
      *
@@ -39,5 +40,15 @@ interface CartItemInterface
     {
         return $this->setData('seller_id', $seller_id);
     }*/
+     public function getImageUrl()
+    {
+        return $this->_get('image_url');
+    }
+
+     public function setImageUrl($imageUrl)
+    {
+        $this->setData('image_url', $imageUrl);
+        return $this;
+    }
   
 }

@@ -187,7 +187,7 @@
                 </item>
             </argument>
         </column>
-        <column name="order_currency_code">
+       <!--  <column name="order_currency_code">
             <argument name="data" xsi:type="array">
                 <item name="config" xsi:type="array">
                     <item name="filter" xsi:type="string">text</item>
@@ -196,13 +196,13 @@
                     <item name="sortOrder" xsi:type="number">40</item>
                 </item>
             </argument>
-        </column>
-          <column name="discount_amount">
+        </column> -->
+          <column name="shipping_amount">
             <argument name="data" xsi:type="array">
                 <item name="config" xsi:type="array">
                     <item name="filter" xsi:type="string">text</item>
                     <item name="add_field" xsi:type="boolean">true</item>
-                    <item name="label" xsi:type="string" translate="true">Discount Amount</item>
+                    <item name="label" xsi:type="string" translate="true">Shipping Amount</item>
                     <item name="sortOrder" xsi:type="number">45</item>
                 </item>
             </argument>
@@ -212,12 +212,12 @@
                 <item name="config" xsi:type="array">
                     <item name="filter" xsi:type="string">text</item>
                     <item name="add_field" xsi:type="boolean">true</item>
-                    <item name="label" xsi:type="string" translate="true">Grand Total</item>
+                    <item name="label" xsi:type="string" translate="true">Seller Amount</item>
                     <item name="sortOrder" xsi:type="number">50</item>
                 </item>
             </argument>
         </column>
-        <column name="seller_amount">
+       <!--  <column name="seller_amount">
             <argument name="data" xsi:type="array">
                 <item name="config" xsi:type="array">
                     <item name="filter" xsi:type="string">text</item>
@@ -226,18 +226,18 @@
                     <item name="sortOrder" xsi:type="number">70</item>
                 </item>
             </argument>
-        </column>
+        </column> -->
         <column name="status">
             <argument name="data" xsi:type="array">
                 <item name="config" xsi:type="array">
                     <item name="filter" xsi:type="string">text</item>
                     <item name="add_field" xsi:type="boolean">true</item>
                     <item name="label" xsi:type="string" translate="true">Status</item>
-                    <item name="sortOrder" xsi:type="number">80</item>
+                    <item name="sortOrder" xsi:type="number">92</item>
                 </item>
             </argument>
         </column>
-        <column name="commission">
+        <!-- <column name="commission">
             <argument name="data" xsi:type="array">
                 <item name="config" xsi:type="array">
                     <item name="filter" xsi:type="string">text</item>
@@ -246,7 +246,7 @@
                     <item name="sortOrder" xsi:type="number">85</item>
                 </item>
             </argument>
-        </column>
+        </column> -->
         <column name="seller_id" class="Lof\MarketPlace\Ui\Component\Listing\Columns\Seller">
              <argument name="data" xsi:type="array">
                 <item name="config" xsi:type="array">
@@ -254,7 +254,7 @@
                     <item name="add_field" xsi:type="boolean">true</item>
                     <item name="component" xsi:type="string">Lof_MarketPlace/js/grid/columns/link</item>
                     <item name="label" xsi:type="string" translate="true">Seller Id</item>
-                    <item name="sortOrder" xsi:type="number">90</item>
+                    <item name="sortOrder" xsi:type="number">20</item>
                 </item>
             </argument>
         </column>
@@ -265,7 +265,7 @@
                     <item name="add_field" xsi:type="boolean">true</item>
                     <item name="component" xsi:type="string">Lof_MarketPlace/js/grid/columns/link</item>
                     <item name="label" xsi:type="string" translate="true">Seller Name</item>
-                    <item name="sortOrder" xsi:type="number">91</item>
+                    <item name="sortOrder" xsi:type="number">30</item>
                 </item>
             </argument>
         </column>

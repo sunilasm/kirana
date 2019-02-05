@@ -51,10 +51,11 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
         {
             //print_r($address1."--".$city."--".$state."--".$country."--".$postcode);exit;
             $url = $this->_appUrl;      
-            $address = (isset($parameters['address'])) ? urlencode($parameters['address']).',' : urlencode('Gondhale Nagar Hadapsar');
-            $address .= (isset($parameters['city'])) ? $parameters['city'].',' : 'Pune';
-            $address .= (isset($parameters['state'])) ? urlencode($parameters['state']).',' : 'Maharashtra';
-            $address .= (isset($parameters['country'])) ? urlencode($parameters['country']) : 'India';
+            $address = (isset($address1)) ? urlencode($address1).',' : urlencode('Gondhale Nagar Hadapsar');
+            $address .= (isset($city)) ? $city.',' : 'Pune';
+            $address .= (isset($state)) ? urlencode($state).',' : 'Maharashtra';
+            $address .= (isset($country)) ? urlencode($country) : 'India';
+            $address .= (isset($postcode)) ? urlencode($postcode) : '411028';
             
             $url .= $address."&key=".$this->_key;
             $formattedAddr = str_replace(' ','+',$address);
@@ -72,7 +73,7 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
             }
         }
 
-        // print_r($output);exit;
+        //print_r($output);exit;
         return $output;
     }
 }

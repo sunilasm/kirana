@@ -23,11 +23,11 @@
 		                        <th class="column-title"><?php echo __('Order');?> </th>
 		                        <th class="column-title"><?php echo __('Date');?> </th>
 		                        <th class="column-title"><?php echo __('Customer Name');?> </th>
-		                        <th class="column-title"><?php echo __('Grand Total');?> </th>
+	                            <th class="column-title"><?php echo __('Seller Subtotal'); ?> </th>
 		                        <th class="column-title"><?php echo __('Discount Amount');?> </th>
-	                            <th class="column-title"><?php echo __('Admin Commission');?> </th>
-	                            <th class="column-title"><?php echo __('Seller Amount'); ?> </th>
-	                            <th class="column-title"><?php echo __('Currency');?> </th>
+		                        <th class="column-title"><?php echo __('Grand Total');?> </th>
+	                            <!-- <th class="column-title"><?php //echo __('Admin Commission');?> </th> -->
+	                            <!-- <th class="column-title"><?php //echo __('Currency');?> </th> -->
 	                            <th class="column-title"><?php echo __('Status');?> </th>
 	                            
 	                            <th class="column-title no-link last"><span class="nobr"><?php echo __('Action'); ?></span>
@@ -41,7 +41,7 @@
 	                    <?php foreach ($this->getOrder()->setOrder('order_id', 'desc') as $key => $order) { 
 	                    	$admin_commission = $order->getData('seller_product_total') - $order->getData('seller_amount');
 	                    	$order_data = $this->getOrderData($order->getData('order_id'));
-	                    	// print_r($order_data->getIncrementId());exit;
+	                    	// print_r($order_data->getData());exit;
 	                    	
 	                    	?>
 	    					<tr class="even pointer">
@@ -53,11 +53,24 @@
 								    true
 								);?></td>
 	                             <td class=" "><?php echo $order_data->getData('customer_firstname').' '.$order_data->getData('customer_lastname'); ?></td>
-	                            <td class=" "><?php echo $helper->getPriceFomat($order->getData('seller_product_total')); ?></i></td>
-	                            <td class=" "><?php echo $helper->getPriceFomat($order->getData('discount_amount')); ?></i></td>
-	                            <td class=" "><?php echo $helper->getPriceFomat($admin_commission); ?></td>
-	                            <td class="a-right a-right "><?php echo $helper->getPriceFomat($order->getData('seller_amount')); ?></td>
-	                            <td class=" "><?php echo $order->getData('order_currency_code'); ?></td>
+	                             <td class="a-right a-right "><?php echo $helper->getPriceFomat($admin_commission); ?></td>
+	                             <td class=" "><?php echo $helper->getPriceFomat($order->getData('discount_amount')); ?></i></td>
+	                             <?php
+	                             $orderSubtotal = $order->getData('seller_product_total');
+	                             foreach ($order->getAllItems() as $item) {
+		                          $itemTotal = $item->getBaserowtotal();
+		                            if($itemTotal == $orderSubtotal){
+		                              $QtyOrdered = $item->getQtyOrdered();
+		                            }
+		                          }
+		                          $shippingPrice = 5;
+	                             	$shippingAmout = $QtyOrdered * $shippingPrice;
+                        			$grand_total = $order->getData('seller_product_total') + $shippingAmout;
+	                             ?>
+	                            <td class=" "><?php echo $helper->getPriceFomat($grand_total); ?></i></td>
+	                            <!-- <td class=" "><?php //echo $helper->getPriceFomat($admin_commission); ?></td> -->
+	                            
+	                            <!-- <td class=" "><?php //echo $order->getData('order_currency_code'); ?></td> -->
 	                            
 	                            <td class=" "><?php echo $order_data->getData('status'); ?></td>
 	                            

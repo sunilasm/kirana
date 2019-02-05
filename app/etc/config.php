@@ -11,6 +11,7 @@ return [
         'Asm_Geolocation' => 1,
         'Asm_Search' => 1,
         'Magento_Backend' => 1,
+        'BitExpert_ForceCustomerLogin' => 1,
         'Magento_Cms' => 1,
         'Magento_AdminNotification' => 1,
         'Magento_Indexer' => 1,
