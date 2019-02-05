@@ -23,9 +23,9 @@
 		                        <th class="column-title"><?php echo __('Order');?> </th>
 		                        <th class="column-title"><?php echo __('Date');?> </th>
 		                        <th class="column-title"><?php echo __('Customer Name');?> </th>
+		                        <th class="column-title"><?php echo __('Shipping Amount');?> </th>
 	                            <th class="column-title"><?php echo __('Seller Subtotal'); ?> </th>
 		                        <th class="column-title"><?php echo __('Discount Amount');?> </th>
-		                        <th class="column-title"><?php echo __('Grand Total');?> </th>
 	                            <!-- <th class="column-title"><?php //echo __('Admin Commission');?> </th> -->
 	                            <!-- <th class="column-title"><?php //echo __('Currency');?> </th> -->
 	                            <th class="column-title"><?php echo __('Status');?> </th>
@@ -53,9 +53,7 @@
 								    true
 								);?></td>
 	                             <td class=" "><?php echo $order_data->getData('customer_firstname').' '.$order_data->getData('customer_lastname'); ?></td>
-	                             <td class="a-right a-right "><?php echo $helper->getPriceFomat($admin_commission); ?></td>
-	                             <td class=" "><?php echo $helper->getPriceFomat($order->getData('discount_amount')); ?></i></td>
-	                             <?php
+	                              <?php
 	                             $orderSubtotal = $order->getData('seller_product_total');
 	                             foreach ($order->getAllItems() as $item) {
 		                          $itemTotal = $item->getBaserowtotal();
@@ -64,10 +62,12 @@
 		                            }
 		                          }
 		                          $shippingPrice = 5;
-	                             	$shippingAmout = $QtyOrdered * $shippingPrice;
-                        			$grand_total = $order->getData('seller_product_total') + $shippingAmout;
+	                             $shippingAmout = $QtyOrdered * $shippingPrice;
+                        			//$grand_total = $order->getData('seller_product_total') + $shippingAmout;
 	                             ?>
-	                            <td class=" "><?php echo $helper->getPriceFomat($grand_total); ?></i></td>
+	                            <td class=" "><?php echo $helper->getPriceFomat($shippingAmout); ?></i></td>
+	                             <td class="a-right a-right "><?php echo $helper->getPriceFomat($admin_commission); ?></td>
+	                             <td class=" "><?php echo $helper->getPriceFomat($order->getData('discount_amount')); ?></i></td>
 	                            <!-- <td class=" "><?php //echo $helper->getPriceFomat($admin_commission); ?></td> -->
 	                            
 	                            <!-- <td class=" "><?php //echo $order->getData('order_currency_code'); ?></td> -->
