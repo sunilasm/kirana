@@ -132,7 +132,7 @@ class Shipment implements ObserverInterface
             $object_manager = \Magento\Framework\App\ObjectManager ::getInstance();
             $result = $object_manager->get('TEXT\Smsnotifications\Helper\Data')->sendSms($text,$admin_recipients);
             // $logger->info("Result:".$result);
-            return($result );
+            return($result);
         }
     }
 }
