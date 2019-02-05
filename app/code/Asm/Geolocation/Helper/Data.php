@@ -51,11 +51,11 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
         {
             //print_r($address1."--".$city."--".$state."--".$country."--".$postcode);exit;
             $url = $this->_appUrl;      
-            $address = (isset($address1)) ? urlencode($address1).',' : urlencode('Gondhale Nagar Hadapsar');
-            $address .= (isset($city)) ? $city.',' : 'Pune';
-            $address .= (isset($state)) ? urlencode($state).',' : 'Maharashtra';
-            $address .= (isset($country)) ? urlencode($country) : 'India';
-            $address .= (isset($postcode)) ? urlencode($postcode) : '411028';
+            $address = (isset($address1)) ? urlencode($address1).',' : '';
+            $address .= (isset($city)) ? urlencode($city).',' : '';
+            $address .= (isset($state)) ? urlencode($state).',' : '';
+            $address .= (isset($country)) ? urlencode($country) : '';
+            $address .= (isset($postcode)) ? urlencode($postcode) : '';
             
             $url .= $address."&key=".$this->_key;
             $formattedAddr = str_replace(' ','+',$address);

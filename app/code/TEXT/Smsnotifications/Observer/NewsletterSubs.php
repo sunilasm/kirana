@@ -141,6 +141,6 @@ class NewsletterSubs implements ObserverInterface
                             
                          return($result );
                 }
-            }
-        }
+    }
+}
     
