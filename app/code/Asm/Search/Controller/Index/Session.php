@@ -48,7 +48,7 @@ class Session extends \Magento\Framework\App\Action\Action
         $this->session->setLongitude($longitude);
         $this->session->setCustmerloginstatus($custmerloginstatus);
         $this->session->setFulladdress($fulladdress);
-        // print_r($this->session->getLatitude());exit;
+        //print_r($this->session->getLatitude());exit;
         $data = array('status' => 1,'message' => 'Success',);
         echo json_encode($data);die;
     }
