@@ -39,15 +39,15 @@ class Index extends \Magento\Framework\App\Action\Action
 	      ->setDescendingDirection()->create())
 	      ->setPageSize(100)->setCurrentPage(1)->create();
 
-	 //   	$time = time();
-		// $to = date('Y-m-d H:i:s', $time);
-		// $lastTime = $time - 300; // 60*60*24
-		// $from = date('Y-m-d H:i:s', $lastTime);
+	    $time = time();
+		$to = date('Y-m-d H:i:s', $time);
+		$lastTime = $time - 300; // 60*60*24
+		$from = date('Y-m-d H:i:s', $lastTime);
 
 		$objectManager = \Magento\Framework\App\ObjectManager::getInstance();
 		$OrderFactory = $objectManager->create('Magento\Sales\Model\ResourceModel\Order\CollectionFactory');
 		$orderCollection = $OrderFactory->create()->addFieldToSelect(array('*'));
-		$orderCollection->addFieldToFilter('created_at', ['lteq' => '2019-02-06 17:05:32'])->addFieldToFilter('created_at', ['gteq' => '2019-02-05 17:57:27']);
+		$orderCollection->addFieldToFilter('created_at', ['lteq' => $to])->addFieldToFilter('created_at', ['gteq' => $from]);
 	     foreach($orderCollection as $order):
 	    	$objectManager = \Magento\Framework\App\ObjectManager::getInstance();
 			$customer = $objectManager->create('Magento\Customer\Model\Customer')->load($order->getCustomerId());
