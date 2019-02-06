@@ -25,11 +25,6 @@ interface CartItemInterface
      * @return int|null Item seller_id. Otherwise, null.
      */
     public function getSellerId();
-   /* public function getSellerId()
-    {
-        return $this->getData('seller_id');
-    }*/
-
     /**
      * Sets the item seller_id.
      *
@@ -37,20 +32,6 @@ interface CartItemInterface
      * @return $this
      */
     public function setSellerId($seller_id);
-   /* public function setSellerId($seller_id)
-    {
-        return $this->setData('seller_id', $seller_id);
-    }*/
-
-     public function getImageUrl();
-    // {
-    //     return $this->_get(self::KEY_IMAGE_URL);
-    // }
-
-     public function setImageUrl($imageUrl);
-    // {
-    //     $this->setData('image_url', $imageUrl);
-    //     return $this;
-    // }
-  
+    public function getImageUrl();
+    public function setImageUrl($imageUrl);
 }

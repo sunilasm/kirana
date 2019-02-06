@@ -77,9 +77,15 @@ $_item = $block->getItem();
                     <span class="title"><?= /* @escapeNotVerified */ __('Cancelled') ?></span>
                 </li>
             <?php }elseif($block->getItem()->getQtyShipped() > 0){ ?>
-                 <li class="item">
-                    <span class="title"><?= /* @escapeNotVerified */ __('Completed') ?></span>
-                </li>
+                <?php if($block->getItem()->getQtyOrdered() > $block->getItem()->getQtyShipped()) : ?>
+                    <li class="item">
+                        <span class="title"><?= /* @escapeNotVerified */ __('Partially Shipped') ?></span>
+                    </li>
+                <?php else : ?>
+                    <li class="item">
+                        <span class="title"><?= /* @escapeNotVerified */ __('Completed') ?></span>
+                    </li>
+                <?php endif; ?>
             <?php }else{ ?>
                 <li class="item">
                     <span class="title"><?= /* @escapeNotVerified */ __('Pending') ?></span>
