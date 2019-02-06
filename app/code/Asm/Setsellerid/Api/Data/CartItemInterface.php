@@ -14,6 +14,7 @@ interface CartItemInterface
 {
    
     const KEY_SELLER_ID = 'seller_id';
+    const KEY_IMAGE_URL = 'image_url';
 
     /**#@-*/
 
@@ -40,15 +41,16 @@ interface CartItemInterface
     {
         return $this->setData('seller_id', $seller_id);
     }*/
-     public function getImageUrl()
-    {
-        return $this->_get('image_url');
-    }
 
-     public function setImageUrl($imageUrl)
-    {
-        $this->setData('image_url', $imageUrl);
-        return $this;
-    }
+     public function getImageUrl();
+    // {
+    //     return $this->_get(self::KEY_IMAGE_URL);
+    // }
+
+     public function setImageUrl($imageUrl);
+    // {
+    //     $this->setData('image_url', $imageUrl);
+    //     return $this;
+    // }
   
 }

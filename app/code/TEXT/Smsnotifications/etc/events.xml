@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Event/etc/events.xsd">
-    <event name="checkout_onepage_controller_success_action">
+    <!-- <event name="checkout_onepage_controller_success_action">
         <observer name="text_smsnotifications_observer_new_order" instance="TEXT\Smsnotifications\Observer\NewOrder"/>
-    </event>
+    </event> -->
     <event name="sales_order_save_after">
         <!-- <observer name="text_smsnotifications_observer_order_cancelled" instance="TEXT\Smsnotifications\Observer\OrderCancelled"/> -->
         <observer name="text_smsnotifications_observer_order_hold" instance="TEXT\Smsnotifications\Observer\OrderHold"/>
@@ -13,9 +13,9 @@
         <observer name="text_smsnotifications_observer_invoice_pay" instance="TEXT\Smsnotifications\Observer\InvoicePay"/>
     </event>
    
-    <event name="customer_register_success">
+    <!-- <event name="customer_register_success">
         <observer name="text_smsnotifications_observer_register_success" instance="TEXT\Smsnotifications\Observer\Registration"/>
-    </event>
+    </event> -->
     <event name="admin_system_config_changed_section_text_smsnotifications_configuration">
           <observer name="text_smsnotification_observer_config_save" instance="TEXT\Smsnotifications\Observer\Configsave"/>
     </event>

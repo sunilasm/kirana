@@ -64,16 +64,16 @@ class Clearcart extends \Magento\Framework\App\Action\Action
             //$quoteItem=$this->getItemModel()->load($itemId);//load particular item which you want to delete by his item id
             $this->cart->removeItem($itemId)->save();
         }
-        $message = __(
-                'You deleted all item from shopping cart.'
-            );
-            $this->messageManager->addSuccessMessage($message);
+        // $message = __(
+        //         'You deleted all item from shopping cart.'
+        //     );
+        //     $this->messageManager->addSuccessMessage($message);
 
-            $response = [
+        $response = [
                 'success' => true,
             ];
 
-            $this->getResponse()->representJson(
+        $this->getResponse()->representJson(
                 $this->_objectManager->get('Magento\Framework\Json\Helper\Data')->jsonEncode($response)
         );
     }
