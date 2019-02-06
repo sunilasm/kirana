@@ -31,6 +31,7 @@
         </thead>
         <?php $items = $block->getItems(); ?>
         <?php $giftMessage = ''?>
+        <?php //echo "<pre>". print_r($items); exit; ?>
         <?php foreach ($items as $item): ?>
             <?php if ($item->getParentItem()) continue; ?>
             <tbody>

@@ -16,9 +16,11 @@ if ($notice) {
     $notice = "Notice: " . $notice;
 }
 ?>
+
 <?php $_orders = $block->getOrders(); ?>
 <?php echo $block->getChildHtml('info'); ?>
 <?php if ($_orders && count($_orders)): ?>
+
     <div class="table-wrapper orders-history">
         <table class="data table table-order-items history" id="my-orders-table">
             <caption class="table-caption"><?php /* @escapeNotVerified */ echo __('Orders') ?></caption>
@@ -35,6 +37,7 @@ if ($notice) {
             </thead>
             <tbody>
                 <?php foreach ($_orders as $_order): ?>
+                
                     <tr>
                         <td data-th="<?php echo $block->escapeHtml(__('Order #')) ?>" class="col id"><?php /* @escapeNotVerified */ echo $_order->getRealOrderId() ?></td>
                         <td data-th="<?php echo $block->escapeHtml(__('Date')) ?>" class="col date"><?php /* @escapeNotVerified */ echo $block->formatDate($_order->getCreatedAt()) ?></td>
