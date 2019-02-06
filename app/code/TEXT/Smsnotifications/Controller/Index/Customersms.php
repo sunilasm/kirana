@@ -38,14 +38,14 @@ class Customersms extends \Magento\Framework\App\Action\Action
 		$customerFactory = $objectManager->create('\Magento\Customer\Model\ResourceModel\Customer\CollectionFactory');
 		$customerCollection = $customerFactory->create()->addFieldToSelect(array('*'));
 
-		// $time = time();
-		// $to = date('Y-m-d H:i:s', $time);
-		// $lastTime = $time - 300; // 60*60*24
-		// $from = date('Y-m-d H:i:s', $lastTime);
+		 $time = time();
+		 $to = date('Y-m-d H:i:s', $time);
+		 $lastTime = $time - 300; // 60*60*24
+		 $from = date('Y-m-d H:i:s', $lastTime);
 		// print_r("to:-".$to);
 		// print_r("from:-".$from);exit;
 
-		$customerCollection->addFieldToFilter('created_at', ['lteq' => '2019-02-06 17:05:32'])->addFieldToFilter('created_at', ['gteq' => '2019-02-05 17:57:27']);
+		$customerCollection->addFieldToFilter('created_at', ['lteq' => $to])->addFieldToFilter('created_at', ['gteq' => $from]);
 
 		foreach ($customerCollection as $customer):
 		    // echo "First-->".$customer->getFirstname(); echo "<br/>";
