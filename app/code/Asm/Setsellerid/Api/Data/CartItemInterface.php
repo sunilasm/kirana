@@ -14,6 +14,7 @@ interface CartItemInterface
 {
    
     const KEY_SELLER_ID = 'seller_id';
+    const KEY_IMAGE_URL = 'image_url';
 
     /**#@-*/
 
