@@ -4,20 +4,23 @@ ini_set('display_startup_errors', 1);
 ini_set('memory_limit', '5G');
 error_reporting(E_ALL);
 
-//use \Magento\Framework\App\Bootstrap;
-//require 'app/bootstrap.php';
+// use \Magento\Framework\App\Bootstrap;
+// use Magento\TestFramework\ObjectManager;
+// require 'app/bootstrap.php';
 
-//$objectManager = \Magento\Framework\App\ObjectManager::getInstance(); // Instance of object manager
-//$resource = \Magento\Framework\App\ResourceConnection; //$objectManager->get('Magento\Framework\App\ResourceConnection');
-//$connection = $resource->getConnection('custom');
-//print_r($connection);exit;
-//$TableName = $resource->getTableName('mglof_marketplace_seller');
+// $objectManager = \Magento\Framework\App\ObjectManager::getInstance(); // Instance of object manager
+// $resource = \Magento\Framework\App\ResourceConnection; 
+// $objectManager->get('Magento\Framework\App\ResourceConnection');
+// $connection = $resource->getConnection('custom');
+// print_r($connection);exit;
+$TableName = 'mglof_marketplace_seller';
 
 	try{
-		$connection = mysqli_connect('localhost', 'root', '', 'kirana_dev');
+		$connection = mysqli_connect('localhost', 'root', 'root', 'kirana_store');
 		if(!$connection) {
 			throw new Exception('Could not connect to database!');
 		}
+		print_r($connection);exit;
 		
 		$importFolder ='kirana_details.csv';
 		$row = 1;
@@ -196,6 +199,7 @@ error_reporting(E_ALL);
 					];
 					
 				$insertquery = "INSERT INTO " . $TableName . "(".implode(',',array_keys($InsertData)).") VALUES ('".implode("','",$InsertData)."')";
+				print_r($insertquery);
 				mysqli_query($connection, $insertquery);
 			}
 		
@@ -230,7 +234,7 @@ error_reporting(E_ALL);
 			$result = json_decode($result, 1);
 			
 			$resultStatus = isset($result['id']) ? $result['id'] : 0;
-			//echo '<pre>';print_r($result);
+			echo '<pre>';print_r($result);
 			return $resultStatus;
 		}
 	}
