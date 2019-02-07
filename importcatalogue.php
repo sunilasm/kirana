@@ -7,22 +7,19 @@ error_reporting(E_ALL);
 // use \Magento\Framework\App\Bootstrap;
 // use Magento\TestFramework\ObjectManager;
 // require 'app/bootstrap.php';
-
-// $objectManager = \Magento\Framework\App\ObjectManager::getInstance(); // Instance of object manager
-// $resource = \Magento\Framework\App\ResourceConnection; 
-// $objectManager->get('Magento\Framework\App\ResourceConnection');
-// $connection = $resource->getConnection('custom');
-// print_r($connection);exit;
+//$TableName = $resource->getTableName('mglof_marketplace_seller');
 $TableName = 'mglof_marketplace_seller';
+$token = '';
+$finalresult = '';
 
 	try{
-		$connection = mysqli_connect('localhost', 'root', 'root', 'kirana_store');
+		$connection = mysqli_connect('localhost', 'kirana', 'Kirana@aws123', 'kirana_qa_new');
 		if(!$connection) {
 			throw new Exception('Could not connect to database!');
 		}
-		print_r($connection);exit;
+		//print_r($connection);exit;
 		
-		$importFolder ='kirana_details.csv';
+		$importFolder ='kirana_details_small_1.csv';
 		$row = 1;
 		$result =array();
 		if(($handle = fopen($importFolder, "r")) !== FALSE) {
@@ -42,11 +39,11 @@ $TableName = 'mglof_marketplace_seller';
 				if($key==0){
 					continue;
 				}
-			//	print_r($parseResponse);exit;
+				//print_r($parseResponse);exit;
 				$storeid	 		= isset($parseResponse[0]) ? $parseResponse[0] : '';
 				$name		 		= isset($parseResponse[1]) ? $parseResponse[1] : '';
 				$picturepath  		= isset($parseResponse[2]) ? $parseResponse[2] : '';
-				$participating		= isset($parseResponse[3]) ? $parseResponse[3] : '';
+				$participating		= isset($parseResponse[3]) ? 1 : 0;
 				$mobile1			= isset($parseResponse[4]) ? $parseResponse[4] : '';
 				$mobile2			= isset($parseResponse[5]) ? $parseResponse[5] : '';
 				$smartphone			= isset($parseResponse[6]) ? $parseResponse[6] : '';
@@ -120,7 +117,7 @@ $TableName = 'mglof_marketplace_seller';
 							],
 							"password" => "Demo@1234"
 						];
-						//$customerId =createCustomer($customerData);	
+						$customerId =createCustomer($customerData);	
 					}
 				/********* End ********/
 				/**/
@@ -195,15 +192,22 @@ $TableName = 'mglof_marketplace_seller';
 						'discountcriteria' 	=> $discountcriteria,
 						'dataconn' 			=> $dataconn,
 						'tabwithdataconn' 	=> $tabwithdataconn,
-						'smartphone' 		=> $smartphone
+						'smartphone' 		=> $smartphone,
+						'description'		=> ' ',
+						'meta_keywords'		=> ' '
 					];
+			
 					
 				$insertquery = "INSERT INTO " . $TableName . "(".implode(',',array_keys($InsertData)).") VALUES ('".implode("','",$InsertData)."')";
-				print_r($insertquery);
-				mysqli_query($connection, $insertquery);
+				if(mysqli_query($connection, $insertquery)){
+					$finalresult .= "$email:$customerId<br/>";
+				}esle{
+					$finalresult .= "$email:$customerId<br/>";
+				}
+					 
 			}
-		
 		}
+		echo $finalresult;
 	}catch(Exception $e){
 		echo $e->getMessage();
 		exit(1);
@@ -212,18 +216,21 @@ $TableName = 'mglof_marketplace_seller';
 	
 	
 	function createCustomer($customerData=[]){
-		
+		global $token;
 		if(!empty($customerData)){
-			$userData = array("username" => "admin", "password" => "admin@123");
-			$ch = curl_init("http://127.0.0.1/demo-kirana/rest/V1/integration/admin/token");
-			curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
-			curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($userData));
-			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-			curl_setopt($ch, CURLOPT_HTTPHEADER, array("Content-Type: application/json", "Content-Lenght: " . strlen(json_encode($userData))));
+			if(!$token)
+			{	
+				$userData = array("username" => "sunil.n", "password" => "Admin@123");
+				$ch = curl_init("http://13.233.41.0/rest/V1/integration/admin/token");
+				curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
+				curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($userData));
+				curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+				curl_setopt($ch, CURLOPT_HTTPHEADER, array("Content-Type: application/json", "Content-Lenght: " . strlen(json_encode($userData))));
 			
-			$token = curl_exec($ch);
+				$token = curl_exec($ch);
+			}
 			
-			$ch = curl_init("http://127.0.0.1/demo-kirana/rest/V1/customers");
+			$ch = curl_init("http://13.233.41.0/rest/V1/customers");
 			curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
 			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 			curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($customerData));
@@ -232,9 +239,9 @@ $TableName = 'mglof_marketplace_seller';
 			$result = curl_exec($ch);
 			
 			$result = json_decode($result, 1);
+
 			
 			$resultStatus = isset($result['id']) ? $result['id'] : 0;
-			echo '<pre>';print_r($result);
 			return $resultStatus;
 		}
 	}

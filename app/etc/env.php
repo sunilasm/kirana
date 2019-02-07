@@ -11,7 +11,7 @@ return [
         'connection' => [
             'default' => [
                 'host' => 'localhost',
-                'dbname' => 'kirana_store',
+                'dbname' => 'kirana_qa_new',
                 'username' => 'root',
                 'password' => 'root',
                 'active' => '1'
