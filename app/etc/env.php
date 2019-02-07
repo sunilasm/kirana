@@ -12,8 +12,8 @@ return [
             'default' => [
                 'host' => 'localhost',
                 'dbname' => 'kirana_qa_new',
-                'username' => 'kirana',
-                'password' => 'Kirana@aws123',
+                'username' => 'root',
+                'password' => 'root',
                 'active' => '1'
             ]
         ]
