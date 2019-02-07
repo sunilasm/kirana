@@ -33,15 +33,10 @@ class Index extends \Magento\Framework\App\Action\Action
 
         public function execute()
     {
-        $searchCriteria = $this->searchCriteriaBuilder
-              ->addFilter('status','pending','eq')
-              ->addSortOrder($this->sortBuilder->setField('entity_id')
-              ->setDescendingDirection()->create())
-              ->setPageSize(100)->setCurrentPage(1)->create();
-
+     
                 $time = time();
                 $to = date('Y-m-d H:i:s', $time);
-                $lastTime = $time - 7200; // 60*60*24
+                $lastTime = $time - 300; // 60*60*24
                 $from = date('Y-m-d H:i:s', $lastTime);
                 //print_r("to:-".$to);
                 //print_r("from:-".$from);
@@ -50,21 +45,23 @@ class Index extends \Magento\Framework\App\Action\Action
                 $orderCollection = $OrderFactory->create()->addFieldToSelect(array('*'));
                 $orderCollection->addFieldToFilter('created_at', ['lteq' => $to])->addFieldToFilter('created_at', ['gteq' => $from]);
                 //print_r($orderCollection->getSelect()->__toString());exit; 
-                $table = '';
-                $table .= "<table>";
-                $table .= "<th>";
-                $table .=  echo "<td>";
-                $table .=  echo "Order Id";
-                $table .=  echo "</td>";
-                $table .=  echo "<td>";
-                $table .=  echo "Customer";
-                $table .=  echo "</td>";
-                $table .=  echo "<td>";
-                $table .=  echo "Status";
-                $table .=  echo "</td>";
-                $table .=  echo "</th>";
+
+                $table = "";
+		        $table .= "<table style='border:1px solid #000'>";
+                $table .= "<tr style='border:1px solid #000'>";
+                $table .= "<td style='border:1px solid #000;'>";
+                $table .= "Order Id";
+                $table .= "</td>";
+                $table .= "<td style='border:1px solid #000'>";
+                $table .= "Customer";
+                $table .= "</td>";
+                $table .= "<td style='border:1px solid #000'>";
+                $table .= "Status";
+                $table .= "</td>";
+                $table .= "</tr>";
 
  			foreach($orderCollection as $order):
+			     $result = '';
                 $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
                         $customer = $objectManager->create('Magento\Customer\Model\Customer')->load($order->getCustomerId());
                          $settings = $this->_helper->getSettings();
@@ -99,28 +96,29 @@ class Index extends \Magento\Framework\App\Action\Action
                     array_push($admin_recipients, $telephone);
                     $result = $objectManager->get('TEXT\Smsnotifications\Helper\Data')->sendSms($text,$admin_recipients);
                 }
-                $table .=  echo "<tr>";
-                $table .=  echo "<td>";
-                $table .=  echo $orderId;
-                $table .=  echo "</td>";
-                $table .=  echo "<td>";
-                $table .=  echo $firstname." ".$lastname;
-                $table .=  echo "</td>";
-                if($result){
-                	$table .=  echo "<td>";
-	                $table .=  echo "Sent";
-	                $table .=  echo "</td>";
+                $table .= "<tr style='border:1px solid #000'>";
+                $table .= "<td style='border-right:1px solid #000'>";
+                $table .= $orderId;
+                $table .= "</td>";
+                $table .= "<td style='border-right:1px solid #000'>";
+                $table .= $firstname." ".$lastname;
+                $table .=  "</td>";
+                if($result != ''){
+                	$table .=  "<td>";
+	                $table .=  "Sent";
+	                $table .=  "</td>";
                 }else{
-                	$table .=  echo "<td>";
-	                $table .=  echo "Fail";
-	                $table .=  echo "</td>";
+                	$table .=  "<td>";
+	                $table .=  "Fail";
+	                $table .=  "</td>";
                 }
-                $table .=  echo "</tr>";
+                $table .= "</tr>";
                
                 //print_r($orderId.'--send--'.$result);
                 //print_r($result);
              endforeach;
-             $table .= echo "</table>";
+             $table .= "</table>";
+	         echo $table;
     }
 }
 
