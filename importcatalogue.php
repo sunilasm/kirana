@@ -4,24 +4,22 @@ ini_set('display_startup_errors', 1);
 ini_set('memory_limit', '5G');
 error_reporting(E_ALL);
 
-//use \Magento\Framework\App\Bootstrap;
-//require 'app/bootstrap.php';
-
-//$objectManager = \Magento\Framework\App\ObjectManager::getInstance(); // Instance of object manager
-//$resource = \Magento\Framework\App\ResourceConnection; //$objectManager->get('Magento\Framework\App\ResourceConnection');
-//$connection = $resource->getConnection('custom');
-//print_r($connection);exit;
+// use \Magento\Framework\App\Bootstrap;
+// use Magento\TestFramework\ObjectManager;
+// require 'app/bootstrap.php';
 //$TableName = $resource->getTableName('mglof_marketplace_seller');
 $TableName = 'mglof_marketplace_seller';
 $token = '';
+$finalresult = '';
 
 	try{
-		$connection = mysqli_connect('localhost', 'root', 'root', 'kirana_qa_new');
+		$connection = mysqli_connect('localhost', 'kirana', 'Kirana@aws123', 'kirana_qa_new');
 		if(!$connection) {
 			throw new Exception('Could not connect to database!');
 		}
+		//print_r($connection);exit;
 		
-		$importFolder ='kirana_details.csv';
+		$importFolder ='kirana_details_small_1.csv';
 		$row = 1;
 		$result =array();
 		if(($handle = fopen($importFolder, "r")) !== FALSE) {
@@ -201,12 +199,15 @@ $token = '';
 			
 					
 				$insertquery = "INSERT INTO " . $TableName . "(".implode(',',array_keys($InsertData)).") VALUES ('".implode("','",$InsertData)."')";
-//print_r($insertquery); exit;
-				
-				mysqli_query($connection, $insertquery); 
+				if(mysqli_query($connection, $insertquery)){
+					$finalresult .= "$email:$customerId<br/>";
+				}esle{
+					$finalresult .= "$email:$customerId<br/>";
+				}
+					 
 			}
-		
 		}
+		echo $finalresult;
 	}catch(Exception $e){
 		echo $e->getMessage();
 		exit(1);
@@ -219,8 +220,8 @@ $token = '';
 		if(!empty($customerData)){
 			if(!$token)
 			{	
-				$userData = array("username" => "admin", "password" => "Admin@123");
-				$ch = curl_init("http://127.0.0.1/kirana_store/rest/V1/integration/admin/token");
+				$userData = array("username" => "sunil.n", "password" => "Admin@123");
+				$ch = curl_init("http://13.233.41.0/rest/V1/integration/admin/token");
 				curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
 				curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($userData));
 				curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -229,7 +230,7 @@ $token = '';
 				$token = curl_exec($ch);
 			}
 			
-			$ch = curl_init("http://127.0.0.1/kirana_store/rest/V1/customers");
+			$ch = curl_init("http://13.233.41.0/rest/V1/customers");
 			curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
 			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 			curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($customerData));
@@ -241,7 +242,6 @@ $token = '';
 
 			
 			$resultStatus = isset($result['id']) ? $result['id'] : 0;
-			//print_r($resultStatus);exit;
 			return $resultStatus;
 		}
 	}
