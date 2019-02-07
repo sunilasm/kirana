@@ -39,8 +39,8 @@ class Index extends \Magento\Framework\App\Action\Action
 	      ->setDescendingDirection()->create())
 	      ->setPageSize(100)->setCurrentPage(1)->create();
 
-	    $time = time();
-		$to = date('Y-m-d H:i:s', $time);
+	    	$time = time();
+	        $to = date('Y-m-d H:i:s', $time);
 		$lastTime = $time - 300; // 60*60*24
 		$from = date('Y-m-d H:i:s', $lastTime);
 

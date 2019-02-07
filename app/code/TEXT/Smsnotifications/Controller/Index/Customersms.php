@@ -46,7 +46,7 @@ class Customersms extends \Magento\Framework\App\Action\Action
 		// print_r("from:-".$from);exit;
 
 		$customerCollection->addFieldToFilter('created_at', ['lteq' => $to])->addFieldToFilter('created_at', ['gteq' => $from]);
-
+		$result = '';
 		foreach ($customerCollection as $customer):
 		    // echo "First-->".$customer->getFirstname(); echo "<br/>";
 		    // echo "Last-->".$customer->getLastname(); echo "<br/>";
@@ -54,6 +54,7 @@ class Customersms extends \Magento\Framework\App\Action\Action
 		    $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
 			$customerNew = $objectManager->create('Magento\Customer\Model\Customer')->load($customer->getId());
 			$telephone = '';
+			
 			if($customerNew->getId() && $customerNew->getPrimaryBillingAddress()['telephone']){
 				$telephone = $customerNew->getPrimaryBillingAddress()->getTelephone();
 				$text = $settings['customer_register'];
