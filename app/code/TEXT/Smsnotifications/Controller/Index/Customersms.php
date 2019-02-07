@@ -40,10 +40,23 @@ class Customersms extends \Magento\Framework\App\Action\Action
 
 		 $time = time();
 		 $to = date('Y-m-d H:i:s', $time);
-		 $lastTime = $time - 300; // 60*60*24
+		 $lastTime = $time - 7200; // 60*60*24
 		 $from = date('Y-m-d H:i:s', $lastTime);
 		// print_r("to:-".$to);
 		// print_r("from:-".$from);exit;
+		 $table = "";
+         $table .= "<table style='border:1px solid #000'>";
+         $table .= "<tr style='border:1px solid #000'>";
+         $table .= "<td style='border:1px solid #000;'>";
+         $table .= "Customer";
+         $table .= "</td>";
+         $table .= "<td style='border:1px solid #000'>";
+         $table .= "Telephone";
+         $table .= "</td>";
+         $table .= "<td style='border:1px solid #000'>";
+         $table .= "Status";
+         $table .= "</td>";
+         $table .= "</tr>";
 
 		$customerCollection->addFieldToFilter('created_at', ['lteq' => $to])->addFieldToFilter('created_at', ['gteq' => $from]);
 		$result = '';
@@ -64,8 +77,26 @@ class Customersms extends \Magento\Framework\App\Action\Action
 	            $admin_recipients);
 
 			}
+			$table .= "<tr style='border:1px solid #000'>";
+            $table .= "<td style='border-right:1px solid #000'>";
+            $table .= $firstname." ".$lastname;
+            $table .=  "</td>";
+            $table .= "<td style='border-right:1px solid #000'>";
+            $table .= $telephone;
+            $table .= "</td>";
+            if($result){
+                    $table .=  "<td>";
+                    $table .=  "Sent";
+                    $table .=  "</td>";
+            }else{
+                    $table .=  "<td>";
+                    $table .=  "Fail";
+                    $table .=  "</td>";
+            }
+            $table .= "</tr>";
 		endforeach;
-		echo $result; 
+		$table .= "</table>";
+		echo $table; 
        // print_r($customerCollection->getData());exit;
 
     }
