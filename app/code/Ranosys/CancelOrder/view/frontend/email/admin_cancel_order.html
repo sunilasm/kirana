@@ -11,7 +11,8 @@
             <p class="greeting">{{trans "Dear Admin,"}}</p>
             <p>
                 <!-- {{trans 'This is to inform you that %customer_name has requested to cancel his order.' customer_name=$order.getCustomerName()}} -->
-                {{trans This is to inform you that %customer_name has requested to cancel the order. customer_name=$order.getCustomerName()}}
+                <!-- {{trans This is to inform you that %customer_name has requested to cancel the order. customer_name=$order.getCustomerName()}} -->
+                {{trans %customer_name has requested to cancel the order #$order.increment_id |raw }}
             </p>
             <p>{{trans "Please review accordingly. Details are as below."}}</p>
         </td>
