@@ -59,14 +59,13 @@ public function __construct(
 		         $table .= "</td>";
 		         $table .= "</tr>";
 
-
                 $customerCollection->addFieldToFilter('created_at', ['lteq' => $to])->addFieldToFilter('created_at', ['gteq' => $from]);
                 $result = '';
                 foreach ($customerCollection as $customer):
                     // echo "First-->".$customer->getFirstname(); echo "<br/>";
                     // echo "Last-->".$customer->getLastname(); echo "<br/>";
                     // echo "Id-->".$customer->getId(); echo "<br/>";
-		    $result = '';
+		    		$result = '';
                     $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
                         $customerNew = $objectManager->create('Magento\Customer\Model\Customer')->load($customer->getId());
                         $telephone = '';

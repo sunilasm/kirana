@@ -33,12 +33,7 @@ class Index extends \Magento\Framework\App\Action\Action
 
         public function execute()
     {
-        $searchCriteria = $this->searchCriteriaBuilder
-              ->addFilter('status','pending','eq')
-              ->addSortOrder($this->sortBuilder->setField('entity_id')
-              ->setDescendingDirection()->create())
-              ->setPageSize(100)->setCurrentPage(1)->create();
-
+     
                 $time = time();
                 $to = date('Y-m-d H:i:s', $time);
                 $lastTime = $time - 300; // 60*60*24
@@ -50,8 +45,9 @@ class Index extends \Magento\Framework\App\Action\Action
                 $orderCollection = $OrderFactory->create()->addFieldToSelect(array('*'));
                 $orderCollection->addFieldToFilter('created_at', ['lteq' => $to])->addFieldToFilter('created_at', ['gteq' => $from]);
                 //print_r($orderCollection->getSelect()->__toString());exit; 
+
                 $table = "";
-		$table .= "<table style='border:1px solid #000'>";
+		        $table .= "<table style='border:1px solid #000'>";
                 $table .= "<tr style='border:1px solid #000'>";
                 $table .= "<td style='border:1px solid #000;'>";
                 $table .= "Order Id";
@@ -65,7 +61,7 @@ class Index extends \Magento\Framework\App\Action\Action
                 $table .= "</tr>";
 
  			foreach($orderCollection as $order):
-			$resutl = '';
+			     $result = '';
                 $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
                         $customer = $objectManager->create('Magento\Customer\Model\Customer')->load($order->getCustomerId());
                          $settings = $this->_helper->getSettings();
@@ -122,6 +118,7 @@ class Index extends \Magento\Framework\App\Action\Action
                 //print_r($result);
              endforeach;
              $table .= "</table>";
-	     echo $table;
+	         echo $table;
     }
 }
+
