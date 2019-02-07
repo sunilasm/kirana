@@ -12,9 +12,11 @@ error_reporting(E_ALL);
 //$connection = $resource->getConnection('custom');
 //print_r($connection);exit;
 //$TableName = $resource->getTableName('mglof_marketplace_seller');
+$TableName = 'mglof_marketplace_seller';
+$token = '';
 
 	try{
-		$connection = mysqli_connect('localhost', 'root', '', 'kirana_dev');
+		$connection = mysqli_connect('localhost', 'root', 'root', 'kirana_qa_new');
 		if(!$connection) {
 			throw new Exception('Could not connect to database!');
 		}
@@ -39,11 +41,11 @@ error_reporting(E_ALL);
 				if($key==0){
 					continue;
 				}
-			//	print_r($parseResponse);exit;
+				//print_r($parseResponse);exit;
 				$storeid	 		= isset($parseResponse[0]) ? $parseResponse[0] : '';
 				$name		 		= isset($parseResponse[1]) ? $parseResponse[1] : '';
 				$picturepath  		= isset($parseResponse[2]) ? $parseResponse[2] : '';
-				$participating		= isset($parseResponse[3]) ? $parseResponse[3] : '';
+				$participating		= isset($parseResponse[3]) ? 1 : 0;
 				$mobile1			= isset($parseResponse[4]) ? $parseResponse[4] : '';
 				$mobile2			= isset($parseResponse[5]) ? $parseResponse[5] : '';
 				$smartphone			= isset($parseResponse[6]) ? $parseResponse[6] : '';
@@ -117,7 +119,7 @@ error_reporting(E_ALL);
 							],
 							"password" => "Demo@1234"
 						];
-						//$customerId =createCustomer($customerData);	
+						$customerId =createCustomer($customerData);	
 					}
 				/********* End ********/
 				/**/
@@ -192,11 +194,16 @@ error_reporting(E_ALL);
 						'discountcriteria' 	=> $discountcriteria,
 						'dataconn' 			=> $dataconn,
 						'tabwithdataconn' 	=> $tabwithdataconn,
-						'smartphone' 		=> $smartphone
+						'smartphone' 		=> $smartphone,
+						'description'		=> ' ',
+						'meta_keywords'		=> ' '
 					];
+			
 					
 				$insertquery = "INSERT INTO " . $TableName . "(".implode(',',array_keys($InsertData)).") VALUES ('".implode("','",$InsertData)."')";
-				mysqli_query($connection, $insertquery);
+//print_r($insertquery); exit;
+				
+				mysqli_query($connection, $insertquery); 
 			}
 		
 		}
@@ -208,18 +215,21 @@ error_reporting(E_ALL);
 	
 	
 	function createCustomer($customerData=[]){
-		
+		global $token;
 		if(!empty($customerData)){
-			$userData = array("username" => "admin", "password" => "admin@123");
-			$ch = curl_init("http://127.0.0.1/demo-kirana/rest/V1/integration/admin/token");
-			curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
-			curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($userData));
-			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-			curl_setopt($ch, CURLOPT_HTTPHEADER, array("Content-Type: application/json", "Content-Lenght: " . strlen(json_encode($userData))));
+			if(!$token)
+			{	
+				$userData = array("username" => "admin", "password" => "Admin@123");
+				$ch = curl_init("http://127.0.0.1/kirana_store/rest/V1/integration/admin/token");
+				curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
+				curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($userData));
+				curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+				curl_setopt($ch, CURLOPT_HTTPHEADER, array("Content-Type: application/json", "Content-Lenght: " . strlen(json_encode($userData))));
 			
-			$token = curl_exec($ch);
+				$token = curl_exec($ch);
+			}
 			
-			$ch = curl_init("http://127.0.0.1/demo-kirana/rest/V1/customers");
+			$ch = curl_init("http://127.0.0.1/kirana_store/rest/V1/customers");
 			curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
 			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 			curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($customerData));
@@ -228,9 +238,10 @@ error_reporting(E_ALL);
 			$result = curl_exec($ch);
 			
 			$result = json_decode($result, 1);
+
 			
 			$resultStatus = isset($result['id']) ? $result['id'] : 0;
-			//echo '<pre>';print_r($result);
+			//print_r($resultStatus);exit;
 			return $resultStatus;
 		}
 	}
