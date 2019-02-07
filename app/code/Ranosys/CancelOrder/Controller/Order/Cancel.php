@@ -80,7 +80,7 @@ class Cancel extends \Magento\Framework\App\Action\Action implements OrderInterf
                 $post = $this->getRequest()->getPostValue();
                 if (!empty($post)) {
                     $comment = $post['comment'];
-                    $order->addStatusToHistory('cancelled', $comment);
+                    $order->addStatusToHistory('canceled', $comment);
                     $order->save();
                 }
                 $this->messageManager->addSuccess(__('The order has been Cancelled successfully.'));
