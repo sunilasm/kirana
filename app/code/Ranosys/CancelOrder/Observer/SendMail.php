@@ -56,6 +56,11 @@ class SendMail implements ObserverInterface
      */
     public function execute(\Magento\Framework\Event\Observer $observer)
     {
+        $writer = new \Zend\Log\Writer\Stream(BP . '/var/log/templog.log');
+		$logger = new \Zend\Log\Logger();
+		$logger->addWriter($writer);
+		$logger->info("---- customer order cancel ----");
+        $logger->info("Order status:");
         $order = $observer->getEvent()->getOrder();
         $templateOptions = ['area' => \Magento\Framework\App\Area::AREA_FRONTEND,
         'store' => $this->storeManager->getStore()->getId()];
@@ -64,8 +69,10 @@ class SendMail implements ObserverInterface
         'store' => $store,
         'order' => $order
         ];
-
+        $customerEmail = $order->getCustomerEmail();
+        $logger->info("Customer Email:".$customerEmail);
         $from = $this->helper->getSender();
+        $logger->info("Customer Email:".$from);
         $to = $this->helper->getReceiver();
         $template = $this->helper->getTemplate();
         $value = trim($to, " ");
@@ -76,6 +83,7 @@ class SendMail implements ObserverInterface
             ->setTemplateVars($templateVars)
             ->setFrom($from)
             ->addTo($to)
+            ->addBcc($customerEmail)
             ->getTransport();
 
         $transport->sendMessage();

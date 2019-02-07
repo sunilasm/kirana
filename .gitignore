@@ -48,3 +48,4 @@ generated/*
 pub/static/*
 mantis/*
 mantis/
+app/etc/env.php

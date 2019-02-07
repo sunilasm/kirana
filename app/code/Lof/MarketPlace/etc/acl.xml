@@ -29,6 +29,8 @@
                         <resource id="Lof_MarketPlace::seller_edit" title="Edit Seller" sortOrder="10" />
                         <resource id="Lof_MarketPlace::seller_save" title="Save Seller" sortOrder="20" />
                         <resource id="Lof_MarketPlace::seller_delete" title="Delete Seller" sortOrder="30" />
+                        <resource id="Lof_MarketPlace::seller_enable" title="Enable Seller" sortOrder="40" />
+                        <resource id="Lof_MarketPlace::seller_disable" title="Disable Seller" sortOrder="50" />
                     </resource>
                     <resource id="Lof_MarketPlace::commission" title="Commission" sortOrder="20">
                         <resource id="Lof_MarketPlace::commission_edit" title="Edit Commission" sortOrder="10" />

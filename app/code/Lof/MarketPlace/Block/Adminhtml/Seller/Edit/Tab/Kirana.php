@@ -95,25 +95,23 @@ class Kirana extends \Magento\Backend\Block\Widget\Form\Generic implements \Mage
     	$fieldset->addField(
     		'store_type',
     		'select',
-    		[
-	    		'name' => 'name',
+    		array(
+	    		'name' => 'store_type',
 	    		'label' => __('Store Type'),
                 'title' => __('Store Type'),
-                'value' => '',
-                'values' => '',
+                'values' =>  $this->storeTypetoOptionArray(),
 	    		'required' => true,
-	    		'disabled' => $isElementDisabled
-    		]
+                'disabled' => $isElementDisabled
+    		)
     	);
         $fieldset->addField(
     		'24by7_shop',
     		'select',
     		[
-	    		'name' => 'name',
+	    		'name' => '24by7_shop',
 	    		'label' => __('24*7 Shop'),
                 'title' => __('24*7 Shop'),
-                'value' => '',
-                'values' => '',
+                'values' =>  $this->toOptionArray(),
                 'required' => true,
 	    		'disabled' => $isElementDisabled
     		]
@@ -162,28 +160,8 @@ class Kirana extends \Magento\Backend\Block\Widget\Form\Generic implements \Mage
                 'disabled' => $isElementDisabled
             ]
         );
-        $fieldset->addField(
-            'vat',
-            'text',
-            [
-                'name' => 'pan',
-                'label' => __('VAT'),
-                'title' => __('VAT'),
-                'class' => 'alphanumeric',
-                'disabled' => $isElementDisabled
-            ]
-        );
-        $fieldset->addField(
-            'tin',
-            'text',
-            [
-                'name' => 'tin',
-                'label' => __('TIN'),
-                'title' => __('TIN'),
-                'class' => 'alphanumeric',
-                'disabled' => $isElementDisabled
-            ]
-        );
+
+       
         $fieldset->addField(
             'gst',
             'text',
@@ -191,7 +169,8 @@ class Kirana extends \Magento\Backend\Block\Widget\Form\Generic implements \Mage
                 'name' => 'gst',
                 'label' => __('GST'),
                 'title' => __('GST'),
-                'class' => 'alphanumeric',
+                'class' => 'alphanumeric validate-length minimum-length-15 maximum-length-15',
+                'max_text_length' => 10,
                 'disabled' => $isElementDisabled
             ]
         );
@@ -202,8 +181,7 @@ class Kirana extends \Magento\Backend\Block\Widget\Form\Generic implements \Mage
                 'label' => __('Digital Verification'),
                 'title' => __('Digital Verification '),
                 'name' => 'digital_verification',
-                'value' => '',
-                'values' => '',
+                'values' =>  $this->toOptionArray(),
                 'required' => true,
                 'disabled' => $isElementDisabled
             ]
@@ -215,9 +193,8 @@ class Kirana extends \Magento\Backend\Block\Widget\Form\Generic implements \Mage
                 'label' => __('Physical Verification'),
                 'title' => __('Physical Verification'),
                 'name' => 'physical_verification',
-                'value' => '',
-                'values' => '',
                 'required' => true,
+                'values' =>  $this->toOptionArray(),
                 'disabled' => $isElementDisabled
             ]
         );
@@ -225,11 +202,10 @@ class Kirana extends \Magento\Backend\Block\Widget\Form\Generic implements \Mage
             'smart_phone',
             'select',
             [
-                'label' => __('Smartphone wih data'),
-                'title' => __('Smartphone wih data'),
+                'label' => __('Smartphone with data'),
+                'title' => __('Smartphone with data'),
                 'name' => 'smart_phone',
-                'value' => '',
-                'values' => '',
+                'values' =>  $this->toOptionArray(),
                 'required' => true,
                 'disabled' => $isElementDisabled
             ]
@@ -241,8 +217,7 @@ class Kirana extends \Magento\Backend\Block\Widget\Form\Generic implements \Mage
                 'label' => __('Knows English'),
                 'title' => __('Knows English'),
                 'name' => 'knows_english',
-                'value' => '',
-                'values' => '',
+                'values' =>  $this->toOptionArray(),
                 'disabled' => $isElementDisabled
             ]
         );
@@ -253,9 +228,8 @@ class Kirana extends \Magento\Backend\Block\Widget\Form\Generic implements \Mage
                 'label' => __('Parent Store'),
                 'title' => __('Parent Store'),
                 'name' => 'parent_store',
-                'value' => '',
-                'values' => '',
                 'required' => true,
+                'values' =>  $this->toOptionArray(),
                 'disabled' => $isElementDisabled
             ]
         );
@@ -276,8 +250,7 @@ class Kirana extends \Magento\Backend\Block\Widget\Form\Generic implements \Mage
                 'label' => __('Kirana Type'),
                 'title' => __('Kirana Type'),
                 'name' => 'kirana_type',
-                'value' => '',
-                'values' => '',
+                'values' =>  $this->kiranaTypetoOptionArray(),
                 'required' => true,
                 'disabled' => $isElementDisabled
             ]
@@ -289,8 +262,7 @@ class Kirana extends \Magento\Backend\Block\Widget\Form\Generic implements \Mage
                 'label' => __('Kirana Locality'),
                 'title' => __('Kirana Locality'),
                 'name' => 'kirana_locality',
-                'value' => '',
-                'values' => '',
+                'values' =>  $this->kiranaLocalitytoOptionArray(),
                 'disabled' => $isElementDisabled
             ]
         );
@@ -317,6 +289,7 @@ class Kirana extends \Magento\Backend\Block\Widget\Form\Generic implements \Mage
                 'disabled' => $isElementDisabled
             ]
         );
+       // $values['store_type'] = array(2);
     	$form->setValues($model->getData());
     	$this->setForm($form);
 
@@ -368,5 +341,44 @@ class Kirana extends \Magento\Backend\Block\Widget\Form\Generic implements \Mage
     protected function _isAllowedAction($resourceId)
     {
         return $this->_authorization->isAllowed($resourceId);
+    }
+    public function  storeTypetoOptionArray()
+    {
+        $storeTypeAttribute = [
+                ['value' => '0', 'label' => __('Select an option')],
+                ['value' => 'KIR', 'label' => __('KIR')],
+                ['value' => 'MED', 'label' => __('MED')],
+                ['value' => 'NA', 'label' => __('NA')]
+            ];
+        return $storeTypeAttribute;
+    }
+    public function  kiranaLocalitytoOptionArray()
+    {
+        $storeTypeAttribute = [
+                ['value' => '0', 'label' => __('Select an option')],
+                ['value' => 'KIR', 'label' => __('KIR')],
+                ['value' => 'MED', 'label' => __('MED')],
+                ['value' => 'NA', 'label' => __('NA')]
+            ];
+        return $storeTypeAttribute;
+    }
+    public function  kiranaTypetoOptionArray()
+    {
+        $storeTypeAttribute = [
+                ['value' => '0', 'label' => __('Select an option')],
+                ['value' => 'KIR', 'label' => __('KIR')],
+                ['value' => 'MED', 'label' => __('MED')],
+                ['value' => 'NA', 'label' => __('NA')]
+            ];
+        return $storeTypeAttribute;
+    }
+    public function  toOptionArray()
+    {
+        $storeTypeAttribute = [
+                ['value' => '0', 'label' => __('Select an option')],
+                ['value' => 'Yes', 'label' => __('Yes')],
+                ['value' => 'No', 'label' => __('No')]
+            ];
+        return $storeTypeAttribute;
     }
 }

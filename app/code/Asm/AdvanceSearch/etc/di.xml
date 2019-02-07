@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+ <preference for="Magento\CatalogSearch\Block\Advanced\Form" type="Asm\AdvanceSearch\Block\Rewrite\Advanced\Form" />
+ <preference for="Magento\CatalogSearch\Block\Advanced\Result" type="Asm\AdvanceSearch\Block\Rewrite\Advanced\Result" />
+ <preference for="Magento\CatalogSearch\Model\Advanced" type="Asm\AdvanceSearch\Model\Rewrites\Advanced" />
+ <preference for="Magento\CatalogSearch\Controller\Advanced\Result" type="Asm\AdvanceSearch\Controller\Rewrite\Advanced\Result" />
+ <preference for="Asm\AdvanceSearch\Api\SearchInterface"
+                type="Asm\AdvanceSearch\Model\Searchview" />
+ <type name="Asm\AdvanceSearch\Model\Rewrites\Advanced">
+        <arguments>
+            <argument name="productCollectionFactory" xsi:type="object">Magento\CatalogSearch\Model\ResourceModel\Advanced\CollectionFactory</argument>
+        </arguments>
+    </type>
+</config>

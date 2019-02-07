@@ -1,3 +1,20 @@
 .checkout-payment-method .payment-option, .checkout-payment-method .payment-option-title .action-toggle{
     display: none !important;
 }
+.account .toolbar .limiter{
+    width: 19% !important;
+}
+.page-layout-1column .block.widget .products-grid .product-item {
+    width: 16.57% !important;
+}
+.page-products .products-grid .product-item {
+	width: 24.229% !important;
+}
+
+.shipping-address-item.not-selected-item {
+	display: none;
+}
+
+.checkout-index-index .checkout-billing-address {
+	display: none !important;
+}

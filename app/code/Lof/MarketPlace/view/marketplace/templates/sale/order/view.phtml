@@ -92,7 +92,7 @@ if($tracking!=""){
                 <?php if($item_ship_status!="Shipped" && $item_refund_status!="Refunded"  && $item_cancel_status!="1" && $order->canShip() && $can_ship){ ?>
                 <button type="button" class="btn btn-primary lof_ship"><?php echo __('Ship'); ?></button>
                 <div id="lof_ship">
-                  <div><?php echo __('Are you sure you want to create ship for order?'); ?></div>
+                  <div><?php echo __('Are you sure you want to create shipment for the Order?'); ?></div>
                 </div>
                 <?php } ?>
                
@@ -309,9 +309,22 @@ if($tracking!=""){
                         <th style="width:50%"><?php echo __('Subtotal');?></th>
                         <td><?php echo $helper->getPriceFomat($subtotal); ?></td>
                       </tr>
+                      <?php
+                        $orderSubtotal = $helper->getPriceFomat($subtotal);
+                        foreach ($this->getOrder()->getAllItems() as $item) {
+                          $itemTotal = $helper->getPriceFomat($item->getBaserowtotal());
+                            if($itemTotal == $orderSubtotal){
+                              $QtyOrdered = $item->getQtyOrdered();
+                            }
+                          }
+                          // Selet Static shipping amount
+                          $shippingPrice = 5;
+                          $shippingPriceResult = $shippingPrice * $QtyOrdered;
+                        ?>
+
                       <tr>
                         <th><?php echo __('Shipping & Handling');?></th>
-                        <td><?php echo $helper->getPriceFomat($this->getOrder()->getData('shipping_amount')); ?></td>
+                        <td><?php echo $helper->getPriceFomat($shippingPriceResult); ?></td>
                       </tr>
                       <tr>
                         <th><?php echo __('Tax');?></th>
@@ -323,6 +336,9 @@ if($tracking!=""){
                       </tr>
                        <tr>
                         <th><?php echo __('Grand Total');?></th>
+                        <?php
+                        $grand_total = $grand_total + $shippingPriceResult;
+                        ?>
                         <td><?php echo $helper->getPriceFomat($grand_total); ?></td>
                       </tr>
                       <?php if($refund_total > 0) { ?>

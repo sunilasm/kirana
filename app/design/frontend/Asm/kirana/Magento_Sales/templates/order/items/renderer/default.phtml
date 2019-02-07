@@ -50,7 +50,7 @@ $_item = $block->getItem();
                 <span class="content"><?= /* @escapeNotVerified */ $block->getItem()->getQtyOrdered()*1 ?></span>
             </li>
         <?php endif; ?>
-        <?php if ($block->getItem()->getQtyShipped() > 0): ?>
+        <!-- <?php if ($block->getItem()->getQtyShipped() > 0): ?>
             <li class="item">
                 <span class="title"><?= /* @escapeNotVerified */ __('Shipped') ?></span>
                 <span class="content"><?= /* @escapeNotVerified */ $block->getItem()->getQtyShipped()*1 ?></span>
@@ -67,8 +67,40 @@ $_item = $block->getItem();
                 <span class="title"><?= /* @escapeNotVerified */ __('Refunded') ?></span>
                 <span class="content"><?= /* @escapeNotVerified */ $block->getItem()->getQtyRefunded()*1 ?></span>
             </li>
-        <?php endif; ?>
+        <?php endif; ?> -->
         </ul>
+    </td>
+    <td class="col price" data-th="<?= $block->escapeHtml(__('Status')) ?>">
+        <ul class="items-status">
+            <?php if($block->getItem()->getQtyCanceled() > 0){ ?>
+                <li class="item">
+                    <span class="title"><?= /* @escapeNotVerified */ __('Cancelled') ?></span>
+                </li>
+            <?php }elseif($block->getItem()->getQtyShipped() > 0){ ?>
+                <?php if($block->getItem()->getQtyOrdered() > $block->getItem()->getQtyShipped()) : ?>
+                    <li class="item">
+                        <span class="title"><?= /* @escapeNotVerified */ __('Partially Shipped') ?></span>
+                    </li>
+                <?php else : ?>
+                    <li class="item">
+                        <span class="title"><?= /* @escapeNotVerified */ __('Completed') ?></span>
+                    </li>
+                <?php endif; ?>
+            <?php }else{ ?>
+                <li class="item">
+                    <span class="title"><?= /* @escapeNotVerified */ __('Pending') ?></span>
+                </li>
+            <?php } ?>
+        </ul>
+    </td>
+    <td class="col price" data-th="<?= $block->escapeHtml(__('Kirana Name')) ?>">
+        <?php  
+        if($_item->getSellerId()){
+        $objectManager = \Magento\Framework\App\ObjectManager::getInstance ();
+        $seller = $objectManager->get('Lof\MarketPlace\Model\Seller')->load($_item->getSellerId(),'seller_id');
+        $customer =  $objectManager->create('Magento\Customer\Model\Customer')->load($seller->getCustomerId());
+        echo $customer->getName(); 
+    }?>
     </td>
     <td class="col subtotal" data-th="<?= $block->escapeHtml(__('Subtotal')) ?>">
         <?= $block->getItemRowTotalHtml() ?>
