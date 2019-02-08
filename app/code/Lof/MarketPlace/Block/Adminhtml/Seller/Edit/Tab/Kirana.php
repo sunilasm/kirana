@@ -123,7 +123,7 @@ class Kirana extends \Magento\Backend\Block\Widget\Form\Generic implements \Mage
 	    		'name' => 'opening_time',
 	    		'label' => __('Opening Time'),
                 'title' => __('Opening Time'),
-                'class' => 'time',
+                'class' => '',
                 'disabled' => $isElementDisabled
     		]
         );
@@ -134,7 +134,7 @@ class Kirana extends \Magento\Backend\Block\Widget\Form\Generic implements \Mage
 	    		'name' => 'closeing_time',
 	    		'label' => __('Closing Time'),
                 'title' => __('Closing Time'),
-                'class' => 'time',
+                'class' => '',
                 'disabled' => $isElementDisabled
     		]
         );
@@ -145,7 +145,7 @@ class Kirana extends \Magento\Backend\Block\Widget\Form\Generic implements \Mage
                 'name' => 'non_working_days',
                 'label' => __('Days Not Working'),
                 'title' => __('Days Not Working'),
-                'class' => 'integer validate-number validate-not-negative-number',
+                'class' => '',
                 'disabled' => $isElementDisabled
             ]
         );
@@ -273,7 +273,6 @@ class Kirana extends \Magento\Backend\Block\Widget\Form\Generic implements \Mage
                 'name' => 'kirana_owner',
                 'label' => __('Kirana Owner'),
                 'title' => __('Kirana Owner'),
-                'required' => true,
                 'disabled' => $isElementDisabled
             ]
         );
@@ -284,8 +283,8 @@ class Kirana extends \Magento\Backend\Block\Widget\Form\Generic implements \Mage
                 'name' => 'kirana_fixed_line',
                 'label' => __('Kirana Fixed Line'),
                 'title' => __('Kirana Fixed Line'),
-                'required' => true,
-                'class' => 'number validate-range validate-number-range-10-10',
+                // 'class' => 'number validate-range validate-number-range-10-10',
+                'class' => '',
                 'disabled' => $isElementDisabled
             ]
         );
