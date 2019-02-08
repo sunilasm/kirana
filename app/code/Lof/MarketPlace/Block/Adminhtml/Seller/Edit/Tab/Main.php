@@ -22,7 +22,7 @@ namespace Lof\MarketPlace\Block\Adminhtml\Seller\Edit\Tab;
 
 class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magento\Backend\Block\Widget\Tab\TabInterface
 {
-	/**
+    /**
      * @var \Magento\Store\Model\System\Store
      */
     protected $_systemStore;
@@ -68,41 +68,41 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
      * @return $this
      */
     protected function _prepareForm(){
-    	/** @var $model \Lof\MarketPlace\Model\Seller */
-    	$model = $this->_coreRegistry->registry('lof_marketplace_seller');
+        /** @var $model \Lof\MarketPlace\Model\Seller */
+        $model = $this->_coreRegistry->registry('lof_marketplace_seller');
 
-    	/**
-    	 * Checking if user have permission to save information
-    	 */
-    	if($this->_isAllowedAction('Lof_MarketPlace::seller_edit')){
-    		$isElementDisabled = false;
-    	}else {
-    		$isElementDisabled = true;
-    	}
+        /**
+         * Checking if user have permission to save information
+         */
+        if($this->_isAllowedAction('Lof_MarketPlace::seller_edit')){
+            $isElementDisabled = false;
+        }else {
+            $isElementDisabled = true;
+        }
 
-    	/** @var \Magento\Framework\Data\Form $form */
-    	$form = $this->_formFactory->create();
+        /** @var \Magento\Framework\Data\Form $form */
+        $form = $this->_formFactory->create();
 
-    	$form->setHtmlIdPrefix('seller_');
+        $form->setHtmlIdPrefix('seller_');
 
-    	$fieldset = $form->addFieldset('base_fieldset', ['legend' => __('Seller Information')]);
+        $fieldset = $form->addFieldset('base_fieldset', ['legend' => __('Seller Information')]);
 
 
-    	if ($model->getId()) {
-    		$fieldset->addField('seller_id', 'hidden', ['name' => 'seller_id']);
-    	}
+        if ($model->getId()) {
+            $fieldset->addField('seller_id', 'hidden', ['name' => 'seller_id']);
+        }
 
-    	$fieldset->addField(
-    		'name',
-    		'text',
-    		[
-	    		'name' => 'name',
-	    		'label' => __('Seller Name'),
-	    		'title' => __('Seller Name'),
-	    		'required' => true,
-	    		'disabled' => $isElementDisabled
-    		]
-    	);
+        $fieldset->addField(
+            'name',
+            'text',
+            [
+                'name' => 'name',
+                'label' => __('Seller Name'),
+                'title' => __('Seller Name'),
+                'required' => true,
+                'disabled' => $isElementDisabled
+            ]
+        );
         if($model->getData('url_key')) {
             $fieldset->addField(
                 'link_seller',
@@ -115,17 +115,17 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
                 ]
             );
         }
-    	$fieldset->addField(
-    		'url_key',
-    		'text',
-    		[
-	    		'name' => 'url_key',
-	    		'label' => __('URL Key'),
-	    		'title' => __('URL Key'),
+        $fieldset->addField(
+            'url_key',
+            'text',
+            [
+                'name' => 'url_key',
+                'label' => __('URL Key'),
+                'title' => __('URL Key'),
                 'note' => __('Empty to auto create url key'),
-	    		'disabled' => $isElementDisabled
-    		]
-    		);
+                'disabled' => $isElementDisabled
+            ]
+            );
         $fieldset->addField(
             'contact_number',
             'text',
@@ -171,29 +171,29 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
                 'disabled' => $isElementDisabled
             ]
         );
-    	$fieldset->addField(
-    		'image',
-    		'image',
-    		[
-	    		'name' => 'image',
-	    		'label' => __('Company Banner'),
-	    		'title' => __('Company Banner'),
-	    		'disabled' => $isElementDisabled
-    		]
-    		);
+        $fieldset->addField(
+            'image',
+            'image',
+            [
+                'name' => 'image',
+                'label' => __('Company Banner'),
+                'title' => __('Company Banner'),
+                'disabled' => $isElementDisabled
+            ]
+            );
 
-    	$fieldset->addField(
-    		'thumbnail',
-    		'image',
-    		[
-	    		'name' => 'thumbnail',
-	    		'label' => __('Company Logo'),
-	    		'title' => __('Company Logo'),
-	    		'disabled' => $isElementDisabled
-    		]
-    		);
+        $fieldset->addField(
+            'thumbnail',
+            'image',
+            [
+                'name' => 'thumbnail',
+                'label' => __('Company Logo'),
+                'title' => __('Company Logo'),
+                'disabled' => $isElementDisabled
+            ]
+            );
 
-    	$wysiwygDescriptionConfig = $this->_wysiwygConfig->getConfig(['tab_id' => $this->getTabId()]);
+        $wysiwygDescriptionConfig = $this->_wysiwygConfig->getConfig(['tab_id' => $this->getTabId()]);
         $fieldset->addField(
             'company_locality',
             'text',
@@ -204,14 +204,14 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
                 'disabled' => $isElementDisabled
             ]
         );
-    	$fieldset->addField(
+        $fieldset->addField(
             'company_description',
             'editor',
             [
                 'name' => 'company_description',
                 'style' => 'height:200px;',
                 'label' => __('Company Description'),
-    			'title' => __('Company Description'),
+                'title' => __('Company Description'),
                 'disabled' => $isElementDisabled,
                 'config' => $wysiwygDescriptionConfig
             ]
@@ -240,7 +240,7 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
                 'config' => $wysiwygDescriptionConfig
             ]
         );
-    	/**
+        /**
          * Check is single store mode
          */
         if (!$this->_storeManager->isSingleStoreMode()) {
@@ -351,15 +351,15 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
 
 
         $fieldset->addField(
-    		'position',
-    		'text',
-    		[
-	    		'name' => 'position',
-	    		'label' => __('Position'),
-	    		'title' => __('Position'),
-	    		'disabled' => $isElementDisabled
-    		]
-    	);
+            'position',
+            'text',
+            [
+                'name' => 'position',
+                'label' => __('Position'),
+                'title' => __('Position'),
+                'disabled' => $isElementDisabled
+            ]
+        );
 
         $fieldset->addField(
             'status',
@@ -374,10 +374,10 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
         );
 
 
-    	$form->setValues($model->getData());
-    	$this->setForm($form);
+        $form->setValues($model->getData());
+        $this->setForm($form);
 
-    	return parent::_prepareForm();
+        return parent::_prepareForm();
     }
 
     /**

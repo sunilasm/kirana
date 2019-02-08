@@ -22,7 +22,7 @@ namespace Lof\MarketPlace\Block\Adminhtml\Seller\Edit\Tab;
 
 class Kirana extends \Magento\Backend\Block\Widget\Form\Generic implements \Magento\Backend\Block\Widget\Tab\TabInterface
 {
-	/**
+    /**
      * @var \Magento\Store\Model\System\Store
      */
     protected $_systemStore;
@@ -68,75 +68,75 @@ class Kirana extends \Magento\Backend\Block\Widget\Form\Generic implements \Mage
      * @return $this
      */
     protected function _prepareForm(){
-    	/** @var $model \Lof\MarketPlace\Model\Seller */
-    	$model = $this->_coreRegistry->registry('lof_marketplace_seller');
+        /** @var $model \Lof\MarketPlace\Model\Seller */
+        $model = $this->_coreRegistry->registry('lof_marketplace_seller');
 
-    	/**
-    	 * Checking if user have permission to save information
-    	 */
-    	if($this->_isAllowedAction('Lof_MarketPlace::seller_edit')){
-    		$isElementDisabled = false;
-    	}else {
-    		$isElementDisabled = true;
-    	}
+        /**
+         * Checking if user have permission to save information
+         */
+        if($this->_isAllowedAction('Lof_MarketPlace::seller_edit')){
+            $isElementDisabled = false;
+        }else {
+            $isElementDisabled = true;
+        }
 
-    	/** @var \Magento\Framework\Data\Form $form */
-    	$form = $this->_formFactory->create();
+        /** @var \Magento\Framework\Data\Form $form */
+        $form = $this->_formFactory->create();
 
-    	$form->setHtmlIdPrefix('seller_');
+        $form->setHtmlIdPrefix('seller_');
         //$store_type = $this->_websiteFactory->create()->getCollection()->toOptionArray();
-    	$fieldset = $form->addFieldset('base_fieldset', ['legend' => __('Kirana Attributes')]);
+        $fieldset = $form->addFieldset('base_fieldset', ['legend' => __('Kirana Attributes')]);
 
 
-    	if ($model->getId()) {
-    		$fieldset->addField('seller_id', 'hidden', ['name' => 'seller_id']);
-    	}
+        if ($model->getId()) {
+            $fieldset->addField('seller_id', 'hidden', ['name' => 'seller_id']);
+        }
 
-    	$fieldset->addField(
-    		'store_type',
-    		'select',
-    		array(
-	    		'name' => 'store_type',
-	    		'label' => __('Store Type'),
+        $fieldset->addField(
+            'store_type',
+            'select',
+            array(
+                'name' => 'store_type',
+                'label' => __('Store Type'),
                 'title' => __('Store Type'),
                 'values' =>  $this->storeTypetoOptionArray(),
-	    		'required' => true,
+                'required' => true,
                 'disabled' => $isElementDisabled
-    		)
-    	);
+            )
+        );
         $fieldset->addField(
-    		'24by7_shop',
-    		'select',
-    		[
-	    		'name' => '24by7_shop',
-	    		'label' => __('24*7 Shop'),
+            '24by7_shop',
+            'select',
+            [
+                'name' => '24by7_shop',
+                'label' => __('24*7 Shop'),
                 'title' => __('24*7 Shop'),
                 'values' =>  $this->toOptionArray(),
                 'required' => true,
-	    		'disabled' => $isElementDisabled
-    		]
-    	);
-    	$fieldset->addField(
-    		'opening_time',
-    		'text',
-    		[
-	    		'name' => 'opening_time',
-	    		'label' => __('Opening Time'),
-                'title' => __('Opening Time'),
-                'class' => 'time',
                 'disabled' => $isElementDisabled
-    		]
+            ]
         );
         $fieldset->addField(
-    		'closeing_time',
-    		'text',
-    		[
-	    		'name' => 'closeing_time',
-	    		'label' => __('Closing Time'),
-                'title' => __('Closing Time'),
-                'class' => 'time',
+            'opening_time',
+            'text',
+            [
+                'name' => 'opening_time',
+                'label' => __('Opening Time'),
+                'title' => __('Opening Time'),
+                'class' => '',
                 'disabled' => $isElementDisabled
-    		]
+            ]
+        );
+        $fieldset->addField(
+            'closeing_time',
+            'text',
+            [
+                'name' => 'closeing_time',
+                'label' => __('Closing Time'),
+                'title' => __('Closing Time'),
+                'class' => '',
+                'disabled' => $isElementDisabled
+            ]
         );
         $fieldset->addField(
             'non_working_days',
@@ -145,7 +145,7 @@ class Kirana extends \Magento\Backend\Block\Widget\Form\Generic implements \Mage
                 'name' => 'non_working_days',
                 'label' => __('Days Not Working'),
                 'title' => __('Days Not Working'),
-                'class' => 'integer validate-number validate-not-negative-number',
+                'class' => '',
                 'disabled' => $isElementDisabled
             ]
         );
@@ -210,7 +210,7 @@ class Kirana extends \Magento\Backend\Block\Widget\Form\Generic implements \Mage
                 'disabled' => $isElementDisabled
             ]
         );
-    	$fieldset->addField(
+        $fieldset->addField(
             'knows_english',
             'select',
             [
@@ -221,12 +221,12 @@ class Kirana extends \Magento\Backend\Block\Widget\Form\Generic implements \Mage
                 'disabled' => $isElementDisabled
             ]
         );
-    	$fieldset->addField(
+        $fieldset->addField(
             'parent_store',
             'select',
             [
-                'label' => __('Parent Store'),
-                'title' => __('Parent Store'),
+                'label' => __('Child Store'),
+                'title' => __('Child Store'),
                 'name' => 'parent_store',
                 'required' => true,
                 'values' =>  $this->toOptionArray(),
@@ -255,7 +255,7 @@ class Kirana extends \Magento\Backend\Block\Widget\Form\Generic implements \Mage
                 'disabled' => $isElementDisabled
             ]
         );
-    	$fieldset->addField(
+        $fieldset->addField(
             'kirana_locality',
             'select',
             [
@@ -273,7 +273,6 @@ class Kirana extends \Magento\Backend\Block\Widget\Form\Generic implements \Mage
                 'name' => 'kirana_owner',
                 'label' => __('Kirana Owner'),
                 'title' => __('Kirana Owner'),
-                'required' => true,
                 'disabled' => $isElementDisabled
             ]
         );
@@ -284,16 +283,16 @@ class Kirana extends \Magento\Backend\Block\Widget\Form\Generic implements \Mage
                 'name' => 'kirana_fixed_line',
                 'label' => __('Kirana Fixed Line'),
                 'title' => __('Kirana Fixed Line'),
-                'required' => true,
-                'class' => 'number validate-range validate-number-range-10-10',
+                // 'class' => 'number validate-range validate-number-range-10-10',
+                'class' => '',
                 'disabled' => $isElementDisabled
             ]
         );
        // $values['store_type'] = array(2);
-    	$form->setValues($model->getData());
-    	$this->setForm($form);
+        $form->setValues($model->getData());
+        $this->setForm($form);
 
-    	return parent::_prepareForm();
+        return parent::_prepareForm();
     }
 
     /**
