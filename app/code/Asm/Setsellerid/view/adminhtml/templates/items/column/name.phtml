@@ -28,7 +28,7 @@
             $objectManager = \Magento\Framework\App\ObjectManager::getInstance ();
             $seller = $objectManager->get('Lof\MarketPlace\Model\Seller')->load($_item->getSellerId(),'seller_id');
             $customer =  $objectManager->create('Magento\Customer\Model\Customer')->load($seller->getCustomerId());
-            $sellername =  $customer->getName(); 
+            $sellername =  $seller->getName(); 
         }
         ?>
         <span><?= $block->escapeHtml(__('Kirana name'))?>:</span> <?= $sellername?>

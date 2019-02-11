@@ -286,7 +286,7 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
                 'name' => 'city',
                 'label' => __('City'),
                 'title' => __('City'),
-                'required' => true,
+                // 'required' => true,
                 'disabled' => $isElementDisabled
             ]
         );
@@ -295,8 +295,8 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
             'text',
             [
                 'name' => 'region',
-                'label' => __('Zip/Postal Code'),
-                'title' => __('Zip/Postal Code'),
+                'label' => __('State'),
+                'title' => __('State'),
                 'required' => true,
                 'disabled' => $isElementDisabled
             ]

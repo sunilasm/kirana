@@ -24,10 +24,10 @@ class Setproductseller implements \Magento\Framework\Event\ObserverInterface
 	$request = $objectManager->get('\Magento\Framework\App\RequestInterface');
 	$seller_id = array();
 	$variable = $request->getPost();
-	// $writer = new \Zend\Log\Writer\Stream(BP . '/var/log/templog.log');
-	// $logger = new \Zend\Log\Logger();
-	// $logger->addWriter($writer);
-	// $logger->info("Setproductsellerrrrrrrrrrr Setproductseller");
+	/*$writer = new \Zend\Log\Writer\Stream(BP . '/var/log/templog.log');
+	$logger = new \Zend\Log\Logger();
+	$logger->addWriter($writer);
+	$logger->info("Setproductsellerrrrrrrrrrr Setproductseller");*/
 	$seller_id = array();
 	$variable = $this->_request->getPost();
  	foreach ($variable as $key => $value) {
@@ -41,14 +41,23 @@ class Setproductseller implements \Magento\Framework\Event\ObserverInterface
  		}
  	}
  	$cart = $observer->getEvent()->getData('cart');
-    $cartItems = $cart->getItems();
+    /*$cartItems = $cart->getItems();
     foreach($cartItems as $item){
     	if(isset($seller_id["value"])){
 	    	if($item->getProductId() == $seller_id["product"]){
 	    		$item->setSellerId($seller_id["value"]);
 	    	}
     	}
-   	}
+   	}*/
+   	$item = $observer->getEvent()->getData('quote_item');
+    /*$logger->info($item->getProductId());
+    $logger->info($seller_id["product"]);
+    $logger->info($seller_id["value"]);*/
+    if(isset($seller_id["value"])){
+    	if($item->getProductId() == $seller_id["product"]){
+    		$item->setSellerId($seller_id["value"]);
+    	}
+    }
     return $this;
   }
 }

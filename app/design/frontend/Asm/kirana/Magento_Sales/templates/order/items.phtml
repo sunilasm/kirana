@@ -24,12 +24,14 @@
                 <th class="col sku"><?= /* @escapeNotVerified */ __('SKU') ?></th>
                 <th class="col price"><?= /* @escapeNotVerified */ __('Price') ?></th>
                 <th class="col qty"><?= /* @escapeNotVerified */ __('Qty') ?></th>
+                <th class="col status" style="text-align: right;"><?= /* @escapeNotVerified */ __('Status') ?></th>
                 <th class="col seller_name" style="text-align: right;"><?= /* @escapeNotVerified */ __('Kirana Name') ?></th>
                 <th class="col subtotal"><?= /* @escapeNotVerified */ __('Subtotal') ?></th>
             </tr>
         </thead>
         <?php $items = $block->getItems(); ?>
         <?php $giftMessage = ''?>
+        <?php //echo "<pre>". print_r($items); exit; ?>
         <?php foreach ($items as $item): ?>
             <?php if ($item->getParentItem()) continue; ?>
             <tbody>
@@ -68,7 +70,7 @@
         <tfoot>
             <?php if($block->isPagerDisplayed()): ?>
                 <tr>
-                    <td colspan="5" data-block="order-items-pager-bottom" class="order-pager-wrapper order-pager-wrapper-bottom">
+                    <td colspan="4" data-block="order-items-pager-bottom" class="order-pager-wrapper order-pager-wrapper-bottom">
                         <?= $block->getPagerHtml() ?>
                     </td>
                 </tr>

@@ -24,10 +24,12 @@ class Addnewaddress extends \Magento\Framework\App\Action\Action
         Context $context,
         \Magento\Customer\Model\Session $customerSession,
         \Magento\Directory\Model\CountryFactory $countryFactory,
-        \Magento\Framework\App\RequestInterface $request
+        \Magento\Framework\App\RequestInterface $request,
+        \Magento\Checkout\Model\Cart $cart
     ) {
         $this->customerSession = $customerSession;
         $this->_countryFactory = $countryFactory;
+        $this->cart = $cart;
         $this->request = $request;
         parent::__construct($context);
     }
@@ -38,16 +40,21 @@ class Addnewaddress extends \Magento\Framework\App\Action\Action
         $parameters = $this->request->getParams();
         $latitude = $parameters['latitude'];
         $longitude = $parameters['longitude'];
+        //print_r("latitude-->".$latitude);
+        //print_r("longitude-->".$longitude);
         $data1 = file_get_contents("https://maps.google.com/maps/api/geocode/json?latlng=$latitude,$longitude&sensor=false&key=AIzaSyD-_0vriuYY2qKxzK82yvVqgUeo-bqayDk");
          $data = json_decode($data1);
           $add_array  = $data->results;
           $add_array = $add_array[0];
           $fullAdd = $add_array->formatted_address;
           $add_array = $add_array->address_components;
+          // print_r($fullAdd);
+          // print_r($add_array);exit;
           $country = "Not found";
           $state = "Not found"; 
           $city = "Not found";
           $newArray = array();
+          // print_r($fullAdd.'<br/>');
           $formatted_address = explode(",", $fullAdd);
            $location = ''; $city = '';$state = '';$country = '';$postal_code ='';
           foreach ($add_array as $key) {
@@ -81,28 +88,6 @@ class Addnewaddress extends \Magento\Framework\App\Action\Action
           $string3 = substr(trim($string2), 0, -1);
           $street = $string3; 
 
-          // $location = '';
-          // if(isset($newArray['political'])){
-          //   $location = $newArray['political'];
-          // }
-          // $city = '';
-          // if(isset($newArray['locality'])){
-          //   // if($newArray['administrative_area_level_2']){
-          //   //   $city = $newArray['administrative_area_level_2'];
-          //   // }
-          //   if($newArray['locality']){
-          //     $city = $newArray['locality'];
-          //   }
-          // }
-          // $state = '';
-          // if(isset($newArray['administrative_area_level_1'])){
-          //   $state = $newArray['administrative_area_level_1'];
-          // }
-          // $country = '';
-          // if(isset($newArray['country'])){
-          //   $country = $newArray['country'];
-          // }
-
           $countryCollection = $this->_countryFactory->create()->loadByCode('IN')->getRegions();
           $regions = $countryCollection->loadData()->toOptionArray(false);
           // print_r($regions);exit;
@@ -116,6 +101,13 @@ class Addnewaddress extends \Magento\Framework\App\Action\Action
               $countryCode = $region['country_id'];
             }
           endforeach;
+
+          // print_r("country:".$countryCode.'<br/>');
+          // print_r("postal_code:".$postal_code.'<br/>');
+          // print_r("city:".$city.'<br/>');
+          // print_r("regionId:".$regionId.'<br/>');
+          // print_r("regionName:".$regionName.'<br/>');
+          // print_r("street:".$street);
 
           $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
           $addresss = $objectManager->get('\Magento\Customer\Model\AddressFactory');
@@ -139,5 +131,11 @@ class Addnewaddress extends \Magento\Framework\App\Action\Action
           catch (Exception $e) {
                   Zend_Debug::dump($e->getMessage());
           }
+
+          // $AllItems = $this->cart->getQuote()->getAllVisibleItems();
+          // foreach($AllItems as $item):
+          //   print_r($item); 
+          // endforeach;
+          // exit;
      }               
 }     

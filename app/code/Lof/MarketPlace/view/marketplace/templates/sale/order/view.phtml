@@ -309,9 +309,22 @@ if($tracking!=""){
                         <th style="width:50%"><?php echo __('Subtotal');?></th>
                         <td><?php echo $helper->getPriceFomat($subtotal); ?></td>
                       </tr>
+                      <?php
+                        $orderSubtotal = $helper->getPriceFomat($subtotal);
+                        foreach ($this->getOrder()->getAllItems() as $item) {
+                          $itemTotal = $helper->getPriceFomat($item->getBaserowtotal());
+                            if($itemTotal == $orderSubtotal){
+                              $QtyOrdered = $item->getQtyOrdered();
+                            }
+                          }
+                          // Selet Static shipping amount
+                          $shippingPrice = 5;
+                          $shippingPriceResult = $shippingPrice * $QtyOrdered;
+                        ?>
+
                       <tr>
                         <th><?php echo __('Shipping & Handling');?></th>
-                        <td><?php echo $helper->getPriceFomat($this->getOrder()->getData('shipping_amount')); ?></td>
+                        <td><?php echo $helper->getPriceFomat($shippingPriceResult); ?></td>
                       </tr>
                       <tr>
                         <th><?php echo __('Tax');?></th>
@@ -323,6 +336,9 @@ if($tracking!=""){
                       </tr>
                        <tr>
                         <th><?php echo __('Grand Total');?></th>
+                        <?php
+                        $grand_total = $grand_total + $shippingPriceResult;
+                        ?>
                         <td><?php echo $helper->getPriceFomat($grand_total); ?></td>
                       </tr>
                       <?php if($refund_total > 0) { ?>
