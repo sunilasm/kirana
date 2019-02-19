@@ -286,7 +286,7 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
                 'name' => 'city',
                 'label' => __('City'),
                 'title' => __('City'),
-                'required' => true,
+                // 'required' => true,
                 'disabled' => $isElementDisabled
             ]
         );
