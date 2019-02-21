@@ -8,11 +8,11 @@ require([
    	$( document ).ready(function() {
    		var shoptime = $("#seller_24by7_shop").val();
     	if(shoptime == "Yes"){
-	   		$(".field-opening_time").show();
-	  		$(".field-closeing_time").show();
-	   	}else{
 	   		$(".field-opening_time").hide();
 	  		$(".field-closeing_time").hide();
+	   	}else{
+	   		$(".field-opening_time").show();
+	  		$(".field-closeing_time").show();
 	   	} 
 	   	var shore = $("#seller_parent_store").val();
     	if(shore == "Yes"){
@@ -24,12 +24,12 @@ require([
 	}); 
 	 $(document).on('change', '#seller_24by7_shop', function() {
 	   	if(this.value == "Yes"){
-	   		$(".field-opening_time").show();
-	  		$(".field-closeing_time").show();
-	   	}else{
 	   		$(".field-opening_time").hide();
 	  		$(".field-closeing_time").hide();
-	   	}  		
+	   	}else{
+	   		$(".field-opening_time").show();
+	  		$(".field-closeing_time").show();
+	   	} 		
   	}); 
   $(document).on('change', '#seller_parent_store', function() {
 	   	if(this.value == "Yes"){
