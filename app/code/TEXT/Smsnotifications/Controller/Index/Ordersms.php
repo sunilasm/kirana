@@ -11,7 +11,7 @@ namespace TEXT\Smsnotifications\Controller\Index;
 use Magento\Framework\App\Action\Context;
 use \TEXT\Smsnotifications\Helper\Data as Helper;
 
-class Index extends \Magento\Framework\App\Action\Action
+class Ordersms extends \Magento\Framework\App\Action\Action
 {
         
         protected $_helper;
