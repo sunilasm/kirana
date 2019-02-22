@@ -27,7 +27,7 @@ class Index extends \Magento\Framework\App\Action\Action
 
     public function execute()
     {
-        
+        //echo"wwwwwwwww";exit;
         $result = $this->resultFactory->create(ResultFactory::TYPE_JSON);
         if ($this->getRequest()->isAjax())
         {
@@ -37,6 +37,7 @@ class Index extends \Magento\Framework\App\Action\Action
             $state = $parameters['state'];
             $country = $parameters['country'];
             $postcode = $parameters['pincode'];
+            //print_r($address."--".$state."--".$country."--".$postcode);exit;
             $resultData = $this->helperData->getLatlng($address, $city, $state, $country, $postcode);
             $result->setData($resultData);
         }

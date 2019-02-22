@@ -1,6 +1,7 @@
 <?php
 
 $sellerCollection = $this->getSellerCollection();
+// print_r($sellerCollection->getData());exit;
 
 $data = $this->helper('Lof\MarketPlace\Helper\Data');
 $currPageUrl = $data->getCurrentUrls();
@@ -21,7 +22,10 @@ $customerSession = $objectManager->create('Magento\Framework\Session\SessionMana
 $sessionLat = $customerSession->getLatitude();
 $sessionLng = $customerSession->getLongitude();
 $sessionCustlgin = $customerSession->getCustmerloginstatus();
-
+$selectedSellerId = '';
+if(isset($_GET['seller_id'])){
+	$selectedSellerId = $_GET['seller_id'];
+}
 ?>
 <?php if($sellerCollection && $sellerCollection->count()){
 	$sellerId = $sellerCollection->getFirstItem()->getData('seller_id');  ?>
@@ -59,7 +63,7 @@ $sessionCustlgin = $customerSession->getCustmerloginstatus();
 	<?php if(count($sellerCollection)){ ?>
 		<select name="seller_id" id="seller_list">
 		<?php foreach ($sellerCollection as $_seller) { ?>
-			<option value="<?php echo $_seller->getId();?>"><?php echo $_seller->getName(); ?></option>
+			<option <?php if($selectedSellerId == $_seller->getId()){ echo "selected"; } ?> value="<?php echo $_seller->getId();?>"><?php echo $_seller->getName(); ?></option>
 		<?php /*?>
 		<!-- <div class="seller-profile-container">
 			<div class="seller-image col-xs-3">

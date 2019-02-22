@@ -25,7 +25,7 @@
 		<css src="Lof_MarketPlace::css/styles.css" />
 	</head>
     <body>
-        <referenceBlock name="customer_account_navigation" >
+        <!-- <referenceBlock name="customer_account_navigation" >
             <block class="Lof\MarketPlace\Block\Account\Navigation" name="seller_account_navigation"  ifconfig="lofmarketplace/general_settings/enable" >
             	<arguments>
                     <argument name="path" xsi:type="string">marketplace/catalog/dashboard</argument>
@@ -38,6 +38,6 @@
                     <argument name="label" xsi:type="string">Message</argument>
                 </arguments>
             </block>
-        </referenceBlock>
+        </referenceBlock> -->
     </body>
 </page>

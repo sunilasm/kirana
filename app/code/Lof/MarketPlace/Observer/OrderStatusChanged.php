@@ -86,7 +86,8 @@ class OrderStatusChanged implements ObserverInterface
             $customOptions = $item->getProductOptions ();
             $customOptionArray = json_encode ( $customOptions );
             $product = $objectManager->get ( 'Magento\Catalog\Model\Product' )->load ( $productId );
-            $sellerId = $product->getSellerId();
+            //$sellerId = $product->getSellerId();
+            $sellerId = $item->getSellerId();
             $priceComparison = $this->helper->isEnableModule('Lofmp_PriceComparison');
             if($priceComparison) {
                 $assignHelper = $objectManager->create('Lofmp\PriceComparison\Helper\Data');
@@ -99,6 +100,7 @@ class OrderStatusChanged implements ObserverInterface
             } else {
                 $sellerId = $product->getSellerId();
             }
+            $sellerId = $item->getSellerId();
              if (! empty ( $sellerId ) && $item->getParentItemId () == '') {
                 $sellerDatas = $objectManager->get ( 'Lof\MarketPlace\Model\Seller' )->load ( $sellerId, 'seller_id' );
                 $sellerProduct = $objectManager->get ( 'Lof\MarketPlace\Model\SellerProduct' )->load ( $productId, 'product_id' );               
@@ -188,8 +190,14 @@ class OrderStatusChanged implements ObserverInterface
                 $shippingAmount = round ( $orderShippingAmount * ($totalSellerShippingQty / $totalShippingQty), 2 );
             }
             //$sellerAmount = $sellerIds ['price'] - $sellerIds ['commission'];
+            $name = '';
+            if($sellerIds ['seller_id']){
+                $sellerData = $objectManager->get ( 'Lof\MarketPlace\Model\Seller' )->load ( $sellerIds ['seller_id'], 'seller_id' );
+                $name = $sellerData->getData('name');  
+            }
+            
             $sellerOrderModel = $objectManager->create ( 'Lof\MarketPlace\Model\Order' );
-            $sellerOrderModel->setSellerId ( $sellerIds ['seller_id'] )->setOrderId ( $orderId )->setSellerProductTotal ( $sellerIds ['price'] )->setCommission ( $sellerIds ['commission'] )->setSellerAmount ( $sellerIds ['amount'] )->setIncrementId ( $incrementId )->setOrderCurrencyCode ( $currencyCode )->setCustomerId ( $customerId )->setShippingAmount ( $shippingAmount )->setStatus ( $orderData->getData('status') )->setDiscountAmount($sellerIds ['discount_amount'])->save ();
+            $sellerOrderModel->setName($name)->setSellerId ( $sellerIds ['seller_id'] )->setOrderId ( $orderId )->setSellerProductTotal ( $sellerIds ['price'] )->setCommission ( $sellerIds ['commission'] )->setSellerAmount ( $sellerIds ['amount'] )->setIncrementId ( $incrementId )->setOrderCurrencyCode ( $currencyCode )->setCustomerId ( $customerId )->setShippingAmount ( $shippingAmount )->setStatus ( $orderData->getData('status') )->setDiscountAmount($sellerIds ['discount_amount'])->save ();
             /**
              * Send order details to seller
              */

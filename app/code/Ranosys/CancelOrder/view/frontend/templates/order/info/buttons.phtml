@@ -40,7 +40,7 @@ if ($notice) {
         <div class="popup-form">
     	<form class="form cancel-order"
     	      action="<?php /* @escapeNotVerified */ echo $block->getFormAction($_order); ?>"
-    	      id="cancellation-form"
+    	      id="cancellation-form-<?php echo $_order->getRealOrderId(); ?>"
     	      method="post">
     	    <fieldset class="fieldset">
     		<div class="field note no-label order-q"><?php /* @escapeNotVerified */ echo __('Are you sure to cancel selected order?') ?><br>
@@ -48,7 +48,7 @@ if ($notice) {
     		<div class="field comment col-xs-12 col-sm-12 col-md-12 col-lg-12">
     		    <label class="label" for="comment"><span><?php /* @escapeNotVerified */ echo __('Any cancellation reason ?') ?></span></label>
     		    <div class="control">
-    			<textarea name="comment" id="comment" title="<?php /* @escapeNotVerified */ echo __('Any cancellation reason ?') ?>" placeholder="<?php /* @escapeNotVerified */ echo __('Why do you want to cancel this order?') ?>" class="input-text" cols="5" rows="3"></textarea>
+    			<textarea name="comment" id="comment-<?php echo $_order->getRealOrderId()?>" title="<?php /* @escapeNotVerified */ echo __('Any cancellation reason ?') ?>" placeholder="<?php /* @escapeNotVerified */ echo __('Why do you want to cancel this order?') ?>" class="input-text" cols="5" rows="3"></textarea>
     		    </div>
     		</div>
     		<span class="order-notice"><?php /* @escapeNotVerified */ echo __($notice) ?></span>

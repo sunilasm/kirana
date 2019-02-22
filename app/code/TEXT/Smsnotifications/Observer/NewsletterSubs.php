@@ -123,27 +123,24 @@ class NewsletterSubs implements ObserverInterface
             $name= $customerSession->getCustomer()->getName();
             $emailid=$customerSession->getCustomer()->getEmail();
             /*get customer mobile number */
-          $telephone= $customerSession->getCustomer()->getPrimaryBillingAddress()->getTelephone();
-             if ($telephone) {
-                              $text= $settings['newsletter_subs'];
-                
-                              $text = str_replace('{{customer_id}}', $customer_id, $text);
-                              $text = str_replace('{{name}}',  $name, $text);
-                              $text = str_replace('{{emailid}}',  $emailid, $text);  
-                              }                                                  
-$admin_recipients[]=$settings['admin_recipients'];
+            if($customer_id){
+                $telephone= $customerSession->getCustomer()->getPrimaryBillingAddress()->getTelephone();
+                 if ($telephone) {
+                                  $text= $settings['newsletter_subs'];
+                    
+                                  $text = str_replace('{{customer_id}}', $customer_id, $text);
+                                  $text = str_replace('{{name}}',  $name, $text);
+                                  $text = str_replace('{{emailid}}',  $emailid, $text);  
+                                  }                                                  
+                    $admin_recipients[]=$settings['admin_recipients'];
 
-    array_push($admin_recipients, $telephone);
+                        array_push($admin_recipients, $telephone);
 
-       $object_manager = \Magento\Framework\App\ObjectManager ::getInstance();
-        $result = $object_manager->get('TEXT\Smsnotifications\Helper\Data')->sendSms($text,$admin_recipients);
-        
-     return($result );
-
-       
-     
-    
-          
-            }
-        }
+                           $object_manager = \Magento\Framework\App\ObjectManager ::getInstance();
+                            $result = $object_manager->get('TEXT\Smsnotifications\Helper\Data')->sendSms($text,$admin_recipients);
+                            
+                         return($result );
+                }
+    }
+}
     

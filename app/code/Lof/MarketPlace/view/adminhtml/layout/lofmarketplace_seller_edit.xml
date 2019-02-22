@@ -23,6 +23,7 @@
 <page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" layout="admin-2columns-left" xsi:noNamespaceSchemaLocation="../../../../../../../lib/internal/Magento/Framework/View/Layout/etc/page_configuration.xsd">
 	<head>
 		<css src="jquery/fileUploader/css/jquery.fileupload-ui.css"/>
+		<script src="Lof_MarketPlace::js/custom.js"/>
 	</head>
 	<update handle="editor"/>
 	<body>

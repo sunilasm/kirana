@@ -18,14 +18,15 @@ $sessionLat = $customerSession->getLatitude();
 $sessionLng = $customerSession->getLongitude();
 $sessionCustlgin = $customerSession->getCustmerloginstatus();
 $sessionFullAdd = $customerSession->getFulladdress();
-// print_r($customerSession->getLongitude());exit;
-// print_r($customerSession->getCustmerloginstatus());
-//print_r($baseUrl);
+// print_r($customerSession->getLatitude());
+// print_r($customerSession->getLongitude());
+// print_r($customerSession->getCustmerloginstatus());exit;
+// print_r($customerSession->getFulladdress());
+// //print_r($baseUrl);
 ?>
 <script type="text/javascript">
 require([
 "jquery",
-"Magento_Ui/js/modal/modal",
 "jquery/jquery.cookie"
 ], function($, modal){
     $(document).ready(function() {
@@ -34,74 +35,13 @@ require([
         var sessionCustlgin = "<?php if(isset($sessionCustlgin)){ echo $sessionCustlgin; }else{ echo 'null'; } ?>";
         var sessionFullAdd = "<?php if(isset($sessionFullAdd)){ echo $sessionFullAdd; }else{ echo 'null'; } ?>";
         console.log(sessionLat+'--'+sessionLng+'--'+sessionCustlgin+'--'+sessionFullAdd);
-        var latitudeAndLongitude=document.getElementById("lat"),
-        location={
-            latitude:'',
-            longitude:''
-        };
-        //var flag;
-        if (navigator.geolocation){
-                if(sessionLat == 'null' && sessionLng == 'null'){
-                    navigator.geolocation.getCurrentPosition(showPosition);
-                }
-        }
-        else{
-            //console.log("hererre");
-        latitudeAndLongitude.innerHTML="Geolocation is not supported by this browser.";
-        }
 
-       
-
-        function showPosition(position){ 
-            // console.log(position);
-            location.latitude=position.coords.latitude;
-            location.longitude=position.coords.longitude;
-                $("#lat").val(position.coords.latitude);
-                $("#lng").val(position.coords.longitude);
-                var latitude = $('#lat').val();
-                var longitude = $('#lng').val();
-                var custmerloginstatus = 'false';
-                var address = '';
-                 // $.cookie('latitude', latitude );
-                 // $.cookie('longitude', longitude );
-                 // $.cookie('custmerloginstatus', 'false' );
-                 // console.log($.cookie('latitude')+'--'+$.cookie('longitude'));
-
-            var geocoder = new google.maps.Geocoder();
-            var latLng = new google.maps.LatLng(location.latitude, location.longitude);
-
-            if (geocoder) {
-                geocoder.geocode({ 'latLng': latLng}, function (results, status) {
-                if (status == google.maps.GeocoderStatus.OK) {
-                    address = results[0].formatted_address;
-                    //Set session
-                    setsession(latitude, longitude, custmerloginstatus, address);
-                    //flag = true;
-                    //$('#address').html('Address:'+results[0].formatted_address);
-                }
-                else {
-                    //flag = false;
-                    //$('#address').html('Geocoding failed: '+status);
-                    console.log("Geocoding failed: " + status);
-                }
-                }); //geocoder.geocode()
-            }   
-            
-
-        } //showPosition
 
        // Customer is login 
         if(jQuery('#customerLogin').val()){
-            //if($.cookie('latitude') == '' && $.cookie('longitude') == ''){
+            var sessionCustlgin = 'false';
                 var geocoder = new google.maps.Geocoder();
                 var addressLog = jQuery('#addressFull').val();
-                 var latLng = new google.maps.LatLng(sessionLat, sessionLng);
-                 geocoder.geocode( { 'latLng': latLng}, function(results, status) {
-                       if (status == google.maps.GeocoderStatus.OK) {
-                        $('#currentAdd').html(results[0].formatted_address);
-                        $('#currentAddval').val(results[0].formatted_address);
-                      }
-                    });
                  // Get Default Logedin User Address
                 geocoder.geocode( { 'address': addressLog}, function(results, status) {
                     console.log(status);
@@ -112,123 +52,68 @@ require([
                     $('#defaultAddval').val(addressLog);
                     addresslatitude =  results[0].geometry.location.lat();
                     addresslongitude = results[0].geometry.location.lng();
+                    //console.log(addresslatitude);
+                    //console.log(addresslongitude);
                 } 
-                    //console.log($.cookie('custmerloginstatus'));
-                    if(sessionLat != addresslatitude && sessionLng != addresslongitude && sessionCustlgin == 'false'){
-                        var popup = modal(optionsnew, $('#popup-modal-islogin'));
-                            $('#popup-modal-islogin').modal('openModal');
-                    }else{
+                console.log("lat-->"+sessionLat+"=="+addresslatitude);
+                console.log("lng-->"+sessionLng+"=="+addresslongitude);
+                console.log("sessionCustlgin-->"+sessionCustlgin);
+                if(sessionLat != addresslatitude && sessionLng != addresslongitude && sessionCustlgin == 'false'){
+                    //console.log("Save session");
+                        console.log("lat--"+addresslatitude);
+                        console.log("lng--"+addresslongitude);
                         $("#lat").val(addresslatitude);
-                        $("#lng").val(addresslongitude); 
-                    }   
+                        $("#lng").val(addresslongitude);
+                        custmerloginstatus = true;
+                        clearCart();
+                        setsession(addresslatitude, addresslongitude, custmerloginstatus, addressLog);
+                    }  
                 });
-             //}
         }
-        // Rgister user or non registered user popup
-         var options = {
-                type: 'popup',
-                responsive: true,
-                innerScroll: true,
-                title: 'Address',
-                modalClass: 'custom-modal',
-                buttons: [{
-                    text: $.mage.__('Continue'),
-                    class: 'getaddressdetails',
-                    click: function () {
-                        var address = jQuery('#autocomplete').val();
-                           var geocoder = new google.maps.Geocoder();
-                            //var address = "new york";
-                            geocoder.geocode( { 'address': address}, function(results, status) {
-                              //console.log('status-->'+status);
-                               if (status == google.maps.GeocoderStatus.OK) {
-                                var latitude = results[0].geometry.location.lat();
-                                var longitude = results[0].geometry.location.lng();
-                                var custmerloginstatus = 'false';
-                                setsession(latitude, longitude, custmerloginstatus, address);
-                                jQuery('#lat').val(latitude);
-                                jQuery('#lng').val(longitude);
-                              }
-                            });
-                        this.closeModal();
-                        $('#popup-modal').html(" ");
+
+        function setsession(latitude, longitude, custmerloginstatus, address){
+            if(latitude != '' && longitude != '' && custmerloginstatus != ''){
+            var param = 'latitude='+latitude+'&longitude='+longitude+'&custmerloginstatus='+custmerloginstatus+'&fulladdress='+address;
+                jQuery.ajax({
+                    showLoader: true,
+                    url: "<?php  echo $baseUrl; ?>search/index/session",
+                    data: param,
+                    type: "POST",
+                    dataType: 'json',
+                }).done(function (data) {
+                    // console.log(data);
+                    if(data.message == 'Success')
+                    {
+                        console.log("Set session data.");
+                        // window.location.reload(true);
+                        window.location.href="<?php echo '?time='.time(); ?>";
                     }
-                }]
-            };
-
-            // Registered user popup
-            var optionsnew = {
-                type: 'popup',
-                responsive: true,
-                innerScroll: true,
-                title: 'Confirm Address',
-                modalClass: 'custom-modal-login',
-                buttons: [{
-                    text: $.mage.__('Confirm'),
-                    class: 'getaddressdetailslogin',
-                    click: function () {
-                        //alert($("input[name='checkaddress']:checked").val());
-                        var geocoder = new google.maps.Geocoder();
-                            var address = $("input[name='checkaddress']:checked").val();
-
-                            geocoder.geocode( { 'address': address}, function(results, status) {
-                               if (status == google.maps.GeocoderStatus.OK) {
-                                var latitude = results[0].geometry.location.lat();
-                                var longitude = results[0].geometry.location.lng();
-                                var custmerloginstatus = 'true';
-                                // Set session
-                                setsession(latitude, longitude, custmerloginstatus, address);
-                                 // $.cookie('latitude', latitude );
-                                 // $.cookie('longitude', longitude );
-                                 // $.cookie('custmerloginstatus', 'true' );
-                                jQuery('#lat').val(latitude);
-                                jQuery('#lng').val(longitude);
-                              }
-                            });
-                        this.closeModal();
-                        $('#popup-modal-islogin').html(" ");
+                    else
+                    {
+                        console.log("some problem to set session data");
                     }
-                }]
-            };
-              if($("#lat").val() == '' && $("#lng").val() == '' && sessionLat == 'null' && sessionLng == 'null'){
-                    var popup = modal(options, $('#popup-modal'));
-                    setTimeout(function() {
-                    $('#popup-modal').modal('openModal');
-                    }, 5000);
-            }   
+                });
+            } //endif
+        }//end function setsession
+        //Clear cart
+        function clearCart(){
+            jQuery.ajax({
+                 url: '<?php  echo $baseUrl; ?>search/index/clearcart',
+                 type: 'POST',
+                 showLoader: true,
+                success: function (res) {
+                     if (res.messages) {
+                         jQuery('[data-placeholder="messages"]').html(res.messages);
+                     }
+                    // if (res.minicart) {
+                    //     jQuery('[data-block="minicart"]').replaceWith(res.minicart);
+                    //     jQuery('[data-block="minicart"]').trigger('contentUpdated');
+                    // }
+                 }
+             });
+        }//End clear cart
 
-            // Change header address here
-            jQuery('.change-location').click(function(){
-                var popup = modal(options, $('#popup-modal'));
-                $('#popup-modal').modal('openModal');
-            });
-
-            function setsession(latitude, longitude, custmerloginstatus, address){
-                if(latitude != '' && longitude != '' && custmerloginstatus != ''){
-                var param = 'latitude='+latitude+'&longitude='+longitude+'&custmerloginstatus='+custmerloginstatus+'&fulladdress='+address;
-                    jQuery.ajax({
-                        showLoader: true,
-                        url: "<?php  echo $baseUrl; ?>search/index/session",
-                        data: param,
-                        type: "POST",
-                        dataType: 'json',
-                    }).done(function (data) {
-                        // console.log(data);
-                        if(data.message == 'Success')
-                        {
-                            console.log("Set session data.");
-                            // window.location.reload(true);
-                            window.location.href="<?php echo '?time='.time(); ?>";
-                        }
-                        else
-                        {
-                            console.log("some problem to set session data");
-                        }
-                    }).fail(function (jqXhr) {
-                        console.log(jqXhr.responseText);
-                    });
-                } //endif
-            }//end function setsession
-        
     });
 });
+
 </script>

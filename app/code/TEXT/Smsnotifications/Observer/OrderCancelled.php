@@ -134,23 +134,23 @@ class OrderCancelled implements ObserverInterface
                     $customerEmail =  $order->getCustomerEmail();
                     /* get telephone number of order customer */
              $telephone=  $this->destination  = $order->getBillingAddress()->getTelephone();
-
+             $result = '';
                     if(in_array('cancel', $final_array)){
                     if ($telephone){
-                                      $text= $settings['order_cancell'];
-                                      $text = str_replace('{order_id}', $orderId, $text);
-                                      $text = str_replace('{firstname}', $firstname, $text);
-                                      $text = str_replace('{lastname}', $lastname, $text);
-                                      $text = str_replace('{price}}',  $totalPrice, $text);
-                                      $text = str_replace('{emailid}',  $customerEmail, $text);
-                                      $text = str_replace('{country_code}',  $countryCode, $text);
-                                    }
-           $admin_recipients[]=$settings['admin_recipients'];
-           array_push($admin_recipients, $telephone);
-      
-           $object_manager = \Magento\Framework\App\ObjectManager ::getInstance();
-           $result = $object_manager->get('TEXT\Smsnotifications\Helper\Data')->sendSms($text,$admin_recipients);
-             return($result );
+                      $text= $settings['order_cancell'];
+                      $text = str_replace('{order_id}', $orderId, $text);
+                      $text = str_replace('{firstname}', $firstname, $text);
+                      $text = str_replace('{lastname}', $lastname, $text);
+                      $text = str_replace('{price}}',  $totalPrice, $text);
+                      $text = str_replace('{emailid}',  $customerEmail, $text);
+                      $text = str_replace('{country_code}',  $countryCode, $text);
+                       $admin_recipients[]=$settings['admin_recipients'];
+                       array_push($admin_recipients, $telephone);
+                  
+                       $object_manager = \Magento\Framework\App\ObjectManager ::getInstance();
+                       $result = $object_manager->get('TEXT\Smsnotifications\Helper\Data')->sendSms($text,$admin_recipients);
+                    }
+             return($result);
               }
                                                                         
 

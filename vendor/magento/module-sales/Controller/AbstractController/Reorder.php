@@ -55,6 +55,8 @@ abstract class Reorder extends Action\Action
         $cart = $this->_objectManager->get(\Magento\Checkout\Model\Cart::class);
         $items = $order->getItemsCollection();
         foreach ($items as $item) {
+           // echo "Print herer";
+            //print_r($item->getName().'-->'.$item->getSellerId());
             try {
                 $cart->addOrderItem($item);
             } catch (\Magento\Framework\Exception\LocalizedException $e) {
@@ -69,8 +71,21 @@ abstract class Reorder extends Action\Action
                 return $resultRedirect->setPath('checkout/cart');
             }
         }
-
         $cart->save();
+        // $itemss = $cart->getQuote()->getAllItems();
+
+        //     foreach($itemss as $item) {
+        //          echo 'ID: '.$item->getProductId().'<br />';
+        //           echo 'Name: '.$item->getName().'<br />';
+        //            echo 'Sku: '.$item->getSku().'<br />';
+        //            echo 'Quantity: '.$item->getQty().'<br />';
+        //           echo 'Price: '.$item->getPrice().'<br />';
+        //           echo 'SellerId: '.$item->getSellerId().'<br />';
+        //           print_r($item);
+        //         echo "<br />";            
+        //       }
+
+        // exit;
         return $resultRedirect->setPath('checkout/cart');
     }
 }

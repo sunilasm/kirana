@@ -12,7 +12,7 @@ use Magento\Framework\UrlFactory;
 use Magento\Framework\View\Element\AbstractBlock;
 use Magento\Framework\View\Element\Template;
 use Magento\Framework\View\Element\Template\Context;
-
+use \Magento\Framework\Session\SessionManagerInterface;
 /**
  * Advanced search result
  *
@@ -54,11 +54,17 @@ class Result extends Template
         Advanced $catalogSearchAdvanced,
         LayerResolver $layerResolver,
         UrlFactory $urlFactory,
+        \Lof\MarketPlace\Model\SellerProduct $sellerProductCollection,
+        \Asm\Search\Model\Searchview $inRanageseller,
+        SessionManagerInterface $customerSession,
         array $data = []
     ) {
         $this->_catalogSearchAdvanced = $catalogSearchAdvanced;
         $this->_catalogLayer = $layerResolver->get();
         $this->_urlFactory = $urlFactory;
+        $this->_sellerProductCollection = $sellerProductCollection;
+        $this->customerSession = $customerSession;
+        $this->_inRanageseller = $inRanageseller;
         parent::__construct($context, $data);
     }
 
@@ -165,6 +171,7 @@ class Result extends Template
      */
     public function getProductListHtml()
     {
+        $this->getSellerPrdocutCollection();
         return $this->getChildHtml('search_result_list');
     }
 
@@ -192,5 +199,25 @@ class Result extends Template
         $right = array_slice($searchCriterias, $middle);
 
         return ['left' => $left, 'right' => $right];
+    }
+
+     public function getSellerPrdocutCollection()
+    {
+        $lat = $this->customerSession->getLatitude(); //latitude
+        $lon = $this->customerSession->getLongitude(); //longitude
+        $sellerProductCollection = $this->_sellerProductCollection->getCollection();
+        if($lat != '' && $lon != ''){
+            $ranageSeller = $this->getInRange($lat, $lon);
+            $sellerProductCollection->addFieldToFilter('seller_id', array('in' => $ranageSeller));
+        }
+
+        //$sellerProductCollection = $this->_sellerProductCollection->getCollection();
+        // print_r($sellerProductCollection->getData());exit;
+        return $sellerProductCollection;
+    }
+    public function getInRange($lat, $lon)
+    {
+        $ranageSeller = $this->_inRanageseller->getInRangeSeller($lat, $lon);
+        return $ranageSeller;
     }
 }

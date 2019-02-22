@@ -3,12 +3,12 @@
 {{License}}
 -->
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../Magento/Backend/etc/menu.xsd">
-    <menu>
+   <!--  <menu>
         <add id="TEXT_Smsnotifications::smsnotifications" title="Smsnotifications SMS" module="TEXT_Smsnotifications" sortOrder="11" resource="TEXT_Smsnotifications::smsnotifications"/>
         <add id="TEXT_Smsnotifications::smsnotifications_head" title="Settings" module="TEXT_Smsnotifications" sortOrder="40"
              parent="TEXT_Smsnotifications::smsnotifications" resource="TEXT_Smsnotifications::smsnotifications"/>
         <add id="TEXT_Smsnotifications::config" title="Configuration" module="TEXT_Smsnotifications" sortOrder="50"
              action="adminhtml/system_config/edit/section/text_smsnotifications_configuration"
              resource="TEXT_Smsnotifications::smsnotifications" parent="TEXT_Smsnotifications::smsnotifications_head" />
-    </menu>
+    </menu> -->
 </config>

@@ -133,6 +133,7 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
                 'name' => 'contact_number',
                 'label' => __('Contact Number'),
                 'title' => __('Contact Number'),
+                'required' => true,
                 'disabled' => $isElementDisabled
             ]
         );
@@ -251,7 +252,7 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
                     'name' => 'stores[]',
                     'label' => __('Store View'),
                     'title' => __('Store View'),
-                    'required' => true,
+                    // 'required' => true,
                     'values' => $this->_systemStore->getStoreValuesForForm(false, true),
                     'disabled' => $isElementDisabled
                 ]
@@ -275,6 +276,29 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
                 'name' => 'address',
                 'label' => __('Address'),
                 'title' => __('Address'),
+                'required' => true,
+                'disabled' => $isElementDisabled
+            ]
+        );
+          $fieldset->addField(
+            'city',
+            'text',
+            [
+                'name' => 'city',
+                'label' => __('City'),
+                'title' => __('City'),
+                // 'required' => true,
+                'disabled' => $isElementDisabled
+            ]
+        );
+          $fieldset->addField(
+            'region',
+            'text',
+            [
+                'name' => 'region',
+                'label' => __('State'),
+                'title' => __('State'),
+                'required' => true,
                 'disabled' => $isElementDisabled
             ]
         );
@@ -285,9 +309,47 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
                 'name' => 'country',
                 'label' => __('Country'),
                 'title' => __('Country'),
+                'required' => true,
                 'disabled' => $isElementDisabled
             ]
         );
+
+        $fieldset->addField(
+            'postcode',
+            'text',
+            [
+                'name' => 'postcode',
+                'label' => __('Postcode'),
+                'title' => __('Postcode'),
+                'required' => true,
+                'disabled' => $isElementDisabled
+            ]
+        );
+
+        $fieldset->addField(
+            'geo_lat',
+            'text',
+            [
+                'name' => 'geo_lat',
+                'label' => __('Latitude'),
+                'title' => __('Latitude'),
+                'required' => true,
+                'readonly' => true
+            ]
+        );
+
+        $fieldset->addField(
+            'geo_lng',
+            'text',
+            [
+                'name' => 'geo_lng',
+                'label' => __('Longitude'),
+                'title' => __('Longitude'),
+                'required' => true,
+                'readonly' => true
+            ]
+        );
+
 
         $fieldset->addField(
     		'position',
