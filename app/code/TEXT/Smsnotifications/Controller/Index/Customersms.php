@@ -73,12 +73,13 @@ public function __construct(
                         if($customerNew->getId() && $customerNew->getPrimaryBillingAddress()['telephone']){
                                 $telephone = $customerNew->getPrimaryBillingAddress()->getTelephone();
                                 $text = $settings['customer_register'];
-                    $admin_recipients[]=$settings['admin_recipients'];
-                    array_push($admin_recipients, $telephone);
-                    $result = $objectManager->get('TEXT\Smsnotifications\Helper\Data')->sendSms($text,
-                    $admin_recipients);
-			//print_r($result);
+                            $admin_recipients[]=$settings['admin_recipients'];
+                            array_push($admin_recipients, $telephone);
+                            $result = $objectManager->get('TEXT\Smsnotifications\Helper\Data')->sendSms($text,
+                            $admin_recipients);
+	                         // print_r($result);exit;
                         }
+                        // echo "outside"; exit;
                         $table .= "<tr style='border:1px solid #000'>";
 			            $table .= "<td style='border-right:1px solid #000'>";
 			            $table .= $customerNew->getFirstname()." ".$customerNew->getLastname();
