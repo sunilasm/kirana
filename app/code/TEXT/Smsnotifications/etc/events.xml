@@ -3,12 +3,12 @@
     <!-- <event name="checkout_onepage_controller_success_action">
         <observer name="text_smsnotifications_observer_new_order" instance="TEXT\Smsnotifications\Observer\NewOrder"/>
     </event> -->
-    <event name="sales_order_save_after">
-        <!-- <observer name="text_smsnotifications_observer_order_cancelled" instance="TEXT\Smsnotifications\Observer\OrderCancelled"/> -->
+    <!-- <event name="sales_order_save_after">
+        <observer name="text_smsnotifications_observer_order_cancelled" instance="TEXT\Smsnotifications\Observer\OrderCancelled"/>
         <observer name="text_smsnotifications_observer_order_hold" instance="TEXT\Smsnotifications\Observer\OrderHold"/>
         <observer name="text_smsnotifications_observer_order_un_hold" instance="TEXT\Smsnotifications\Observer\OrderUnHold"/>
-       <!--   <observer name="text_smsnotifications_observer_order_payment_review" instance="TEXT\Smsnotifications\Observer\PaymentReview"/> -->
-    </event>
+         <observer name="text_smsnotifications_observer_order_payment_review" instance="TEXT\Smsnotifications\Observer\PaymentReview"/>
+    </event> -->
     <event name="sales_order_invoice_pay">
         <observer name="text_smsnotifications_observer_invoice_pay" instance="TEXT\Smsnotifications\Observer\InvoicePay"/>
     </event>
