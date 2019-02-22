@@ -112,7 +112,7 @@ class Kirana extends \Magento\Backend\Block\Widget\Form\Generic implements \Mage
 	    		'label' => __('24*7 Shop'),
                 'title' => __('24*7 Shop'),
                 'values' =>  $this->toOptionArray(),
-                'required' => true,
+                // 'required' => true,
 	    		'disabled' => $isElementDisabled
     		]
     	);
@@ -123,7 +123,7 @@ class Kirana extends \Magento\Backend\Block\Widget\Form\Generic implements \Mage
 	    		'name' => 'opening_time',
 	    		'label' => __('Opening Time'),
                 'title' => __('Opening Time'),
-                'class' => 'time',
+                'class' => '',
                 'disabled' => $isElementDisabled
     		]
         );
@@ -134,7 +134,7 @@ class Kirana extends \Magento\Backend\Block\Widget\Form\Generic implements \Mage
 	    		'name' => 'closeing_time',
 	    		'label' => __('Closing Time'),
                 'title' => __('Closing Time'),
-                'class' => 'time',
+                'class' => '',
                 'disabled' => $isElementDisabled
     		]
         );
@@ -145,7 +145,8 @@ class Kirana extends \Magento\Backend\Block\Widget\Form\Generic implements \Mage
                 'name' => 'non_working_days',
                 'label' => __('Days Not Working'),
                 'title' => __('Days Not Working'),
-                'class' => 'integer validate-number validate-not-negative-number',
+                'class' => '',
+                'required' => true,
                 'disabled' => $isElementDisabled
             ]
         );
@@ -206,7 +207,7 @@ class Kirana extends \Magento\Backend\Block\Widget\Form\Generic implements \Mage
                 'title' => __('Smartphone with data'),
                 'name' => 'smart_phone',
                 'values' =>  $this->toOptionArray(),
-                'required' => true,
+                // 'required' => true,
                 'disabled' => $isElementDisabled
             ]
         );
@@ -251,7 +252,7 @@ class Kirana extends \Magento\Backend\Block\Widget\Form\Generic implements \Mage
                 'title' => __('Kirana Type'),
                 'name' => 'kirana_type',
                 'values' =>  $this->kiranaTypetoOptionArray(),
-                'required' => true,
+                // 'required' => true,
                 'disabled' => $isElementDisabled
             ]
         );
@@ -273,7 +274,6 @@ class Kirana extends \Magento\Backend\Block\Widget\Form\Generic implements \Mage
                 'name' => 'kirana_owner',
                 'label' => __('Kirana Owner'),
                 'title' => __('Kirana Owner'),
-                'required' => true,
                 'disabled' => $isElementDisabled
             ]
         );
@@ -284,8 +284,8 @@ class Kirana extends \Magento\Backend\Block\Widget\Form\Generic implements \Mage
                 'name' => 'kirana_fixed_line',
                 'label' => __('Kirana Fixed Line'),
                 'title' => __('Kirana Fixed Line'),
-                'required' => true,
-                'class' => 'number validate-range validate-number-range-10-10',
+                // 'class' => 'number validate-range validate-number-range-10-10',
+                'class' => '',
                 'disabled' => $isElementDisabled
             ]
         );
@@ -356,9 +356,9 @@ class Kirana extends \Magento\Backend\Block\Widget\Form\Generic implements \Mage
     {
         $storeTypeAttribute = [
                 ['value' => '0', 'label' => __('Select an option')],
-                ['value' => 'KIR', 'label' => __('KIR')],
-                ['value' => 'MED', 'label' => __('MED')],
-                ['value' => 'NA', 'label' => __('NA')]
+                ['value' => 'LMC', 'label' => __('LMC')],
+                ['value' => 'MC', 'label' => __('MC')],
+                ['value' => 'UMC', 'label' => __('UMC')]
             ];
         return $storeTypeAttribute;
     }
@@ -366,9 +366,10 @@ class Kirana extends \Magento\Backend\Block\Widget\Form\Generic implements \Mage
     {
         $storeTypeAttribute = [
                 ['value' => '0', 'label' => __('Select an option')],
-                ['value' => 'KIR', 'label' => __('KIR')],
-                ['value' => 'MED', 'label' => __('MED')],
-                ['value' => 'NA', 'label' => __('NA')]
+                ['value' => 'LK', 'label' => __('LK')],
+                ['value' => 'RK', 'label' => __('RK')],
+                ['value' => 'SK', 'label' => __('SK')],
+                ['value' => 'USK', 'label' => __('USK')]
             ];
         return $storeTypeAttribute;
     }
