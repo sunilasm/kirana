@@ -6,7 +6,7 @@ error_reporting(E_ALL);
 
 $TableName='mglof_marketplace_seller';
 	try{
-		$connection = mysqli_connect('localhost', 'kirana', 'Kirana@aws123', 'kirana_qa_new');
+		$connection = mysqli_connect('localhost', 'kirana', 'Kirana@aws123', 'kirana_dev');
 		if(!$connection) {
 			throw new Exception('Could not connect to database!');
 		}
