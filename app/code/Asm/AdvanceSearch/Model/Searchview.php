@@ -128,7 +128,6 @@ class Searchview implements SearchInterface
                 //print_r($ranageSeller); exit;
                 // $this->_sellerProductCollection->addFieldToFilter('seller_id', array('in' => $ranageSeller));
                 $sellerCollection = $this->_sellerProductCollection->getCollection()->addFieldToFilter('seller_id', array('in' => $ranageSeller));
-                
             }
             $tempSellerProductArray = array();
             $i=0;
@@ -141,6 +140,7 @@ class Searchview implements SearchInterface
             {
                 $collection->addFieldToFilter('entity_id', array('in' => $tempSellerProductIdArray));
             }
+
             //print_r($collection->getData()); exit;
             $collection->addAttributeToSort('price', 'asc');
             //print_r($collection->getData()); exit;
