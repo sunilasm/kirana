@@ -29,7 +29,7 @@ class Searchview implements SearchInterface
     }
 
     public function name() {
-// print_r("Exit");
+        // print_r("Exit");
         $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
         $request = $objectManager->get('\Magento\Framework\Webapi\Rest\Request');
         $request->getBodyParams();
