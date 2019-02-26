@@ -17,7 +17,7 @@ $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
 $resource = $objectManager->get('Magento\Framework\App\ResourceConnection');
 $connection = $resource->getConnection();
 $tableName = $resource->getTableName('customer_address_entity');
-
+//print_r($words);
 $index = ($words[1] == 'kirana_store') ? '6' : '5';
 if(isset($words[$index]))
 {   
