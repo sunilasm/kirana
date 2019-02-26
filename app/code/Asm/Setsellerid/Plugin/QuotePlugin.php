@@ -61,7 +61,7 @@ class QuotePlugin {
      */
     private function setAttributeValue($quote) {
         $data = [];
-        if ($quote->getItemsCount()) {
+        if (count($quote->getItems())) {
             foreach ($quote->getItems() as $item) { 
                 $data = [];
                 $extensionAttributes = $item->getExtensionAttributes();
