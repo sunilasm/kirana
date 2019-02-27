@@ -133,6 +133,7 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
                 'name' => 'contact_number',
                 'label' => __('Contact Number'),
                 'title' => __('Contact Number'),
+                'required' => true,
                 'disabled' => $isElementDisabled
             ]
         );
@@ -251,7 +252,7 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
                     'name' => 'stores[]',
                     'label' => __('Store View'),
                     'title' => __('Store View'),
-                    'required' => true,
+                    // 'required' => true,
                     'values' => $this->_systemStore->getStoreValuesForForm(false, true),
                     'disabled' => $isElementDisabled
                 ]
@@ -286,7 +287,7 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
                 'name' => 'city',
                 'label' => __('City'),
                 'title' => __('City'),
-                'required' => true,
+                // 'required' => true,
                 'disabled' => $isElementDisabled
             ]
         );

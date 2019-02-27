@@ -29,7 +29,7 @@ require([
 	   	}else{
 	   		$(".field-opening_time").show();
 	  		$(".field-closeing_time").show();
-	   	}  		
+	   	} 		
   	}); 
   $(document).on('change', '#seller_parent_store', function() {
 	   	if(this.value == "Yes"){
