@@ -29,7 +29,7 @@ class Searchview implements SearchInterface
     }
 
     public function name() {
-// print_r("Exit");
+        // print_r("Exit");
         $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
         $request = $objectManager->get('\Magento\Framework\Webapi\Rest\Request');
         $request->getBodyParams();
@@ -49,7 +49,7 @@ class Searchview implements SearchInterface
             $quoteItemIndexArray[$i] = $item->getItemid();
             $i++;
         endforeach;
-        // print_r($quoteItemIndexArray);exit;
+        print_r($quoteItemArray);exit;
         $data = '';
         $message = 'You have no items in your shopping cart.';
         if(count($quoteItemArray)){

@@ -31,15 +31,15 @@ class Ordersms extends \Magento\Framework\App\Action\Action
     }
 
 
-        public function execute()
+    public function execute()
     {
-     
+                date_default_timezone_set('Asia/Kolkata'); 
                 $time = time();
                 $to = date('Y-m-d H:i:s', $time);
                 $lastTime = $time - 300; // 60*60*24
                 $from = date('Y-m-d H:i:s', $lastTime);
                 //print_r("to:-".$to);
-                //print_r("from:-".$from);
+                //print_r("from:-".$from); exit;
                 $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
                 $OrderFactory = $objectManager->create('Magento\Sales\Model\ResourceModel\Order\CollectionFactory');
                 $orderCollection = $OrderFactory->create()->addFieldToSelect(array('*'));
