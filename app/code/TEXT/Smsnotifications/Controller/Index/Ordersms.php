@@ -33,7 +33,7 @@ class Ordersms extends \Magento\Framework\App\Action\Action
 
     public function execute()
     {
-                date_default_timezone_set('Asia/Kolkata'); 
+                //date_default_timezone_set('Asia/Kolkata'); 
                 $time = time();
                 $to = date('Y-m-d H:i:s', $time);
                 $lastTime = $time - 300; // 60*60*24
