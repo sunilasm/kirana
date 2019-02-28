@@ -21,6 +21,7 @@ $customerSession = $objectManager->create('Magento\Customer\Model\Session');
         $customerLogin = 1;
         $billingID =  $customerSession->getCustomer()->getDefaultBilling();
         $address = $objectManager->create('Magento\Customer\Model\Address')->load($billingID);
+        // print_r($address->getData());exit;
         $addressLat = $address->getLat();
         $addressLng = $address->getLng();
         $streetArray = $address->getStreet();
