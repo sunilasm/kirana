@@ -81,6 +81,7 @@ class Searchview implements SearchInterface
         foreach($sellerData as $seldata):
             $selerIdArray[] = $seldata['seller_id'];
         endforeach;
+        // print_r($selerIdArray);exit;
         return  $selerIdArray;
     }
 
