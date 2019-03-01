@@ -8,6 +8,7 @@ return [
         'Magento_Theme' => 1,
         'Asm_AdvanceSearch' => 1,
         'Asm_Cart' => 0,
+        'Asm_Customapi' => 1,
         'Asm_Geolocation' => 1,
         'Asm_Search' => 1,
         'Magento_Backend' => 1,
