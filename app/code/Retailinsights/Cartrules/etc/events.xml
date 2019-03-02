@@ -7,13 +7,18 @@
 -->
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
 xsi:noNamespaceSchemaLocation="urn:magento:framework:Event/etc/events.xsd">
-    <event name="sales_quote_load_after">
+    <event name="product">
         <observer name="hopescode_mobileshop_sales_quote_load_after" 
         instance="Retailinsights\Cartrules\Observer\ProductInterface" />
     </event>
 
-     <event name="quote_load_after">
-        <observer name="mobileshop_sales_quote_load_after" 
+     <event name="order">
+        <observer name="order_load" 
         instance="Retailinsights\Cartrules\Observer\OrderRepositoryPlugin" />
+    </event>
+
+    <event name="load_after">
+        <observer name="sales_quote_load_after" 
+        instance="Retailinsights\Cartrules\Observer\OrderRepositoryImage" />
     </event>
 </config>

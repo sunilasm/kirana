@@ -7,18 +7,11 @@
 -->
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
 xsi:noNamespaceSchemaLocation="urn:magento:framework:Api/etc/extension_attributes.xsd">
-
 <extension_attributes for="Magento\Quote\Api\Data\CartItemInterface">
-        <attribute code="uom" type="string" />
+        <attribute code="unitm" type="string" />
     </extension_attributes>
-    <extension_attributes for="Magento\Quote\Api\Data\CartItemInterface">
-    <attribute code="uom" type="string" />
-</extension_attributes>
-
-
-
-  <extension_attributes for="Magento\Sales\Api\Data\OrderInterface">
-        <attribute code="uom" type="string" />
+     <extension_attributes for="Magento\Sales\Api\Data\OrderInterface">
+        <attribute code="image_url" type="string" />
+        <attribute code="unitm" type="string" />
     </extension_attributes>
-
 </config>

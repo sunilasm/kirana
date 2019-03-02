@@ -149,13 +149,33 @@ class OrderRepositoryPlugin
         foreach ($order->getAllItems() as $orderItems) {   
 
             $itemExtAttr = $order->getExtensionAttributes();
+
+            
+
+            
+
+            
+
             $product = $this->_productRepository->getById($orderItems->getProductId());
-            $uom = $product->getUnitm();
+
+            $unitm = $product->getUnitm();
+
             $sku = $orderItems->getSku();
-            $logger->info($uom);
+
+           
+
+
+
             $imageurl =$this->productImageHelper->create()->init($product, 'product_thumbnail_image')->setImageFile($product->getThumbnail())->getUrl();
-            $addAtt[$sku] = $uom;
+
+
+
+            $addAtt[$sku] = $unitm;
+
             $addImage[$sku] = $imageurl;
+
+
+
         } 
 
         $info[] = $addAtt; 
@@ -165,7 +185,6 @@ class OrderRepositoryPlugin
         $data = json_encode($info);
 
         $dataImage = json_encode($infoImage);
-        $logger->info($data);
 
 
 

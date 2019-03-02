@@ -12,7 +12,7 @@ use Magento\Framework\DB\Ddl\Table;
 
 */
 
-class Options extends \Magento\Eav\Model\Entity\Attribute\Source\AbstractSource
+class OptionsNew extends \Magento\Eav\Model\Entity\Attribute\Source\AbstractSource
 
 {
 

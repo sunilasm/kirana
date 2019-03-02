@@ -33,13 +33,13 @@ class UpgradeData
         ModuleContextInterface $context
     ) {
         $setup->startSetup();
-        if (version_compare($context->getVersion(), '1.0.4', '<')) {
+        if (version_compare($context->getVersion(), '2.0.1', '<')) {
             $categorySetup = $this->categorySetupFactory->create(['setup' => $setup]);
 
             $categorySetup->addAttribute(
                 \Magento\Catalog\Model\Product::ENTITY,
 
-                'uom',
+                'unitm',
                 
                 [
                 
@@ -57,7 +57,7 @@ class UpgradeData
                 
                 'class' => '',
                 
-                'source' => 'Retailinsights\Cartrules\Model\Config\Source\Options',
+                'source' => 'Retailinsights\Cartrules\Model\Config\Source\OptionsNew',
                 
                 'global' => \Magento\Catalog\Model\ResourceModel\Eav\Attribute::SCOPE_GLOBAL,
                 

@@ -77,6 +77,7 @@ use Magento\Framework\Event\ObserverInterface;
              */
             foreach ($quote->getAllItems() as $quoteItem) {
                 $product = $this->productRepository->create()->getById($quoteItem->getProductId());
+                $uom = $product->getUnitm();
                 $itemExtAttr = $quoteItem->getExtensionAttributes();
                 if ($itemExtAttr === null) {
                     $itemExtAttr = $this->extensionFactory->create();
@@ -85,7 +86,7 @@ use Magento\Framework\Event\ObserverInterface;
 
                 $imageurl =$this->productImageHelper->create()->init($product, 'product_thumbnail_image')->setImageFile($product->getThumbnail())->getUrl();
 
-
+                $itemExtAttr->setUnitm($uom);
 
                 $itemExtAttr->setImageUrl($imageurl);
                 $quoteItem->setExtensionAttributes($itemExtAttr);

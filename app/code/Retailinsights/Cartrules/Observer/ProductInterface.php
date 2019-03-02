@@ -1,14 +1,11 @@
 <?php
 namespace Retailinsights\Cartrules\Observer;
-
 use Magento\Framework\Event\ObserverInterface;
     use Magento\Catalog\Api\ProductRepositoryInterfaceFactory as ProductRepository;
     use Magento\Catalog\Helper\ImageFactory as ProductImageHelper;
     use Magento\Store\Model\StoreManagerInterface as StoreManager;
     use Magento\Store\Model\App\Emulation as AppEmulation;
     use Magento\Quote\Api\Data\CartItemExtensionFactory;
-
-
     class ProductInterface implements ObserverInterface
     {   
         protected $_productRepository;
@@ -16,34 +13,27 @@ use Magento\Framework\Event\ObserverInterface;
          * @var ObjectManagerInterface
          */
         protected $_objectManager;
-
         /**
          * @var ProductRepository
          */
         protected $productRepository;
-
         /**
          *@var \Magento\Catalog\Helper\ImageFactory
          */
         protected $productImageHelper;
-
         /**
          *@var \Magento\Store\Model\StoreManagerInterface
          */
         protected $storeManager;
-
         /**
          *@var \Magento\Store\Model\App\Emulation
          */
         protected $appEmulation;
-
         /**
          * @var CartItemExtensionFactory
          */
         protected $extensionFactory;
-
         protected $collection;
-
         /**
          * @param \Magento\Framework\ObjectManagerInterface $objectManager
          * @param ProductRepository $productRepository
@@ -54,7 +44,7 @@ use Magento\Framework\Event\ObserverInterface;
          */
         public function __construct(
             \Magento\Framework\ObjectManagerInterface $objectManager,
-        //  ProductRepository $productRepository,
+            ProductRepository $productRepository,
             ProductImageHelper $productImageHelper,
             StoreManager $storeManager,
             AppEmulation $appEmulation,
@@ -70,11 +60,9 @@ use Magento\Framework\Event\ObserverInterface;
             $this->extensionFactory = $extensionFactory;
             
             $this->_productRepository = $productRepository;
-
             $this->collection = $collection;
           
         }
-
     public function execute(\Magento\Framework\Event\Observer $observer, string $imageType = NULL)
         {
             $quote = $observer->getQuote();
@@ -82,17 +70,20 @@ use Magento\Framework\Event\ObserverInterface;
            /**
              * Code to add the items attribute to extension_attributes
              */
-
             foreach ($quote->getAllItems() as $quoteItem) {
                 $itemExtAttr = $quoteItem->getExtensionAttributes();
                 
                 $product = $this->_productRepository->getById($quoteItem->getProductId());
-                $data = $product->getUom();
+                 $writer = new \Zend\Log\Writer\Stream(BP . '/var/log/testnew.log'); 
+                $logger = new \Zend\Log\Logger(); 
+                $logger->addWriter($writer); 
+                $logger->info($product->getUnitm());
+                $data = $product->getUnitm();
                
-                if ($itemExtAttr === null) {
+               // if ($itemExtAttr === null) {
                     $itemExtAttr = $this->extensionFactory->create();
-                }
-                 $itemExtAttr->setUom($data);
+                //}
+                 $itemExtAttr->setUnitm($data);
                 $quoteItem->setExtensionAttributes($itemExtAttr);   
                 
             }  
