@@ -44,7 +44,6 @@ use Magento\Framework\Event\ObserverInterface;
             StoreManager $storeManager,
             AppEmulation $appEmulation,
             CartItemExtensionFactory $extensionFactory,
-            \Magento\Catalog\Api\ProductRepositoryInterface $productRepository,
             \Magento\Quote\Model\ResourceModel\Quote\Item\Collection $collection
         ) {
             $this->productRepository = $productRepository;
