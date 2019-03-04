@@ -9,10 +9,7 @@ use Magento\Framework\Event\ObserverInterface;
     class ProductInterface implements ObserverInterface
     {   
         protected $_productRepository;
-        /**
-         * @var ObjectManagerInterface
-         */
-        protected $_objectManager;
+       
         /**
          * @var ProductRepository
          */
@@ -35,7 +32,6 @@ use Magento\Framework\Event\ObserverInterface;
         protected $extensionFactory;
         protected $collection;
         /**
-         * @param \Magento\Framework\ObjectManagerInterface $objectManager
          * @param ProductRepository $productRepository
          * @param \Magento\Catalog\Helper\ImageFactory
          * @param \Magento\Store\Model\StoreManagerInterface
@@ -43,7 +39,6 @@ use Magento\Framework\Event\ObserverInterface;
          * @param CartItemExtensionFactory $extensionFactory
          */
         public function __construct(
-            \Magento\Framework\ObjectManagerInterface $objectManager,
             ProductRepository $productRepository,
             ProductImageHelper $productImageHelper,
             StoreManager $storeManager,
@@ -52,7 +47,6 @@ use Magento\Framework\Event\ObserverInterface;
             \Magento\Catalog\Api\ProductRepositoryInterface $productRepository,
             \Magento\Quote\Model\ResourceModel\Quote\Item\Collection $collection
         ) {
-            $this->_objectManager = $objectManager;
             $this->productRepository = $productRepository;
             $this->productImageHelper = $productImageHelper;
             $this->storeManager = $storeManager;
