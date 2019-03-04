@@ -78,7 +78,14 @@ use Magento\Framework\Event\ObserverInterface;
                 $logger = new \Zend\Log\Logger(); 
                 $logger->addWriter($writer); 
                 $logger->info($product->getUnitm());
-                $data = $product->getUnitm();
+                $optionId = $product->getUnitm();
+                $attribute = $product->getResource()->getAttribute('unitm');
+                if ($attribute->usesSource()) {
+                    $optionText = $attribute->getSource()->getOptionText($optionId);
+                }
+
+
+                $data = $optionText;
                
                // if ($itemExtAttr === null) {
                     $itemExtAttr = $this->extensionFactory->create();

@@ -78,6 +78,12 @@ use Magento\Framework\Event\ObserverInterface;
             foreach ($quote->getAllItems() as $quoteItem) {
                 $product = $this->productRepository->create()->getById($quoteItem->getProductId());
                 $uom = $product->getUnitm();
+                $optionId = $product->getUnitm();
+                $attribute = $product->getResource()->getAttribute('unitm');
+                if ($attribute->usesSource()) {
+                    $optionText = $attribute->getSource()->getOptionText($optionId);
+                }
+
                 $itemExtAttr = $quoteItem->getExtensionAttributes();
                 if ($itemExtAttr === null) {
                     $itemExtAttr = $this->extensionFactory->create();
@@ -86,7 +92,7 @@ use Magento\Framework\Event\ObserverInterface;
 
                 $imageurl =$this->productImageHelper->create()->init($product, 'product_thumbnail_image')->setImageFile($product->getThumbnail())->getUrl();
 
-                $itemExtAttr->setUnitm($uom);
+                $itemExtAttr->setUnitm($optionText);
 
                 $itemExtAttr->setImageUrl($imageurl);
                 $quoteItem->setExtensionAttributes($itemExtAttr);
