@@ -1,13 +1,15 @@
 <?php
 namespace Retailinsights\Cartrules\Observer;
 use Magento\Framework\Event\ObserverInterface;
-    use Magento\Catalog\Api\ProductRepositoryInterfaceFactory as ProductRepository;
+   use Magento\Catalog\Api\ProductRepositoryInterfaceFactory as ProductRepository;
     use Magento\Catalog\Helper\ImageFactory as ProductImageHelper;
     use Magento\Store\Model\StoreManagerInterface as StoreManager;
     use Magento\Store\Model\App\Emulation as AppEmulation;
     use Magento\Quote\Api\Data\CartItemExtensionFactory;
-    class ProductInterface implements ObserverInterface
+    class UpdateUom implements ObserverInterface
     {   
+        private $productFactory;
+
         protected $_productRepository;
        
         /**
@@ -39,14 +41,15 @@ use Magento\Framework\Event\ObserverInterface;
          * @param CartItemExtensionFactory $extensionFactory
          */
         public function __construct(
-            ProductRepository $productRepository,
+            \Magento\Catalog\Model\ProductFactory $productFactory,
             ProductImageHelper $productImageHelper,
             StoreManager $storeManager,
             AppEmulation $appEmulation,
             CartItemExtensionFactory $extensionFactory,
+            \Magento\Catalog\Api\ProductRepositoryInterface $productRepository,
             \Magento\Quote\Model\ResourceModel\Quote\Item\Collection $collection
         ) {
-            $this->productRepository = $productRepository;
+      
             $this->productImageHelper = $productImageHelper;
             $this->storeManager = $storeManager;
             $this->appEmulation = $appEmulation;
@@ -54,39 +57,22 @@ use Magento\Framework\Event\ObserverInterface;
             
             $this->_productRepository = $productRepository;
             $this->collection = $collection;
+            $this->productFactory = $productFactory;
+
           
         }
     public function execute(\Magento\Framework\Event\Observer $observer, string $imageType = NULL)
         {
-            $quote = $observer->getQuote();
-            
-           /**
-             * Code to add the items attribute to extension_attributes
-             */
-            foreach ($quote->getAllItems() as $quoteItem) {
-                $itemExtAttr = $quoteItem->getExtensionAttributes();
-                
-                $product = $this->_productRepository->getById($quoteItem->getProductId());
-                //  $writer = new \Zend\Log\Writer\Stream(BP . '/var/log/testnew.log'); 
-                // $logger = new \Zend\Log\Logger(); 
-                // $logger->addWriter($writer); 
-                // $logger->info($product->getUnitm());
+
+                $product = $observer->getProduct();
+                $productInfo = $this->_productRepository->getById($product->getEntityId());
                 $optionId = $product->getUnitm();
                 $attribute = $product->getResource()->getAttribute('unitm');
                 if ($attribute->usesSource()) {
-                    $optionText = $attribute->getSource()->getOptionText($optionId);
+                   $optionText = $attribute->getSource()->getOptionText($optionId); 
                 }
+                $productInfo->setCustomAttribute('uom_label', $optionText);
+                $this->_productRepository->save($productInfo);
 
-
-                $data = $optionText;
-               
-               // if ($itemExtAttr === null) {
-                    $itemExtAttr = $this->extensionFactory->create();
-                //}
-                 $itemExtAttr->setUnitm($data);
-                $quoteItem->setExtensionAttributes($itemExtAttr);   
-                
-            }  
-            return;
         }
     }

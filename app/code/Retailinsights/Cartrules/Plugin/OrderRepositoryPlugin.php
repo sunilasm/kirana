@@ -124,13 +124,13 @@ class OrderRepositoryPlugin
 
 
 
-        $writer = new \Zend\Log\Writer\Stream(BP . '/var/log/test.log'); 
+        // $writer = new \Zend\Log\Writer\Stream(BP . '/var/log/test.log'); 
 
-        $logger = new \Zend\Log\Logger(); 
+        // $logger = new \Zend\Log\Logger(); 
 
-        $logger->addWriter($writer); 
+        // $logger->addWriter($writer); 
 
-        $logger->info('*******');
+        // $logger->info('*******');
 
 
 
@@ -159,7 +159,7 @@ class OrderRepositoryPlugin
                 }
 
             $sku = $orderItems->getSku();
-            $logger->info($optionText);
+           
             $imageurl =$this->productImageHelper->create()->init($product, 'product_thumbnail_image')->setImageFile($product->getThumbnail())->getUrl();
             $addAtt[$sku] = $weight." ".$optionText;
             $addImage[$sku] = $imageurl;
@@ -172,7 +172,7 @@ class OrderRepositoryPlugin
         $data = json_encode($info);
 
         $dataImage = json_encode($infoImage);
-        $logger->info($data);
+        // $logger->info($data);
 
 
 

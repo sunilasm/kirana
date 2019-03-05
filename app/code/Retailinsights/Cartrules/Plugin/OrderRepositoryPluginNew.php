@@ -124,13 +124,13 @@ class OrderRepositoryPlugin
 
 
 
-        $writer = new \Zend\Log\Writer\Stream(BP . '/var/log/test.log'); 
+        // $writer = new \Zend\Log\Writer\Stream(BP . '/var/log/test.log'); 
 
-        $logger = new \Zend\Log\Logger(); 
+        // $logger = new \Zend\Log\Logger(); 
 
-        $logger->addWriter($writer); 
+        // $logger->addWriter($writer); 
 
-        $logger->info('*******');
+        // $logger->info('*******');
 
 
 
