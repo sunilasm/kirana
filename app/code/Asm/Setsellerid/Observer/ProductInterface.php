@@ -79,9 +79,10 @@ use Magento\Framework\Event\ObserverInterface;
                 $product = $this->productRepository->create()->getById($quoteItem->getProductId());
                 $uom = $product->getUnitm();
                 $optionId = $product->getUnitm();
+                $weight = round($product->getWeight(), 0);
                 $attribute = $product->getResource()->getAttribute('unitm');
                 if ($attribute->usesSource()) {
-                    $optionText = $attribute->getSource()->getOptionText($optionId);
+                    $optionText = $weight." ".$attribute->getSource()->getOptionText($optionId);
                 }
 
                 $itemExtAttr = $quoteItem->getExtensionAttributes();

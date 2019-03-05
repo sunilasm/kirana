@@ -151,6 +151,7 @@ class OrderRepositoryPlugin
             $itemExtAttr = $order->getExtensionAttributes();
             $product = $this->_productRepository->getById($orderItems->getProductId());
             $uom = $product->getUnitm();
+            $weight = round($product->getWeight(), 0);
             $optionId = $product->getUnitm();
                 $attribute = $product->getResource()->getAttribute('unitm');
                 if ($attribute->usesSource()) {
@@ -160,7 +161,7 @@ class OrderRepositoryPlugin
             $sku = $orderItems->getSku();
             $logger->info($optionText);
             $imageurl =$this->productImageHelper->create()->init($product, 'product_thumbnail_image')->setImageFile($product->getThumbnail())->getUrl();
-            $addAtt[$sku] = $optionText;
+            $addAtt[$sku] = $weight." ".$optionText;
             $addImage[$sku] = $imageurl;
         } 
 
