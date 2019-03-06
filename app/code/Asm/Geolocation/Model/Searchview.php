@@ -49,7 +49,7 @@ class Searchview implements SearchInterface
             $quoteItemIndexArray[$i] = $item->getItemid();
             $i++;
         endforeach;
-        // print_r($quoteItemIndexArray);exit;
+        print_r($quoteItemArray);exit;
         $data = '';
         $message = 'You have no items in your shopping cart.';
         if(count($quoteItemArray)){
