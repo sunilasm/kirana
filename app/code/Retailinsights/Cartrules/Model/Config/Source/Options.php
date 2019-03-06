@@ -1,92 +1,50 @@
 <?php
-
 namespace Retailinsights\Cartrules\Model\Config\Source;
-
 use Magento\Eav\Model\ResourceModel\Entity\Attribute\OptionFactory;
-
 use Magento\Framework\DB\Ddl\Table;
-
 /**
-
 * Custom Attribute Renderer
-
 */
-
 class Options extends \Magento\Eav\Model\Entity\Attribute\Source\AbstractSource
-
 {
-
 /**
-
 * @var OptionFactory
-
 */
-
 protected $optionFactory;
-
 /**
-
 * @param OptionFactory $optionFactory
-
 */
-
 /**
-
 * Get all options
-
 *
-
 * @return array
-
 */
-
 public function getAllOptions()
-
 {
-
 /* your Attribute options list*/
-
 $this->_options=[ 
-['label'=>'Kg', 'value'=>'0'],
-
+['label'=>'kg', 'value'=>'0'],
 ['label'=>'gm', 'value'=>'1'],
-
-['label'=>'Lt', 'value'=>'2'],
-
+['label'=>'ltr', 'value'=>'2'],
 ['label'=>'ml', 'value'=>'3'],
-
-['label'=>'Pads', 'value'=>'4'],
-['label'=>"No's", 'value'=>"5"],
-['label'=>'Gram', 'value'=>'6'],
-['label'=>'Meters', 'value'=>'7'],
-['label'=>'Piece', 'value'=>'8'],
-['label'=>'Pack', 'value'=>'9'],
-['label'=>'Slices', 'value'=>'10'],
-['label'=>'Ggb', 'value'=>'11'],
-['label'=>'Astd', 'value'=>'12'],
-['label'=>'Pcs', 'value'=>'13'],
-['label'=>'mgm+1', 'value'=>'14'],
-['label'=>'Bunch', 'value'=>'15'],
-['label'=>'Watt', 'value'=>'16'],
-['label'=>'Strips', 'value'=>'17'],
-['label'=>'sheets', 'value'=>'18'],
-['label'=>'Gms', 'value'=>'19'],
-['label'=>'pages', 'value'=>'20'],
-['label'=>'Pices', 'value'=>'21'],
-['label'=>'gmq', 'value'=>'22'],
-['label'=>'Dozen', 'value'=>'23'],
-['label'=>'Bottle', 'value'=>'24'],
-
-
-
-
-['label'=>'Box', 'value'=>'25']
-
+['label'=>'pads', 'value'=>'4'],
+['label'=>"no's", 'value'=>"5"],
+['label'=>'mtr', 'value'=>'6'],
+['label'=>'pcs', 'value'=>'7'],
+['label'=>'packs', 'value'=>'8'],
+['label'=>'slices', 'value'=>'9'],
+['label'=>'Ggb', 'value'=>'10'],
+['label'=>'Astd', 'value'=>'11'],
+['label'=>'mgm', 'value'=>'12'],
+['label'=>'bunch', 'value'=>'13'],
+['label'=>'watt', 'value'=>'14'],
+['label'=>'strips', 'value'=>'15'],
+['label'=>'sheets', 'value'=>'16'],
+['label'=>'pages', 'value'=>'17'],
+['label'=>'dozen', 'value'=>'18'],
+['label'=>'bottle', 'value'=>'19'],
+['label'=>'box', 'value'=>'20']
 ];
-
 return $this->_options;
-
 }
-
 }
-
