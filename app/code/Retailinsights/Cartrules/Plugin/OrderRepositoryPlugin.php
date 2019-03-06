@@ -103,45 +103,13 @@ class OrderRepositoryPlugin
         $this->_productRepository = $productRepository;
 
     }
-
-
-
-    /**
-
-     * Add "order_comment" extension attribute to order data object to make it accessible in API data of order record
-
-     *
-
-     * @return OrderInterface
-
-     */
-
     public function afterGet(OrderRepositoryInterface $subject, OrderInterface $order)
 
     {
 
-
-
-
-
-        // $writer = new \Zend\Log\Writer\Stream(BP . '/var/log/test.log'); 
-
-        // $logger = new \Zend\Log\Logger(); 
-
-        // $logger->addWriter($writer); 
-
-        // $logger->info('*******');
-
-
-
-
-
         $addAtt = array();
 
         $info = array();   
-
-        
-
         $addImage = array();
 
         $infoImage = array(); 
@@ -172,34 +140,20 @@ class OrderRepositoryPlugin
         $data = json_encode($info);
 
         $dataImage = json_encode($infoImage);
-        // $logger->info($data);
-
-
-
+        
        $orderComment = $order->getData(self::FIELD_NAME);
 
         $extensionAttributes = $order->getExtensionAttributes();
 
         $extensionAttributes = $extensionAttributes ? $extensionAttributes : $this->extensionFactory->create();
-
-       
-
-       
-
         $extensionAttributes->setUnitm($data);
 
         $extensionAttributes->setImageUrl($dataImage);
 
         $order->setExtensionAttributes($extensionAttributes);
-
-
-
         return $order;
 
     }
 
-
-
-  
 
 }

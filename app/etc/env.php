@@ -11,9 +11,9 @@ return [
         'connection' => [
             'default' => [
                 'host' => 'localhost',
-                'dbname' => 'kirana_qa_new',
-                'username' => 'kirana',
-                'password' => 'Kirana@aws123',
+                'dbname' => 'hyloshth_qa_new',
+                'username' => 'hyloshth_user',
+                'password' => 'hylosh@ret@!l',
                 'active' => '1'
             ]
         ]
