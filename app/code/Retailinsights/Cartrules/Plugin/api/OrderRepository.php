@@ -70,6 +70,7 @@ class OrderRepository
             
             foreach($order->getItems() as $items){
              //$items->getProductId()
+
             $product = $this->_productRepository->getById($items->getProductId());
 
               $uom = $product->getUnitm();
@@ -86,9 +87,6 @@ class OrderRepository
 
              $addAtt[$sku] = $weight." ".$optionText;
 
-              
-        
-            
             }
             $info[] = $addAtt; 
             $infoImage[] = $addImage;
@@ -102,7 +100,6 @@ class OrderRepository
            // $deliveryType = $order->getData(self::DELIVERY_TYPE);
             
         }
-
         return $searchResult;
     }
 }
