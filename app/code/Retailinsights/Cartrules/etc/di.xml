@@ -4,10 +4,14 @@ xsi:noNamespaceSchemaLocation="../../../../../lib/internal/Magento/Framework/Obj
      <preference for="Retailinsights\Cartrules\Api\CatalogRuleRepositoryInterface"
                 type="Retailinsights\Cartrules\Model\CatalogRuleRepository" />
 
-    
-
      <type name="Magento\Sales\Api\OrderRepositoryInterface">
         <plugin name="ordercomment_extension_attribute"
                 type="Retailinsights\Cartrules\Plugin\OrderRepositoryPlugin" />
     </type>
+
+     <type name="Magento\Sales\Api\OrderRepositoryInterface">
+        <plugin name="orderInformationUpdate" 
+        type="Retailinsights\Cartrules\Plugin\api\OrderRepository" />
+    </type>
+
 </config>

@@ -16,22 +16,38 @@
 ?>
 <?php
 $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+$allowerdContries = $objectManager->get('Magento\Directory\Model\AllowedCountries')->getAllowedCountries() ;
+$countryFactory = $objectManager->get('\Magento\Directory\Model\CountryFactory');
+//echo "<pre>"; print_r($allowerdContries);
+$countries = array();
+foreach($allowerdContries as $countryCode)
+{
+        if($countryCode)
+        {
+            $data = $countryFactory->create()->loadByCode($countryCode);
+            $countries[$countryCode] =  $data->getName();
+        }
+}
+// print_r($countries);exit;
+
+
 $customerSession = $objectManager->create('Magento\Customer\Model\Session');
     if(($customerSession->isLoggedIn())){
         $customerLogin = 1;
         $billingID =  $customerSession->getCustomer()->getDefaultBilling();
         $address = $objectManager->create('Magento\Customer\Model\Address')->load($billingID);
+        // print_r($address->getData());exit;
         $addressLat = $address->getLat();
         $addressLng = $address->getLng();
         $streetArray = $address->getStreet();
-        $addressFull = $streetArray['0'].','.$address->getCity().','.$address->getRegion().','.$address->getCountry_id().','.$address->getPostcode();
+        $addressFull = $streetArray['0'].','.$address->getCity().','.$address->getRegion().','.$countries[$address->getCountry_id()].','.$address->getPostcode();
     }else{
       $customerLogin = 0;
       $addressLat  = '';
       $addressLng  = '';
       $addressFull  = '';
     }
-
+// print_r($addressFull);exit;
 // $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
 // $customerSession = $objectManager->get('Magento\Customer\Model\Session');
 // if($customerSession->isLoggedIn()) {
