@@ -16,13 +16,9 @@ use Magento\Sales\Api\Data\OrderInterface;
 
 use Magento\Sales\Api\Data\OrderSearchResultInterface;
 
-
-
 use Magento\Catalog\Helper\ImageFactory as ProductImageHelper;
 
 use Magento\Sales\Api\OrderRepositoryInterface;
-
-
 
 /**
 
@@ -39,7 +35,6 @@ class OrderRepositoryPlugin
          *@var \Magento\Catalog\Helper\ImageFactory
 
          */
-
         protected $productImageHelper;
 
            /**
@@ -58,8 +53,6 @@ class OrderRepositoryPlugin
 
     const FIELD_NAME = 'unitm';
 
-
-
     /**
 
      * Order Extension Attributes Factory
@@ -71,8 +64,6 @@ class OrderRepositoryPlugin
      */
 
     protected $extensionFactory;
-
-
 
     /**
 
@@ -109,7 +100,8 @@ class OrderRepositoryPlugin
 
         $addAtt = array();
 
-        $info = array();   
+        $info = array();  
+
         $addImage = array();
 
         $infoImage = array(); 
@@ -141,7 +133,7 @@ class OrderRepositoryPlugin
 
         $dataImage = json_encode($infoImage);
         
-       $orderComment = $order->getData(self::FIELD_NAME);
+        $orderComment = $order->getData(self::FIELD_NAME);
 
         $extensionAttributes = $order->getExtensionAttributes();
 
@@ -154,6 +146,4 @@ class OrderRepositoryPlugin
         return $order;
 
     }
-
-
 }

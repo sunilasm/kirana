@@ -15,21 +15,21 @@ class OrderRepository
 
     const FIELD_NAME = 'unitm';
 
-/**
+    /**
 
-         *@var \Magento\Catalog\Helper\ImageFactory
+    *@var \Magento\Catalog\Helper\ImageFactory
 
-         */
+    */
 
-        protected $productImageHelper;
+    protected $productImageHelper;
 
-     /**
+    /**
 
-         * @var ProductRepository
+    * @var ProductRepository
 
-         */
+    */
 
-        protected $productRepository;
+    protected $productRepository;
 
     /**
      * Order Extension Attributes Factory
@@ -47,21 +47,17 @@ class OrderRepository
         ProductImageHelper $productImageHelper,
         OrderExtensionFactory $extensionFactory,
         \Magento\Catalog\Api\ProductRepositoryInterface $productRepository
- )
+    )
     {
         $this->extensionFactory = $extensionFactory;
          $this->_productRepository = $productRepository;
          $this->productImageHelper = $productImageHelper;
     }
 
-    
     public function afterGetList(OrderRepositoryInterface $subject, OrderSearchResultInterface $searchResult)
     {
    
-             $orders = $searchResult->getItems();
-
-
-
+        $orders = $searchResult->getItems();
         foreach ($orders as &$order) {
                 $addAtt = array();
                 $info = array(); 
@@ -97,7 +93,6 @@ class OrderRepository
                         $extensionAttributes->setUnitm($data);
                         $extensionAttributes->setImageUrl($dataImage);
             $order->setExtensionAttributes($extensionAttributes);
-           // $deliveryType = $order->getData(self::DELIVERY_TYPE);
             
         }
         return $searchResult;

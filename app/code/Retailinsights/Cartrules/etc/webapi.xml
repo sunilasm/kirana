@@ -8,5 +8,4 @@ xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Webapi:etc/webapi.xsd"
             <resource ref="anonymous"/>
         </resources>
     </route>
- 
 </routes>
