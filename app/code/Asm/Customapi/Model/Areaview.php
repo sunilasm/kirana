@@ -1,8 +1,8 @@
 <?php
 namespace Asm\Customapi\Model;
-use Asm\Customapi\Api\CityInterface;
+use Asm\Customapi\Api\AreaInterface;
  
-class Cityview implements CityInterface
+class Areaview implements AreaInterface
 {
     /**
      * Returns greeting message to user
@@ -15,22 +15,23 @@ class Cityview implements CityInterface
 
     public function __construct(
        \Magento\Framework\App\RequestInterface $request,
-       \Asm\Customapi\Model\CityFactory $cityCollection
+       \Asm\Customapi\Model\AreaFactory $areaCollection
     ) {
        $this->request = $request;
-       $this->_city = $cityCollection;
+       $this->_area = $areaCollection;
     }
 
-    public function name() {
-        $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+    public function area() {
+        //print_r("Api execute successfully");exit;
+       $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
         $request = $objectManager->get('\Magento\Framework\Webapi\Rest\Request');
         $post = $request->getBodyParams();
-        $resultPage = $this->_city->create();
+        $resultPage = $this->_area->create();
         $collection = $resultPage->getCollection(); 
-        $collection->addFieldToFilter('region_id',$post['region_id']); 
+        $collection->addFieldToFilter('city_id',$post['city_id']); 
         $data = array();
-        foreach ($collection as $city) {
-            $data[$city->getId()] = $city->getName();
+        foreach ($collection as $area) {
+            $data[$area->getId()] = $area->getName();
         }
         return $data;
     }

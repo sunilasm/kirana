@@ -9,6 +9,14 @@
  */
  -->
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
-	<preference for="Asm\Customapi\Api\CityInterface"
-                type="Asm\Customapi\Model\Cityview" />
+    <!-- Get Country -->
+    <preference for="Asm\Customapi\Api\CountryInterface" type="Asm\Customapi\Model\Countryview" />
+    <!-- Get Regions -->
+	<preference for="Asm\Customapi\Api\RegionsInterface" type="Asm\Customapi\Model\Regionsview" />
+    <!-- Get City -->
+	<preference for="Asm\Customapi\Api\CityInterface" type="Asm\Customapi\Model\Cityview" />
+    <!-- Get Area -->
+    <preference for="Asm\Customapi\Api\AreaInterface" type="Asm\Customapi\Model\Areaview" />
+    <!-- Get Locality -->
+    <preference for="Asm\Customapi\Api\LocalityInterface" type="Asm\Customapi\Model\Localityview" />
 </config>
