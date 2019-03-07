@@ -6,13 +6,11 @@ xsi:noNamespaceSchemaLocation="urn:magento:framework:Api/etc/extension_attribute
         <attribute code="unitm" type="string" />
     </extension_attributes>
      
-     <extension_attributes for="Magento\Sales\Api\Data\OrderInterface">
+     <extension_attributes for="Magento\Sales\Api\Data\OrderItemInterface">
         <attribute code="image_url" type="string" />
         <attribute code="unitm" type="string" />
     </extension_attributes>
 
-    <extension_attributes for="Magento\Sales\Api\Data\OrderInterface">
-        <attribute code="unitm" type="string" />
-    </extension_attributes>
+    
 
 </config>
