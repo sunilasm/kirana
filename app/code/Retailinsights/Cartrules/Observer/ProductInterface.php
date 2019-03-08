@@ -77,13 +77,9 @@ use Magento\Framework\Event\ObserverInterface;
                     $optionText = $attribute->getSource()->getOptionText($optionId);
                 }
 
-
                 $data = $optionText;
-               
-               // if ($itemExtAttr === null) {
-                    $itemExtAttr = $this->extensionFactory->create();
-                //}
-                 $itemExtAttr->setUnitm($data);
+                $itemExtAttr = $this->extensionFactory->create();
+                $itemExtAttr->setUnitm($data);
                 $quoteItem->setExtensionAttributes($itemExtAttr);   
                 
             }  

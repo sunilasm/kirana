@@ -16,13 +16,9 @@ use Magento\Sales\Api\Data\OrderInterface;
 
 use Magento\Sales\Api\Data\OrderSearchResultInterface;
 
-
-
 use Magento\Catalog\Helper\ImageFactory as ProductImageHelper;
 
 use Magento\Sales\Api\OrderRepositoryInterface;
-
-
 
 /**
 
@@ -39,7 +35,6 @@ class OrderRepositoryPlugin
          *@var \Magento\Catalog\Helper\ImageFactory
 
          */
-
         protected $productImageHelper;
 
            /**
@@ -58,8 +53,6 @@ class OrderRepositoryPlugin
 
     const FIELD_NAME = 'unitm';
 
-
-
     /**
 
      * Order Extension Attributes Factory
@@ -71,8 +64,6 @@ class OrderRepositoryPlugin
      */
 
     protected $extensionFactory;
-
-
 
     /**
 
@@ -103,44 +94,13 @@ class OrderRepositoryPlugin
         $this->_productRepository = $productRepository;
 
     }
-
-
-
-    /**
-
-     * Add "order_comment" extension attribute to order data object to make it accessible in API data of order record
-
-     *
-
-     * @return OrderInterface
-
-     */
-
     public function afterGet(OrderRepositoryInterface $subject, OrderInterface $order)
 
     {
 
-
-
-
-
-        // $writer = new \Zend\Log\Writer\Stream(BP . '/var/log/test.log'); 
-
-        // $logger = new \Zend\Log\Logger(); 
-
-        // $logger->addWriter($writer); 
-
-        // $logger->info('*******');
-
-
-
-
-
         $addAtt = array();
 
-        $info = array();   
-
-        
+        $info = array();  
 
         $addImage = array();
 
@@ -172,34 +132,18 @@ class OrderRepositoryPlugin
         $data = json_encode($info);
 
         $dataImage = json_encode($infoImage);
-        // $logger->info($data);
-
-
-
-       $orderComment = $order->getData(self::FIELD_NAME);
+        
+        $orderComment = $order->getData(self::FIELD_NAME);
 
         $extensionAttributes = $order->getExtensionAttributes();
 
         $extensionAttributes = $extensionAttributes ? $extensionAttributes : $this->extensionFactory->create();
-
-       
-
-       
-
         $extensionAttributes->setUnitm($data);
 
         $extensionAttributes->setImageUrl($dataImage);
 
         $order->setExtensionAttributes($extensionAttributes);
-
-
-
         return $order;
 
     }
-
-
-
-  
-
 }
