@@ -22,12 +22,13 @@ class Cityview implements CityInterface
     }
 
     public function name() {
-        $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
-        $request = $objectManager->get('\Magento\Framework\Webapi\Rest\Request');
-        $post = $request->getBodyParams();
+        // $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+        // $request = $objectManager->get('\Magento\Framework\Webapi\Rest\Request');
+        // $post = $request->getBodyParams();
+        $region_id = 553;
         $resultPage = $this->_city->create();
         $collection = $resultPage->getCollection(); 
-        $collection->addFieldToFilter('region_id',$post['region_id']); 
+        $collection->addFieldToFilter('region_id',$region_id); 
         $data = array();
         foreach ($collection as $city) {
             $data[$city->getId()] = $city->getName();
