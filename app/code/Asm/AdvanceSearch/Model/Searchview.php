@@ -111,7 +111,7 @@ class Searchview implements SearchInterface
         foreach($sellerData as $seldata):
             $selerIdArray[] = $seldata['seller_id'];
         endforeach;
-        //print_r($selerIdArray);
+       // print_r($selerIdArray);
         return  $selerIdArray;
     }
     public function getSearchTermData($title, $lat, $lon){
@@ -185,6 +185,7 @@ class Searchview implements SearchInterface
                        {
                         $productCollectionTemp['seller_name'] = $sellerNameArray[$seller_id];
                         $productCollectionTemp['seller_id'] = $seller_id;
+                         $productCollectionTemp['seller_id_new'] = 'dfdsf';
                         $productCollectionArray[] = $productCollectionTemp;
                        }
                    }
