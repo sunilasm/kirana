@@ -185,6 +185,7 @@ class Searchview implements SearchInterface
                        {
                         $productCollectionTemp['seller_name'] = $sellerNameArray[$seller_id];
                         $productCollectionTemp['seller_id'] = $seller_id;
+                         $productCollectionTemp['seller_id_new'] = 'dfdsf';
                         $productCollectionArray[] = $productCollectionTemp;
                        }
                    }
