@@ -30,9 +30,13 @@ class Areaview implements AreaInterface
         $collection = $resultPage->getCollection(); 
         $collection->addFieldToFilter('city_id',$post['city_id']); 
         $data = array();
+        $i = 0;
         foreach ($collection as $area) {
-            $data[$area->getId()] = $area->getName();
+            $data[$i]['id'] = $area->getId();
+            $data[$i]['name'] = $area->getName();
+            $i++;       
         }
+        //print_r($data);exit;
         return $data;
     }
    

@@ -30,8 +30,11 @@ class Localityview implements LocalityInterface
         $collection = $resultPage->getCollection(); 
         $collection->addFieldToFilter('area_id',$post['area_id']); 
         $data = array();
+        $i = 0;
         foreach ($collection as $locality) {
-            $data[$locality->getId()] = $locality->getName();
+            $data[$i]['id'] = $locality->getId();
+            $data[$i]['name'] = $locality->getName();
+            $i++;
         }
         return $data;
     }

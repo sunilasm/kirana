@@ -30,8 +30,11 @@ class Cityview implements CityInterface
         $collection = $resultPage->getCollection(); 
         $collection->addFieldToFilter('region_id',$region_id); 
         $data = array();
+        $i = 0;
         foreach ($collection as $city) {
-            $data[$city->getId()] = $city->getName();
+            $data[$i]['id'] = $city->getId();
+            $data[$i]['name'] = $city->getName();
+            $i++;
         }
         return $data;
     }
