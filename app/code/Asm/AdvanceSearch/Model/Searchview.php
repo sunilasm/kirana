@@ -1,6 +1,8 @@
 <?php
 namespace Asm\AdvanceSearch\Model;
 use Asm\AdvanceSearch\Api\SearchInterface;
+use Lof\MarketPlace\Model\SellerProductFactory as SellerProduct;
+
  
 class Searchview implements SearchInterface
 {
@@ -11,15 +13,19 @@ class Searchview implements SearchInterface
      * @param string $name Users name.
      * @return string Greeting message with users name.
      */
+     
+    protected $sellerProduct;
     protected $request;
     protected $_productCollectionFactory;
     protected $_sellerCollection;
     public function __construct(
+        SellerProduct $sellerProduct,
        \Magento\Framework\App\RequestInterface $request,
        \Magento\Catalog\Model\ResourceModel\Product\CollectionFactory $productCollectionFactory,
        \Lof\MarketPlace\Model\Seller $sellerCollection,
        \Lof\MarketPlace\Model\SellerProduct $sellerProductCollection
     ) {
+       $this->sellerProduct = $sellerProduct; 
        $this->request = $request;
        $this->_productCollectionFactory = $productCollectionFactory; 
        $this->_sellerCollection = $sellerCollection;
@@ -185,7 +191,13 @@ class Searchview implements SearchInterface
                        {
                         $productCollectionTemp['seller_name'] = $sellerNameArray[$seller_id];
                         $productCollectionTemp['seller_id'] = $seller_id;
-                         $productCollectionTemp['seller_id_new'] = 'dfdsf';
+                        $SellerProd = $this->sellerProduct->create()->getCollection();
+                        $fltColl = $SellerProd->addFieldToFilter('seller_id', $seller_id)
+                                ->addFieldToFilter('product_id', $productCollectionTemp['entity_id']);
+                        $data = $this->sellerProduct->create()->load($fltColl->getData()[0]['entity_id']);
+                         $productCollectionTemp['doorstep_price'] =  $data->getDoorstepPrice();
+                         $productCollectionTemp['pickup_from_store'] =  $data->getPickupFromStore();
+                         $productCollectionTemp['pickup_from_nearby_store'] =  $data->getPickupFromNearbyStore();
                         $productCollectionArray[] = $productCollectionTemp;
                        }
                    }
