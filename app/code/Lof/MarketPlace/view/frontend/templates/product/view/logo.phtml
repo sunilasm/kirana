@@ -15,6 +15,7 @@ $show_seller_phone = $data->getConfig("product_view_page/show_seller_phone");
 $show_seller_contact = $data->getConfig("product_view_page/show_seller_contact");
 $text_contact = $data->getConfig("product_view_page/text_contact");
 $formActionUrl = $this->getUrl('lofmarketplace/seller/savemessage');
+$helperData = $this->helper('Asm\Geolocation\Helper\Data');
 $href = '#';
 
 $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
@@ -39,7 +40,19 @@ if(isset($_GET['seller_id'])){
         $lat = $sessionLat; //latitude
         //$lon = $centerpointLang; //longitude
         $lon = $sessionLng; //longitude
-        $distance = 1; //your distance in KM
+        $lon = $sessionLng; //longitude
+
+        $rangeSetting = $this->helperData->getGeneralConfig('enable');
+        $rangeInKm = $this->helperData->getGeneralConfig('range_in_km');
+        if($rangeSetting == 1){
+            if($rangeInKm){
+                $distance = $rangeInKm; //your distance in KM
+            }else{
+                $distance = 1; //your distance in KM
+            }
+        }else{
+            $distance = 1; //your distance in KM
+        }
         $R = 6371; //constant earth radius. You can add precision here if you wish
 
         $maxLat = $lat + rad2deg($distance/$R);

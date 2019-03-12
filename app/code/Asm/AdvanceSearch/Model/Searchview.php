@@ -18,14 +18,17 @@ class Searchview implements SearchInterface
        \Magento\Framework\App\RequestInterface $request,
        \Magento\Catalog\Model\ResourceModel\Product\CollectionFactory $productCollectionFactory,
        \Lof\MarketPlace\Model\Seller $sellerCollection,
-       \Lof\MarketPlace\Model\SellerProduct $sellerProductCollection
+       \Lof\MarketPlace\Model\SellerProduct $sellerProductCollection,
+       \Asm\Geolocation\Helper\Data $helperData
     ) {
        $this->request = $request;
        $this->_productCollectionFactory = $productCollectionFactory; 
        $this->_sellerCollection = $sellerCollection;
        $this->_sellerProductCollection = $sellerProductCollection;
+       $this->helperData = $helperData;
     }
     public function name() {
+
         //print_r("herreee");exit;
         $title = $this->request->getParam('title');
         $lat = $this->request->getParam('latitude');
@@ -92,7 +95,18 @@ class Searchview implements SearchInterface
     */
     public function getInRangeSeller($lat, $lon){
         $selerIdArray = array();
-        $distance = 1; //your distance in KM
+        $rangeSetting = $this->helperData->getGeneralConfig('enable');
+        $rangeInKm = $this->helperData->getGeneralConfig('range_in_km');
+        if($rangeSetting == 1){
+            if($rangeInKm){
+                $distance = $rangeInKm; //your distance in KM
+            }else{
+                $distance = 1; //your distance in KM
+            }
+        }else{
+            $distance = 1; //your distance in KM
+        }
+        
         $R = 6371; //constant earth radius. You can add precision here if you wish
         $maxLat = $lat + rad2deg($distance/$R);
         $minLat = $lat - rad2deg($distance/$R);

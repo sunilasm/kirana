@@ -24,6 +24,7 @@ use Magento\Framework\Pricing\PriceCurrencyInterface;
 use Magento\Framework\App\Filesystem\DirectoryList;
 use Magento\Framework\Controller\ResultFactory; 
 use Magento\Framework\App\Action\Action;
+use Magento\Store\Model\ScopeInterface;
 
 class Data extends \Magento\Framework\App\Helper\AbstractHelper
 {
@@ -34,6 +35,7 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
     protected $_key = 'AIzaSyD-_0vriuYY2qKxzK82yvVqgUeo-bqayDk'; //avinash sir 
     protected $_appUrl= 'https://maps.googleapis.com/maps/api/geocode/json';
     protected $request;
+    const XML_PATH_SHIPPING = 'customsetting/';
 
     public function __construct(
         \Magento\Framework\App\Helper\Context $context,
@@ -44,6 +46,20 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
         $this->request = $request;
         parent::__construct($context);
     }
+
+    public function getConfigValue($field, $storeId = null)
+    {
+        return $this->scopeConfig->getValue(
+            $field, ScopeInterface::SCOPE_STORE, $storeId
+        );
+    }
+
+    public function getGeneralConfig($code, $storeId = null)
+    {
+
+        return $this->getConfigValue(self::XML_PATH_SHIPPING .'general/'. $code, $storeId);
+    }
+
     public function getLatlng($address1, $city, $state, $country, $postcode){
         //$result = $this->resultFactory->create(ResultFactory::TYPE_JSON);
         $output = array();
