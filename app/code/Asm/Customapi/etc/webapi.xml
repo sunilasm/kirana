@@ -24,14 +24,14 @@
         </resources>
     </route>
     
-    <route url="/V1/area/" method="GET">
+    <route url="/V1/area/" method="POST">
         <service class="Asm\Customapi\Api\AreaInterface" method="area"/>
         <resources>
             <resource ref="anonymous"/>
         </resources>
     </route>
 
-    <route url="/V1/locality/" method="GET">
+    <route url="/V1/locality/" method="POST">
         <service class="Asm\Customapi\Api\LocalityInterface" method="locality"/>
         <resources>
             <resource ref="anonymous"/>
