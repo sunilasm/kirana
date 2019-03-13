@@ -4,6 +4,11 @@
    <event name="checkout_cart_product_add_after">
        <observer name="asm_setsellerid_observer_setproductseller" instance="Asm\Setsellerid\Observer\Setproductseller" />
    </event>
+   <event name="checkout_submit_all_after">
+        <observer name="asm_setsellerid_observer_setSellerId" instance="Asm\Setsellerid\Observer\ProcessOrder" />
+    </event>
+
+   
   <!--  <event name="sales_model_service_quote_submit_before">
         <observer name="add_order_item" instance="Asm\Setsellerid\Observer\Setorderproductseller" />
     </event> -->
