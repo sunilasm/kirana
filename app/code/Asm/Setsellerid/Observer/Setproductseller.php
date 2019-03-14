@@ -24,10 +24,12 @@ class Setproductseller implements \Magento\Framework\Event\ObserverInterface
 	$request = $objectManager->get('\Magento\Framework\App\RequestInterface');
 	$seller_id = array();
 	$variable = $request->getPost();
-	/*$writer = new \Zend\Log\Writer\Stream(BP . '/var/log/templog.log');
+	
+	$writer = new \Zend\Log\Writer\Stream(BP . '/var/log/new.log');
 	$logger = new \Zend\Log\Logger();
 	$logger->addWriter($writer);
-	$logger->info("Setproductsellerrrrrrrrrrr Setproductseller");*/
+	$logger->info("seller");
+
 	$seller_id = array();
 	$variable = $this->_request->getPost();
  	foreach ($variable as $key => $value) {
@@ -38,6 +40,14 @@ class Setproductseller implements \Magento\Framework\Event\ObserverInterface
  		}
  		if($key=="product"){
  			$seller_id["product"] = $value;
+ 		}
+ 		if($key=="product"){
+ 			$seller_id["product"] = $value;
+ 			$logger->info($seller_id["product"]);
+ 		}
+ 		if($key=="price_type"){
+ 			$seller_id["product"] = $value;
+ 			$logger->info($seller_id["price_type"]);
  		}
  	}
  	$cart = $observer->getEvent()->getData('cart');
@@ -56,6 +66,7 @@ class Setproductseller implements \Magento\Framework\Event\ObserverInterface
     if(isset($seller_id["value"])){
     	if($item->getProductId() == $seller_id["product"]){
     		$item->setSellerId($seller_id["value"]);
+    		 $item->setPriceType($seller_id["price_type"]);
     	}
     }
     return $this;
