@@ -44,4 +44,11 @@
             <resource ref="anonymous"/>
         </resources>
     </route>
+
+    <route url="/V1/flushcart/" method="POST">
+        <service class="Asm\Customapi\Api\FlushcartInterface" method="flushcart"/>
+        <resources>
+            <resource ref="anonymous"/>
+        </resources>
+    </route>
 </routes>

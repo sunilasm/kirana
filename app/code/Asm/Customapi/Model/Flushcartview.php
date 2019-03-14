@@ -1,8 +1,8 @@
 <?php
 namespace Asm\Customapi\Model;
-use Asm\Customapi\Api\OutofrangeInterface;
+use Asm\Customapi\Api\FlushcartInterface;
  
-class Outofrangeview implements OutofrangeInterface
+class Flushcartview implements FlushcartInterface
 {
     /**
      * Returns greeting message to user
@@ -35,42 +35,45 @@ class Outofrangeview implements OutofrangeInterface
        $this->_addressFactory = $addressFactory;
     }
 
-    public function outofrange() {
+    public function flushcart() {
+      //print_r("Herrerer");exit;
        $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
         $request = $objectManager->get('\Magento\Framework\Webapi\Rest\Request');
         $post = $request->getBodyParams();
         $quote = $this->quoteFactory->create()->load($post['quote_id']);
         $customer = $this->_customerFactory->create()->load($post['customer_id']);
         $shippingAddressId = $customer->getDefaultShipping();
-        $address = $objectManager->create('Magento\Customer\Model\Address')->load($shippingAddressId);
+        $billingAddressId = $customer->getDefaultBilling();
+        $address = $objectManager->create('Magento\Customer\Model\Address')->load($billingAddressId);
+        //$shippingAddress = $this->_addressFactory->create()->load($shippingAddressId);
+        //echo "<pre>";print_r($shippingAddress->getData());exit;
         //$latitude = $post['latitude'];
         //$longitude = $post['longitude'];
         $latitude = $address->getLatitude();
         $longitude = $address->getLongitude();
 
-        //print_r($shippingAddress->getData());exit;
+        // print_r($address->getData());exit;
         $productCollectionArray = array();
         $kiranaArray = array();
         if($latitude && $longitude){
             $ranageSeller = $this->searchRange->getInRangeSeller($latitude, $longitude);
+            // print_r($ranageSeller);exit;
             $items = $quote->getAllItems(); 
             $i = 0;
             foreach ($items as $item) {
-                $collection = $this->_productCollectionFactory->create();
-                $collection->addAttributeToSelect('*');
-                $collection->addFieldToFilter('entity_id', ['in' => $item->getProductId()]);
-                if (!in_array($item->getSellerId(), $ranageSeller))
+               if (!in_array($item->getSellerId(), $ranageSeller))
                 {
-                  foreach ($collection as $product){
-                        $productCollectionArray[] = $product->getData();
-                   }
+                  $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+                  $itemModel = $objectManager->create('Magento\Quote\Model\Quote\Item');
+                  $itemId = $item->getItemId();
+                  $quoteItem = $itemModel->load($itemId);
+                  $quoteItem->delete();
                 }
-                array_push($kiranaArray,$item->getSellerId());
             }
         }
-        $summry = array("product_count",count($productCollectionArray),"kirana_count",count(array_unique($kiranaArray)));
-        $data = array("summry", $summry, "products", $productCollectionArray);
-        return $data;
+       $data = array('status'=>'Success','message' => "Items are successfully removed from cart.");
+        //print_r($data);exit;
+       return $data;
     }
 
 }
