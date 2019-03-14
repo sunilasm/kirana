@@ -37,4 +37,11 @@
             <resource ref="anonymous"/>
         </resources>
     </route>
+
+    <route url="/V1/outofrange/" method="POST">
+        <service class="Asm\Customapi\Api\OutofrangeInterface" method="outofrange"/>
+        <resources>
+            <resource ref="anonymous"/>
+        </resources>
+    </route>
 </routes>
