@@ -14,21 +14,21 @@ class Searchview implements SearchInterface
     protected $request;
     protected $_productCollectionFactory;
     protected $_sellerCollection;
-
     public function __construct(
        \Magento\Framework\App\RequestInterface $request,
        \Magento\Catalog\Model\ResourceModel\Product\CollectionFactory $productCollectionFactory,
        \Lof\MarketPlace\Model\Seller $sellerCollection,
-       \Lof\MarketPlace\Model\SellerProduct $sellerProductCollection
+       \Lof\MarketPlace\Model\SellerProduct $sellerProductCollection,
+       \Asm\Geolocation\Helper\Data $helperData
     ) {
        $this->request = $request;
        $this->_productCollectionFactory = $productCollectionFactory; 
        $this->_sellerCollection = $sellerCollection;
        $this->_sellerProductCollection = $sellerProductCollection;
-
+       $this->helperData = $helperData;
     }
-
     public function name() {
+
         //print_r("herreee");exit;
         $title = $this->request->getParam('title');
         $lat = $this->request->getParam('latitude');
@@ -41,14 +41,16 @@ class Searchview implements SearchInterface
         $quoteItems = $quoteModel->load($quoteId)->getAllVisibleItems();
         $quoteItemArray = array();
         $i = 1;
+        $quoteItemSellerArray = array();
         foreach($quoteItems as $item):
+            $quoteItemSellerArray[$item->getSellerId()] = $item->getItemid();
             $quoteItemArray[$item->getSku()] = $item->getQty();
             //$quoteItemIndexArray[$i] = $item->getItemid();
             $quoteItemIndexArray[$i] = $item->getItemid();
             $i++;
         endforeach;
-        // print_r($quoteItemArray);
-        // print_r($quoteItemIndexArray);
+        //print_r($quoteItemSellerArray); exit;
+        //print_r($quoteItemIndexArray); exit;
         $data = array();
         $flag = 0;
         if($searchtermpara){ $searchterm = 0; }else{ $searchterm = 1; }
@@ -77,7 +79,7 @@ class Searchview implements SearchInterface
         if($flag != 1){
             if(count($data)){
                 foreach($data as $key => $proData):
-                    if(array_key_exists($proData['sku'], $quoteItemArray)){
+                    if(array_key_exists($proData['sku'], $quoteItemArray) ){
                         $data[$key] += ['quote_qty' => $quoteItemArray[$proData['sku']]];
                     }else{
                         $data[$key] += ['quote_qty' => 0];
@@ -86,7 +88,6 @@ class Searchview implements SearchInterface
             }
         }
         //print_r($data);exit;
-
         return $data;
     }
     /*
@@ -94,14 +95,23 @@ class Searchview implements SearchInterface
     */
     public function getInRangeSeller($lat, $lon){
         $selerIdArray = array();
-        $distance = 1; //your distance in KM
+        $rangeSetting = $this->helperData->getGeneralConfig('enable');
+        $rangeInKm = $this->helperData->getGeneralConfig('range_in_km');
+        if($rangeSetting == 1){
+            if($rangeInKm){
+                $distance = $rangeInKm; //your distance in KM
+            }else{
+                $distance = 1; //your distance in KM
+            }
+        }else{
+            $distance = 1; //your distance in KM
+        }
+        
         $R = 6371; //constant earth radius. You can add precision here if you wish
-
         $maxLat = $lat + rad2deg($distance/$R);
         $minLat = $lat - rad2deg($distance/$R);
         $maxLon = $lon + rad2deg(asin($distance/$R) / cos(deg2rad($lat)));
         $minLon = $lon - rad2deg(asin($distance/$R) / cos(deg2rad($lat)));
-
         // filter collection in range of lat and long
         $sellerCollection = $this->_sellerCollection->getCollection()
         ->setOrder('position','ASC')
@@ -115,10 +125,9 @@ class Searchview implements SearchInterface
         foreach($sellerData as $seldata):
             $selerIdArray[] = $seldata['seller_id'];
         endforeach;
-        //print_r($selerIdArray);
+       // print_r($selerIdArray);
         return  $selerIdArray;
     }
-
     public function getSearchTermData($title, $lat, $lon){
         $productCollectionArray = array();
             $sellerProductsArray = array();
@@ -133,7 +142,6 @@ class Searchview implements SearchInterface
                 //print_r($ranageSeller); exit;
                 // $this->_sellerProductCollection->addFieldToFilter('seller_id', array('in' => $ranageSeller));
                 $sellerCollection = $this->_sellerProductCollection->getCollection()->addFieldToFilter('seller_id', array('in' => $ranageSeller));
-                
             }
             $tempSellerProductArray = array();
             $i=0;
@@ -146,6 +154,7 @@ class Searchview implements SearchInterface
             {
                 $collection->addFieldToFilter('entity_id', array('in' => $tempSellerProductIdArray));
             }
+
             //print_r($collection->getData()); exit;
             $collection->addAttributeToSort('price', 'asc');
             //print_r($collection->getData()); exit;
@@ -190,6 +199,7 @@ class Searchview implements SearchInterface
                        {
                         $productCollectionTemp['seller_name'] = $sellerNameArray[$seller_id];
                         $productCollectionTemp['seller_id'] = $seller_id;
+                         $productCollectionTemp['seller_id_new'] = 'dfdsf';
                         $productCollectionArray[] = $productCollectionTemp;
                        }
                    }
@@ -201,6 +211,4 @@ class Searchview implements SearchInterface
             //print_r($productCollectionArray); exit;
         return $productCollectionArray;
     }
-
-
 }

@@ -1,0 +1,17 @@
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+xsi:noNamespaceSchemaLocation="../../../../../lib/internal/Magento/Framework/ObjectManager/etc/config.xsd">
+
+     <preference for="Retailinsights\Cartrules\Api\CatalogRuleRepositoryInterface"
+                type="Retailinsights\Cartrules\Model\CatalogRuleRepository" />
+
+     <type name="Magento\Sales\Api\OrderRepositoryInterface">
+        <plugin name="ordercomment_extension_attribute"
+                type="Retailinsights\Cartrules\Plugin\OrderRepositoryPlugin" />
+    </type>
+
+     <type name="Magento\Sales\Api\OrderRepositoryInterface">
+        <plugin name="orderInformationUpdate" 
+        type="Retailinsights\Cartrules\Plugin\api\OrderRepository" />
+    </type>
+
+</config>
