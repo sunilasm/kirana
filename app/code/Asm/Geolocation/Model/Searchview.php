@@ -49,7 +49,7 @@ class Searchview implements SearchInterface
             $quoteItemIndexArray[$i] = $item->getItemid();
             $i++;
         endforeach;
-        // print_r($quoteItemIndexArray);exit;
+        //print_r($quoteItemArray);exit;
         $data = '';
         $message = 'You have no items in your shopping cart.';
         if(count($quoteItemArray)){
@@ -81,7 +81,7 @@ class Searchview implements SearchInterface
                 $message = 'Sku is successfully removed from cart.';
             }
         }
-        $data = array('status'=>'Sucess','message' => $message);
+        $data = array('status'=>'Success','message' => $message);
         //print_r($data);exit;
         return $data;
     }

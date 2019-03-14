@@ -12,6 +12,10 @@ class SellerAttributeQuoteToOrderItem
         /** @var $orderItem \Magento\Sales\Model\Order\Item */
         $orderItem = $proceed($item, $additional);
         $orderItem->setSellerId($item->getSellerId());
+        $writer = new \Zend\Log\Writer\Stream(BP . '/var/log/templog.log');
+    $logger = new \Zend\Log\Logger();
+    $logger->addWriter($writer);
+    $logger->info('sds');
         return $orderItem;
     }
 }

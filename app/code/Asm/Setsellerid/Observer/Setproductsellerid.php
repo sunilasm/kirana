@@ -109,6 +109,7 @@ class Setproductsellerid implements \Magento\Framework\Event\ObserverInterface
                             if ($itemExtAttr === null) {
                                 $itemExtAttr = $this->extensionFactory->create();
                             }
+                            
                             $itemExtAttr->setSellerId($seller_id["seller_id"]);
                             $quoteItem->setExtensionAttributes($itemExtAttr);
                         }

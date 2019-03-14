@@ -5,11 +5,12 @@ ini_set('memory_limit', '5G');
 error_reporting(E_ALL);
 //$TableName = $resource->getTableName('grocery_pharma_review_sheet');
 $TableName = 'grocery_pharma_review_sheet';
+// $TableName = 'grocery_pharma_review_sheet_updated';
 $TableAttributeOptionName = 'mgeav_attribute_option_value';
 $token = '';
 $finalresult = '';
-$limit = (isset($_GET['limit'])) ? $_GET['limit'] : 1;
-$page = (isset($_GET['page'])) ? (($_GET['page'] - 1) * $limit) : 10;
+$limit = (isset($_GET['limit'])) ? $_GET['limit'] : 10000;
+$page = (isset($_GET['page'])) ? (($_GET['page'] - 1) * $limit) : 1;
 
 	try{
 		$connection = mysqli_connect('localhost', 'kirana', 'Kirana@aws123', 'kirana_qa_new');
@@ -18,8 +19,11 @@ $page = (isset($_GET['page'])) ? (($_GET['page'] - 1) * $limit) : 10;
 		}
 		//print_r($connection);exit;
 		
-		$query = "SELECT * FROM ".$TableName." WHERE `size` LIKE '%kg%' AND `local_data_uploaded` = 0 ORDER by ID ASC LIMIT ".$page.",".$limit;
-		print_r($query);exit;
+		// $query = "SELECT * FROM ".$TableName." WHERE `uom_type` LIKE '%kg%' AND `qa_data_uploaded` = 0 ORDER by ID ASC LIMIT ".$page.",".$limit;
+		$query = "SELECT * FROM ".$TableName." WHERE `qa_data_uploaded` = 0 ORDER by ID ASC LIMIT ".$page.",".$limit;
+		// print_r($query);exit;
+		// $query = "SELECT * FROM ".$TableName." ORDER by ID ASC LIMIT ".$page.",".$limit;
+		//print_r($query);exit;
 		$result = $connection->query($query);
 		$product  = array();
 		if(count($result))
@@ -28,16 +32,25 @@ $page = (isset($_GET['page'])) ? (($_GET['page'] - 1) * $limit) : 10;
 			/* fetch associative array */
 
 			while ($row = $result->fetch_assoc()) {
-			// Get pack type attribute value
-			$query1 = "SELECT * FROM ".$TableAttributeOptionName;
-			$result1 = $connection->query($query1);
-			$pack_type = '';
-			while ($row1 = $result1->fetch_array()) {
-				if($row['uom'] == $row1['value']){
-					$pack_type = $row1['option_id'];
+				// Get pack type attribute value
+				$query1 = "SELECT * FROM ".$TableAttributeOptionName;
+				$result1 = $connection->query($query1);
+				$pack_type = '';
+				while ($row1 = $result1->fetch_array()) {
+					//echo "<pre>".print_r($row1);
+					if($row['uom'] == $row1['value']){
+						//echo "<pre>".$row['uom'].":".$row['uom'].":".$row1['value'].":";
+						echo $pack_type = $row1['option_id'];
+					}
+					//echo "value_id-->".$row1['value_id'].'---'."option_id-->".$row1['value_id'].'---'."value-->".$row1['value']."<br>";
 				}
-				//echo "value_id-->".$row1['value_id'].'---'."option_id-->".$row1['value_id'].'---'."value-->".$row1['value']."<br>";
+				//exit;
+			$uomArray = array("kg"=>"0", "gm"=>"1", "ltr"=>"2", "ml"=>"3", "pads"=>"4", "no's"=>"5", "mtr"=>"6", "pcs"=>"7", "packs"=>"8", "slices"=>"9", "Ggb"=>"10", "Astd"=>"11", "mgm"=>"12", "bunch"=>"13", "watt"=>"14", "strips"=>"15", "sheets"=>"16", "pages"=>"17", "dozen"=>"18", "bottle"=>"19", "box"=>"20");
+			if (array_key_exists($row['uom_type'], $uomArray)) {
+			  	$uomType = $uomArray[$row['uom_type']];
 			}
+			//exit;
+			//print_r($row);exit;
 			$urlFormat = preg_replace("/[\s_]/", "-", strtolower($row['item']));
 			$url_key = $urlFormat.''.$row['id'];
 			// print_r($url_key);exit;
@@ -45,13 +58,13 @@ $page = (isset($_GET['page'])) ? (($_GET['page'] - 1) * $limit) : 10;
 			//echo "pack_type-->".$pack_type;
 				$product['product'] = array(
 					"sku" => "SKU".$row['article'],
-					"name" => ucwords($row['item']),
+					"name" => $row['item'],
 					"attribute_set_id" => 4,
 					"price" => $row['price'],
 					'status' => 1,
 					"visibility" => 4,
 					"type_id" => 'simple',
-					"weight" => (int) filter_var($row['size'], FILTER_SANITIZE_NUMBER_INT),
+					"weight" => $row['volume'],
 					"extension_attributes" => array(
 						"category_links" => array(
 							"position" => 0,
@@ -130,23 +143,33 @@ $page = (isset($_GET['page'])) ? (($_GET['page'] - 1) * $limit) : 10;
 						array(
 							"attribute_code" => "url_key",
 							"value" => $url_key
+						),
+						array(
+							"attribute_code" => "unitm",
+							"value" => $uomType
+						),
+						array(
+							"attribute_code" => "uom_label",
+							"value" => $row['uom_type']
 						)
 					)
 				);
-				print_r($product); echo "</br>";
+				//echo  "<pre>".print_r($product,true); echo "</br>"; exit;
 					echo "--".$row['article']."--";
+					$product_id = '';
 				 	echo $product_id = createProduct($product);
 				 	if(is_int($product_id)){
-				 		$query2 = "UPDATE ".$TableName." SET `local_data_uploaded`= '".$product_id."' WHERE `article` = '".$row['article']."'";
+				 		$query2 = "UPDATE ".$TableName." SET `qa_data_uploaded`= '".$product_id."' WHERE `article` = '".$row['article']."'";
 				 	}else{
-				 		$query2 = "UPDATE ".$TableName." SET `local_data_uploaded`= '".$product_id."' WHERE `article` = '".$row['article']."'";
+				 		$query2 = "UPDATE ".$TableName." SET `qa_uploaded_error`= '".$product_id."' WHERE `article` = '".$row['article']."'";
 				 	}
-				 	// print_r($query2);exit;
+				 	//print_r($query2);exit;
 					$result2 = $connection->query($query2);
-					echo "--".$result2."<br/>";
+					echo "--".$result2."\n"."<br/>";
 
 			}
 		}
+		exit;
 		//print_r($product_id.'---');
 		$product = json_encode($product, 1);
 		//echo "<pre>".print_r($product,true);
@@ -161,6 +184,8 @@ $page = (isset($_GET['page'])) ? (($_GET['page'] - 1) * $limit) : 10;
 	
 	function createProduct($productData=[]){
 		$baseUrl = 'http://127.0.0.1/kirana_store/';
+		// $baseUrl = 'http://13.233.85.241:84/';
+		//$baseUrl = 'file:///home/ubuntu/Dropbox/';
 		//print_r($productData['product']['sku']);exit;	
 
 		$newArtical = str_replace("SKU","",$productData['product']['sku']);
@@ -168,6 +193,7 @@ $page = (isset($_GET['page'])) ? (($_GET['page'] - 1) * $limit) : 10;
 	    //print_r($newArtical);exit;
 
 	    $log_directory = 'pub/media/Product_Images';
+	   // $log_directory = 'Product_Images';
 		$results_array = array();
 		if (is_dir($log_directory))
 		{
@@ -184,11 +210,11 @@ $page = (isset($_GET['page'])) ? (($_GET['page'] - 1) * $limit) : 10;
 		                        $results_array[] = $file;
 		                	}
 		                }
-		                	// print_r($results_array);
+		                	 //print_r($results_array);
 		                closedir($handle);
 		        }
 		}
-
+		// print_r($results_array);exit;
 		if(count($results_array)){
 
 			global $token;
@@ -196,7 +222,7 @@ $page = (isset($_GET['page'])) ? (($_GET['page'] - 1) * $limit) : 10;
 				if(!$token)
 				{	
 					$userData = array("username" => "sunil.n", "password" => "Admin@123");
-					$ch = curl_init("$baseUrl".''."rest/V1/integration/admin/token");
+					$ch = curl_init("http://13.233.85.241/rest/V1/integration/admin/token");
 					curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
 					curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($userData));
 					curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -205,7 +231,7 @@ $page = (isset($_GET['page'])) ? (($_GET['page'] - 1) * $limit) : 10;
 					$token = curl_exec($ch);
 				}
 				//echo $token; exit;
-				$ch = curl_init("$baseUrl".''."rest/V1/products");
+				$ch = curl_init("http://13.233.85.241/rest/V1/products");
 				curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
 				curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 				curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($productData));
@@ -235,6 +261,7 @@ $page = (isset($_GET['page'])) ? (($_GET['page'] - 1) * $limit) : 10;
 
 					$filePath = $baseUrl.''.$log_directory.'/'.$imageName;
 					$imagedata = file_get_contents("$filePath");
+					//print_r($imagedata);exit;
 		             // alternatively specify an URL, if PHP settings allow
 					$base64 = base64_encode($imagedata);
 					//print_r($base64);
@@ -259,15 +286,20 @@ $page = (isset($_GET['page'])) ? (($_GET['page'] - 1) * $limit) : 10;
 						)
 
 					);
+					// print_r($token);exit;
 					if(isset($result['id'])){
 
-						$ch = curl_init("$baseUrl".''."rest/V1/products/".$result['sku']."/media");
+						$ch = curl_init("http://13.233.85.241/rest/V1/products/".$result['sku']."/media");
+						// print_r($ch);exit;
+						// $ch = curl_init("http://127.0.0.1/kirana_store/".$result['sku']."/media");
 						curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
 						curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 						curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($productImage));
 						curl_setopt($ch, CURLOPT_HTTPHEADER, array("Content-Type: application/json", "Authorization: Bearer " . json_decode($token)));
 
 						$result1 = curl_exec($ch);
+						//echo "here";
+						//print_r($result1);exit;	
 						$result1 = json_decode($result1, 1);
 					}
 					//print_r($productImage);exit;

@@ -8,6 +8,7 @@ return [
         'Magento_Theme' => 1,
         'Asm_AdvanceSearch' => 1,
         'Asm_Cart' => 0,
+        'Asm_Customapi' => 1,
         'Asm_Geolocation' => 1,
         'Asm_Search' => 1,
         'Magento_Backend' => 1,
@@ -139,6 +140,7 @@ return [
         'Mageplaza_Core' => 1,
         'Mageplaza_Smtp' => 1,
         'Ranosys_CancelOrder' => 1,
+        'Retailinsights_Cartrules' => 1,
         'TEXT_Smsnotifications' => 1,
         'Temando_Shipping' => 1,
         'Vertex_Tax' => 1

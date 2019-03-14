@@ -1,0 +1,53 @@
+<?xml version="1.0"?>
+
+<!--
+
+/**
+
+ * Copyright © 2018-2019 Hopescode, Inc. All rights reserved.
+
+ * See COPYING.txt for license details.
+
+ */
+
+-->
+
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+
+xsi:noNamespaceSchemaLocation="urn:magento:framework:Event/etc/events.xsd">
+
+    <event name="product">
+
+        <observer name="hopescode_mobileshop_sales_quote_load_after" 
+
+        instance="Retailinsights\Cartrules\Observer\ProductInterface" />
+
+    </event>
+
+
+
+     <event name="order">
+
+        <observer name="order_load" 
+
+        instance="Retailinsights\Cartrules\Observer\OrderRepositoryPlugin" />
+
+    </event>
+
+
+
+    <event name="load_after">
+
+        <observer name="sales_quote_load_after" 
+
+        instance="Retailinsights\Cartrules\Observer\OrderRepositoryImage" />
+
+    </event>
+
+    <event name="controller_action_catalog_product_save_entity_after">
+        <observer name="uom_product_save" instance="Retailinsights\Cartrules\Observer\UpdateUom" /> 
+    </event>
+
+
+
+</config>
