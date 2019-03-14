@@ -5,7 +5,14 @@
 	<attribute code="seller_name" type="string" />
 	<attribute code="product_id" type="string" />
 	<attribute code="image_url" type="string" />
-    <attribute code="seller_id" type="string" >
+    <attribute code="doorstep_price" type="string" />
+	<attribute code="pickup_from_store" type="string" />
+	<attribute code="pickup_from_nearby_store" type="string" />
+	<attribute code="price_type" type="string" />
+	<attribute code="seller_id" type="string" >
+
+
+	
     
 
     	<resources>

@@ -5,10 +5,18 @@ xsi:noNamespaceSchemaLocation="urn:magento:framework:Api/etc/extension_attribute
 <extension_attributes for="Magento\Quote\Api\Data\CartItemInterface">
         <attribute code="unitm" type="string" />
     </extension_attributes>
+    <extension_attributes for="Magento\Quote\Api\Data\CartInterface">
+        <attribute code="ds_count" type="string" />
+        <attribute code="sp_count" type="string" />
+        <attribute code="ds_subtotal" type="string" />
+        <attribute code="sp_subtotal" type="string" />
+    </extension_attributes>
      
      <extension_attributes for="Magento\Sales\Api\Data\OrderItemInterface">
         <attribute code="image_url" type="string" />
         <attribute code="unitm" type="string" />
+        <attribute code="price_type" type="string" />
+        <attribute code="chosen_price" type="string" />
     </extension_attributes>
 
     

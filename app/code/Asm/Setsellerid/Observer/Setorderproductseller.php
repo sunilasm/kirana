@@ -77,10 +77,10 @@ class Setorderproductseller implements \Magento\Framework\Event\ObserverInterfac
         $quote = $observer->getQuote();
         $order = $observer->getOrder();
 
-        $writer = new \Zend\Log\Writer\Stream(BP . '/var/log/templognew.log');
-        $logger = new \Zend\Log\Logger();
-        $logger->addWriter($writer);
-        $logger->info("Setproductsellerrrrrrrrrrr xxxxxx");
+        // $writer = new \Zend\Log\Writer\Stream(BP . '/var/log/templognew.log');
+        // $logger = new \Zend\Log\Logger();
+        // $logger->addWriter($writer);
+        // $logger->info("Setproductsellerrrrrrrrrrr xxxxxx");
 
         $quoteItems = [];
         // Map Quote Item with Quote Item Id

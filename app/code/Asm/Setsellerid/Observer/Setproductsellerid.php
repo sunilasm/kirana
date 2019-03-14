@@ -82,20 +82,20 @@ class Setproductsellerid implements \Magento\Framework\Event\ObserverInterface
         $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
         $request = $objectManager->get('\Magento\Framework\Webapi\Rest\Request');
         $seller_id = array();
+        $price_type = array();
         if($request->getBodyParams())
         {
             $post = $request->getBodyParams();
-            // $logger->info('In observer');
-            // $logger->info(print_r($post), true);
-            // $logger->info(print_r($post,true));
-            // $logger->info("product_id-->");
-            // $logger->info($post['product_id']);
-            // $logger->info("seller_id-->>");
-            // $logger->info($post['seller_id']);
-
+          
             if(isset($post['product_id'])){
                 $seller_id["product_id"] = $post['product_id'];
                 $seller_id["seller_id"] = $post['seller_id'];
+                $seller_id["price_type"] = $post['price_type'];
+                $writer = new \Zend\Log\Writer\Stream(BP . '/var/log/quoteSaveAfter.log');
+                $logger = new \Zend\Log\Logger();
+                $logger->addWriter($writer);
+                
+
                 $quote = $observer->getQuote();
                 $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
                 $customerSession = $objectManager->create('Magento\Customer\Model\Session');
@@ -105,16 +105,20 @@ class Setproductsellerid implements \Magento\Framework\Event\ObserverInterface
                             // $logger->info("quoteItem");
                             // $logger->info($quoteItem->getProductId());
                             $quoteItem->setSellerId($seller_id["seller_id"]);
+                            $quoteItem->setPriceType($seller_id["price_type"]);
+                            $quoteItem->save();
                             $itemExtAttr = $quoteItem->getExtensionAttributes();
                             if ($itemExtAttr === null) {
                                 $itemExtAttr = $this->extensionFactory->create();
                             }
                             
                             $itemExtAttr->setSellerId($seller_id["seller_id"]);
+                            $itemExtAttr->setPriceType($seller_id["price_type"]);
                             $quoteItem->setExtensionAttributes($itemExtAttr);
                         }
                     }
                 }
+                $quote->save();
             }
         }
         return $this;
