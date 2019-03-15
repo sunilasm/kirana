@@ -6,7 +6,7 @@
     <type name="Magento\Quote\Model\Quote\Item\Repository">
         <plugin sortOrder="1" name="myModuleRepository" type="Asm\Setsellerid\Plugin\RepositoryPlugin"/>
     </type>
-      <type name="Magento\Quote\Model\Cart\Totals\ItemConverter">
+      <type name="Magento\Quote\Api\CartTotalRepositoryInterface">
         <plugin name="points-item" type="Asm\Setsellerid\Plugin\Item" sortOrder="10"/>
     </type>
 </config>

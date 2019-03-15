@@ -23,6 +23,9 @@ xsi:noNamespaceSchemaLocation="urn:magento:framework:Api/etc/extension_attribute
 </extension_attributes>
 
 <extension_attributes for="Magento\Quote\Api\Data\TotalsItemInterface">
-		   <attribute code="mine" type="string" />
+		   <attribute code="extn_row_total" type="string" />
+    </extension_attributes>
+	<extension_attributes for="Magento\Quote\Api\Data\TotalsInterface">
+		   <attribute code="extn_grand_total" type="string" />
     </extension_attributes>
 </config>
