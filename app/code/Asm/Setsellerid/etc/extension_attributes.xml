@@ -23,7 +23,6 @@ xsi:noNamespaceSchemaLocation="urn:magento:framework:Api/etc/extension_attribute
 </extension_attributes>
 
 <extension_attributes for="Magento\Quote\Api\Data\TotalsItemInterface">
-        <attribute code="reward_points" type="string" />
 		   <attribute code="mine" type="string" />
     </extension_attributes>
 </config>
