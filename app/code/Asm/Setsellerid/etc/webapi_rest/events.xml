@@ -6,4 +6,8 @@
 	<event name="sales_quote_load_after">
         <observer name="asm_setsellerid_sales_quote_load_after" instance="Asm\Setsellerid\Observer\ProductInterface" />
     </event>
+
+    <event name="checkout_submit_all_after">
+        <observer name="asm_setsellerid_checkout_submit_all_after" instance="Asm\Setsellerid\Observer\Setorderproductseller" />
+    </event>
 </config>
