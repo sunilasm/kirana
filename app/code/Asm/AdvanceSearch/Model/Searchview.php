@@ -65,15 +65,7 @@ class Searchview implements SearchInterface
             $quoteItemIndexArray[$i] = $item->getItemid();
             $i++;
 
-            
-       //     $priceType = $item->getPriceType();
-       
-
-
-
         endforeach;
-        //print_r($quoteItemSellerArray); exit;
-        //print_r($quoteItemIndexArray); exit;
         $data = array();
         $flag = 0;
         if($searchtermpara){ $searchterm = 0; }else{ $searchterm = 1; }
