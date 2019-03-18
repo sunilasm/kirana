@@ -9,7 +9,7 @@ $TableName = 'grocery_pharma_review_sheet';
 $TableAttributeOptionName = 'mgeav_attribute_option_value';
 $token = '';
 $finalresult = '';
-$limit = (isset($_GET['limit'])) ? $_GET['limit'] : 10000;
+$limit = (isset($_GET['limit'])) ? $_GET['limit'] : 1;
 $page = (isset($_GET['page'])) ? (($_GET['page'] - 1) * $limit) : 1;
 
 	try{
@@ -21,7 +21,7 @@ $page = (isset($_GET['page'])) ? (($_GET['page'] - 1) * $limit) : 1;
 		
 		// $query = "SELECT * FROM ".$TableName." WHERE `uom_type` LIKE '%kg%' AND `qa_data_uploaded` = 0 ORDER by ID ASC LIMIT ".$page.",".$limit;
 		$query = "SELECT * FROM ".$TableName." WHERE `qa_data_uploaded` = 0 ORDER by ID ASC LIMIT ".$page.",".$limit;
-		// print_r($query);exit;
+		 // print_r($query);exit;
 		// $query = "SELECT * FROM ".$TableName." ORDER by ID ASC LIMIT ".$page.",".$limit;
 		//print_r($query);exit;
 		$result = $connection->query($query);
@@ -64,7 +64,7 @@ $page = (isset($_GET['page'])) ? (($_GET['page'] - 1) * $limit) : 1;
 					'status' => 1,
 					"visibility" => 4,
 					"type_id" => 'simple',
-					"weight" => $row['volume'],
+					"weight" => 1,
 					"extension_attributes" => array(
 						"category_links" => array(
 							"position" => 0,
@@ -151,6 +151,14 @@ $page = (isset($_GET['page'])) ? (($_GET['page'] - 1) * $limit) : 1;
 						array(
 							"attribute_code" => "uom_label",
 							"value" => $row['uom_type']
+						),
+						array(
+							"attribute_code" => "volume",
+							"value" => $row['volume']
+						),
+						array(
+							"attribute_code" => "price_type",
+							"value" => 1
 						)
 					)
 				);
@@ -222,7 +230,7 @@ $page = (isset($_GET['page'])) ? (($_GET['page'] - 1) * $limit) : 1;
 				if(!$token)
 				{	
 					$userData = array("username" => "sunil.n", "password" => "Admin@123");
-					$ch = curl_init("http://13.233.85.241/rest/V1/integration/admin/token");
+					$ch = curl_init("http://127.0.0.1/kirana_store/rest/V1/integration/admin/token");
 					curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
 					curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($userData));
 					curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -231,7 +239,7 @@ $page = (isset($_GET['page'])) ? (($_GET['page'] - 1) * $limit) : 1;
 					$token = curl_exec($ch);
 				}
 				//echo $token; exit;
-				$ch = curl_init("http://13.233.85.241/rest/V1/products");
+				$ch = curl_init("http://127.0.0.1/kirana_store/rest/V1/products");
 				curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
 				curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 				curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($productData));
@@ -289,7 +297,7 @@ $page = (isset($_GET['page'])) ? (($_GET['page'] - 1) * $limit) : 1;
 					// print_r($token);exit;
 					if(isset($result['id'])){
 
-						$ch = curl_init("http://13.233.85.241/rest/V1/products/".$result['sku']."/media");
+						$ch = curl_init("http://127.0.0.1/kirana_store/rest/V1/products/".$result['sku']."/media");
 						// print_r($ch);exit;
 						// $ch = curl_init("http://127.0.0.1/kirana_store/".$result['sku']."/media");
 						curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
