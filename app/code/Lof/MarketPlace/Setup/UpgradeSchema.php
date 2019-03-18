@@ -721,6 +721,44 @@ class UpgradeSchema implements UpgradeSchemaInterface
                 ]
             );
         }
+
+
+//Upgraded columns retail
+        if (version_compare($context->getVersion(), '1.1.0') < 0)  {
+            $installer->getConnection()->addColumn(
+                $installer->getTable('lof_marketplace_product'),
+                'doorstep_price',
+                [
+                    'type' => \Magento\Framework\DB\Ddl\Table::TYPE_DECIMAL,
+                    'length' => 10,
+                    'nullable' => true,
+                    'comment' => 'doorstep_price'
+                ]
+            );
+            $installer->getConnection()->addColumn(
+                $installer->getTable('lof_marketplace_product'),
+                'pickup_from_store',
+                [
+                    'type' => \Magento\Framework\DB\Ddl\Table::TYPE_DECIMAL,
+                    'length' => 10,
+                    'nullable' => true,
+                    'comment' => 'pickup_from_store'
+                ]
+            );
+            $installer->getConnection()->addColumn(
+                $installer->getTable('lof_marketplace_product'),
+                'pickup_from_nearby_store',
+                [
+                    'type' => \Magento\Framework\DB\Ddl\Table::TYPE_DECIMAL,
+                    'length' => 10,
+                    'nullable' => true,
+                    'comment' => 'pickup_from_nearby_store'
+                ]
+            );
+            
+        }
+
+
          $installer->endSetup();  
     }
 }

@@ -1,11 +1,19 @@
 <?xml version="1.0"?>
-<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Api/etc/extension_attributes.xsd">
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+xsi:noNamespaceSchemaLocation="urn:magento:framework:Api/etc/extension_attributes.xsd">
 <extension_attributes for="Magento\Quote\Api\Data\CartItemInterface">
 	<attribute code="image" type="string" />
 	<attribute code="seller_name" type="string" />
 	<attribute code="product_id" type="string" />
 	<attribute code="image_url" type="string" />
-    <attribute code="seller_id" type="string" >
+    <attribute code="doorstep_price" type="string" />
+	<attribute code="pickup_from_store" type="string" />
+	<attribute code="pickup_from_nearby_store" type="string" />
+	<attribute code="price_type" type="string" />
+	<attribute code="seller_id" type="string" >
+
+
+	
     
 
     	<resources>
@@ -13,4 +21,11 @@
         </resources>
     </attribute>
 </extension_attributes>
+
+<extension_attributes for="Magento\Quote\Api\Data\TotalsItemInterface">
+		   <attribute code="extn_row_total" type="string" />
+    </extension_attributes>
+	<extension_attributes for="Magento\Quote\Api\Data\TotalsInterface">
+		   <attribute code="extn_grand_total" type="string" />
+    </extension_attributes>
 </config>
