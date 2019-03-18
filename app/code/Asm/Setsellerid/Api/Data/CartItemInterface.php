@@ -34,4 +34,6 @@ interface CartItemInterface
     public function setSellerId($seller_id);
     public function getImageUrl();
     public function setImageUrl($imageUrl);
+    public function getVolume();
+    public function setVolume($volume);
 }

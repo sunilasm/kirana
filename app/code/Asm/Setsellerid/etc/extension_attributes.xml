@@ -9,12 +9,8 @@
 	<attribute code="pickup_from_store" type="string" />
 	<attribute code="pickup_from_nearby_store" type="string" />
 	<attribute code="price_type" type="string" />
+	<attribute code="volume" type="string" />
 	<attribute code="seller_id" type="string" >
-
-
-	
-    
-
     	<resources>
                 <resource  ref="anonymous"/>
         </resources>
