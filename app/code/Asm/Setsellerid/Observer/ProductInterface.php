@@ -147,8 +147,9 @@ use Magento\Framework\Event\ObserverInterface;
                 $itemExtAttr->setPriceType($quoteItem['price_type']);
                 $itemExtAttr->setPickupFromNearbyStore($PickupFromNearbyStore);
                 
-                $itemExtAttr->setVolume($quoteItem['volume']);
-                // print_r($quoteItem['volume']);exit;
+                // print_r($product->getVolume());exit;
+                $volume = $product->getVolume();
+                $itemExtAttr->setVolume($volume);
                 $itemExtAttr->setImageUrl($imageurl);
                 $quoteItem->setExtensionAttributes($itemExtAttr);
                 if($quoteItem['price_type'] == 0){
