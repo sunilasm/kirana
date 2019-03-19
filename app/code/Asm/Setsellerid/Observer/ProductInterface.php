@@ -94,8 +94,8 @@ use Magento\Framework\Event\ObserverInterface;
             $doorStepPrice=0;
             $pickupFrmStorePrice=0;
 
-            $doorStepPId = array();
-            $pickupFrmStorePId = array();
+            $doorStepPId = 0;
+            $pickupFrmStorePId = 0;
        
             $quote = $observer->getQuote();
             
@@ -121,12 +121,12 @@ use Magento\Framework\Event\ObserverInterface;
                         }
                 }
        if($quoteItem->getPriceType() == 0){
-                    $doorStepPId[] = $quoteItem->getProductId();
+                    $doorStepPId += $quoteItem->getQty();
                     $dsPrice = $door * $quoteItem->getQty();
                      $doorStepPrice += $dsPrice;
     
                   } else if($quoteItem->getPriceType() == 1) {
-                    $pickupFrmStorePId[] = $quoteItem->getProductId();
+                    $pickupFrmStorePId += $quoteItem->getQty();
                     $spPrice = $PickupFromStore * $quoteItem->getQty();
                     $pickupFrmStorePrice += $spPrice;
 
@@ -173,9 +173,9 @@ use Magento\Framework\Event\ObserverInterface;
             if ($itemExtAttrquote === null) {
                     $itemExtAttrquote = $this->cartExtFactory->create();
                 } 
-                $itemExtAttrquote->setDsCount(count($doorStepPId));
+                $itemExtAttrquote->setDsCount($doorStepPId);
             $itemExtAttrquote->setDsSubtotal($doorStepPrice);
-            $itemExtAttrquote->setSpCount(count($pickupFrmStorePId));
+            $itemExtAttrquote->setSpCount($pickupFrmStorePId);
             $itemExtAttrquote->setSpSubtotal($pickupFrmStorePrice);
                 $quote->setExtensionAttributes($itemExtAttrquote);
                 
