@@ -85,6 +85,7 @@ class OrderRepository
                         }
                   } 
               $uom = $product->getUnitm();
+              $volume = $product->getVolume();
                $weight = round($product->getWeight(), 0);
                 $optionId = $product->getUnitm();
                 $attribute = $product->getResource()->getAttribute('unitm');
@@ -101,6 +102,7 @@ class OrderRepository
             $extensionAttributes->setImageUrl($imageurl);
             $extensionAttributes->setPriceType($priceType);
             $extensionAttributes->setChosenPrice($chosenprice);
+            $extensionAttributes->setVolume($volume);
             $items->setExtensionAttributes($extensionAttributes);
 
             
