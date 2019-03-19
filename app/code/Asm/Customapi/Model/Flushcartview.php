@@ -55,6 +55,8 @@ class Flushcartview implements FlushcartInterface
         // print_r($address->getData());exit;
         $productCollectionArray = array();
         $kiranaArray = array();
+        $result = array();
+        $flag = 0;
         if($latitude && $longitude){
             $ranageSeller = $this->searchRange->getInRangeSeller($latitude, $longitude);
             // print_r($ranageSeller);exit;
@@ -68,12 +70,21 @@ class Flushcartview implements FlushcartInterface
                   $itemId = $item->getItemId();
                   $quoteItem = $itemModel->load($itemId);
                   $quoteItem->delete();
+                  $flag = 1;
                 }
             }
+            if($flag){
+              $result = array("status" => "Success","message" => "Items are successfully removed from cart.");
+            }else{
+              $result = array("status" => "Success","message" => "Cart does not have any items out of current geolocation.");
+            }
+        }else{
+          $result = array("status" => "Error","message" => "Address geolocation details are not found.");
         }
-       $data = array('status'=>'Success','message' => "Items are successfully removed from cart.");
-        //print_r($data);exit;
+       $data = array($result);
+        // print_r(json_encode($data));exit;
        return $data;
     }
 
 }
+
