@@ -89,14 +89,15 @@ use Magento\Framework\Event\ObserverInterface;
 
         public function execute(\Magento\Framework\Event\Observer $observer, string $imageType = NULL)
             {
-        $writer = new \Zend\Log\Writer\Stream(BP . '/var/log/quoteLoadAfter.log');
-        $logger = new \Zend\Log\Logger();
-        $logger->addWriter($writer);
 
+
+            $doorStepPrice=0;
+            $pickupFrmStorePrice=0;
+
+            $doorStepPId = array();
+            $pickupFrmStorePId = array();
        
             $quote = $observer->getQuote();
-            $doorStep = array();
-            $pickupFrmStore = array();
             
             $subTotal = 0;
             
@@ -112,15 +113,25 @@ use Magento\Framework\Event\ObserverInterface;
                 if(!empty($idInfo)){
                         foreach($idInfo as $info){
                             $id = $info['entity_id'];
+                             $data = $this->sellerProduct->create()->load($id);
+                    $door = $data->getDoorstepPrice();
+                    $PickupFromStore= $data->getPickupFromStore();
+                    $PickupFromNearbyStore= $data->getPickupFromNearbyStore();
 
                         }
-                        
-                $data = $this->sellerProduct->create()->load($id);
+                }
+       if($quoteItem->getPriceType() == 0){
+                    $doorStepPId[] = $quoteItem->getProductId();
+                    $dsPrice = $door * $quoteItem->getQty();
+                     $doorStepPrice += $dsPrice;
+    
+                  } else if($quoteItem->getPriceType() == 1) {
+                    $pickupFrmStorePId[] = $quoteItem->getProductId();
+                    $spPrice = $PickupFromStore * $quoteItem->getQty();
+                    $pickupFrmStorePrice += $spPrice;
 
-                $door = $data->getDoorstepPrice();
-                $PickupFromStore= $data->getPickupFromStore();
-                $PickupFromNearbyStore= $data->getPickupFromNearbyStore();
-            }
+                  }
+
 
                 $uom = $product->getUnitm();
                 $optionId = $product->getUnitm();
@@ -150,14 +161,7 @@ use Magento\Framework\Event\ObserverInterface;
 
                 $itemExtAttr->setImageUrl($imageurl);
                 $quoteItem->setExtensionAttributes($itemExtAttr);
-                if($quoteItem['price_type'] == 0){
-                    $doorStep['prod_id'][] = $quoteItem->getProductId();
-                    $doorStep['price'][] = $door;
-                } else {
-                    $pickupFrmStore['prod_id'][] = $quoteItem->getProductId();
-                    $pickupFrmStore['price'][] = $PickupFromStore;
-
-                }
+    
                 }
                 
 
@@ -169,14 +173,10 @@ use Magento\Framework\Event\ObserverInterface;
             if ($itemExtAttrquote === null) {
                     $itemExtAttrquote = $this->cartExtFactory->create();
                 } 
-                if(!empty($doorStep)){
-                    $itemExtAttrquote->setDsCount(count($doorStep['prod_id']));
-                    $itemExtAttrquote->setDsSubtotal(array_sum($doorStep['price']));
-                }
-                if(!empty($pickupFrmStore)){
-                $itemExtAttrquote->setSpCount(count($pickupFrmStore['prod_id']));
-                $itemExtAttrquote->setSpSubtotal(array_sum($pickupFrmStore['price']));
-                }
+                $itemExtAttrquote->setDsCount(count($doorStepPId));
+            $itemExtAttrquote->setDsSubtotal($doorStepPrice);
+            $itemExtAttrquote->setSpCount(count($pickupFrmStorePId));
+            $itemExtAttrquote->setSpSubtotal($pickupFrmStorePrice);
                 $quote->setExtensionAttributes($itemExtAttrquote);
                 
 
