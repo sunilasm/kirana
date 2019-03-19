@@ -68,12 +68,11 @@ class Outofrangeview implements OutofrangeInterface
                 array_push($kiranaArray,$item->getSellerId());
             }
         }
-        $summry = array("product_count" => count($productCollectionArray),"kirana_count" => count(array_unique($kiranaArray)));
-      //$summry->product_count = count($productCollectionArray);
-      //$summry->kirana_count = count($kiranaArray);
+        //$summry = array("product_count" => count($productCollectionArray),"kirana_count" => count(array_unique($kiranaArray)));
         $dataNew = array("product_count" => count($productCollectionArray),"kirana_count" => count(array_unique($kiranaArray)),"products" => $productCollectionArray);
         $data = array($dataNew);
         return $data;
     }
 
 }
+
