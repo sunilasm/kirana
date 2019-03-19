@@ -1,23 +1,32 @@
 <?php
 
 namespace Asm\Setsellerid\Plugin;
+use Lof\MarketPlace\Model\SellerProductFactory as SellerProduct;
 
 class Item
 {
 
+        /**
+         * @var SellerProduct
+         */
+        protected $sellerProduct;
+
     /**
      * @param \Magento\Authorization\Model\UserContextInterface $userContext
      * @param \Hexcrypto\WishlistAPI\Helper\Data $wishlistHelper
+      * @param SellerProduct $sellerProduct
      */
             private $quoteItemFactory;
 
     public function __construct(
+         SellerProduct $sellerProduct,
         \Magento\Quote\Model\Quote\ItemFactory $itemFactory,
         \Magento\Quote\Api\Data\TotalsItemExtensionFactory $totalItemExtensionFactory,
          \Magento\Quote\Api\Data\TotalsExtensionFactory $totalExtensionFactory,
         \Magento\Quote\Model\Quote\ItemFactory $quoteItemFactory
     
     ) {
+        $this->sellerProduct = $sellerProduct;
         $this->itemFactory = $itemFactory;
         $this->totalItemExtension = $totalItemExtensionFactory;
          $this->totalExtension = $totalExtensionFactory;
@@ -39,22 +48,57 @@ class Item
         \Magento\Quote\Api\Data\TotalsInterface $totals
     ) {
         $grandTotal=0;
+        $doorStepPrice=0;
+        $pickupFrmStorePrice=0;
 
+        $doorStepPId = array();
+        $pickupFrmStorePId = array();
         foreach($totals->getItems() as $item)
         {
 
             $quoteItem = $this->itemFactory->create()->load($item->getItemId());
-            $writer = new \Zend\Log\Writer\Stream(BP . '/var/log/itemsss.log'); 
+            $writer = new \Zend\Log\Writer\Stream(BP . '/var/log/item2.log'); 
             $logger = new \Zend\Log\Logger(); 
             $logger->addWriter($writer);
-            $item->getQty(); 
+          
             
-            $quoteItem->getPriceType();
-            $quoteItem->getSellerId();
-             $logger->info($quoteItem->getPriceType());
-            $logger->info($item->getQty());
-            $logger->info($quoteItem->getSellerId());
-             $logger->info($quoteItem->getPrice());
+
+            $SellerProd = $this->sellerProduct->create()->getCollection();
+            $fltColl = $SellerProd->addFieldToFilter('seller_id', $quoteItem['seller_id'])
+                        ->addFieldToFilter('product_id', $quoteItem->getProductId());
+            $idInfo = $fltColl->getData();
+           // $logger->info($fltColl->getData());
+            //$logger->info($quoteItem['seller_id']);
+           
+            if(!empty($idInfo)){
+                        foreach($idInfo as $info){
+                            $id = $info['entity_id'];
+
+                        }
+
+                    $data = $this->sellerProduct->create()->load($id);
+                    $door = $data->getDoorstepPrice();
+                    $PickupFromStore= $data->getPickupFromStore();
+                    $PickupFromNearbyStore= $data->getPickupFromNearbyStore();
+                }
+         $logger->info('PId ' . $quoteItem->getProductId()); 
+         $logger->info('PickupFromNearbyStore ' . $PickupFromNearbyStore); 
+         $logger->info('PickupFromStore ' .$PickupFromStore);      
+         $logger->info('door' .$door);
+         $logger->info('pt ' .$quoteItem->getPriceType());
+         $logger->info('qty '.$quoteItem->getQty());
+
+                if($quoteItem->getPriceType() == 0){
+                    $doorStepPId[] = $quoteItem->getProductId();
+                    $dsPrice = $door * $quoteItem->getQty();
+                     $doorStepPrice += $dsPrice;
+    
+                  } else if($quoteItem->getPriceType() == 1) {
+                    $pickupFrmStorePId[] = $quoteItem->getProductId();
+                    $spPrice = $PickupFromStore * $quoteItem->getQty();
+                    $pickupFrmStorePrice += $spPrice;
+
+                  } 
 
              $rowTotal = $item->getQty() * $quoteItem->getPrice();
 
@@ -69,13 +113,15 @@ class Item
 
         }
 
-
-
           $extensionAttributes = $totals->getExtensionAttributes();
             if ($extensionAttributes === null) {
                 $extensionAttributes = $this->totalExtension->create();
             }
-            $data = 20;
+         
+            $extensionAttributes->setDsCount(count($doorStepPId));
+            $extensionAttributes->setDsSubtotal($doorStepPrice);
+            $extensionAttributes->setSpCount(count($pickupFrmStorePId));
+            $extensionAttributes->setSpSubtotal($pickupFrmStorePrice);
             $extensionAttributes->setExtnGrandTotal($grandTotal);
             $totals->setExtensionAttributes($extensionAttributes);
 
