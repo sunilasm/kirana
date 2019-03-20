@@ -53,7 +53,7 @@ class OrderRepository
     }
     public function afterGetList(OrderRepositoryInterface $subject, OrderSearchResultInterface $searchResult)
     {
-   
+       
         $orders = $searchResult->getItems();
         foreach ($orders as &$order) {
                 $addAtt = array();
@@ -61,9 +61,11 @@ class OrderRepository
                 $addImage = array();
                 $infoImage = array(); 
                 $orderItems = $order->getItems();
+                $grandTotal = 0;
             
             foreach($orderItems as $items){
             $priceType = $items->getPriceType();
+            $qty = $items->getQty();
             $product = $this->_productRepository->getById($items->getProductId());
             $SellerProd = $this->sellerProduct->create()->getCollection();
              $fltColl = $SellerProd->addFieldToFilter('seller_id', $items->getSellerId())
@@ -76,7 +78,10 @@ class OrderRepository
                             $id = $info['entity_id'];
                         }
                          $data = $this->sellerProduct->create()->load($id);
-                        if($priceType == '0'){
+                        
+ 
+                         if($priceType == '0'){
+                            
                           $chosenprice = $data->getDoorstepPrice();
                         } else if ($priceType == '1'){
                           $chosenprice  = $data->getPickupFromStore();
@@ -92,6 +97,7 @@ class OrderRepository
                     $optionText = $attribute->getSource()->getOptionText($optionId);
                 }
              $sku = $items->getSku();
+             $rowTotal = $qty* $chosenprice;
              $imageurl =$this->productImageHelper->create()->init($product, 'product_thumbnail_image')->setImageFile($product->getThumbnail())->getUrl();
              $addAtt[$sku] = $weight." ".$optionText;
              $addImage[$sku] = $imageurl;
@@ -100,12 +106,19 @@ class OrderRepository
             $extensionAttributes->setUnitm($optionText);
             $extensionAttributes->setImageUrl($imageurl);
             $extensionAttributes->setPriceType($priceType);
+            $extensionAttributes->setExtnRowTotal($rowTotal);
             $extensionAttributes->setChosenPrice($chosenprice);
             $items->setExtensionAttributes($extensionAttributes);
 
-            
+            $grandTotal += $rowTotal;
              
             }
+            $orderextensionAttributes = $order->getExtensionAttributes();
+            $orderextensionAttributes = $orderextensionAttributes ? $orderextensionAttributes : $this->extensionFactory->create();
+            $orderextensionAttributes->setExtnGrandTotal($grandTotal);
+            $order->setExtensionAttributes($orderextensionAttributes);
+
+
             $info[] = $addAtt; 
             $infoImage[] = $addImage;
             
