@@ -53,6 +53,7 @@ class OrderRepository
     }
     public function afterGetList(OrderRepositoryInterface $subject, OrderSearchResultInterface $searchResult)
     {
+        $writer = new \Zend\Log\Writer\Stream(BP . '/var/log/test.log'); $logger = new \Zend\Log\Logger(); $logger->addWriter($writer);
        
         $orders = $searchResult->getItems();
         foreach ($orders as &$order) {
@@ -72,7 +73,7 @@ class OrderRepository
                         ->addFieldToFilter('product_id', $items->getProductId());
                         $idInfo = $fltColl->getData();
                
-                $chosenprice = "";        
+                $chosenprice = 0;        
                 if(!empty($idInfo)){
                         foreach($idInfo as $info){
                             $id = $info['entity_id'];
@@ -97,7 +98,12 @@ class OrderRepository
                     $optionText = $attribute->getSource()->getOptionText($optionId);
                 }
              $sku = $items->getSku();
-             $rowTotal = $qty* $chosenprice;
+             $rowTotal = $qty * $chosenprice;
+            
+            
+             $logger->info($qty);
+             $logger->info($chosenprice);
+             $logger->info('Your text message');
              $imageurl =$this->productImageHelper->create()->init($product, 'product_thumbnail_image')->setImageFile($product->getThumbnail())->getUrl();
              $addAtt[$sku] = $weight." ".$optionText;
              $addImage[$sku] = $imageurl;
@@ -106,7 +112,7 @@ class OrderRepository
             $extensionAttributes->setUnitm($optionText);
             $extensionAttributes->setImageUrl($imageurl);
             $extensionAttributes->setPriceType($priceType);
-            $extensionAttributes->setExtnRowTotal($rowTotal);
+            $extensionAttributes->setExtnRowTotal(100);
             $extensionAttributes->setChosenPrice($chosenprice);
             $items->setExtensionAttributes($extensionAttributes);
 
