@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../Magento/Backend/etc/menu.xsd">
+    <menu>
+        <!-- <add id="Asm_Kiranaproducts::parent" title="Kiranaproducts" module="Asm_Kiranaproducts" sortOrder="100" resource="Asm_Kiranaproducts::parent"/> -->
+		<add id="Asm_Kiranaproducts::kiranaproducts" title="Export Kirana Products" module="Asm_Kiranaproducts" sortOrder="100" parent="Lof_MarketPlace::catalog" action="kiranaproducts/kiranaproducts" resource="Lof_MarketPlace::catalog"/>
+
+    </menu>
+</config>
