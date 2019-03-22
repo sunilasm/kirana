@@ -3,10 +3,10 @@ namespace Asm\Setsellerid\Plugin;
 use Lof\MarketPlace\Model\SellerProductFactory as SellerProduct;
 class Item
 {
-        /**
-         * @var SellerProduct
-         */
-        protected $sellerProduct;
+    /**
+     * @var SellerProduct
+     */
+    protected $sellerProduct;
     /**
      * @param \Magento\Authorization\Model\UserContextInterface $userContext
      * @param \Hexcrypto\WishlistAPI\Helper\Data $wishlistHelper

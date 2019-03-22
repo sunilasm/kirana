@@ -23,6 +23,4 @@ xsi:noNamespaceSchemaLocation="urn:magento:framework:Api/etc/extension_attribute
         <attribute code="extn_grand_total" type="string" />
     </extension_attributes>
 
-    
-
 </config>
