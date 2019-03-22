@@ -90,7 +90,6 @@ use Magento\Framework\Event\ObserverInterface;
         public function execute(\Magento\Framework\Event\Observer $observer, string $imageType = NULL)
             {
 
-
             $doorStepPrice=0;
             $pickupFrmStorePrice=0;
 
@@ -102,7 +101,6 @@ use Magento\Framework\Event\ObserverInterface;
             $subTotal = 0;
             
             foreach ($quote->getAllItems() as $quoteItem) {
-
                
                 $product = $this->productRepository->create()->getById($quoteItem->getProductId());
 
@@ -120,17 +118,17 @@ use Magento\Framework\Event\ObserverInterface;
 
                         }
                 }
-       if($quoteItem->getPriceType() == 0){
+                if($quoteItem->getPriceType() == 0){
                     $doorStepPId += $quoteItem->getQty();
                     $dsPrice = $door * $quoteItem->getQty();
                      $doorStepPrice += $dsPrice;
     
-                  } else if($quoteItem->getPriceType() == 1) {
+                } else if($quoteItem->getPriceType() == 1) {
                     $pickupFrmStorePId += $quoteItem->getQty();
                     $spPrice = $PickupFromStore * $quoteItem->getQty();
                     $pickupFrmStorePrice += $spPrice;
 
-                  }
+                }
 
 
                 $uom = $product->getUnitm();
@@ -147,8 +145,6 @@ use Magento\Framework\Event\ObserverInterface;
                     $itemExtAttr = $this->extensionFactory->create();
                 } 
                 
-
-
                 $imageurl =$this->productImageHelper->create()->init($product, 'product_thumbnail_image')->setImageFile($product->getThumbnail())->getUrl();
 
                 $itemExtAttr->setUnitm($optionText);
@@ -158,17 +154,12 @@ use Magento\Framework\Event\ObserverInterface;
                 $itemExtAttr->setPriceType($quoteItem['price_type']);
                 $itemExtAttr->setPickupFromNearbyStore($PickupFromNearbyStore);
                 
-
                 $itemExtAttr->setImageUrl($imageurl);
                 $quoteItem->setExtensionAttributes($itemExtAttr);
     
                 }
-                
-
              
             }
-            //print_r($doorStep); 
-            //print_r($pickupFrmStore);exit;
             $itemExtAttrquote = $quote->getExtensionAttributes();
             if ($itemExtAttrquote === null) {
                     $itemExtAttrquote = $this->cartExtFactory->create();
@@ -178,9 +169,6 @@ use Magento\Framework\Event\ObserverInterface;
             $itemExtAttrquote->setSpCount($pickupFrmStorePId);
             $itemExtAttrquote->setSpSubtotal($pickupFrmStorePrice);
                 $quote->setExtensionAttributes($itemExtAttrquote);
-                
-
-        
 
          return;
 
