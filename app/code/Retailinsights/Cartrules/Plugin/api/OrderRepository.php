@@ -101,10 +101,11 @@ class OrderRepository
 
              $imageurl =$this->productImageHelper->create()->init($product, 'product_thumbnail_image')->setImageFile($product->getThumbnail())->getUrl();
              $addAtt[$sku] = $weight." ".$optionText;
+             $unitm = $weight." ".$optionText;
              $addImage[$sku] = $imageurl;
             $extensionAttributes = $items->getExtensionAttributes();
             $extensionAttributes = $extensionAttributes ? $extensionAttributes : $this->itemextensionFactory->create();
-            $extensionAttributes->setUnitm($optionText);
+            $extensionAttributes->setUnitm($unitm);
             $extensionAttributes->setImageUrl($imageurl);
             $extensionAttributes->setPriceType($priceType);
             $extensionAttributes->setExtnRowTotal($rowTotal);
