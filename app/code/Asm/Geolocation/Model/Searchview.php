@@ -81,7 +81,7 @@ class Searchview implements SearchInterface
                 $message = 'Sku is successfully removed from cart.';
             }
         }
-        $data = array('status'=>'Sucess','message' => $message);
+        $data = array('status'=>'Success','message' => $message);
         //print_r($data);exit;
         return $data;
     }

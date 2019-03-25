@@ -148,6 +148,7 @@ use Magento\Framework\Event\ObserverInterface;
                 $imageurl =$this->productImageHelper->create()->init($product, 'product_thumbnail_image')->setImageFile($product->getThumbnail())->getUrl();
 
                 $itemExtAttr->setUnitm($optionText);
+                $itemExtAttr->setVolume($product->getVolume());
                 if(!empty($idInfo)){
                 $itemExtAttr->setDoorstepPrice($door);
                 $itemExtAttr->setPickupFromStore($PickupFromStore);
