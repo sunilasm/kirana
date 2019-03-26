@@ -41,18 +41,31 @@ class Flushcartview implements FlushcartInterface
         $request = $objectManager->get('\Magento\Framework\Webapi\Rest\Request');
         $post = $request->getBodyParams();
         $quote = $this->quoteFactory->create()->load($post['quote_id']);
+        // Pass Customer id get lat and long
+        /*
         $customer = $this->_customerFactory->create()->load($post['customer_id']);
         $shippingAddressId = $customer->getDefaultShipping();
         $billingAddressId = $customer->getDefaultBilling();
         $address = $objectManager->create('Magento\Customer\Model\Address')->load($billingAddressId);
-        //$shippingAddress = $this->_addressFactory->create()->load($shippingAddressId);
-        //echo "<pre>";print_r($shippingAddress->getData());exit;
-        //$latitude = $post['latitude'];
-        //$longitude = $post['longitude'];
+        $shippingAddress = $this->_addressFactory->create()->load($shippingAddressId);
         $latitude = $address->getLatitude();
         $longitude = $address->getLongitude();
+        */
+        //echo "<pre>";print_r($shippingAddress->getData());exit;
+        // Pass lat and long 
+        if(array_key_exists('latitude', $post)){
+          $latitude = $post['latitude'];
+        }else{
+          $latitude = '';
+        }
 
-        // print_r($address->getData());exit;
+        if(array_key_exists('longitude', $post)){
+          $longitude = $post['longitude'];
+        }else{
+          $longitude = '';
+        }
+
+       //print_r($latitude."--".$longitude);exit;
         $productCollectionArray = array();
         $kiranaArray = array();
         $result = array();
@@ -65,12 +78,31 @@ class Flushcartview implements FlushcartInterface
             foreach ($items as $item) {
                if (!in_array($item->getSellerId(), $ranageSeller))
                 {
-                  $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
-                  $itemModel = $objectManager->create('Magento\Quote\Model\Quote\Item');
-                  $itemId = $item->getItemId();
-                  $quoteItem = $itemModel->load($itemId);
-                  $quoteItem->delete();
-                  $flag = 1;
+
+                $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+                $itemModel = $objectManager->create('Magento\Quote\Model\Quote\Item');
+                $itemId = $item->getItemId();
+		//print_r($itemId);exit;
+                $storeManager = $objectManager->get('\Magento\Store\Model\StoreManagerInterface');
+                $baseUrl = $storeManager->getStore()->getBaseUrl();
+                $userData = array("username" => "adminapi", "password" => "Admin@123");
+                $ch = curl_init("$baseUrl".''."rest/V1/integration/admin/token");
+                curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
+                curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($userData));
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                curl_setopt($ch, CURLOPT_HTTPHEADER, array("Content-Type: application/json", "Content-Lenght: " . strlen(json_encode($userData))));
+
+                $token = curl_exec($ch);
+                $ch = curl_init("$baseUrl".''."rest/V1/carts/".$post['quote_id']."/items/".$itemId);
+		curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE");
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                curl_setopt($ch, CURLOPT_HTTPHEADER, array("Content-Type: application/json", "Authorization: Bearer " . json_decode($token)));
+
+                $result = curl_exec($ch);
+
+                $result = json_decode($result, 1);
+                //print_r($result);exit;
+		$flag = 1;
                 }
             }
             if($flag){
@@ -87,4 +119,5 @@ class Flushcartview implements FlushcartInterface
     }
 
 }
+
 
