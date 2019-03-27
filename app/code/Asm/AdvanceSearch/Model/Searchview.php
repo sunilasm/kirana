@@ -1,9 +1,12 @@
 <?php
 namespace Asm\AdvanceSearch\Model;
 use Asm\AdvanceSearch\Api\SearchInterface;
+use Lof\MarketPlace\Model\SellerProductFactory as SellerProduct;
+
  
 class Searchview implements SearchInterface
 {
+  
     /**
      * Returns greeting message to user
      *
@@ -11,21 +14,31 @@ class Searchview implements SearchInterface
      * @param string $name Users name.
      * @return string Greeting message with users name.
      */
+     
+    protected $sellerProduct;
     protected $request;
     protected $_productCollectionFactory;
     protected $_sellerCollection;
     public function __construct(
+        \Magento\Quote\Model\Quote\ItemFactory $itemFactory,
+        SellerProduct $sellerProduct,
        \Magento\Framework\App\RequestInterface $request,
        \Magento\Catalog\Model\ResourceModel\Product\CollectionFactory $productCollectionFactory,
        \Lof\MarketPlace\Model\Seller $sellerCollection,
-       \Lof\MarketPlace\Model\SellerProduct $sellerProductCollection
+       \Lof\MarketPlace\Model\SellerProduct $sellerProductCollection,
+       \Asm\Geolocation\Helper\Data $helperData
     ) {
+        $this->itemFactory = $itemFactory;
+       $this->sellerProduct = $sellerProduct; 
        $this->request = $request;
        $this->_productCollectionFactory = $productCollectionFactory; 
        $this->_sellerCollection = $sellerCollection;
        $this->_sellerProductCollection = $sellerProductCollection;
+       $this->helperData = $helperData;
     }
     public function name() {
+
+
         //print_r("herreee");exit;
         $title = $this->request->getParam('title');
         $lat = $this->request->getParam('latitude');
@@ -36,18 +49,24 @@ class Searchview implements SearchInterface
         $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
         $quoteModel = $objectManager->create('Magento\Quote\Model\Quote');
         $quoteItems = $quoteModel->load($quoteId)->getAllVisibleItems();
+
+
+
+
+
         $quoteItemArray = array();
         $i = 1;
         $quoteItemSellerArray = array();
         foreach($quoteItems as $item):
             $quoteItemSellerArray[$item->getSellerId()] = $item->getItemid();
-            $quoteItemArray[$item->getSku()] = $item->getQty();
+            $quoteItemArray[$item->getSku()]['qty'] = $item->getQty();
+
+             $quoteItemArray[$item->getSku()]['price_type'] = $item->getPriceType();
             //$quoteItemIndexArray[$i] = $item->getItemid();
             $quoteItemIndexArray[$i] = $item->getItemid();
             $i++;
+
         endforeach;
-        //print_r($quoteItemSellerArray); exit;
-        //print_r($quoteItemIndexArray); exit;
         $data = array();
         $flag = 0;
         if($searchtermpara){ $searchterm = 0; }else{ $searchterm = 1; }
@@ -73,18 +92,27 @@ class Searchview implements SearchInterface
             }
             $flag = 2;
         }
+	//print_r($quoteItemArray);//exit;
         if($flag != 1){
             if(count($data)){
+        
                 foreach($data as $key => $proData):
+                     
                     if(array_key_exists($proData['sku'], $quoteItemArray) ){
-                        $data[$key] += ['quote_qty' => $quoteItemArray[$proData['sku']]];
+			//print_r("herre".$key.'--SKU->'.$proData['sku']."<br/>");
+                        $data[$key] += ['quote_qty' => $quoteItemArray[$proData['sku']]['qty']];
+                        $data[$key]['price_type'] = $quoteItemArray[$proData['sku']]['price_type']; 
+
                     }else{
+			//print_r("okk".$key."<br>");
                         $data[$key] += ['quote_qty' => 0];
+                        $data[$key]['price_type'] = NULL;                      
                     }
                 endforeach;
             }
         }
         //print_r($data);exit;
+
         return $data;
     }
     /*
@@ -92,7 +120,18 @@ class Searchview implements SearchInterface
     */
     public function getInRangeSeller($lat, $lon){
         $selerIdArray = array();
-        $distance = 1; //your distance in KM
+        $rangeSetting = $this->helperData->getGeneralConfig('enable');
+        $rangeInKm = $this->helperData->getGeneralConfig('range_in_km');
+        if($rangeSetting == 1){
+            if($rangeInKm){
+                $distance = $rangeInKm; //your distance in KM
+            }else{
+                $distance = 1; //your distance in KM
+            }
+        }else{
+            $distance = 1; //your distance in KM
+        }
+        
         $R = 6371; //constant earth radius. You can add precision here if you wish
         $maxLat = $lat + rad2deg($distance/$R);
         $minLat = $lat - rad2deg($distance/$R);
@@ -108,13 +147,17 @@ class Searchview implements SearchInterface
         ->addFieldToFilter('status',1);
         // get Seller id's
         $sellerData = $sellerCollection->getData();
+
+
         foreach($sellerData as $seldata):
             $selerIdArray[] = $seldata['seller_id'];
+            
         endforeach;
-        //print_r($selerIdArray);
+       // print_r($selerIdArray);
         return  $selerIdArray;
     }
     public function getSearchTermData($title, $lat, $lon){
+
         $productCollectionArray = array();
             $sellerProductsArray = array();
             $arratAttributes = array();
@@ -185,6 +228,18 @@ class Searchview implements SearchInterface
                        {
                         $productCollectionTemp['seller_name'] = $sellerNameArray[$seller_id];
                         $productCollectionTemp['seller_id'] = $seller_id;
+                        $SellerProd = $this->sellerProduct->create()->getCollection();
+                        $fltColl = $SellerProd->addFieldToFilter('seller_id', $seller_id)
+                                ->addFieldToFilter('product_id', $productCollectionTemp['entity_id']);
+                        $data = $this->sellerProduct->create()->load($fltColl->getData()[0]['entity_id']);
+
+
+
+
+                        $productCollectionTemp['price_type'] =  $data->getPriceType();
+                         $productCollectionTemp['doorstep_price'] =  $data->getDoorstepPrice();
+                         $productCollectionTemp['pickup_from_store'] =  $data->getPickupFromStore();
+                         $productCollectionTemp['pickup_from_nearby_store'] =  $data->getPickupFromNearbyStore();
                         $productCollectionArray[] = $productCollectionTemp;
                        }
                    }
