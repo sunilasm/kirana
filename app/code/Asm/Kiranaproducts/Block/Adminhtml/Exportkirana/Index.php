@@ -1,6 +1,6 @@
 <?php
 
-namespace Asm\Kiranaproducts\Block\Adminhtml\Index;
+namespace Asm\Kiranaproducts\Block\Adminhtml\Exportkirana;
 
 class Index extends \Magento\Backend\Block\Widget\Container
 {

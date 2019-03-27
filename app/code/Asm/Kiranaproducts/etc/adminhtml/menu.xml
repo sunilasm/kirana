@@ -6,5 +6,7 @@
 
 		 <add id="Asm_Kiranaproducts::index" title="Export Products" module="Asm_Kiranaproducts" sortOrder="110" action="kiranaproducts/index" resource="Lof_MarketPlace::catalog" parent="Magento_Catalog::inventory"/>
 
+		  <add id="Asm_Kiranaproducts::exportkirana" title="Export Sellers" module="Asm_Kiranaproducts" sortOrder="110" action="kiranaproducts/exportkirana" resource="Lof_MarketPlace::seller" parent="Lof_MarketPlace::seller"/>
+
     </menu>
 </config>

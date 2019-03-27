@@ -1,6 +1,6 @@
 <?php
 
-namespace Asm\Kiranaproducts\Controller\Adminhtml\Index;
+namespace Asm\Kiranaproducts\Controller\Adminhtml\Exportkirana;
 
 
 class Index extends \Magento\Backend\App\Action
@@ -8,6 +8,7 @@ class Index extends \Magento\Backend\App\Action
     protected $fileFactory;
     protected $csvProcessor;
     protected $directoryList;
+    protected $_sellerCollection;
 
     public function __construct(
         \Magento\Framework\App\Action\Context $context,
@@ -15,33 +16,34 @@ class Index extends \Magento\Backend\App\Action
         \Magento\Framework\App\Response\Http\FileFactory $fileFactory,
         \Magento\Framework\File\Csv $csvProcessor,
         \Magento\Framework\App\Filesystem\DirectoryList $directoryList,
-        \Magento\Catalog\Model\Product $product
+        \Lof\MarketPlace\Model\Seller $sellerCollection
     )
     {
         $this->fileFactory = $fileFactory;
         $this->csvProcessor = $csvProcessor;
         $this->directoryList = $directoryList;
         $this->_customerSession = $customerSession;
-        $this->product = $product;
+        $this->_sellerCollection = $sellerCollection;
         parent::__construct($context, $customerSession);
     }
 
 
     public function execute()
     {
-        $fileName = 'product_deatils.csv';
+        //print_r("hererer");exit;
+        $fileName = 'kiranas.csv';
         $filePath = $this->directoryList->getPath(\Magento\Framework\App\Filesystem\DirectoryList::VAR_DIR)
             . "/" . $fileName;
 
         //$customer = $this->_customerSession->getCustomer();
-        $personalData = $this->getProductData();
+        $sellerData = $this->getSellerData();
 
         $this->csvProcessor
             ->setDelimiter(';')
             ->setEnclosure('"')
             ->saveData(
                 $filePath,
-                $personalData
+                $sellerData
             );
 
         return $this->fileFactory->create(
@@ -60,38 +62,22 @@ class Index extends \Magento\Backend\App\Action
         // $this->_view->renderLayout();
 	}
 
-	protected function getProductData()
+	protected function getSellerData()
     {
         $result = [];
-        // $obj = $bootstrap->getObjectManager();
-        // $obj->get('Magento\Framework\Registry')->register('isSecureArea', true);
-        // $appState = $obj->get('\Magento\Framework\App\State');
-        $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
-
-        $products = $objectManager->create('\Magento\Catalog\Model\Product')->getCollection();
-        $products->addAttributeToSelect(array('name'))
-        ->addFieldTofilter('type_id','simple')
-        ->addFieldToFilter('visibility', \Magento\Catalog\Model\Product\Visibility::VISIBILITY_BOTH)
-        ->addFieldToFilter('status', \Magento\Catalog\Model\Product\Attribute\Source\Status::STATUS_ENABLED)
-        ->load();
-        //$customerData = $customer->getData();
+        $sellerCollection = $this->_sellerCollection->getCollection()
+        ->addFieldToFilter('status',1);
+        $sellerData = $sellerCollection->getData();
         $result[] = [
             'id',
-            'name',
-            'sku',
-            'price'
+            'name'
         ];
-        foreach ($products as $product) {
-            $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
-            $productData = $objectManager->create('Magento\Catalog\Model\Product')->load($product->getId());
+        foreach ($sellerData as $seller) {
             $result[] = [
-                $productData->getId(),
-                $productData->getName(),
-                $productData->getSku(),
-                $productData->getPrice(),
+                $seller['seller_id'],
+                $seller['name'],
             ];
         }
-
         return $result;
     }
     
