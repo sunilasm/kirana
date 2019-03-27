@@ -92,17 +92,19 @@ class Searchview implements SearchInterface
             }
             $flag = 2;
         }
+	//print_r($quoteItemArray);//exit;
         if($flag != 1){
             if(count($data)){
         
                 foreach($data as $key => $proData):
                      
                     if(array_key_exists($proData['sku'], $quoteItemArray) ){
-
-                        $data[$key] += ['quote_qty' => $quoteItemArray[$item->getSku()]['qty']];
-                        $data[$key]['price_type'] = $quoteItemArray[$item->getSku()]['price_type']; 
+			//print_r("herre".$key.'--SKU->'.$proData['sku']."<br/>");
+                        $data[$key] += ['quote_qty' => $quoteItemArray[$proData['sku']]['qty']];
+                        $data[$key]['price_type'] = $quoteItemArray[$proData['sku']]['price_type']; 
 
                     }else{
+			//print_r("okk".$key."<br>");
                         $data[$key] += ['quote_qty' => 0];
                         $data[$key]['price_type'] = NULL;                      
                     }
