@@ -18,6 +18,7 @@ xsi:noNamespaceSchemaLocation="urn:magento:framework:Api/etc/extension_attribute
         <attribute code="price_type" type="string" />
         <attribute code="chosen_price" type="string" />
         <attribute code="extn_row_total" type="string" />
+        <attribute code="volume" type="string" />
     </extension_attributes>
     <extension_attributes for="Magento\Sales\Api\Data\OrderInterface">
         <attribute code="extn_grand_total" type="string" />
