@@ -99,13 +99,15 @@ class Searchview implements SearchInterface
                 foreach($data as $key => $proData):
                      
                     if(array_key_exists($proData['sku'], $quoteItemArray) ){
-			//print_r("herre".$key.'--SKU->'.$proData['sku']."<br/>");
+			             //print_r("herre".$key.'--SKU->'.$proData['seller_id']."<br/>");
                         $data[$key] += ['quote_qty' => $quoteItemArray[$proData['sku']]['qty']];
+                        $data[$key] += ['quote_item_id' => $quoteItemSellerArray[$proData['seller_id']]];
                         $data[$key]['price_type'] = $quoteItemArray[$proData['sku']]['price_type']; 
 
                     }else{
 			//print_r("okk".$key."<br>");
                         $data[$key] += ['quote_qty' => 0];
+                        $data[$key] += ['quote_item_id' => NULL];
                         $data[$key]['price_type'] = NULL;                      
                     }
                 endforeach;
