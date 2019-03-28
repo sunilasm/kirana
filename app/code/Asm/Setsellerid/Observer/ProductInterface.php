@@ -93,6 +93,8 @@ use Magento\Framework\Event\ObserverInterface;
             $doorStepPrice=0;
             $pickupFrmStorePrice=0;
 
+            $door=0;
+
             $doorStepPId = 0;
             $pickupFrmStorePId = 0;
        
