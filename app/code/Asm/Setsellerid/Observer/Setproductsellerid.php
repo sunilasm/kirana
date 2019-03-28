@@ -74,10 +74,6 @@ class Setproductsellerid implements \Magento\Framework\Event\ObserverInterface
 
     public function execute(\Magento\Framework\Event\Observer $observer)
     {
-        // $writer = new \Zend\Log\Writer\Stream(BP . '/var/log/templog.log');
-        // $logger = new \Zend\Log\Logger();
-        // $logger->addWriter($writer);
-        // $logger->info("Setproductsellerrrrrrrrrrr xxxxxx");
 
         $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
         $request = $objectManager->get('\Magento\Framework\Webapi\Rest\Request');
@@ -91,10 +87,6 @@ class Setproductsellerid implements \Magento\Framework\Event\ObserverInterface
                 $seller_id["product_id"] = $post['product_id'];
                 $seller_id["seller_id"] = $post['seller_id'];
                 $seller_id["price_type"] = $post['price_type'];
-                $writer = new \Zend\Log\Writer\Stream(BP . '/var/log/quoteSaveAfter.log');
-                $logger = new \Zend\Log\Logger();
-                $logger->addWriter($writer);
-                
 
                 $quote = $observer->getQuote();
                 $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
@@ -102,8 +94,6 @@ class Setproductsellerid implements \Magento\Framework\Event\ObserverInterface
                 foreach ($quote->getAllItems() as $quoteItem) {
                     if($seller_id["product_id"]){
                         if($seller_id["product_id"] == $quoteItem->getProductId()){
-                            // $logger->info("quoteItem");
-                            // $logger->info($quoteItem->getProductId());
                             $quoteItem->setSellerId($seller_id["seller_id"]);
                             $quoteItem->setPriceType($seller_id["price_type"]);
                             $quoteItem->save();

@@ -10,11 +10,9 @@ namespace Asm\Setsellerid\Plugin;
 use Magento\Quote\Api\Data\CartInterface;
 use Lof\MarketPlace\Model\ResourceModel\SellerProduct\CollectionFactory;
 
-
 class QuotePlugin {
-    
  
-        protected $collectionFactory;
+    protected $collectionFactory;
     /**
      * @param \Magento\Quote\Api\Data\CartItemExtensionFactory $cartItemExtension
      * @param \Magento\Catalog\Api\ProductRepositoryInterface $productRepository
@@ -70,17 +68,6 @@ class QuotePlugin {
      */
     private function setAttributeValue($quote) {
 
-
-            // $writer = new \Zend\Log\Writer\Stream(BP . '/var/log/test.log'); 
-            // $logger = new \Zend\Log\Logger(); 
-            // $logger->addWriter($writer); 
-            // $logger->info('Your text message');
-
-           
-// ;
-//             $logger->info($data->getProductId());
-
-
         $data = [];
         if (count($quote->getItems())) {
             foreach ($quote->getItems() as $item) { 
@@ -92,19 +79,8 @@ class QuotePlugin {
                 }
                 $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
                 $productData = $objectManager->create('Magento\Catalog\Model\Product')->load($item->getId());
-
-                // $seller = $this->collectionFactory->create();
-                // $data = $seller->getCollection();
-                
-
-                // $logger->info($data->getData());
-
-                // $productData = $this->productRepository->create()->get($item->getId()); 
-               // $productData = $this->productRepository->create()->get($item->getId());                
                 $extensionAttributes->setImage($productData->getThumbnail());
                 $sellerName = $this->helperData->getSellernameId($item->getSellerId());
-
-               // $logger->info($item->getDoorstep());
 
                 $extensionAttributes->setSellerName($sellerName);
                 $extensionAttributes->setSellerId($item->getSellerId());
