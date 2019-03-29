@@ -42,6 +42,8 @@ class Item
         $pickupFrmStorePrice=0;
         $doorStepPId = 0;
         $pickupFrmStorePId = 0;
+        $door=0;
+        $PickupFromStore=0;
         foreach($totals->getItems() as $item)
         {
 
