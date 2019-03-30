@@ -1,3 +1,4 @@
+<Volumehp
 <?php
 namespace Retailinsights\Cartrules\Observer;
 use Magento\Framework\Event\ObserverInterface;
@@ -67,10 +68,7 @@ use Magento\Framework\Event\ObserverInterface;
                 $itemExtAttr = $quoteItem->getExtensionAttributes();
                 
                 $product = $this->_productRepository->getById($quoteItem->getProductId());
-                //  $writer = new \Zend\Log\Writer\Stream(BP . '/var/log/testnew.log'); 
-                // $logger = new \Zend\Log\Logger(); 
-                // $logger->addWriter($writer); 
-                // $logger->info($product->getUnitm());
+               
                 $optionId = $product->getUnitm();
                 $attribute = $product->getResource()->getAttribute('unitm');
                 if ($attribute->usesSource()) {

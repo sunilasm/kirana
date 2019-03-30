@@ -8,7 +8,6 @@ use Magento\Quote\Api\Data\CartItemExtensionFactory;
 class Setorderproductseller implements \Magento\Framework\Event\ObserverInterface
 {
 	protected $_request;
-
 	
         /**
          *@var \Magento\Store\Model\App\Emulation
@@ -36,7 +35,6 @@ class Setorderproductseller implements \Magento\Framework\Event\ObserverInterfac
         $order = $observer->getOrder();
 
         $quoteItems = [];
-        // Map Quote Item with Quote Item Id
         foreach($order->getAllItems() as $orderItems){
             
             $quoteItem = $this->quoteItemFactory->create();
