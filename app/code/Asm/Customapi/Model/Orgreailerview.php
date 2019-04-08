@@ -38,24 +38,23 @@ class Orgreailerview implements OrgnizedretailerInterface
         $post = $request->getBodyParams();
         $quote = $this->quoteFactory->create()->load($post['quote_id']);
         $flag = 0;
-        $sellerData = array();
+        $sellerData = '';
         if($post['latitude'] != '' && $post['longitude'] != ''){
             $productPresentCollArray = array();
             $productNotPresentCollArray = array();
             $ranageSeller = $this->getInRangeSeller($post['latitude'], $post['longitude']);
-             // print_r($ranageSeller);exit;
             $items = $quote->getAllItems();
-
-            //foreach($ranageSeller as $rangesellerData):
-            $quoteSellerId = array();
             foreach ($items as $item) {
-                $quoteSellerId[] = $item->getSellerId();
-            }
-            foreach ($ranageSeller as $sellerData) {
-                if(in_array($sellerData, $quoteSellerId)){
-                    $sellerCollection = $this->_sellerCollection->getCollection()->addFieldToFilter('seller_id',$sellerData);
-                    $sellerDataNew[] = $sellerCollection->getData();
-                    foreach ($collection as $product){
+                $collection = $this->_productCollectionFactory->create();
+                $collection->addAttributeToSelect('*');
+                $collection->addFieldToFilter('entity_id', ['in' => $item->getProductId()]);
+                if (in_array($item->getSellerId(), $ranageSeller))
+                {
+                  $sellerCollection = $this->_sellerCollection->getCollection()->addFieldToFilter('seller_id',$item->getSellerId());
+                  foreach($sellerCollection as $sellcoll):
+                    $sellerData[] = $sellcoll->getData();
+                  endforeach;
+                  foreach ($collection as $product){
                         $productPresentCollArray[] = $product->getData();
                         $flag = 1;
                    }
@@ -66,27 +65,6 @@ class Orgreailerview implements OrgnizedretailerInterface
                      }
                 }
             }
-            // print_r($sellerDataNew);exit;
-            // foreach ($items as $item) {
-            //     $collection = $this->_productCollectionFactory->create();
-            //     $collection->addAttributeToSelect('*');
-            //     $collection->addFieldToFilter('entity_id', ['in' => $item->getProductId()]);
-            //     if (in_array($item->getSellerId(), $ranageSeller))
-            //     {
-            //       foreach ($collection as $product){
-            //             $productPresentCollArray[] = $product->getData();
-            //             $flag = 1;
-            //        }
-            //     }else{
-            //         foreach ($collection as $product){
-            //             $productNotPresentCollArray[] = $product->getData();
-            //             $flag = 1;
-            //          }
-            //     }
-            // }
-
-            //endforeach;
-            // print_r($sellerData);exit;
             $cartSummeryArray = array('total_item_count' => $quote->getItemsCount(), 'present_item_count' => count($productPresentCollArray), 'not_present_item_count' => count($productNotPresentCollArray), 'sub_total' => $quote->getSubtotal());
         }
 
