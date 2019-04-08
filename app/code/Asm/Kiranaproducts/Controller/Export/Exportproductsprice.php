@@ -94,10 +94,15 @@ class Exportproductsprice extends \Magento\Framework\App\Action\Action
         foreach ($products as $product) {
             $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
             $productData = $objectManager->create('Magento\Catalog\Model\Product')->load($product->getId());
-            $doorsetp = ($productData->getPrice()*0.8+10);
-            $pickup = ($productData->getPrice()*0.9);
+            if($productData->getPrice() <= 4 || $productData->getPrice() <= 4.00){
+                $doorsetp = $productData->getPrice();
+                $pickup = $productData->getPrice();
+                // print_r($doorsetp.'---'.$pickup);exit;
+            }else{
+                $doorsetp = ($productData->getPrice()*0.8+10);
+                $pickup = ($productData->getPrice()*0.9);
+            }
             // print_r($productData->getPrice()."--");
-            // print_r($doorsetp.'---'.$pickup);exit;
             $result[] = [
                 $productData->getId(),
                 $doorsetp,
