@@ -32,7 +32,7 @@ class Searchview implements SearchInterface
        \Lof\MarketPlace\Model\SellerProduct $sellerProductCollection,
        \Asm\Geolocation\Helper\Data $helperData
     ) {
-        $this->productRepository = $productRepository;
+        //$this->productRepository = $productRepository;
         $this->_productRepository = $productRepository;
         $this->itemFactory = $itemFactory;
        $this->sellerProduct = $sellerProduct; 
@@ -92,7 +92,7 @@ class Searchview implements SearchInterface
             }
             $flag = 2;
         }
-	//print_r($quoteItemArray);//exit;
+	//print_r($data);exit;
         if($flag != 1){
             if(count($data)){
         
@@ -117,7 +117,8 @@ class Searchview implements SearchInterface
     /*
     Get seller id's based on lat & lon.
     */
-    public function getInRangeSeller($lat, $lon){
+    public function getInRangeSeller($lat, $lon, $prodId){
+
         $selerIdArray = array();
         $rangeSetting = $this->helperData->getGeneralConfig('enable');
         $rangeInKm = $this->helperData->getGeneralConfig('range_in_km');
@@ -146,37 +147,67 @@ class Searchview implements SearchInterface
         ->addFieldToFilter('status',1);
         // get Seller id's
         $sellerData = $sellerCollection->getData();
-
-
+     
+        $kirana = array();
+        $orgRetail = array();
+        $selId = array();
+        $orgRetailColl = array();
+        $kiranaColl = array();
+        //print_r($sellerData); exit();
         foreach($sellerData as $seldata):
-            $selerIdArray[] = $seldata['seller_id'];
+            
+            $SellerProd = $this->sellerProduct->create()->getCollection();
+            $fltColl = $SellerProd->addFieldToFilter('seller_id', $seldata['seller_id'])
+                ->addFieldToFilter('product_id', $prodId);
+                
+            if(count($fltColl->getData()) != 0){
+                $selProd = $fltColl->getData();
+                $selId[$seldata['group_id']] = $seldata['seller_id'];
+                //print_r($selProd); exit();
+               
+                if($seldata['group_id'] == 4){
+
+                        $orgRetail['seller_id'] = $seldata['seller_id'];
+                        $orgRetail['price'] = $selProd[0]['pickup_from_store'];
+                        $orgRetail['grp_id'] = $seldata['group_id'];
+                        $orgRetailColl[$selProd[0]['pickup_from_store']] = $orgRetail;
+                } else {
+                        $kirana['seller_id'] = $seldata['seller_id'];
+                        $kirana['price'] = $selProd[0]['doorstep_price'];
+                        $kirana['grp_id'] = $seldata['group_id'];
+                        $kiranaColl[$selProd[0]['doorstep_price']] = $kirana;
+                }
+
+            }
             
         endforeach;
+        ksort($orgRetailColl);
+        $chsnOrgRetail = array_shift($orgRetailColl);
+        ksort($kiranaColl);
+        $chsnKirana = array_shift($kiranaColl);
+        if(!empty($chsnKirana)){
+        $selerIdArray[] = $chsnKirana;
+        }
+        if(!empty($chsnOrgRetail)){
+        $selerIdArray[] = $chsnOrgRetail;
+        }
         return  $selerIdArray;
+        
     }
     public function getSearchTermData($title, $lat, $lon){
+        $writer = new \Zend\Log\Writer\Stream(BP . '/var/log/search_test.log'); 
+        $logger = new \Zend\Log\Logger(); 
+        $logger->addWriter($writer); 
 
             $productCollectionArray = array();
             $sellerProductsArray = array();
             $arratAttributes = array();
             $collection = $this->_productCollectionFactory->create();
-            $collection->addAttributeToSelect('*');
-            if($lat != '' && $lon != ''){
-                $productCollectionArray = array();
-                $ranageSeller = $this->getInRangeSeller($lat, $lon);
-                $sellerCollection = $this->_sellerProductCollection->getCollection()->addFieldToFilter('seller_id', array('in' => $ranageSeller));
-            }
-            $tempSellerProductArray = array();
-            $i=0;
-            foreach($sellerCollection as $seller):
-                $tempSellerProductArray[$seller['product_id']][] = $seller['seller_id'];
-                $tempSellerProductIdArray[] = $seller['product_id'];
-            endforeach;
-            if(count($tempSellerProductArray))
-            {
-                $collection->addFieldToFilter('entity_id', array('in' => $tempSellerProductIdArray));
-            }
+           
+           
 
+            $collection->addAttributeToSelect('*');
+          
             $collection->addAttributeToSort('price', 'asc');
             if($title != null){
                  // check current page
@@ -197,40 +228,44 @@ class Searchview implements SearchInterface
                 $collection->addFieldToFilter([['attribute' => 'name', 'like' => '%'.$title.'%']]);
                 $collection->setCurPage($current_page)->setPageSize($page_size);
             }
-            
-            $sellerNameArray = array();
-            $sellerCollection = $this->_sellerCollection->getCollection()->addFieldToFilter('seller_id', array('in' => $ranageSeller));
-            foreach($sellerCollection as $seller):
-                $sellerNameArray[$seller->getId()] = $seller->getName();
-            endforeach;
-            foreach ($collection as $product){
-                $productCollectionTemp = array();  
-                $productCollectionTemp = $product->getData();
-                foreach ($tempSellerProductArray as $key => $value) {
-                   
-                   if($productCollectionTemp['entity_id'] == $key)
-                   {
-                       foreach($value as $seller_index => $seller_id)
-                       {
-                          $productCollectionTemp['seller_name'] = $sellerNameArray[$seller_id];
-                        $productCollectionTemp['seller_id'] = $seller_id;
-                        $SellerProd = $this->sellerProduct->create()->getCollection();
-                        $fltColl = $SellerProd->addFieldToFilter('seller_id', $seller_id)
-                                ->addFieldToFilter('product_id', $productCollectionTemp['entity_id']);
-                        $data = $this->sellerProduct->create()->load($fltColl->getData()[0]['entity_id']);
-                 
-                        $productCollectionTemp['unitm'] = (round($product->getWeight(),0)).' '.($product->getUomLabel());
-                        $productCollectionTemp['price_type'] =  $data->getPriceType();
-                         $productCollectionTemp['doorstep_price'] =  $data->getDoorstepPrice();
-                         $productCollectionTemp['pickup_from_store'] =  $data->getPickupFromStore();
-                         $productCollectionTemp['pickup_from_nearby_store'] =  $data->getPickupFromNearbyStore();
-                        $productCollectionArray[] = $productCollectionTemp;
-                       }
-                   }
+        foreach($collection->getData() as $productDtls){
+            $prodId = $productDtls['entity_id'];// exit();
+            $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+            $product = $objectManager->get('Magento\Catalog\Model\Product')->load($prodId);
+            ///echo $product->getAttributeText('your_attribut');
+
+            $sellerId = $this->getInRangeSeller($lat, $lon, $prodId);
+            //print_r($productDtls);exit();
+            if(empty($sellerId)){
+                continue;
+            } else {
+                $productCollectionArray = $productDtls;
+               
+                foreach($sellerId as $seller){
+                    $SellerProd = $this->sellerProduct->create()->getCollection();
+                    $fltColl = $SellerProd->addFieldToFilter('seller_id', $seller['seller_id'])
+                            ->addFieldToFilter('product_id', $prodId);
+                $productCollectionArray['unitm'] = (round($product->getWeight(),0)).' '.($product->getUomLabel());
+                if(count($fltColl->getData()) != 0){
+                if($seller['grp_id'] == 1){
+                    $productCollectionArray['kirana'] = $seller['seller_id'];
+                    $productCollectionArray['doorstep_delivery'] =  $fltColl->getData()[0]['doorstep_price'];
+                } else {
+                    $productCollectionArray['org_retail'] = $seller['seller_id'];
+                    $productCollectionArray['pickup_from_store'] =  $fltColl->getData()[0]['pickup_from_store'];
+
                 }
-                
+
+                }
+
+                }
             }
-        return $productCollectionArray;
+
+            $FnlProductCollection[] = $productCollectionArray;
+        }
+           
+        //print_r($FnlProductCollection); exit();
+        return $FnlProductCollection;
     }
    
 }
