@@ -40,36 +40,109 @@ class Orgreailerview implements OrgnizedretailerInterface
         $flag = 0;
         $sellerData = '';
         if($post['latitude'] != '' && $post['longitude'] != ''){
-            $productPresentCollArray = array();
-            $productNotPresentCollArray = array();
+            
             $ranageSeller = $this->getInRangeSeller($post['latitude'], $post['longitude']);
             $items = $quote->getAllItems();
-            foreach ($items as $item) {
-                $collection = $this->_productCollectionFactory->create();
-                $collection->addAttributeToSelect('*');
-                $collection->addFieldToFilter('entity_id', ['in' => $item->getProductId()]);
-                if (in_array($item->getSellerId(), $ranageSeller))
-                {
-                  $sellerCollection = $this->_sellerCollection->getCollection()->addFieldToFilter('seller_id',$item->getSellerId());
-                  foreach($sellerCollection as $sellcoll):
-                    $sellerData[] = $sellcoll->getData();
+            $response = array();
+            $i = 0;
+            foreach($ranageSeller as $orgretailer)
+            {
+                $tempSellerProductArray = array();
+                $tempSellerProductIdArray = array();
+                $presentProducts = array();
+                $seller_products = array();
+                $seller_productsNew = array();
+                $productPresentCollArray = array();
+                $productNotPresentCollArray = array();
+                $presentSubTotalArray = array();
+                // Seller Product Collection
+                $sellerCollection = $this->_sellerProductCollection->getCollection()->addFieldToFilter('seller_id', array('in' => $orgretailer));
+                 foreach($sellerCollection as $sellcoll):
+                     $tempSellerProductArray[$sellcoll['product_id']][] = $sellcoll['seller_id'];
+                     $tempSellerProductIdArray[] = $sellcoll['product_id'];
+                     $seller_products[$sellcoll->getProduct_id()] = $sellcoll->getData();
                   endforeach;
-                  foreach ($collection as $product){
-                        $productPresentCollArray[] = $product->getData();
-                        $flag = 1;
-                   }
-                }else{
-                    foreach ($collection as $product){
-                        $productNotPresentCollArray[] = $product->getData();
-                        $flag = 1;
-                     }
+
+                // Get Orgnized Retailer deatils
+                $sellerCollectionDetails = $this->_sellerCollection->getCollection()->addFieldToFilter('seller_id', array('in' => $orgretailer));
+                $sellerData = array();
+                foreach($sellerCollectionDetails as $sellcoll):
+                    $sellerData = $sellcoll->getData();
+                endforeach;
+
+                // Quote Data
+                $cartSubTotal = 0;
+                foreach ($items as $item) 
+                {
+                        $collection = $this->_productCollectionFactory->create();
+                        $collection->addAttributeToSelect('*');
+                        $collection->addAttributeToSort('price', 'asc');
+                        if(count($tempSellerProductArray))
+                        {
+                            $collection->addFieldToFilter('entity_id', array('in' => $tempSellerProductIdArray));
+                        }               
+                        if($item->getName() != null){
+                            $collection->addFieldToFilter([['attribute' => 'name', 'like' => '%'.$item->getName().'%']]);
+                        }
+                        $produt_found = 0;
+                        $products = $collection->getData();
+                        
+                        foreach ($collection as $product)
+                        {
+                            if(!$produt_found){
+                                $productCollectionData = $product->getData();
+
+                                if(array_key_exists($product->getId(), $seller_products)){
+                                    $productCollectionData['pickup_from_store'] = $seller_products[$product->getId()]['pickup_from_store'];
+                                }
+                                $productCollectionData['quote_qty'] = $item->getQty();
+                                $productPresentCollArray[] = $productCollectionData;
+                                $cartSubTotal += ($seller_products[$product->getId()]['pickup_from_store'] * $item->getQty());
+                                $produt_found = 1;
+                            }
+                            
+                      }
+
+                      if($produt_found == 0)
+                      {
+                            // print_r($item->getProduct_id());exit;
+                            $sellerCollectionNew = $this->_sellerProductCollection->getCollection()->addFieldToFilter('product_id', array('in' => $item->getProduct_id()));
+                            // print_r($sellerCollectionNew->getData());exit;
+                            foreach($sellerCollectionNew as $sellcoll):
+                                 $seller_productsNew[$sellcoll->getProduct_id()] = $sellcoll->getData();
+                              endforeach;
+
+                            $collectionNew = $this->_productCollectionFactory->create();
+                            $collectionNew->addAttributeToSelect('*');
+                            $collectionNew->addFieldToFilter('entity_id', ['in' => $item->getProduct_id()]);
+
+                            foreach($collectionNew as $product):
+                                // print_r($product->getId());
+                                // print_r($seller_products);
+                                $collectionNew = $product->getData();
+                                if(array_key_exists($product->getId(), $seller_productsNew)){
+                                    $collectionNew['pickup_from_store'] = $seller_productsNew[$product->getId()]['pickup_from_store'];
+                                }
+                                $productNotPresentCollArray[] = $collectionNew;
+                            endforeach;
+                      }
+                      
                 }
+
+                $cartSummeryArray = array('total_item_count' => $quote->getItemsCount(), 'present_item_count' => count($productPresentCollArray), 'not_present_item_count' => count($productNotPresentCollArray), 'sub_total' => number_format($cartSubTotal, 2));
+
+
+                $response[$i]['store'] = $sellerData;
+                $response[$i]['present_data'] = $productPresentCollArray;
+                $response[$i]['not_present_data'] = $productNotPresentCollArray;
+                $response[$i]['cart_summary'] = $cartSummeryArray;
+                $i++;
+            
             }
-            $cartSummeryArray = array('total_item_count' => $quote->getItemsCount(), 'present_item_count' => count($productPresentCollArray), 'not_present_item_count' => count($productNotPresentCollArray), 'sub_total' => $quote->getSubtotal());
+
         }
 
-        $dataNew = array("orgnized_details" => $sellerData,"present_data" => $productPresentCollArray,"not_present_data" => $productNotPresentCollArray,"cart_summry" => $cartSummeryArray);
-         $data = array($dataNew);
+        $data = $response;
         return $data;
     }
 
@@ -100,7 +173,8 @@ class Orgreailerview implements OrgnizedretailerInterface
         ->addFieldToFilter('geo_lng',array('gteq'=>$minLon))
         ->addFieldToFilter('geo_lat',array('lteq'=>$maxLat))
         ->addFieldToFilter('geo_lng',array('lteq'=>$maxLon))
-        ->addFieldToFilter('status',1);
+        ->addFieldToFilter('status',1)
+        ->setPageSize(3);
         // get Seller id's
         $sellerData = $sellerCollection->getData();
 
