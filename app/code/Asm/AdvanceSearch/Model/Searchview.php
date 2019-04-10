@@ -2,24 +2,28 @@
 namespace Asm\AdvanceSearch\Model;
 use Asm\AdvanceSearch\Api\SearchInterface;
 use Lof\MarketPlace\Model\SellerProductFactory as SellerProduct;
-
+use Magento\Catalog\Api\ProductRepositoryInterfaceFactory as ProductRepository;
+use Magento\Framework\Event\ObserverInterface;
  
 class Searchview implements SearchInterface
 {
-  
+    /**
+     * @var ProductRepository
+     */
     /**
      * Returns greeting message to user
-     *
+     *@param ProductRepository $productRepository
      * @api
      * @param string $name Users name.
      * @return string Greeting message with users name.
      */
-     
+   
     protected $sellerProduct;
     protected $request;
     protected $_productCollectionFactory;
     protected $_sellerCollection;
     public function __construct(
+        ProductRepository $productRepository,
         \Magento\Quote\Model\Quote\ItemFactory $itemFactory,
         SellerProduct $sellerProduct,
        \Magento\Framework\App\RequestInterface $request,
@@ -28,6 +32,8 @@ class Searchview implements SearchInterface
        \Lof\MarketPlace\Model\SellerProduct $sellerProductCollection,
        \Asm\Geolocation\Helper\Data $helperData
     ) {
+        $this->productRepository = $productRepository;
+        $this->_productRepository = $productRepository;
         $this->itemFactory = $itemFactory;
        $this->sellerProduct = $sellerProduct; 
        $this->request = $request;
@@ -39,7 +45,6 @@ class Searchview implements SearchInterface
     public function name() {
 
 
-        //print_r("herreee");exit;
         $title = $this->request->getParam('title');
         $lat = $this->request->getParam('latitude');
         $lon = $this->request->getParam('longitude');
@@ -49,11 +54,6 @@ class Searchview implements SearchInterface
         $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
         $quoteModel = $objectManager->create('Magento\Quote\Model\Quote');
         $quoteItems = $quoteModel->load($quoteId)->getAllVisibleItems();
-
-
-
-
-
         $quoteItemArray = array();
         $i = 1;
         $quoteItemSellerArray = array();
@@ -92,25 +92,26 @@ class Searchview implements SearchInterface
             }
             $flag = 2;
         }
+	//print_r($quoteItemArray);//exit;
         if($flag != 1){
             if(count($data)){
         
                 foreach($data as $key => $proData):
                      
                     if(array_key_exists($proData['sku'], $quoteItemArray) ){
-
-                        $data[$key] += ['quote_qty' => $quoteItemArray[$item->getSku()]['qty']];
-                        $data[$key]['price_type'] = $quoteItemArray[$item->getSku()]['price_type']; 
+			//print_r("herre".$key.'--SKU->'.$proData['sku']."<br/>");
+                        $data[$key] += ['quote_qty' => $quoteItemArray[$proData['sku']]['qty']];
+                        $data[$key]['price_type'] = $quoteItemArray[$proData['sku']]['price_type']; 
 
                     }else{
+			//print_r("okk".$key."<br>");
                         $data[$key] += ['quote_qty' => 0];
                         $data[$key]['price_type'] = NULL;                      
                     }
                 endforeach;
             }
         }
-        //print_r($data);exit;
-
+    
         return $data;
     }
     /*
@@ -151,23 +152,18 @@ class Searchview implements SearchInterface
             $selerIdArray[] = $seldata['seller_id'];
             
         endforeach;
-       // print_r($selerIdArray);
         return  $selerIdArray;
     }
     public function getSearchTermData($title, $lat, $lon){
 
-        $productCollectionArray = array();
+            $productCollectionArray = array();
             $sellerProductsArray = array();
             $arratAttributes = array();
             $collection = $this->_productCollectionFactory->create();
             $collection->addAttributeToSelect('*');
-            //print_r($collection->getData()); exit;
-            // Check lat and lng is set or not
             if($lat != '' && $lon != ''){
                 $productCollectionArray = array();
                 $ranageSeller = $this->getInRangeSeller($lat, $lon);
-                //print_r($ranageSeller); exit;
-                // $this->_sellerProductCollection->addFieldToFilter('seller_id', array('in' => $ranageSeller));
                 $sellerCollection = $this->_sellerProductCollection->getCollection()->addFieldToFilter('seller_id', array('in' => $ranageSeller));
             }
             $tempSellerProductArray = array();
@@ -175,16 +171,13 @@ class Searchview implements SearchInterface
             foreach($sellerCollection as $seller):
                 $tempSellerProductArray[$seller['product_id']][] = $seller['seller_id'];
                 $tempSellerProductIdArray[] = $seller['product_id'];
-                //$i++;
             endforeach;
             if(count($tempSellerProductArray))
             {
                 $collection->addFieldToFilter('entity_id', array('in' => $tempSellerProductIdArray));
             }
 
-            //print_r($collection->getData()); exit;
             $collection->addAttributeToSort('price', 'asc');
-            //print_r($collection->getData()); exit;
             if($title != null){
                  // check current page
                 $current_page = $this->request->getParam('current_page');
@@ -210,30 +203,23 @@ class Searchview implements SearchInterface
             foreach($sellerCollection as $seller):
                 $sellerNameArray[$seller->getId()] = $seller->getName();
             endforeach;
-            //echo "data:";
-            //print_r($sellerNameArray); exit;
             foreach ($collection as $product){
                 $productCollectionTemp = array();  
                 $productCollectionTemp = $product->getData();
-                //print_r($product->getData()); 
-                //print_r($tempSellerProductArray); 
                 foreach ($tempSellerProductArray as $key => $value) {
-                   //print_r($key).' ';
-                   //print_r($value).'; ';
+                   
                    if($productCollectionTemp['entity_id'] == $key)
                    {
                        foreach($value as $seller_index => $seller_id)
                        {
-                        $productCollectionTemp['seller_name'] = $sellerNameArray[$seller_id];
+                          $productCollectionTemp['seller_name'] = $sellerNameArray[$seller_id];
                         $productCollectionTemp['seller_id'] = $seller_id;
                         $SellerProd = $this->sellerProduct->create()->getCollection();
                         $fltColl = $SellerProd->addFieldToFilter('seller_id', $seller_id)
                                 ->addFieldToFilter('product_id', $productCollectionTemp['entity_id']);
                         $data = $this->sellerProduct->create()->load($fltColl->getData()[0]['entity_id']);
-
-
-
-
+                 
+                        $productCollectionTemp['unitm'] = (round($product->getWeight(),0)).' '.($product->getUomLabel());
                         $productCollectionTemp['price_type'] =  $data->getPriceType();
                          $productCollectionTemp['doorstep_price'] =  $data->getDoorstepPrice();
                          $productCollectionTemp['pickup_from_store'] =  $data->getPickupFromStore();
@@ -243,10 +229,8 @@ class Searchview implements SearchInterface
                    }
                 }
                 
-                // $productCollectionTemp['seller_name'] = $sellerNameArray[$product->getSellerId()];
-                // $productCollectionArray[] = $productCollectionTemp;
             }
-            //print_r($productCollectionArray); exit;
         return $productCollectionArray;
     }
+   
 }
