@@ -178,26 +178,24 @@ class Searchview implements SearchInterface
             }
 
             $collection->addAttributeToSort('price', 'asc');
-            if($title != null){
-                 // check current page
+            // check current page
+            $current_page = $this->request->getParam('current_page');
+            if($current_page == ''){
+                $current_page = 1;
+            }else{
                 $current_page = $this->request->getParam('current_page');
-                if($current_page == ''){
-                    $current_page = 1;
-                }else{
-                    $current_page = $this->request->getParam('current_page');
-                }
-                // Check page size
-                $page_size = $this->request->getParam('page_size');
-                if($page_size == ''){
-                    $page_size = 10;
-                }else{
-                    $page_size = $this->request->getParam('page_size');
-                }
-               
-                $collection->addFieldToFilter([['attribute' => 'name', 'like' => '%'.$title.'%']]);
-                $collection->setCurPage($current_page)->setPageSize($page_size);
             }
-            
+            // Check page size
+            $page_size = $this->request->getParam('page_size');
+            if($page_size == ''){
+                $page_size = 10;
+            }else{
+                $page_size = $this->request->getParam('page_size');
+            }
+            if($title != null){
+                $collection->addFieldToFilter([['attribute' => 'name', 'like' => '%'.$title.'%']]);
+            }
+            $collection->setCurPage($current_page)->setPageSize($page_size);
             $sellerNameArray = array();
             $sellerCollection = $this->_sellerCollection->getCollection()->addFieldToFilter('seller_id', array('in' => $ranageSeller));
             foreach($sellerCollection as $seller):
@@ -206,13 +204,13 @@ class Searchview implements SearchInterface
             foreach ($collection as $product){
                 $productCollectionTemp = array();  
                 $productCollectionTemp = $product->getData();
-                foreach ($tempSellerProductArray as $key => $value) {
-                   
-                   if($productCollectionTemp['entity_id'] == $key)
-                   {
+                foreach ($tempSellerProductArray as $key => $value) 
+                {
+                    if($productCollectionTemp['entity_id'] == $key)
+                    {
                        foreach($value as $seller_index => $seller_id)
                        {
-                          $productCollectionTemp['seller_name'] = $sellerNameArray[$seller_id];
+                        $productCollectionTemp['seller_name'] = $sellerNameArray[$seller_id];
                         $productCollectionTemp['seller_id'] = $seller_id;
                         $SellerProd = $this->sellerProduct->create()->getCollection();
                         $fltColl = $SellerProd->addFieldToFilter('seller_id', $seller_id)
@@ -221,9 +219,9 @@ class Searchview implements SearchInterface
                  
                         $productCollectionTemp['unitm'] = (round($product->getWeight(),0)).' '.($product->getUomLabel());
                         $productCollectionTemp['price_type'] =  $data->getPriceType();
-                         $productCollectionTemp['doorstep_price'] =  $data->getDoorstepPrice();
-                         $productCollectionTemp['pickup_from_store'] =  $data->getPickupFromStore();
-                         $productCollectionTemp['pickup_from_nearby_store'] =  $data->getPickupFromNearbyStore();
+                        $productCollectionTemp['doorstep_price'] =  $data->getDoorstepPrice();
+                        $productCollectionTemp['pickup_from_store'] =  $data->getPickupFromStore();
+                        $productCollectionTemp['pickup_from_nearby_store'] =  $data->getPickupFromNearbyStore();
                         $productCollectionArray[] = $productCollectionTemp;
                        }
                    }
