@@ -51,4 +51,11 @@
             <resource ref="anonymous"/>
         </resources>
     </route>
+    <!-- Orgnized retailer -->
+    <route url="/V1/orgnizedretailer/" method="POST">
+        <service class="Asm\Customapi\Api\OrgnizedretailerInterface" method="orgreailer"/>
+        <resources>
+            <resource ref="anonymous"/>
+        </resources>
+    </route>
 </routes>
