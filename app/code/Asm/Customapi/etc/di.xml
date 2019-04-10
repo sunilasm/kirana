@@ -23,4 +23,6 @@
     <preference for="Asm\Customapi\Api\OutofrangeInterface" type="Asm\Customapi\Model\Outofrangeview" />
     <!-- Get flushcart -->
     <preference for="Asm\Customapi\Api\FlushcartInterface" type="Asm\Customapi\Model\Flushcartview" />
+    <!-- Orgnized retailer -->
+    <preference for="Asm\Customapi\Api\OrgnizedretailerInterface" type="Asm\Customapi\Model\Orgreailerview" />
 </config>
