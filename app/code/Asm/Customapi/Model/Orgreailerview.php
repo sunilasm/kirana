@@ -97,7 +97,7 @@ class Orgreailerview implements OrgnizedretailerInterface
                                 $productCollectionData['quote_qty'] = $item->getQty();
                                 $productPresentCollArray[] = $productCollectionData;
 				//print_r($seseller_products); exit;
-                                if($seller_products[$product->getId()]['pickup_from_store'] != null)
+                                if(isset($seller_products[$product->getId()]['pickup_from_store']))
                                 {
                                     $cartSubTotal += ($seller_products[$product->getId()]['pickup_from_store'] * $item->getQty());
                                 }
