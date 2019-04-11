@@ -58,4 +58,18 @@
             <resource ref="anonymous"/>
         </resources>
     </route>
+    <!-- Clear cart -->
+    <route url="/V1/clearcart/" method="POST">
+        <service class="Asm\Customapi\Api\ClearcartInterface" method="clearcart"/>
+        <resources>
+            <resource ref="anonymous"/>
+        </resources>
+    </route>
+    <!-- Orgnized retailer Add -->
+    <route url="/V1/orgnizedretailer/add" method="POST">
+        <service class="Asm\Customapi\Api\AddorgnizedretailerInterface" method="addorgreailer"/>
+        <resources>
+            <resource ref="anonymous"/>
+        </resources>
+    </route>
 </routes>

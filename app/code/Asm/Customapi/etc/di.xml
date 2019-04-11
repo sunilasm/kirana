@@ -24,5 +24,9 @@
     <!-- Get flushcart -->
     <preference for="Asm\Customapi\Api\FlushcartInterface" type="Asm\Customapi\Model\Flushcartview" />
     <!-- Orgnized retailer -->
-    <preference for="Asm\Customapi\Api\OrgnizedretailerInterface" type="Asm\Customapi\Model\Orgreailerview" />
+    <preference for="Asm\Customapi\Api\OrgnizedretailerInterface" type="Asm\Customapi\Model\Orgreailerview" /> 
+    <!-- Clear Cart -->
+    <preference for="Asm\Customapi\Api\ClearcartInterface" type="Asm\Customapi\Model\Clearcartview" />
+    <!-- Orgnized retailer Add -->
+    <preference for="Asm\Customapi\Api\AddorgnizedretailerInterface" type="Asm\Customapi\Model\Addorgreailerview" />
 </config>
