@@ -205,13 +205,14 @@ class Searchview implements SearchInterface
             $productCollectionArray = array();
             $sellerProductsArray = array();
             $arratAttributes = array();
+            $FnlProductCollection = array();
             $collection = $this->_productCollectionFactory->create();
            
            
 
             $collection->addAttributeToSelect('*');
           
-            $collection->addAttributeToSort('price', 'desc');
+            $collection->addAttributeToSort('price', 'asc');
        // if($title != null){
                  // check current page
                 $current_page = $this->request->getParam('current_page');
@@ -268,9 +269,9 @@ class Searchview implements SearchInterface
 
             $FnlProductCollection[] = $productCollectionArray;
         }
-           $FnlProductCollection = array_slice($FnlProductCollection, 0, 10);
+           $FnlProductCollectionar = array_slice($FnlProductCollection, 0, 10);
         //print_r($FnlProductCollection); exit();
-        return $FnlProductCollection;
+        return $FnlProductCollectionar;
     }
    
 }
