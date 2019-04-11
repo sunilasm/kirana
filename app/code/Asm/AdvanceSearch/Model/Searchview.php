@@ -164,17 +164,17 @@ class Searchview implements SearchInterface
             if(count($fltData) != 0){
                 $selProd = $fltData;
                
-                if($seldata['group_id'] == 4){
-
-                        $orgRetail['seller_id'] = $seldata['seller_id'];
-                        $orgRetail['price'] = $selProd[0]['pickup_from_store'];
-                        $orgRetail['grp_id'] = $seldata['group_id'];
-                        $orgRetailColl[$selProd[0] ['pickup_from_store']] = $orgRetail;
+                if($seldata['group_id'] == 1){
+                      $kirana['seller_id'] = $seldata['seller_id'];
+                      $kirana['price'] = $selProd[0]['doorstep_price'];
+                      $kirana['grp_id'] = $seldata['group_id'];
+                      $kiranaColl[$selProd[0] ['doorstep_price']] = $kirana;       
                 } else {
-                        $kirana['seller_id'] = $seldata['seller_id'];
-                        $kirana['price'] = $selProd[0]['doorstep_price'];
-                        $kirana['grp_id'] = $seldata['group_id'];
-                        $kiranaColl[$selProd[0] ['doorstep_price']] = $kirana;
+                     $orgRetail['seller_id'] = $seldata['seller_id'];
+                     $orgRetail['price'] = $selProd[0]['pickup_from_store'];
+                     $orgRetail['grp_id'] = $seldata['group_id'];
+                     $orgRetailColl[$selProd[0] ['pickup_from_store']] = $orgRetail;
+                      
                 }
 
             }
