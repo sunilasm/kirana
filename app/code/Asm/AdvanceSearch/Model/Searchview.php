@@ -205,14 +205,13 @@ class Searchview implements SearchInterface
             $productCollectionArray = array();
             $sellerProductsArray = array();
             $arratAttributes = array();
-            $FnlProductCollection = array();
             $collection = $this->_productCollectionFactory->create();
            
            
 
             $collection->addAttributeToSelect('*');
           
-            $collection->addAttributeToSort('price', 'asc');
+            $collection->addAttributeToSort('price', 'desc');
        // if($title != null){
                  // check current page
                 $current_page = $this->request->getParam('current_page');
@@ -234,6 +233,7 @@ class Searchview implements SearchInterface
                 $collection->setCurPage($current_page)->setPageSize($page_size);
            // }
             //print_r($collection->getData()); exit();
+        $FnlProductCollection = array();
         foreach($collection->getData() as $productDtls){
             $prodId = $productDtls['entity_id'];// exit();
            // $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
