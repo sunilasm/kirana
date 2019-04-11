@@ -22,6 +22,7 @@ class Searchview implements SearchInterface
     protected $request;
     protected $_productCollectionFactory;
     protected $_sellerCollection;
+    private $productsRepository;
     public function __construct(
         ProductRepository $productRepository,
         \Magento\Quote\Model\Quote\ItemFactory $itemFactory,
@@ -30,7 +31,9 @@ class Searchview implements SearchInterface
        \Magento\Catalog\Model\ResourceModel\Product\CollectionFactory $productCollectionFactory,
        \Lof\MarketPlace\Model\Seller $sellerCollection,
        \Lof\MarketPlace\Model\SellerProduct $sellerProductCollection,
-       \Asm\Geolocation\Helper\Data $helperData
+       \Asm\Geolocation\Helper\Data $helperData,
+       \Magento\Catalog\Api\ProductRepositoryInterface $productsRepository
+
     ) {
         //$this->productRepository = $productRepository;
         $this->_productRepository = $productRepository;
@@ -41,6 +44,7 @@ class Searchview implements SearchInterface
        $this->_sellerCollection = $sellerCollection;
        $this->_sellerProductCollection = $sellerProductCollection;
        $this->helperData = $helperData;
+       $this->_productsRepository = $productsRepository;
     }
     public function name() {
 
@@ -251,7 +255,8 @@ class Searchview implements SearchInterface
                     $SellerProd = $this->sellerProduct->create()->getCollection();
                     $fltColl = $SellerProd->addFieldToFilter('seller_id', $seller['seller_id'])
                             ->addFieldToFilter('product_id', $prodId);
-               // $productCollectionArray['unitm'] = (round($product->getWeight(),0)).' '.($product->getUomLabel());
+                $product = $this->_productsRepository->getById($prodId);            
+                $productCollectionArray['unitm'] = (round($product->getData('weight'),0)).' '.($product->getData('uom_label'));
                 if(count($fltColl->getData()) != 0){
                 if($seller['grp_id'] == 1){
                     $productCollectionArray['kirana'] = $seller['seller_id'];
