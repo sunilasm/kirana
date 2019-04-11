@@ -40,7 +40,6 @@ class Orgreailerview implements OrgnizedretailerInterface
         $flag = 0;
         $sellerData = '';
         if($post['latitude'] != '' && $post['longitude'] != ''){
-            
             $ranageSeller = $this->getInRangeSeller($post['latitude'], $post['longitude']);
             $items = $quote->getAllItems();
             $response = array();
@@ -99,7 +98,8 @@ class Orgreailerview implements OrgnizedretailerInterface
                                 }
                                 $productCollectionData['quote_qty'] = $item->getQty();
                                 $productPresentCollArray[] = $productCollectionData;
-                                if($seller_products[$product->getId()]['pickup_from_store'] != null)
+				//print_r($seseller_products); exit;
+                                if(isset($seller_products[$product->getId()]['pickup_from_store']))
                                 {
                                     $cartSubTotal += ($seller_products[$product->getId()]['pickup_from_store'] * $item->getQty());
                                 }

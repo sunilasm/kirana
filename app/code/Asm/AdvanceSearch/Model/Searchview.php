@@ -212,7 +212,7 @@ class Searchview implements SearchInterface
                     {
                        foreach($value as $seller_index => $seller_id)
                        {
-                        $productCollectionTemp['seller_name'] = $sellerNameArray[$seller_id];
+                          $productCollectionTemp['seller_name'] = $sellerNameArray[$seller_id];
                         $productCollectionTemp['seller_id'] = $seller_id;
                         $SellerProd = $this->sellerProduct->create()->getCollection();
                         $fltColl = $SellerProd->addFieldToFilter('seller_id', $seller_id)
