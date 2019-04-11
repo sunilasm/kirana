@@ -141,6 +141,7 @@ class Searchview implements SearchInterface
         $minLat = $lat - rad2deg($distance/$R);
         $maxLon = $lon + rad2deg(asin($distance/$R) / cos(deg2rad($lat)));
         $minLon = $lon - rad2deg(asin($distance/$R) / cos(deg2rad($lat)));
+        //print_r($this->_sellerCollection->getCollection()->getData()); exit;
         // filter collection in range of lat and long
         $sellerCollection = $this->_sellerCollection->getCollection()
         ->setOrder('position','ASC')
@@ -148,9 +149,11 @@ class Searchview implements SearchInterface
         ->addFieldToFilter('geo_lng',array('gteq'=>$minLon))
         ->addFieldToFilter('geo_lat',array('lteq'=>$maxLat))
         ->addFieldToFilter('geo_lng',array('lteq'=>$maxLon))
-        ->addFieldToFilter('status',1);
+        ->addFieldToFilter('status',1)
+        ->addFieldToFilter('group_id',1);
         // get Seller id's
         $sellerData = $sellerCollection->getData();
+
      
         $kirana = array();
         $orgRetail = array();
@@ -158,6 +161,7 @@ class Searchview implements SearchInterface
         $orgRetailColl = array();
         $kiranaColl = array();
         //print_r($sellerData); exit();
+
         foreach($sellerData as $seldata):
             
             $SellerProd = $this->sellerProduct->create()->getCollection();
@@ -184,6 +188,7 @@ class Searchview implements SearchInterface
             }
             
         endforeach;
+
        ksort($orgRetailColl);
        $chsnOrgRetail = array_shift($orgRetailColl);
        ksort($kiranaColl);
@@ -198,6 +203,7 @@ class Searchview implements SearchInterface
         $selerIdArray[] = $chsnOrgRetail;
         }
        // print_r($selerIdArray); exit();
+
         return  $selerIdArray;
         
     }
@@ -218,13 +224,14 @@ class Searchview implements SearchInterface
             $collection->addAttributeToSort('price', 'desc');
        // if($title != null){
                  // check current page
+
                 $current_page = $this->request->getParam('current_page');
-                if($current_page == ''){
-                    $current_page = 1;
-                }else{
-                    $current_page = $this->request->getParam('current_page');
-                }
-                // Check page size
+            }
+            // Check page size
+            $page_size = $this->request->getParam('page_size');
+            if($page_size == ''){
+                $page_size = 10;
+            }else{
                 $page_size = $this->request->getParam('page_size');
                 if($page_size == ''){
                     $page_size = 100;
@@ -268,6 +275,7 @@ class Searchview implements SearchInterface
                 }
 
                 }
+
 
                 }
             }

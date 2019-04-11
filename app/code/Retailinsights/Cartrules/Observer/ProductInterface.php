@@ -1,4 +1,3 @@
-<Volumehp
 <?php
 namespace Retailinsights\Cartrules\Observer;
 use Magento\Framework\Event\ObserverInterface;
