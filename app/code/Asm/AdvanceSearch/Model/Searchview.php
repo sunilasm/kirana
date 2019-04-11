@@ -159,38 +159,41 @@ class Searchview implements SearchInterface
             $SellerProd = $this->sellerProduct->create()->getCollection();
             $fltColl = $SellerProd->addFieldToFilter('seller_id', $seldata['seller_id'])
                 ->addFieldToFilter('product_id', $prodId);
+                $fltData = $fltColl->getData();
                 
-            if(count($fltColl->getData()) != 0){
-                $selProd = $fltColl->getData();
-                $selId[$seldata['group_id']] = $seldata['seller_id'];
-                //print_r($selProd); exit();
+            if(count($fltData) != 0){
+                $selProd = $fltData;
                
                 if($seldata['group_id'] == 4){
 
                         $orgRetail['seller_id'] = $seldata['seller_id'];
                         $orgRetail['price'] = $selProd[0]['pickup_from_store'];
                         $orgRetail['grp_id'] = $seldata['group_id'];
-                        $orgRetailColl[$selProd[0]['pickup_from_store']] = $orgRetail;
+                        $orgRetailColl[$selProd[0] ['pickup_from_store']] = $orgRetail;
                 } else {
                         $kirana['seller_id'] = $seldata['seller_id'];
                         $kirana['price'] = $selProd[0]['doorstep_price'];
                         $kirana['grp_id'] = $seldata['group_id'];
-                        $kiranaColl[$selProd[0]['doorstep_price']] = $kirana;
+                        $kiranaColl[$selProd[0] ['doorstep_price']] = $kirana;
                 }
 
             }
             
         endforeach;
-        ksort($orgRetailColl);
-        $chsnOrgRetail = array_shift($orgRetailColl);
-        ksort($kiranaColl);
-        $chsnKirana = array_shift($kiranaColl);
+       ksort($orgRetailColl);
+       $chsnOrgRetail = array_shift($orgRetailColl);
+       ksort($kiranaColl);
+       $chsnKirana = array_shift($kiranaColl);
+        //print_r($kiranaColl); exit();
+        
         if(!empty($chsnKirana)){
         $selerIdArray[] = $chsnKirana;
         }
         if(!empty($chsnOrgRetail)){
+            
         $selerIdArray[] = $chsnOrgRetail;
         }
+       // print_r($selerIdArray); exit();
         return  $selerIdArray;
         
     }
@@ -208,8 +211,8 @@ class Searchview implements SearchInterface
 
             $collection->addAttributeToSelect('*');
           
-            $collection->addAttributeToSort('price', 'asc');
-            if($title != null){
+            $collection->addAttributeToSort('price', 'desc');
+       // if($title != null){
                  // check current page
                 $current_page = $this->request->getParam('current_page');
                 if($current_page == ''){
@@ -220,18 +223,20 @@ class Searchview implements SearchInterface
                 // Check page size
                 $page_size = $this->request->getParam('page_size');
                 if($page_size == ''){
-                    $page_size = 10;
+                    $page_size = 100;
                 }else{
                     $page_size = $this->request->getParam('page_size');
+                    $page_size = 100;
                 }
                
                 $collection->addFieldToFilter([['attribute' => 'name', 'like' => '%'.$title.'%']]);
                 $collection->setCurPage($current_page)->setPageSize($page_size);
-            }
+           // }
+            //print_r($collection->getData()); exit();
         foreach($collection->getData() as $productDtls){
             $prodId = $productDtls['entity_id'];// exit();
-            $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
-            $product = $objectManager->get('Magento\Catalog\Model\Product')->load($prodId);
+           // $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+            //$product = $objectManager->get('Magento\Catalog\Model\Product')->load($prodId);
             ///echo $product->getAttributeText('your_attribut');
 
             $sellerId = $this->getInRangeSeller($lat, $lon, $prodId);
@@ -245,7 +250,7 @@ class Searchview implements SearchInterface
                     $SellerProd = $this->sellerProduct->create()->getCollection();
                     $fltColl = $SellerProd->addFieldToFilter('seller_id', $seller['seller_id'])
                             ->addFieldToFilter('product_id', $prodId);
-                $productCollectionArray['unitm'] = (round($product->getWeight(),0)).' '.($product->getUomLabel());
+               // $productCollectionArray['unitm'] = (round($product->getWeight(),0)).' '.($product->getUomLabel());
                 if(count($fltColl->getData()) != 0){
                 if($seller['grp_id'] == 1){
                     $productCollectionArray['kirana'] = $seller['seller_id'];
@@ -263,7 +268,7 @@ class Searchview implements SearchInterface
 
             $FnlProductCollection[] = $productCollectionArray;
         }
-           
+           $FnlProductCollection = array_slice($FnlProductCollection, 0, 10);
         //print_r($FnlProductCollection); exit();
         return $FnlProductCollection;
     }
