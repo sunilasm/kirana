@@ -136,6 +136,7 @@ class Searchview implements SearchInterface
         $minLat = $lat - rad2deg($distance/$R);
         $maxLon = $lon + rad2deg(asin($distance/$R) / cos(deg2rad($lat)));
         $minLon = $lon - rad2deg(asin($distance/$R) / cos(deg2rad($lat)));
+        //print_r($this->_sellerCollection->getCollection()->getData()); exit;
         // filter collection in range of lat and long
         $sellerCollection = $this->_sellerCollection->getCollection()
         ->setOrder('position','ASC')
@@ -143,15 +144,16 @@ class Searchview implements SearchInterface
         ->addFieldToFilter('geo_lng',array('gteq'=>$minLon))
         ->addFieldToFilter('geo_lat',array('lteq'=>$maxLat))
         ->addFieldToFilter('geo_lng',array('lteq'=>$maxLon))
-        ->addFieldToFilter('status',1);
+        ->addFieldToFilter('status',1)
+        ->addFieldToFilter('group_id',1);
         // get Seller id's
         $sellerData = $sellerCollection->getData();
-
 
         foreach($sellerData as $seldata):
             $selerIdArray[] = $seldata['seller_id'];
             
         endforeach;
+        //print_r($selerIdArray); exit;
         return  $selerIdArray;
     }
     public function getSearchTermData($title, $lat, $lon){

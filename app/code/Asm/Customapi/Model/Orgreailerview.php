@@ -74,13 +74,15 @@ class Orgreailerview implements OrgnizedretailerInterface
                 $cartSubTotal = 0;
                 foreach ($items as $item) 
                 {
-                        $collection = $this->_productCollectionFactory->create();
-                        $collection->addAttributeToSelect('*');
-                        $collection->addAttributeToSort('price', 'asc');
-                        if(count($tempSellerProductArray))
-                        {
-                            $collection->addFieldToFilter('entity_id', array('in' => $tempSellerProductIdArray));
-                        }               
+                    $collection = $this->_productCollectionFactory->create();
+                    $collection->addAttributeToSelect('*');
+                    $collection->addAttributeToSort('price', 'asc');
+
+                    // If seller have products.
+                    if(count($tempSellerProductArray))
+                    {
+                        $collection->addFieldToFilter('entity_id', array('in' => $tempSellerProductIdArray));
+
                         if($item->getName() != null){
                             $collection->addFieldToFilter([['attribute' => 'name', 'like' => '%'.$item->getName().'%']]);
                         }
@@ -105,16 +107,16 @@ class Orgreailerview implements OrgnizedretailerInterface
                                 $produt_found = 1;
                             }
                             
-                      }
+                        }
 
-                      if($produt_found == 0)
-                      {
+                        if($produt_found == 0)
+                        {
                             // print_r($item->getProduct_id());exit;
                             $sellerCollectionNew = $this->_sellerProductCollection->getCollection()->addFieldToFilter('product_id', array('in' => $item->getProduct_id()));
                             // print_r($sellerCollectionNew->getData());exit;
                             foreach($sellerCollectionNew as $sellcoll):
-                                 $seller_productsNew[$sellcoll->getProduct_id()] = $sellcoll->getData();
-                              endforeach;
+                                $seller_productsNew[$sellcoll->getProduct_id()] = $sellcoll->getData();
+                            endforeach;
 
                             $collectionNew = $this->_productCollectionFactory->create();
                             $collectionNew->addAttributeToSelect('*');
@@ -129,8 +131,8 @@ class Orgreailerview implements OrgnizedretailerInterface
                                 }
                                 $productNotPresentCollArray[] = $collectionNew;
                             endforeach;
-                      }
-                      
+                        } 
+                    }           
                 }
 
                 $cartSummeryArray = array('total_item_count' => $quote->getItemsCount(), 'present_item_count' => count($productPresentCollArray), 'not_present_item_count' => count($productNotPresentCollArray), 'sub_total' => number_format($cartSubTotal, 2));
