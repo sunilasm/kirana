@@ -79,7 +79,7 @@ class Orgreailerview implements OrgnizedretailerInterface
                     $collection->addAttributeToSelect('*');
                     $collection->addAttributeToSort('price', 'asc');
                     $produt_found = 0;
-                    //print_r($item->getName());exit;
+                    //print_r($item->getSku());exit;
                     // If seller have products.
                     if(count($tempSellerProductArray))
                     {
@@ -132,6 +132,7 @@ class Orgreailerview implements OrgnizedretailerInterface
                             // print_r($product->getId());
                             // print_r($seller_products);
                             $collectionNew = $product->getData();
+                            $collectionNew['quote_qty'] = $item->getQty();
                             $collectionNew['seller_id'] = $item->getSeller_id();
                             if(array_key_exists($product->getId(), $seller_productsNew)){
                                 $collectionNew['pickup_from_store'] = $seller_productsNew[$product->getId()]['pickup_from_store'];
