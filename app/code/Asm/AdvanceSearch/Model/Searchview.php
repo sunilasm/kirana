@@ -144,14 +144,13 @@ class Searchview implements SearchInterface
         ->addFieldToFilter('geo_lng',array('gteq'=>$minLon))
         ->addFieldToFilter('geo_lat',array('lteq'=>$maxLat))
         ->addFieldToFilter('geo_lng',array('lteq'=>$maxLon))
-        ->addFieldToFilter('status',1)
-        ->addFieldToFilter('group_id',1);
+        ->addFieldToFilter('status',1);
+        //->addFieldToFilter('group_id',2);
         // get Seller id's
         $sellerData = $sellerCollection->getData();
 
         foreach($sellerData as $seldata):
             $selerIdArray[] = $seldata['seller_id'];
-            
         endforeach;
         //print_r($selerIdArray); exit;
         return  $selerIdArray;
