@@ -1,0 +1,131 @@
+<?php
+namespace Asm\Customapi\Model;
+use Asm\Customapi\Api\FlushcartInterface;
+ 
+class Flushcartview implements FlushcartInterface
+{
+    /**
+     * Returns greeting message to user
+     *
+     * @api
+     * @param string $name Users name.
+     * @return string Greeting message with users name.
+     */
+    protected $request;
+    protected $quoteFactory;
+    protected $_productCollectionFactory;
+     protected $_customerFactory;
+    protected $_addressFactory;
+
+    public function __construct(
+       \Magento\Framework\App\RequestInterface $request,
+       \Asm\Customapi\Model\LocalityFactory $localityCollection,
+       \Magento\Quote\Model\QuoteFactory $quoteFactory,
+       \Asm\Search\Model\Searchview $searchRange,
+       \Magento\Catalog\Model\ResourceModel\Product\CollectionFactory $productCollectionFactory,
+       \Magento\Customer\Model\CustomerFactory $customerFactory,
+       \Magento\Customer\Model\AddressFactory $addressFactory
+    ) {
+       $this->request = $request;
+       $this->_locality = $localityCollection;
+       $this->quoteFactory = $quoteFactory;
+       $this->searchRange = $searchRange;
+       $this->_productCollectionFactory = $productCollectionFactory;
+       $this->_customerFactory = $customerFactory;
+       $this->_addressFactory = $addressFactory;
+    }
+
+    public function flushcart() {
+      //print_r("Herrerer");exit;
+       $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+        $request = $objectManager->get('\Magento\Framework\Webapi\Rest\Request');
+        $post = $request->getBodyParams();
+        $quote = $this->quoteFactory->create()->load($post['quote_id']);
+        // Pass Customer id get lat and long
+        /*
+        $customer = $this->_customerFactory->create()->load($post['customer_id']);
+        $shippingAddressId = $customer->getDefaultShipping();
+        $billingAddressId = $customer->getDefaultBilling();
+        $address = $objectManager->create('Magento\Customer\Model\Address')->load($billingAddressId);
+        $shippingAddress = $this->_addressFactory->create()->load($shippingAddressId);
+        $latitude = $address->getLatitude();
+        $longitude = $address->getLongitude();
+        */
+        //echo "<pre>";print_r($shippingAddress->getData());exit;
+        // Pass lat and long 
+        if(array_key_exists('latitude', $post)){
+          $latitude = $post['latitude'];
+        }else{
+          $latitude = '';
+        }
+
+        if(array_key_exists('longitude', $post)){
+          $longitude = $post['longitude'];
+        }else{
+          $longitude = '';
+        }
+
+       //print_r($latitude."--".$longitude);exit;
+        $productCollectionArray = array();
+        $kiranaArray = array();
+        $result = array();
+        $flag = 0;
+        if($latitude && $longitude){
+            $ranageSeller = $this->searchRange->getInRangeSeller($latitude, $longitude);
+            // print_r($ranageSeller);exit;
+            $items = $quote->getAllItems(); 
+            $i = 0;
+            foreach ($items as $item) {
+               if (!in_array($item->getSellerId(), $ranageSeller))
+                {
+
+                $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+                $itemModel = $objectManager->create('Magento\Quote\Model\Quote\Item');
+                $itemId = $item->getItemId();
+
+                $storeManager = $objectManager->get('\Magento\Store\Model\StoreManagerInterface');
+                $baseUrl = $storeManager->getStore()->getBaseUrl();
+                $userData = array("username" => "adminapi", "password" => "Admin@123");
+                $ch = curl_init("$baseUrl".''."rest/V1/integration/admin/token");
+                curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
+                curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($userData));
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                curl_setopt($ch, CURLOPT_HTTPHEADER, array("Content-Type: application/json", "Content-Lenght: " . strlen(json_encode($userData))));
+
+                $token = curl_exec($ch);
+		print_r($storeManager = $objectManager->get('\Magento\Store\Model\StoreManagerInterface'););
+                $ch = curl_init("$baseUrl".''."rest/V1/carts/mine/items/".$itemId);
+                curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE");
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                curl_setopt($ch, CURLOPT_HTTPHEADER, array("Content-Type: application/json", "Authorization: Bearer " . json_decode($token)));
+
+                $result = curl_exec($ch);
+
+                $result = json_decode($result, 1);
+                $flag = 1;
+                
+
+                  // $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+                  // $itemModel = $objectManager->create('Magento\Quote\Model\Quote\Item');
+                  // $itemId = $item->getItemId();
+                  // $quoteItem = $itemModel->load($itemId);
+                  // $quoteItem->delete();
+                  // $flag = 1;
+                }
+            }
+            if($flag){
+              $result = array("status" => "Success","message" => "Items are successfully removed from cart.");
+            }else{
+              $result = array("status" => "Success","message" => "Cart does not have any items out of current geolocation.");
+            }
+        }else{
+          $result = array("status" => "Error","message" => "Address geolocation details are not found.");
+        }
+       $data = array($result);
+        // print_r(json_encode($data));exit;
+       return $data;
+    }
+
+}
+
+

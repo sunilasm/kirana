@@ -40,17 +40,30 @@ class Outofrangeview implements OutofrangeInterface
         $request = $objectManager->get('\Magento\Framework\Webapi\Rest\Request');
         $post = $request->getBodyParams();
         $quote = $this->quoteFactory->create()->load($post['quote_id']);
+        // Pass Customer id get lat and long
+        /*
         $customer = $this->_customerFactory->create()->load($post['customer_id']);
         $shippingAddressId = $customer->getDefaultShipping();
         $address = $objectManager->create('Magento\Customer\Model\Address')->load($shippingAddressId);
-        //$latitude = $post['latitude'];
-        //$longitude = $post['longitude'];
         $latitude = $address->getLatitude();
         $longitude = $address->getLongitude();
+        */
+        if(array_key_exists('latitude', $post)){
+          $latitude = $post['latitude'];
+        }else{
+          $latitude = '';
+        }
 
+        if(array_key_exists('longitude', $post)){
+          $longitude = $post['longitude'];
+        }else{
+          $longitude = '';
+        }
+        // $longitude = $post['longitude'];
         //print_r($shippingAddress->getData());exit;
         $productCollectionArray = array();
         $kiranaArray = array();
+        $flag = 0;
         if($latitude && $longitude){
             $ranageSeller = $this->searchRange->getInRangeSeller($latitude, $longitude);
             $items = $quote->getAllItems(); 
@@ -63,16 +76,25 @@ class Outofrangeview implements OutofrangeInterface
                 {
                   foreach ($collection as $product){
                         $productCollectionArray[] = $product->getData();
+                        $flag = 1;
                    }
                 }
                 array_push($kiranaArray,$item->getSellerId());
             }
+            if($flag){
+              $dataNew = array("product_count" => count($productCollectionArray),"kirana_count" => count(array_unique($kiranaArray)),"products" => $productCollectionArray);
+              $data = array($dataNew);
+            }else{
+               $data = array("status" => "Success","message" => "Cart does not have any items out of current geolocation..");
+            }
+        }else{
+          $data = array("status" => "Error","message" => "Address geolocation details are not found.");
         }
         //$summry = array("product_count" => count($productCollectionArray),"kirana_count" => count(array_unique($kiranaArray)));
-        $dataNew = array("product_count" => count($productCollectionArray),"kirana_count" => count(array_unique($kiranaArray)),"products" => $productCollectionArray);
-        $data = array($dataNew);
+        
         return $data;
     }
 
 }
+
 
