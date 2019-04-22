@@ -69,10 +69,14 @@ class Searchview implements SearchInterface
         endforeach;
         $data = array();
         $flag = 0;
+        $pages = 0;
         if($searchtermpara){ $searchterm = 0; }else{ $searchterm = 1; }
         if($searchterm){
             if($title){
-                $productCollectionArray = $this->getSearchTermData($title, $lat, $lon);
+                $productCollectionResponse = $this->getSearchTermData($title, $lat, $lon);
+                $pages = (isset($productCollectionResponse['pages'])) ? $productCollectionResponse['pages'] : 0;
+                $productCollectionArray = (isset($productCollectionResponse['items'])) ? $productCollectionResponse['items'] : '';
+                //$productCollectionArray = $this->getSearchTermData($title, $lat, $lon);
                  if($productCollectionArray){
                     $data = $productCollectionArray;
                 }else{
@@ -84,7 +88,11 @@ class Searchview implements SearchInterface
                 $data = array('message' => 'Please specify at least one search term');
             }
         }else{
-            $productCollectionArray = $this->getSearchTermData($title = null,$lat, $lon);
+            $productCollectionResponse = $this->getSearchTermData($title = null, $lat, $lon);
+                $pages = (isset($productCollectionResponse['pages'])) ? $productCollectionResponse['pages'] : 0;
+                $productCollectionArray = (isset($productCollectionResponse['items'])) ? $productCollectionResponse['items'] : '';
+                
+            //$productCollectionArray = $this->getSearchTermData($title = null,$lat, $lon);
              if($productCollectionArray){
                 $data = $productCollectionArray;
             }else{
@@ -111,8 +119,8 @@ class Searchview implements SearchInterface
                 endforeach;
             }
         }
-    
-        return $data;
+        $response = array('pages' => $pages, 'items' => $data);
+        return $response = array($response);
     }
     /*
     Get seller id's based on lat & lon.
@@ -199,6 +207,13 @@ class Searchview implements SearchInterface
         {
             $page_size = $this->request->getParam('page_size');
         }
+        $product_count = count($sellerCollection);
+        $total_pages = 0;
+        if($product_count > 0)
+        {
+            $total_pages = round($product_count/$page_size);
+        }    
+        
         if($title != null)
         {
             $collection->addFieldToFilter([['attribute' => 'name', 'like' => '%'.$title.'%']]);
@@ -250,6 +265,7 @@ class Searchview implements SearchInterface
                 }
             }
         }
-        return $productCollectionArray;
+        $response = array('pages' => $total_pages, 'items' => $productCollectionArray);
+        return $response;
     }
 }
