@@ -69,10 +69,14 @@ class Searchview implements SearchInterface
         endforeach;
         $data = array();
         $flag = 0;
+        $pages = 0;
         if($searchtermpara){ $searchterm = 0; }else{ $searchterm = 1; }
         if($searchterm){
             if($title){
-                $productCollectionArray = $this->getSearchTermData($title, $lat, $lon);
+                $productCollectionResponse = $this->getSearchTermData($title, $lat, $lon);
+                $pages = (isset($productCollectionResponse['pages'])) ? $productCollectionResponse['pages'] : 0;
+                $productCollectionArray = (isset($productCollectionResponse['items'])) ? $productCollectionResponse['items'] : '';
+                //$productCollectionArray = $this->getSearchTermData($title, $lat, $lon);
                  if($productCollectionArray){
                     $data = $productCollectionArray;
                 }else{
@@ -84,7 +88,11 @@ class Searchview implements SearchInterface
                 $data = array('message' => 'Please specify at least one search term');
             }
         }else{
-            $productCollectionArray = $this->getSearchTermData($title = null,$lat, $lon);
+            $productCollectionResponse = $this->getSearchTermData($title = null, $lat, $lon);
+                $pages = (isset($productCollectionResponse['pages'])) ? $productCollectionResponse['pages'] : 0;
+                $productCollectionArray = (isset($productCollectionResponse['items'])) ? $productCollectionResponse['items'] : '';
+                
+            //$productCollectionArray = $this->getSearchTermData($title = null,$lat, $lon);
              if($productCollectionArray){
                 $data = $productCollectionArray;
             }else{
@@ -111,8 +119,8 @@ class Searchview implements SearchInterface
                 endforeach;
             }
         }
-    
-        return $data;
+        $response = array('pages' => $pages, 'items' => $data);
+        return $response = array($response);
     }
     /*
     Get seller id's based on lat & lon.
@@ -144,65 +152,92 @@ class Searchview implements SearchInterface
         ->addFieldToFilter('geo_lng',array('gteq'=>$minLon))
         ->addFieldToFilter('geo_lat',array('lteq'=>$maxLat))
         ->addFieldToFilter('geo_lng',array('lteq'=>$maxLon))
-        ->addFieldToFilter('status',1)
-        ->addFieldToFilter('group_id',1);
+        ->addFieldToFilter('status',1);
+        //->addFieldToFilter('group_id',2);
         // get Seller id's
         $sellerData = $sellerCollection->getData();
 
         foreach($sellerData as $seldata):
             $selerIdArray[] = $seldata['seller_id'];
-            
         endforeach;
         //print_r($selerIdArray); exit;
         return  $selerIdArray;
     }
-    public function getSearchTermData($title, $lat, $lon){
-
+    public function getSearchTermData($title, $lat, $lon)
+    {
+        $productCollectionArray = array();
+        $sellerProductsArray = array();
+        $arratAttributes = array();
+        $collection = $this->_productCollectionFactory->create();
+        $collection->addAttributeToSelect('*');
+        if($lat != '' && $lon != '')
+        {
             $productCollectionArray = array();
-            $sellerProductsArray = array();
-            $arratAttributes = array();
-            $collection = $this->_productCollectionFactory->create();
-            $collection->addAttributeToSelect('*');
-            if($lat != '' && $lon != ''){
-                $productCollectionArray = array();
-                $ranageSeller = $this->getInRangeSeller($lat, $lon);
-                $sellerCollection = $this->_sellerProductCollection->getCollection()->addFieldToFilter('seller_id', array('in' => $ranageSeller));
-            }
-            $tempSellerProductArray = array();
-            $i=0;
-            foreach($sellerCollection as $seller):
-                $tempSellerProductArray[$seller['product_id']][] = $seller['seller_id'];
-                $tempSellerProductIdArray[] = $seller['product_id'];
-            endforeach;
-            if(count($tempSellerProductArray))
-            {
-                $collection->addFieldToFilter('entity_id', array('in' => $tempSellerProductIdArray));
-            }
+            $ranageSeller = $this->getInRangeSeller($lat, $lon);
+            $sellerCollection = $this->_sellerProductCollection->getCollection()->addFieldToFilter('seller_id', array('in' => $ranageSeller));
+        }
+        $tempSellerProductArray = array();
+        $i=0;
+        foreach($sellerCollection as $seller)
+        {
+            $tempSellerProductArray[$seller['product_id']][] = $seller['seller_id'];
+            $tempSellerProductIdArray[] = $seller['product_id'];
+        }
+        if(count($tempSellerProductArray))
+        {
+            $collection->addFieldToFilter('entity_id', array('in' => $tempSellerProductIdArray));
+        }
 
-            $collection->addAttributeToSort('price', 'asc');
-            // check current page
+        $collection->addAttributeToSort('price', 'asc');
+        // check current page
+        $current_page = $this->request->getParam('current_page');
+        if($current_page == '')
+        {
+            $current_page = 1;
+        }else{
             $current_page = $this->request->getParam('current_page');
-            if($current_page == ''){
-                $current_page = 1;
-            }else{
-                $current_page = $this->request->getParam('current_page');
-            }
-            // Check page size
+        }
+        // Check page size
+        $page_size = $this->request->getParam('page_size');
+        if($page_size == '')
+        {
+            $page_size = 10;
+        }
+        else
+        {
             $page_size = $this->request->getParam('page_size');
-            if($page_size == ''){
-                $page_size = 10;
-            }else{
-                $page_size = $this->request->getParam('page_size');
-            }
-            if($title != null){
-                $collection->addFieldToFilter([['attribute' => 'name', 'like' => '%'.$title.'%']]);
-            }
-            $collection->setCurPage($current_page)->setPageSize($page_size);
-            $sellerNameArray = array();
-            $sellerCollection = $this->_sellerCollection->getCollection()->addFieldToFilter('seller_id', array('in' => $ranageSeller));
-            foreach($sellerCollection as $seller):
-                $sellerNameArray[$seller->getId()] = $seller->getName();
-            endforeach;
+        }
+        $product_count = count($sellerCollection);
+        $total_pages = 0;
+        if($product_count > 0)
+        {
+            $total_pages = round($product_count/$page_size);
+        }    
+        
+        if($title != null)
+        {
+            $collection->addFieldToFilter([['attribute' => 'name', 'like' => '%'.$title.'%']]);
+        }
+        $product_count = count($collection->getData()); 
+        $collection->setCurPage($current_page)->setPageSize($page_size);
+        $max_product_list = ($current_page * $page_size);
+        $min_product_list = (($current_page - 1) * $page_size);
+        $count_flag = 0;
+        if($max_product_list <= $product_count)
+        {
+            $count_flag = 1;
+        }
+        elseif($min_product_list < $product_count && $max_product_list > $product_count)
+        {
+            $count_flag = 1;
+        }
+        $sellerNameArray = array();
+        $sellerCollection = $this->_sellerCollection->getCollection()->addFieldToFilter('seller_id', array('in' => $ranageSeller));
+        foreach($sellerCollection as $seller):
+            $sellerNameArray[$seller->getId()] = $seller->getName();
+        endforeach;
+        if($count_flag)
+        {
             foreach ($collection as $product){
                 $productCollectionTemp = array();  
                 $productCollectionTemp = $product->getData();
@@ -210,27 +245,27 @@ class Searchview implements SearchInterface
                 {
                     if($productCollectionTemp['entity_id'] == $key)
                     {
-                       foreach($value as $seller_index => $seller_id)
-                       {
-                          $productCollectionTemp['seller_name'] = $sellerNameArray[$seller_id];
+                        foreach($value as $seller_index => $seller_id)
+                        {
+                            $productCollectionTemp['seller_name'] = $sellerNameArray[$seller_id];
                         $productCollectionTemp['seller_id'] = $seller_id;
                         $SellerProd = $this->sellerProduct->create()->getCollection();
                         $fltColl = $SellerProd->addFieldToFilter('seller_id', $seller_id)
                                 ->addFieldToFilter('product_id', $productCollectionTemp['entity_id']);
                         $data = $this->sellerProduct->create()->load($fltColl->getData()[0]['entity_id']);
-                 
+                    
                         $productCollectionTemp['unitm'] = (round($product->getWeight(),0)).' '.($product->getUomLabel());
                         $productCollectionTemp['price_type'] =  $data->getPriceType();
                         $productCollectionTemp['doorstep_price'] =  $data->getDoorstepPrice();
                         $productCollectionTemp['pickup_from_store'] =  $data->getPickupFromStore();
                         $productCollectionTemp['pickup_from_nearby_store'] =  $data->getPickupFromNearbyStore();
                         $productCollectionArray[] = $productCollectionTemp;
-                       }
-                   }
+                        }
+                    }
                 }
-                
             }
-        return $productCollectionArray;
+        }
+        $response = array('pages' => $total_pages, 'items' => $productCollectionArray);
+        return $response;
     }
-   
 }
