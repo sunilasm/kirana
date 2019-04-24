@@ -190,6 +190,10 @@ class Searchview implements SearchInterface
          $Productcollection = $this->_productCollectionFactory->create();
          $Productcollection->addFieldToFilter('entity_id', array('in'=>array_unique($proIds)));
          $Productcollection->addFieldToFilter('status', 1);
+         $count = count($Productcollection->getData());
+         $Productcollection = $this->_productCollectionFactory->create();
+         $Productcollection->addFieldToFilter('entity_id', array('in'=>array_unique($proIds)));
+         $Productcollection->addFieldToFilter('status', 1);
          $Productcollection->addAttributeToSort('price', 'asc');
          $Productcollection->addAttributeToSelect('*');
 
@@ -253,9 +257,9 @@ class Searchview implements SearchInterface
             $result[] = $entColl;
 
          }
-         $totalItems = count($proIds);
+         //$totalItems = count($proIds);
 
-         $noOfPages = ceil($totalItems/$page_size);
+         $noOfPages = ceil($count/$page_size);
          $fnlRslt[]['pages'] = $noOfPages;
          $fnlRslt[]['items'] = $result;
          
