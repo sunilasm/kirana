@@ -12,12 +12,6 @@ xsi:noNamespaceSchemaLocation="urn:magento:framework:Api/etc/extension_attribute
 	<attribute code="price_type" type="string" />
 	<attribute code="volume" type="string" />
 	<attribute code="seller_id" type="string" />
-	<attribute code="seller_kirana_id" type="string" />
-	<attribute code="seller_org_store_id" type="string" />
-	<attribute code="org_store_qty" type="string" />
-	<attribute code="kirana_qty" type="string" />
-	<attribute code="seller_kirana_name" type="string" />
-	<attribute code="seller_org_store_name" type="string" >
     	<resources>
                 <resource  ref="anonymous"/>
         </resources>

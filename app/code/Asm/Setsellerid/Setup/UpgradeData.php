@@ -70,7 +70,7 @@ class UpgradeData
         );
 
     }
-            if (version_compare($context->getVersion(), '1.0.3') < 0){
+           /* if (version_compare($context->getVersion(), '1.0.3') < 0){
 
                                 
                 $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
@@ -89,7 +89,7 @@ class UpgradeData
                 $salesSetup->addAttribute('order_item', 'org_store_qty', ['type' =>'varchar']);
                 $quoteSetup->addAttribute('quote_item', 'org_store_qty', ['type' =>'varchar']);
 
-        }
+        }*/
 
     }   
 }
