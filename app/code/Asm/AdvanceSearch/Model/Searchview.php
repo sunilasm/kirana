@@ -68,10 +68,14 @@ class Searchview implements SearchInterface
         endforeach;
         $data = array();
         $flag = 0;
+        $pages = 0;
         if($searchtermpara){ $searchterm = 0; }else{ $searchterm = 1; }
         if($searchterm){
             if($title){
-                $productCollectionArray = $this->getSearchTermData($title, $lat, $lon);
+                $productCollectionResponse = $this->getSearchTermData($title, $lat, $lon);
+                $pages = (isset($productCollectionResponse['pages'])) ? $productCollectionResponse['pages'] : 0;
+                $productCollectionArray = (isset($productCollectionResponse['items'])) ? $productCollectionResponse['items'] : '';
+                //$productCollectionArray = $this->getSearchTermData($title, $lat, $lon);
                  if($productCollectionArray){
                     $data = $productCollectionArray;
                 }else{
@@ -83,7 +87,11 @@ class Searchview implements SearchInterface
                 $data = array('message' => 'Please specify at least one search term');
             }
         }else{
-            $productCollectionArray = $this->getSearchTermData($title = null,$lat, $lon);
+            $productCollectionResponse = $this->getSearchTermData($title = null, $lat, $lon);
+                $pages = (isset($productCollectionResponse['pages'])) ? $productCollectionResponse['pages'] : 0;
+                $productCollectionArray = (isset($productCollectionResponse['items'])) ? $productCollectionResponse['items'] : '';
+                
+            //$productCollectionArray = $this->getSearchTermData($title = null,$lat, $lon);
              if($productCollectionArray){
                 $data = $productCollectionArray;
             }else{
@@ -106,8 +114,8 @@ class Searchview implements SearchInterface
                 endforeach;
             }
         }
-    
-        return $data;
+        $response = array('pages' => $pages, 'items' => $data);
+        return $response = array($response);
     }
    /*
     Get seller id's based on lat & lon.
@@ -132,6 +140,7 @@ class Searchview implements SearchInterface
         ->addFieldToFilter('geo_lat',array('lteq'=>$maxLat))
         ->addFieldToFilter('geo_lng',array('lteq'=>$maxLon))
         ->addFieldToFilter('status',1);
+
         // get Seller id's
         $sellerData = $sellerCollection->getData();
         foreach($sellerData as $seldata):
@@ -145,6 +154,7 @@ class Searchview implements SearchInterface
 
             }
              
+
         endforeach;
                 $selerIdArray['orgretail'] = $orgRetail;
 
@@ -263,7 +273,5 @@ class Searchview implements SearchInterface
          $fnlRslt[]['items'] = $result;
          //print_r($fnlRslt); exit();
         return $fnlRslt;       
-
     }
-   
 }
