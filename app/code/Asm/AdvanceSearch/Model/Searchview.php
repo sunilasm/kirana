@@ -183,8 +183,7 @@ class Searchview implements SearchInterface
                 }
                 
             }
-               
-
+            
          }
 
          $Productcollection = $this->_productCollectionFactory->create();
@@ -217,9 +216,9 @@ class Searchview implements SearchInterface
                 }
                 $Productcollection->setCurPage($current_page)->setPageSize($page_size);
          $result = array();
-         $chsnOrgId = $chsnOrgPrice = $chsnRetailId = $chsnRetailPrice = "";
          
          foreach($Productcollection->getData() as $product){
+            $chsnOrgId = $chsnOrgPrice = $chsnRetailId = $chsnRetailPrice = "";
             $entColl = array();
             $entColl = $product;
             $product = $this->_productsRepository->getById($product['entity_id']);
@@ -262,14 +261,9 @@ class Searchview implements SearchInterface
          $noOfPages = ceil($count/$page_size);
          $fnlRslt[]['pages'] = $noOfPages;
          $fnlRslt[]['items'] = $result;
-         
+         //print_r($fnlRslt); exit();
         return $fnlRslt;       
 
-
-
-
-
-          
     }
    
 }
