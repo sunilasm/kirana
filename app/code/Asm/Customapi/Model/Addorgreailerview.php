@@ -90,7 +90,7 @@ class Addorgreailerview implements AddorgnizedretailerInterface
                             'cart_item' => [
                                 'quote_id' => $post['quote_id'],
                                 'sku' => $product['sku'],
-                                'qty' => $product['quote_qty']
+                                'qty' => $product['qty']
                             ],
                             'product_id' => $product['product_id'],
                             'seller_id' => $post['store_id'],
