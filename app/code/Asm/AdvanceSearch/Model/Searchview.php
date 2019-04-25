@@ -114,8 +114,8 @@ class Searchview implements SearchInterface
                 endforeach;
             }
         }
-        $response = array('pages' => $pages, 'items' => $data);
-        return $response = array($response);
+        //$response = array('pages' => $pages, 'items' => $data);
+        return $data;
     }
    /*
     Get seller id's based on lat & lon.
