@@ -91,7 +91,7 @@ class Searchview implements SearchInterface
                 $pages = (isset($productCollectionResponse['pages'])) ? $productCollectionResponse['pages'] : 0;
                 $productCollectionArray = (isset($productCollectionResponse['items'])) ? $productCollectionResponse['items'] : '';
                 
-            //$productCollectionArray = $this->getSearchTermData($title = null,$lat, $lon);
+            $productCollectionArray = $this->getSearchTermData($title = null,$lat, $lon);
              if($productCollectionArray){
                 $data = $productCollectionArray;
             }else{
