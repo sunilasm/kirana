@@ -22,6 +22,7 @@ class Searchview implements SearchInterface
     protected $request;
     protected $_productCollectionFactory;
     protected $_sellerCollection;
+    private $productsRepository;
     public function __construct(
         ProductRepository $productRepository,
         \Magento\Quote\Model\Quote\ItemFactory $itemFactory,
@@ -30,21 +31,21 @@ class Searchview implements SearchInterface
        \Magento\Catalog\Model\ResourceModel\Product\CollectionFactory $productCollectionFactory,
        \Lof\MarketPlace\Model\Seller $sellerCollection,
        \Lof\MarketPlace\Model\SellerProduct $sellerProductCollection,
-       \Asm\Geolocation\Helper\Data $helperData
+       \Asm\Geolocation\Helper\Data $helperData,
+       \Magento\Catalog\Api\ProductRepositoryInterface $productsRepository
     ) {
-        $this->productRepository = $productRepository;
-        $this->_productRepository = $productRepository;
-        $this->itemFactory = $itemFactory;
+       $this->_productRepository = $productRepository;
+       $this->itemFactory = $itemFactory;
        $this->sellerProduct = $sellerProduct; 
        $this->request = $request;
        $this->_productCollectionFactory = $productCollectionFactory; 
        $this->_sellerCollection = $sellerCollection;
        $this->_sellerProductCollection = $sellerProductCollection;
        $this->helperData = $helperData;
+       $this->_productsRepository = $productsRepository;
     }
+
     public function name() {
-
-
         $title = $this->request->getParam('title');
         $lat = $this->request->getParam('latitude');
         $lon = $this->request->getParam('longitude');
@@ -60,18 +61,17 @@ class Searchview implements SearchInterface
         foreach($quoteItems as $item):
             $quoteItemSellerArray[$item->getSellerId()] = $item->getItemid();
             $quoteItemArray[$item->getSku()]['qty'] = $item->getQty();
-
              $quoteItemArray[$item->getSku()]['price_type'] = $item->getPriceType();
-            //$quoteItemIndexArray[$i] = $item->getItemid();
             $quoteItemIndexArray[$i] = $item->getItemid();
             $i++;
-
         endforeach;
         $data = array();
         $flag = 0;
+        $pages = 0;
         if($searchtermpara){ $searchterm = 0; }else{ $searchterm = 1; }
         if($searchterm){
             if($title){
+
                 $productCollectionArray = $this->getSearchTermData($title, $lat, $lon);
                  if($productCollectionArray){
                     $data = $productCollectionArray;
@@ -84,6 +84,7 @@ class Searchview implements SearchInterface
                 $data = array('message' => 'Please specify at least one search term');
             }
         }else{
+                
             $productCollectionArray = $this->getSearchTermData($title = null,$lat, $lon);
              if($productCollectionArray){
                 $data = $productCollectionArray;
@@ -92,50 +93,39 @@ class Searchview implements SearchInterface
             }
             $flag = 2;
         }
-	//print_r($quoteItemArray);//exit;
+      //  print_r($data); exit();
         if($flag != 1){
-            if(count($data)){
+            if(count($data[1]["items"]) != 0){
         
-                foreach($data as $key => $proData):
-                     
+                foreach($data[1]["items"] as $key => $proData):
                     if(array_key_exists($proData['sku'], $quoteItemArray) ){
-			//print_r("herre".$key.'--SKU->'.$proData['sku']."<br/>");
-                        $data[$key] += ['quote_qty' => $quoteItemArray[$proData['sku']]['qty']];
-                        $data[$key]['price_type'] = $quoteItemArray[$proData['sku']]['price_type']; 
-
+                        $data[1]["items"][$key] += ['quote_qty' => $quoteItemArray[$proData['sku']]['qty']];
+                        $data[1]["items"][$key]['price_type'] = $quoteItemArray[$proData['sku']]['price_type']; 
                     }else{
-			//print_r("okk".$key."<br>");
-                        $data[$key] += ['quote_qty' => 0];
-                        $data[$key]['price_type'] = NULL;                      
+                        $data[1]["items"][$key] += ['quote_qty' => 0];
+                        $data[1]["items"][$key]['price_type'] = NULL;                      
                     }
                 endforeach;
             }
         }
-    
+
         return $data;
     }
-    /*
+   /*
     Get seller id's based on lat & lon.
     */
     public function getInRangeSeller($lat, $lon){
         $selerIdArray = array();
-        $rangeSetting = $this->helperData->getGeneralConfig('enable');
-        $rangeInKm = $this->helperData->getGeneralConfig('range_in_km');
-        if($rangeSetting == 1){
-            if($rangeInKm){
-                $distance = $rangeInKm; //your distance in KM
-            }else{
-                $distance = 1; //your distance in KM
-            }
-        }else{
-            $distance = 1; //your distance in KM
-        }
-        
+        $orgRetail = array();
+        $retail = array();
+        $distance = 1; //your distance in KM
         $R = 6371; //constant earth radius. You can add precision here if you wish
+
         $maxLat = $lat + rad2deg($distance/$R);
         $minLat = $lat - rad2deg($distance/$R);
         $maxLon = $lon + rad2deg(asin($distance/$R) / cos(deg2rad($lat)));
         $minLon = $lon - rad2deg(asin($distance/$R) / cos(deg2rad($lat)));
+
         // filter collection in range of lat and long
         $sellerCollection = $this->_sellerCollection->getCollection()
         ->setOrder('position','ASC')
@@ -144,91 +134,139 @@ class Searchview implements SearchInterface
         ->addFieldToFilter('geo_lat',array('lteq'=>$maxLat))
         ->addFieldToFilter('geo_lng',array('lteq'=>$maxLon))
         ->addFieldToFilter('status',1);
+
         // get Seller id's
         $sellerData = $sellerCollection->getData();
-
-
         foreach($sellerData as $seldata):
-            $selerIdArray[] = $seldata['seller_id'];
-            
+            //print_r($seldata);exit();
+            if($seldata['group_id'] == 1){
+                
+                $retail[] = $seldata['seller_id'];
+
+            } else {
+                $orgRetail[] = $seldata['seller_id'];
+
+            }
+             
+
         endforeach;
+                $selerIdArray['orgretail'] = $orgRetail;
+
+        $selerIdArray['retail'] = $retail;
+        
+        //print_r($selerIdArray); exit();
         return  $selerIdArray;
     }
     public function getSearchTermData($title, $lat, $lon){
-
-            $productCollectionArray = array();
-            $sellerProductsArray = array();
-            $arratAttributes = array();
-            $collection = $this->_productCollectionFactory->create();
-            $collection->addAttributeToSelect('*');
-            if($lat != '' && $lon != ''){
-                $productCollectionArray = array();
-                $ranageSeller = $this->getInRangeSeller($lat, $lon);
-                $sellerCollection = $this->_sellerProductCollection->getCollection()->addFieldToFilter('seller_id', array('in' => $ranageSeller));
-            }
-            $tempSellerProductArray = array();
-            $i=0;
-            foreach($sellerCollection as $seller):
-                $tempSellerProductArray[$seller['product_id']][] = $seller['seller_id'];
-                $tempSellerProductIdArray[] = $seller['product_id'];
-            endforeach;
-            if(count($tempSellerProductArray))
-            {
-                $collection->addFieldToFilter('entity_id', array('in' => $tempSellerProductIdArray));
-            }
-
-            $collection->addAttributeToSort('price', 'asc');
-            // check current page
-            $current_page = $this->request->getParam('current_page');
-            if($current_page == ''){
-                $current_page = 1;
-            }else{
-                $current_page = $this->request->getParam('current_page');
-            }
-            // Check page size
-            $page_size = $this->request->getParam('page_size');
-            if($page_size == ''){
-                $page_size = 10;
-            }else{
-                $page_size = $this->request->getParam('page_size');
-            }
-            if($title != null){
-                $collection->addFieldToFilter([['attribute' => 'name', 'like' => '%'.$title.'%']]);
-            }
-            $collection->setCurPage($current_page)->setPageSize($page_size);
-            $sellerNameArray = array();
-            $sellerCollection = $this->_sellerCollection->getCollection()->addFieldToFilter('seller_id', array('in' => $ranageSeller));
-            foreach($sellerCollection as $seller):
-                $sellerNameArray[$seller->getId()] = $seller->getName();
-            endforeach;
-            foreach ($collection as $product){
-                $productCollectionTemp = array();  
-                $productCollectionTemp = $product->getData();
-                foreach ($tempSellerProductArray as $key => $value) 
-                {
-                    if($productCollectionTemp['entity_id'] == $key)
-                    {
-                       foreach($value as $seller_index => $seller_id)
-                       {
-                          $productCollectionTemp['seller_name'] = $sellerNameArray[$seller_id];
-                        $productCollectionTemp['seller_id'] = $seller_id;
-                        $SellerProd = $this->sellerProduct->create()->getCollection();
-                        $fltColl = $SellerProd->addFieldToFilter('seller_id', $seller_id)
-                                ->addFieldToFilter('product_id', $productCollectionTemp['entity_id']);
-                        $data = $this->sellerProduct->create()->load($fltColl->getData()[0]['entity_id']);
-                 
-                        $productCollectionTemp['unitm'] = (round($product->getWeight(),0)).' '.($product->getUomLabel());
-                        $productCollectionTemp['price_type'] =  $data->getPriceType();
-                        $productCollectionTemp['doorstep_price'] =  $data->getDoorstepPrice();
-                        $productCollectionTemp['pickup_from_store'] =  $data->getPickupFromStore();
-                        $productCollectionTemp['pickup_from_nearby_store'] =  $data->getPickupFromNearbyStore();
-                        $productCollectionArray[] = $productCollectionTemp;
-                       }
-                   }
+         $sellerId = $this->getInRangeSeller($lat, $lon);
+         //print_r($sellerId['orgretail']); exit();
+         
+         $pickRetail = array();
+         $pickOrgRetail = array();
+         $orgprice = array();
+         $retailprice = array();
+         $proIds = array();
+         foreach($sellerId as $key => $seller){
+            $_sellerProdk = $this->sellerProduct->create()->getCollection()->setOrder('product_id', 'asc');
+            $sellerProdCol = $_sellerProdk->addFieldToFilter('seller_id', array('in'=>$seller));
+            $chsnPrice = 0;
+            foreach($sellerProdCol as $sellerData){
+                $proIds[] = $sellerData['product_id'];
+                if($key == 'orgretail'){
+                    if(!empty($sellerData['pickup_from_store']) && ($sellerData['pickup_from_store'] != NULL) && ($sellerData['pickup_from_store'] != 0) ){
+                        $orgprice[$sellerData['seller_id']] = $sellerData['pickup_from_store'];
+                        $pickOrgRetail[$sellerData['product_id']] = $orgprice;
+                    }
+                } else {
+                    if(!empty($sellerData['doorstep_price']) && ($sellerData['doorstep_price'] != NULL) && ($sellerData['doorstep_price'] != 0) ){
+                        $retailprice[$sellerData['seller_id']] = $sellerData['doorstep_price'];
+                        $pickRetail[$sellerData['product_id']] = $retailprice;
+                    }    
                 }
                 
             }
-        return $productCollectionArray;
+            
+         }
+
+         $Productcollection = $this->_productCollectionFactory->create();
+         $Productcollection->addFieldToFilter('entity_id', array('in'=>array_unique($proIds)));
+         $Productcollection->addFieldToFilter('status', 1);
+         if($title != null){
+            $Productcollection->addFieldToFilter([['attribute' => 'name', 'like' => '%'.$title.'%']]);
+         }
+         $count = count($Productcollection->getData());
+         $Productcollection = $this->_productCollectionFactory->create();
+         $Productcollection->addFieldToFilter('entity_id', array('in'=>array_unique($proIds)));
+         $Productcollection->addFieldToFilter('status', 1);
+         $Productcollection->addAttributeToSort('price', 'asc');
+         $Productcollection->addAttributeToSelect('*');
+
+
+                 // check current page
+                $current_page = $this->request->getParam('current_page');
+                if($current_page == ''){
+                    $current_page = 1;
+                }else{
+                    $current_page = $this->request->getParam('current_page');
+                }
+                // Check page size
+                $page_size = $this->request->getParam('page_size');
+                if($page_size == ''){
+                    $page_size = 10;
+                }else{
+                    $page_size = $this->request->getParam('page_size');
+                }
+                if($title != null){
+                    $Productcollection->addFieldToFilter([['attribute' => 'name', 'like' => '%'.$title.'%']]);
+                }
+                $Productcollection->setCurPage($current_page)->setPageSize($page_size);
+         $result = array();
+         
+         foreach($Productcollection->getData() as $product){
+            $chsnOrgId = $chsnOrgPrice = $chsnRetailId = $chsnRetailPrice = "";
+            $entColl = array();
+            $entColl = $product;
+            $product = $this->_productsRepository->getById($product['entity_id']);
+            if(array_key_exists($product['entity_id'], $pickOrgRetail)){
+                $orgsellers = $pickOrgRetail[$product['entity_id']];
+                asort($orgsellers);
+                reset($orgsellers);
+                $chsnOrgId = key($orgsellers); 
+                $chsnOrgPrice = $orgsellers[$chsnOrgId]; 
+            }
+            if(array_key_exists($product['entity_id'], $pickRetail)){
+                $retsellers = $pickRetail[$product['entity_id']];
+                asort($retsellers);
+                reset($retsellers);
+                $chsnRetailId = key($retsellers);
+                $chsnRetailPrice = $retsellers[$chsnRetailId];
+            }
+            
+           
+            $entColl['name'] = $product->getData('name');
+            $entColl['image'] = $product->getData('image');
+            $entColl['small_image'] = $product->getData('small_image');
+            $entColl['thumbnail'] = $product->getData('thumbnail'); 
+            $entColl['volume'] = $product->getData('volume');         
+            $entColl['unitm'] = (round($product->getData('weight'),0)).' '.($product->getData('uom_label'));
+            if(!empty($chsnOrgId && $chsnOrgPrice)){
+                $entColl['org_retail'] = $chsnOrgId;
+                $entColl['pickup_from_store'] = $chsnOrgPrice;
+            }
+            if(!empty($chsnRetailId && $chsnRetailPrice)){
+                $entColl['kirana'] = $chsnRetailId;
+                $entColl['doorstep_delivery'] = $chsnRetailPrice;                
+            }
+            
+            $result[] = $entColl;
+
+         }
+         //$totalItems = count($proIds);
+
+         $noOfPages = ceil($count/$page_size);
+         $fnlRslt[]['pages'] = $noOfPages;
+         $fnlRslt[]['items'] = $result;
+         //print_r($fnlRslt); exit();
+        return $fnlRslt;       
     }
-   
 }

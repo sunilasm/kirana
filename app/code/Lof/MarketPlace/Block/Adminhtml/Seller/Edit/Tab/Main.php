@@ -281,6 +281,50 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
             ]
         );
           $fieldset->addField(
+            'landmark1',
+            'text',
+            [
+                'name' => 'landmark1',
+                'label' => __('Landmark 1'),
+                'title' => __('Landmark 1'),
+                // 'required' => true,
+                'disabled' => $isElementDisabled
+            ]
+        );
+          $fieldset->addField(
+            'landmark2',
+            'text',
+            [
+                'name' => 'landmark2',
+                'label' => __('Landmark 2'),
+                'title' => __('Landmark 2'),
+                // 'required' => true,
+                'disabled' => $isElementDisabled
+            ]
+        );
+          $fieldset->addField(
+            'area',
+            'text',
+            [
+                'name' => 'area',
+                'label' => __('Area'),
+                'title' => __('Area'),
+                // 'required' => true,
+                'disabled' => $isElementDisabled
+            ]
+        );
+          $fieldset->addField(
+            'sector',
+            'text',
+            [
+                'name' => 'sector',
+                'label' => __('Sector'),
+                'title' => __('Sector'),
+                'required' => true,
+                'disabled' => $isElementDisabled
+            ]
+        );
+          $fieldset->addField(
             'city',
             'text',
             [

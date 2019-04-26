@@ -23,4 +23,3 @@ foreach ($ids as $id) {
     echo "order deleted";
 
 }
-
