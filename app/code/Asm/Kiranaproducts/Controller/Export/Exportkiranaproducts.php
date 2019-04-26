@@ -87,7 +87,7 @@ class Exportkiranaproducts extends \Magento\Framework\App\Action\Action
         foreach ($kirnaProducts as $product) {
             $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
             $productData = $objectManager->create('Magento\Catalog\Model\Product')->load($product->getProduct_id());
-            $doorsetp = ($productData->getPrice()*0.8+10);
+            $doorsetp = (($productData->getPrice()*0.8)-4);
             $pickup = ($productData->getPrice()*0.9);
             $result[] = [
                 $product->getEntity_id(),
