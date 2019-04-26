@@ -80,4 +80,12 @@
             <resource ref="anonymous"/>
         </resources>
     </route>
+
+    <!-- orgnized retailer info -->
+    <route url="/V1/orgnizedretailer/info" method="POST">
+        <service class="Asm\Customapi\Api\OrgnizedretailerinfoInterface" method="orgnizedretailerinfo"/>
+        <resources>
+            <resource ref="anonymous"/>
+        </resources>
+    </route>
 </routes>
