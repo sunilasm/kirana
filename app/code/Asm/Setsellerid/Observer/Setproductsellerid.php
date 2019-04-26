@@ -87,6 +87,10 @@ class Setproductsellerid implements \Magento\Framework\Event\ObserverInterface
                 $seller_id["product_id"] = $post['product_id'];
                 $seller_id["seller_id"] = $post['seller_id'];
                 $seller_id["price_type"] = $post['price_type'];
+                /*$seller_id["seller_kirana_id"] = $post["seller_kirana_id"];
+                $seller_id["seller_org_store_id"] = $post["seller_org_store_id"];
+                $seller_id["org_store_qty"] = $post["org_store_qty"];
+                $seller_id["kirana_qty"] = $post["kirana_qty"];*/
 
                 $quote = $observer->getQuote();
                 $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
@@ -96,7 +100,12 @@ class Setproductsellerid implements \Magento\Framework\Event\ObserverInterface
                         if($seller_id["product_id"] == $quoteItem->getProductId()){
                             $quoteItem->setSellerId($seller_id["seller_id"]);
                             $quoteItem->setPriceType($seller_id["price_type"]);
+                           /* $quoteItem->setSellerKiranaId($seller_id["seller_kirana_id"]);
+                            $quoteItem->setSellerOrgStoreId($seller_id["seller_org_store_id"]);
+                            $quoteItem->setOrgStoreQty($quoteItem->getOrgStoreQty()+$seller_id["org_store_qty"]);
+                            $quoteItem->setKiranaQty($quoteItem->getKiranaQty()+$seller_id["kirana_qty"]);*/
                             $quoteItem->save();
+
                             $itemExtAttr = $quoteItem->getExtensionAttributes();
                             if ($itemExtAttr === null) {
                                 $itemExtAttr = $this->extensionFactory->create();
@@ -104,6 +113,11 @@ class Setproductsellerid implements \Magento\Framework\Event\ObserverInterface
                             
                             $itemExtAttr->setSellerId($seller_id["seller_id"]);
                             $itemExtAttr->setPriceType($seller_id["price_type"]);
+                            // $itemExtAttr->setSellerKiranaId($seller_id["seller_kirana_id"]);
+                            // $itemExtAttr->setSellerOrgStoreId($seller_id["seller_org_store_id"]);
+                            // $itemExtAttr->setOrgStoreQty($quoteItem->getOrgStoreQty()+$seller_id["org_store_qty"]);
+                            // $itemExtAttr->setKiranaQty($quoteItem->getKiranaQty()+$seller_id["kirana_qty"]);
+
                             $quoteItem->setExtensionAttributes($itemExtAttr);
                         }
                     }
