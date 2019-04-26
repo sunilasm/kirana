@@ -71,7 +71,7 @@ class Searchview implements SearchInterface
         if($searchtermpara){ $searchterm = 0; }else{ $searchterm = 1; }
         if($searchterm){
             if($title){
-            
+
                 $productCollectionArray = $this->getSearchTermData($title, $lat, $lon);
                  if($productCollectionArray){
                     $data = $productCollectionArray;
@@ -108,6 +108,7 @@ class Searchview implements SearchInterface
                 endforeach;
             }
         }
+
         return $data;
     }
    /*
