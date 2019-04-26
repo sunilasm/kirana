@@ -1,0 +1,75 @@
+<?xml version="1.0"?>
+<routes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Webapi:etc/webapi.xsd">
+    <route url="/V1/country/" method="GET">
+        <service class="Asm\Customapi\Api\CountryInterface" method="country"/>
+        <resources>
+            <resource ref="anonymous"/>
+        </resources>
+    </route>
+
+    <route url="/V1/regions/" method="GET">
+        <service class="Asm\Customapi\Api\RegionsInterface" method="regions"/>
+        <resources>
+            <resource ref="anonymous"/>
+        </resources>
+        <!-- <data>
+            <parameter name="countryCode" force="true">%country_code%</parameter>
+        </data> -->
+    </route>
+
+    <route url="/V1/city/" method="GET">
+        <service class="Asm\Customapi\Api\CityInterface" method="name"/>
+        <resources>
+            <resource ref="anonymous"/>
+        </resources>
+    </route>
+    
+    <route url="/V1/area/" method="POST">
+        <service class="Asm\Customapi\Api\AreaInterface" method="area"/>
+        <resources>
+            <resource ref="anonymous"/>
+        </resources>
+    </route>
+
+    <route url="/V1/locality/" method="POST">
+        <service class="Asm\Customapi\Api\LocalityInterface" method="locality"/>
+        <resources>
+            <resource ref="anonymous"/>
+        </resources>
+    </route>
+
+    <route url="/V1/outofrange/" method="POST">
+        <service class="Asm\Customapi\Api\OutofrangeInterface" method="outofrange"/>
+        <resources>
+            <resource ref="anonymous"/>
+        </resources>
+    </route>
+
+    <route url="/V1/flushcart/" method="POST">
+        <service class="Asm\Customapi\Api\FlushcartInterface" method="flushcart"/>
+        <resources>
+            <resource ref="anonymous"/>
+        </resources>
+    </route>
+    <!-- Orgnized retailer -->
+    <route url="/V1/orgnizedretailer/" method="POST">
+        <service class="Asm\Customapi\Api\OrgnizedretailerInterface" method="orgreailer"/>
+        <resources>
+            <resource ref="anonymous"/>
+        </resources>
+    </route>
+    <!-- Clear cart -->
+    <route url="/V1/clearcart/" method="POST">
+        <service class="Asm\Customapi\Api\ClearcartInterface" method="clearcart"/>
+        <resources>
+            <resource ref="anonymous"/>
+        </resources>
+    </route>
+    <!-- Orgnized retailer Add -->
+    <route url="/V1/orgnizedretailer/add" method="POST">
+        <service class="Asm\Customapi\Api\AddorgnizedretailerInterface" method="addorgreailer"/>
+        <resources>
+            <resource ref="anonymous"/>
+        </resources>
+    </route>
+</routes>
