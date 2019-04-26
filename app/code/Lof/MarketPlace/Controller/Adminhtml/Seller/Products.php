@@ -47,7 +47,6 @@ class Products extends \Magento\Catalog\Controller\Adminhtml\Product
     public function execute()
     {
         $id = $this->getRequest()->getparam('seller_id');
-        // print_r("Herrere");exit;
         $seller = $this->_objectManager->create('Lof\MarketPlace\Model\Seller');
         $seller->load($id);
         $registry = $this->_objectManager->get('Magento\Framework\Registry');

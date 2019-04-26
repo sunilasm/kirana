@@ -81,10 +81,18 @@ class QuotePlugin {
                 $productData = $objectManager->create('Magento\Catalog\Model\Product')->load($item->getId());
                 $extensionAttributes->setImage($productData->getThumbnail());
                 $sellerName = $this->helperData->getSellernameId($item->getSellerId());
+            /*    $sellerKiranaName = $this->helperData->getSellernameId($item->getSellerKiranaId());
+                $sellerOrgStoreName = $this->helperData->getSellernameId($item->getSellerOrgStoreId());*/
 
                 $extensionAttributes->setSellerName($sellerName);
                 $extensionAttributes->setSellerId($item->getSellerId());
                 $extensionAttributes->setProductId($item->getProductId());
+                /*$extensionAttributes->setSellerKiranaId($item->getSellerKiranaId());
+                $extensionAttributes->setSellerOrgStoreId($item->getSellerOrgStoreId());
+                $extensionAttributes->setKiranaQty($item->getKiranaQty());
+                $extensionAttributes->setOrgStoreQty($item->getOrgStoreQty());
+                $extensionAttributes->setSellerKiranaName($sellerKiranaName);
+                $extensionAttributes->setSellerOrgStoreName($sellerOrgStoreName);*/
                 $item->setExtensionAttributes($extensionAttributes);
             }
         } 

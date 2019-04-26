@@ -12,7 +12,7 @@ $registry = $objectManager->get('Magento\Framework\Registry');
 $state = $objectManager->get('Magento\Framework\App\State');
 $state->setAreaCode('frontend');
 
-$ids =  array(487,453,452,444,442,381,327,318,315,312,311,492,490); // your order_id 
+$ids = array(487,453,452,444,442,381,327,318,315,312,311); // your order_id 
 
 foreach ($ids as $id) {
 
