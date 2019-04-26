@@ -62,7 +62,6 @@ class Searchview implements SearchInterface
             $quoteItemSellerArray[$item->getSellerId()] = $item->getItemid();
             $quoteItemArray[$item->getSku()]['qty'] = $item->getQty();
              $quoteItemArray[$item->getSku()]['price_type'] = $item->getPriceType();
-            //$quoteItemIndexArray[$i] = $item->getItemid();
             $quoteItemIndexArray[$i] = $item->getItemid();
             $i++;
         endforeach;
@@ -72,10 +71,8 @@ class Searchview implements SearchInterface
         if($searchtermpara){ $searchterm = 0; }else{ $searchterm = 1; }
         if($searchterm){
             if($title){
-                $productCollectionResponse = $this->getSearchTermData($title, $lat, $lon);
-                $pages = (isset($productCollectionResponse['pages'])) ? $productCollectionResponse['pages'] : 0;
-                $productCollectionArray = (isset($productCollectionResponse['items'])) ? $productCollectionResponse['items'] : '';
-                //$productCollectionArray = $this->getSearchTermData($title, $lat, $lon);
+            
+                $productCollectionArray = $this->getSearchTermData($title, $lat, $lon);
                  if($productCollectionArray){
                     $data = $productCollectionArray;
                 }else{
@@ -87,11 +84,8 @@ class Searchview implements SearchInterface
                 $data = array('message' => 'Please specify at least one search term');
             }
         }else{
-            $productCollectionResponse = $this->getSearchTermData($title = null, $lat, $lon);
-                $pages = (isset($productCollectionResponse['pages'])) ? $productCollectionResponse['pages'] : 0;
-                $productCollectionArray = (isset($productCollectionResponse['items'])) ? $productCollectionResponse['items'] : '';
                 
-            //$productCollectionArray = $this->getSearchTermData($title = null,$lat, $lon);
+            $productCollectionArray = $this->getSearchTermData($title = null,$lat, $lon);
              if($productCollectionArray){
                 $data = $productCollectionArray;
             }else{
@@ -114,8 +108,7 @@ class Searchview implements SearchInterface
                 endforeach;
             }
         }
-        $response = array('pages' => $pages, 'items' => $data);
-        return $response = array($response);
+        return $data;
     }
    /*
     Get seller id's based on lat & lon.
@@ -173,10 +166,8 @@ class Searchview implements SearchInterface
          $retailprice = array();
          $proIds = array();
          foreach($sellerId as $key => $seller){
-            //echo $key;
             $_sellerProdk = $this->sellerProduct->create()->getCollection()->setOrder('product_id', 'asc');
             $sellerProdCol = $_sellerProdk->addFieldToFilter('seller_id', array('in'=>$seller));
-            //print_r($sellerProdCol->getData()); exit();
             $chsnPrice = 0;
             foreach($sellerProdCol as $sellerData){
                 $proIds[] = $sellerData['product_id'];
@@ -199,6 +190,9 @@ class Searchview implements SearchInterface
          $Productcollection = $this->_productCollectionFactory->create();
          $Productcollection->addFieldToFilter('entity_id', array('in'=>array_unique($proIds)));
          $Productcollection->addFieldToFilter('status', 1);
+         if($title != null){
+            $Productcollection->addFieldToFilter([['attribute' => 'name', 'like' => '%'.$title.'%']]);
+         }
          $count = count($Productcollection->getData());
          $Productcollection = $this->_productCollectionFactory->create();
          $Productcollection->addFieldToFilter('entity_id', array('in'=>array_unique($proIds)));
