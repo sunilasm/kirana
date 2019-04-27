@@ -150,9 +150,10 @@ class Searchview implements SearchInterface
              
 
         endforeach;
-                $selerIdArray['orgretail'] = $orgRetail;
+                
 
         $selerIdArray['retail'] = $retail;
+        $selerIdArray['orgretail'] = $orgRetail;
         
         //print_r($selerIdArray); exit();
         return  $selerIdArray;
@@ -163,30 +164,32 @@ class Searchview implements SearchInterface
          
          $pickRetail = array();
          $pickOrgRetail = array();
-         $orgprice = array();
-         $retailprice = array();
+         
+         
          $proIds = array();
          foreach($sellerId as $key => $seller){
             $_sellerProdk = $this->sellerProduct->create()->getCollection()->setOrder('product_id', 'asc');
             $sellerProdCol = $_sellerProdk->addFieldToFilter('seller_id', array('in'=>$seller));
+            //print_r($sellerProdCol->getData()); exit();
             $chsnPrice = 0;
             foreach($sellerProdCol as $sellerData){
                 $proIds[] = $sellerData['product_id'];
+
                 if($key == 'orgretail'){
-                    if(!empty($sellerData['pickup_from_store']) && ($sellerData['pickup_from_store'] != NULL) && ($sellerData['pickup_from_store'] != 0) ){
-                        $orgprice[$sellerData['seller_id']] = $sellerData['pickup_from_store'];
-                        $pickOrgRetail[$sellerData['product_id']] = $orgprice;
+                    if(!empty($sellerData['pickup_from_store']) || ($sellerData['pickup_from_store'] != NULL) || ($sellerData['pickup_from_store'] != 0) ){
+                        $pickOrgRetail[$sellerData['product_id']][$sellerData['seller_id']] = $sellerData['pickup_from_store'];
                     }
                 } else {
-                    if(!empty($sellerData['doorstep_price']) && ($sellerData['doorstep_price'] != NULL) && ($sellerData['doorstep_price'] != 0) ){
-                        $retailprice[$sellerData['seller_id']] = $sellerData['doorstep_price'];
-                        $pickRetail[$sellerData['product_id']] = $retailprice;
+                    if(!empty($sellerData['doorstep_price']) || ($sellerData['doorstep_price'] != NULL) || ($sellerData['doorstep_price'] != 0) ){
+                        $pickRetail[$sellerData['product_id']][$sellerData['seller_id']] = $sellerData['doorstep_price'];
+                        
                     }    
                 }
                 
             }
             
          }
+
 
          $Productcollection = $this->_productCollectionFactory->create();
          $Productcollection->addFieldToFilter('entity_id', array('in'=>array_unique($proIds)));
