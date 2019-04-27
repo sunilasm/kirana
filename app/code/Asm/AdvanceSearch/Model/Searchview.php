@@ -118,7 +118,17 @@ class Searchview implements SearchInterface
         $selerIdArray = array();
         $orgRetail = array();
         $retail = array();
-        $distance = 1; //your distance in KM
+        $rangeSetting = $this->helperData->getGeneralConfig('enable');
+        $rangeInKm = $this->helperData->getGeneralConfig('range_in_km');
+        if($rangeSetting == 1){
+            if($rangeInKm){
+                $distance = $rangeInKm; //your distance in KM
+            }else{
+                $distance = 1; //your distance in KM
+            }
+        }else{
+            $distance = 1; //your distance in KM
+        }
         $R = 6371; //constant earth radius. You can add precision here if you wish
 
         $maxLat = $lat + rad2deg($distance/$R);
