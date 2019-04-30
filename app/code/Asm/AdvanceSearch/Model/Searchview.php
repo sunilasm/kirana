@@ -170,7 +170,7 @@ class Searchview implements SearchInterface
     }
     public function getSearchTermData($title, $lat, $lon){
          $sellerId = $this->getInRangeSeller($lat, $lon);
-         //print_r($sellerId['orgretail']); exit();
+         //print_r($sellerId); exit();
          
          $pickRetail = array();
          $pickOrgRetail = array();
@@ -199,7 +199,8 @@ class Searchview implements SearchInterface
             }
             
          }
-
+         //print_r($pickOrgRetail);
+         //print_r($pickRetail); exit();
 
          $Productcollection = $this->_productCollectionFactory->create();
          $Productcollection->addFieldToFilter('entity_id', array('in'=>array_unique($proIds)));
@@ -240,6 +241,7 @@ class Searchview implements SearchInterface
             $entColl = array();
             $entColl = $product;
             $product = $this->_productsRepository->getById($product['entity_id']);
+            //print_r($pickOrgRetail); exit();
             if(array_key_exists($product['entity_id'], $pickOrgRetail)){
                 $orgsellers = $pickOrgRetail[$product['entity_id']];
                 asort($orgsellers);

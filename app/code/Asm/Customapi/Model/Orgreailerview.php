@@ -145,7 +145,7 @@ class Orgreailerview implements OrgnizedretailerInterface
                     }           
                 }
 
-                $cartSummeryArray = array('total_item_count' => ($cartPresentProducts + $cartNotPresentProducts), 'present_item_count' => $cartPresentProducts, 'not_present_item_count' => $cartNotPresentProducts, 'sub_total' => $cartSubTotal);
+                $cartSummeryArray = array('total_item_count' => ($cartPresentProducts + $cartNotPresentProducts), 'present_item_count' => $cartPresentProducts, 'not_present_item_count' => $cartNotPresentProducts, 'sub_total' => number_format((float)$cartSubTotal, 2, '.', ''));
 
                 $response[$i]['store'] = $sellerData;
                 $response[$i]['present_data'] = $productPresentCollArray;
@@ -195,6 +195,7 @@ class Orgreailerview implements OrgnizedretailerInterface
             $selerIdArray[] = $seldata['seller_id'];
             
         endforeach;
+	//print_r($selerIdArray);exit;
         return  $selerIdArray;
     }
    
