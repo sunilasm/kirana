@@ -36,7 +36,7 @@ class Index extends \Magento\Backend\App\Action
         $resultPage->setActiveMenu('Asm_Kiranaproducts::kiranaproducts');
         $resultPage->addBreadcrumb(__('Asm'), __('Asm'));
         $resultPage->addBreadcrumb(__('Export'), __('Export Kirana Products'));
-        $resultPage->getConfig()->getTitle()->prepend(__('Exort Kirana Products'));
+        $resultPage->getConfig()->getTitle()->prepend(__('Export Kirana Products'));
 
         return $resultPage;
     }
