@@ -199,8 +199,6 @@ class Searchview implements SearchInterface
             }
             
          }
-         //print_r($pickOrgRetail);
-         //print_r($pickRetail); exit();
 
          $Productcollection = $this->_productCollectionFactory->create();
          $Productcollection->addFieldToFilter('entity_id', array('in'=>array_unique($proIds)));
