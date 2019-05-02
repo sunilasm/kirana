@@ -81,14 +81,14 @@ class Orgreailerview implements OrgnizedretailerInterface
                     $collection->addAttributeToSelect('*');
                     $collection->addAttributeToSort('price', 'asc');
                     $produt_found = 0;
-                    //print_r($item->getSku());exit;
+                    // print_r($item->getSku());exit;
                     // If seller have products.
                     if(count($tempSellerProductArray))
                     {
                         $collection->addFieldToFilter('entity_id', array('in' => $tempSellerProductIdArray));
 
                         if($item->getName() != null){
-                            $collection->addFieldToFilter([['attribute' => 'name', 'like' => '%'.$item->getName().'%']]);
+                            $collection->addFieldToFilter([['attribute' => 'sku', 'like' => '%'.$item->getSku().'%']]);
                         }
                         
                         $products = $collection->getData();
