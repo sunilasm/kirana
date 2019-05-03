@@ -43,7 +43,7 @@ class Orgnizedretailerinfoview implements OrgnizedretailerinfoInterface
         $sellerNew = array();
         if($post){
              // Get Orgnized Retailer deatils
-            $sellerCollectionDetails = $this->_sellerCollection->getCollection()->addFieldToFilter('seller_id', array('in' => $post['orgnized_retailer_id']));
+            $sellerCollectionDetails = $this->_sellerCollection->getCollection()->addFieldToFilter('seller_id', array('in' => $post['seller_id']));
             $sellerData = array();
             $sellerCount = count($sellerCollectionDetails->getData());  
             $groups = $this->groupRepository->create();

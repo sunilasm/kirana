@@ -41,34 +41,54 @@ class Orderdetailsview implements OrderdetailsInterface
             $deliverdeatils = array();
             $pickupdeatils = array();
             $tempOrgnizedSellerIdArray = array();
+            $tempOrgnizedNameArray = array();
             $tempSellerIdArray = array();
             $itemsArray = array();
             $response = array();
             $response1 = array();
             $final = array();
             $j = 0;$k = 0;
-            foreach ($items as $item) 
-            {
-            $orgnizedRetailrArray = array();
+            $sellerIdPresentArray = array();
             $kiranaArray = array();
+            $orgnizedRetailrArray = array();
             $orgnizedRetailrProductArray = array();
             $kiranaProductArray = array();
+            $kiranaNamesArray = array();
+            $sellers = array();
+            foreach ($items as $item) 
+            {
+            $organizedQtyCount = 0;
+            $kiranaQtyCount = 0;
                 // Pickup from store
-                if($item->getPrice_type() == 1)
-                {
+                // if($item->getPrice_type() == 1)
+                // {
                     $i = 0;
                     if(!in_array($item->getSeller_id(), $tempOrgnizedSellerIdArray))
                     {
                         $tempOrgnizedSellerIdArray[] = $item->getSeller_id();
                         // Get Seller Data
                         $sellerCollectionDetails = $this->_sellerCollection->getCollection()->addFieldToFilter('seller_id', array('in' => $item->getSeller_id()));
+
                         foreach($sellerCollectionDetails as $sellcoll):
-                            $orgnizedRetailrArray = $sellcoll->getData();
+                            $tempOrgnizedNameArray[$item->getSeller_id()]['name'] = $sellcoll->getName();
+                            $selllers[$item->getSeller_id()]['store'] = $sellcoll->getData();
+                            $selllers[$item->getSeller_id()]['cart_summary']['total_item_count'] = 0;
+                            $selllers[$item->getSeller_id()]['cart_summary']['sub_total'] = 0;
+                            if($item->getPrice_type() == 1)
+                            {
+                                $selllers[$item->getSeller_id()]['type'] = 'org';
+                            }
+                            else
+                            {
+                                $selllers[$item->getSeller_id()]['type'] = 'kirana';
+                            }
+   
                         endforeach;
                     }
                     // Get Product doorsetp price and pick price.
                     $sellerProductCollection = $this->_sellerProductCollection->getCollection()->addFieldToFilter('seller_id', array('in' => $item->getSeller_id()))->addFieldToFilter('product_id', array('in' => $item->getProduct_id()));
                     $sellerProductData = $sellerProductCollection->getData();
+                    // print_r($sellerProductData);exit;
 
                     // Get Product image url
                     $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
@@ -77,7 +97,7 @@ class Orderdetailsview implements OrderdetailsInterface
                     $imageUrl = $store->getBaseUrl(\Magento\Framework\UrlInterface::URL_TYPE_MEDIA) . 'catalog/product' . $hotPrd->getThumbnail();
 
                     // Get item data
-                    $orgnizedRetailrProductArray[] = array(
+                    $selllers[$item->getSeller_id()]['products'][] = array(
                         'item_id' => $item->getItem_id(),
                         'sku' => $item->getSku(),
                         'qty' => $item->getQty(),
@@ -85,7 +105,7 @@ class Orderdetailsview implements OrderdetailsInterface
                         'quote_id' => $item->getQuote_id(),
                         'extension_attributes' => array(
                             'image' => $hotPrd->getThumbnail(),
-                            'seller_name' => $orgnizedRetailrArray['name'],
+                            'seller_name' => $tempOrgnizedNameArray[$item->getSeller_id()]['name'],
                             'product_id' => $item->getProduct_id(),
                             'image_url' => $imageUrl,
                             'doorstep_price' => $sellerProductData[0]['doorstep_price'],
@@ -97,83 +117,42 @@ class Orderdetailsview implements OrderdetailsInterface
                         )
 
                     );
-                   // 
-                    // $itemsArray[''] = $item->getExtension_attributes()->getUnitm();
-
-                     $subTotal = ($sellerProductData[0]['pickup_from_store'] * $item->getQty());
-                    $cartSummeryArray = array('total_item_count' => count($orgnizedRetailrProductArray), 'sub_total' => number_format($subTotal, 2));
-
-                    $response[$j]['store'] = $orgnizedRetailrArray;
-                    $response[$j]['products'] = $orgnizedRetailrProductArray;
-                    $response[$j]['cart_summary'] = $cartSummeryArray;
-                    $j++;
-                    
-
-                }
-                 else
-                { // Delivered by kirana
-                    if(!in_array($item->getSeller_id(), $tempSellerIdArray))
+                    $subTotal = 0;
+                    $selllers[$item->getSeller_id()]['cart_summary']['total_item_count'] += $item->getQty();
+                    if($item->getPrice_type() == 1)
                     {
-                        $tempSellerIdArray[] = $item->getSeller_id();
-                        // Get Seller Data
-                        $sellerCollectionDetails = $this->_sellerCollection->getCollection()->addFieldToFilter('seller_id', array('in' => $item->getSeller_id()));
-                        foreach($sellerCollectionDetails as $sellcoll):
-                            $kiranaArray = $sellcoll->getData();
-                        endforeach;
+                        $subTotal = ($sellerProductData[0]['pickup_from_store'] * $item->getQty());
                     }
-
-                    // Get Product doorsetp price and pick price.
-                    $sellerProductCollection = $this->_sellerProductCollection->getCollection()->addFieldToFilter('seller_id', array('in' => $item->getSeller_id()))->addFieldToFilter('product_id', array('in' => $item->getProduct_id()));
-                    $sellerProductData = $sellerProductCollection->getData();
-
-                    // Get Product image url
-                    $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
-                    $hotPrd = $objectManager->get('Magento\Catalog\Model\Product')->load($item->getProduct_id());
-                    $store = $objectManager->get('Magento\Store\Model\StoreManagerInterface')->getStore();
-                    $imageUrl = $store->getBaseUrl(\Magento\Framework\UrlInterface::URL_TYPE_MEDIA) . 'catalog/product' . $hotPrd->getThumbnail();
-
-                    // print_r($hotPrd->getThumbnail());exit;
-                    // Get item data
-                    $kiranaProductArray[] = array(
-                        'item_id' => $item->getItem_id(),
-                        'sku' => $item->getSku(),
-                        'qty' => $item->getQty(),
-                        'product_type' => $item->getProduct_type(),
-                        'quote_id' => $item->getQuote_id(),
-                        'extension_attributes' => array(
-                            'image' => $hotPrd->getThumbnail(),
-                            'seller_name' => $kiranaArray['name'],
-                            'product_id' => $item->getProduct_id(),
-                            'image_url' => $imageUrl,
-                            'doorstep_price' => $sellerProductData[0]['doorstep_price'],
-                            'pickup_from_store' => $sellerProductData[0]['pickup_from_store'],
-                            'price_type' => $item->getPrice_type(),
-                            'volume' => $item->getExtension_attributes()->getVolume(),
-                            'seller_id' => $item->getSeller_id(),
-                            'unitm' => $item->getExtension_attributes()->getUnitm()
-                        )
-
-                    );
-                    $subTotal = ($sellerProductData[0]['doorstep_price'] * $item->getQty());
-                    $cartSummeryArray = array('total_item_count' => count($kiranaProductArray), 'sub_total' => number_format($subTotal, 2));
-                    // print_r($kiranaProductArray);exit;
-                    $response1[$k]['store'] = $kiranaArray;
-                    $response1[$k]['products'] = $kiranaProductArray;
-                    $response1[$k]['cart_summary'] = $cartSummeryArray;
-                     $k++;
-
-                }
+                    else
+                    {
+                        $subTotal = ($sellerProductData[0]['doorstep_price'] * $item->getQty());
+                    }
+                    
+                    $selllers[$item->getSeller_id()]['cart_summary']['sub_total'] += $subTotal;
+                    $selllers[$item->getSeller_id()]['cart_summary']['sub_total'] = number_format((float)$selllers[$item->getSeller_id()]['cart_summary']['sub_total'], 2, '.', '');
                
             }
-            $final[0]['pick_up_from_store'] = $response;
-            $final[1]['deliver_by_kirana'] = $response1;
-            // print_r($response);
-            // exit;
-            $data = $final;
+            $response = array();
+            $i=0;
+            $j=0;
+            foreach ($selllers as $seller) {
+                if($seller['type'] == 'org')
+                {
+                    $response['pick_up_from_store'][$i] = $seller;
+                    $i++;
+                }
+                else
+                {
+                    $response['deliver_by_kirana'][$j] = $seller;
+                    $j++;   
+                }
+                
+            }
+            $data = array($response);
         }
-        // exit;
-        //print_r($data);exit;
         return $data;
     }
+
+    
    
 }
