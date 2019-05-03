@@ -70,5 +70,26 @@ class UpgradeData
         );
 
     }
+           /* if (version_compare($context->getVersion(), '1.0.3') < 0){
+
+                                
+                $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+                $salesSetup = $objectManager->create('Magento\Sales\Setup\SalesSetup');
+                $quoteSetup = $objectManager->create('Magento\Quote\Setup\QuoteSetup');
+                
+                $salesSetup->addAttribute('order_item', 'seller_kirana_id', ['type' =>'varchar']);
+                $quoteSetup->addAttribute('quote_item', 'seller_kirana_id', ['type' =>'varchar']);
+
+                $salesSetup->addAttribute('order_item', 'kirana_qty', ['type' =>'varchar']);
+                $quoteSetup->addAttribute('quote_item', 'kirana_qty', ['type' =>'varchar']);
+
+                $salesSetup->addAttribute('order_item', 'seller_org_store_id', ['type' =>'varchar']);
+                $quoteSetup->addAttribute('quote_item', 'seller_org_store_id', ['type' =>'varchar']);
+
+                $salesSetup->addAttribute('order_item', 'org_store_qty', ['type' =>'varchar']);
+                $quoteSetup->addAttribute('quote_item', 'org_store_qty', ['type' =>'varchar']);
+
+        }*/
+
     }   
 }

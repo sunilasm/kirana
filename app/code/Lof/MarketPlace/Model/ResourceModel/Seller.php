@@ -273,13 +273,13 @@ class Seller extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
                             $doorsetp = $productData->getPrice();
                             $pickup = $productData->getPrice();
                         }elseif($product->getSku() == 'SKU590000592'){
-                            $doorsetp = ($productData->getPrice()*0.8+10);
+                            $doorsetp = ($productData->getPrice()*0.8-4);
                             $pickup = $productData->getPrice();
                         }elseif($product->getSku() == 'SKU590000692'){
                             $doorsetp = $productData->getPrice();
                             $pickup = ($productData->getPrice()*0.9);
                         }else{
-                            $doorsetp = ($productData->getPrice()*0.8+10);
+                            $doorsetp = ($productData->getPrice()*0.8-4);
                             $pickup = ($productData->getPrice()*0.9);
                         }
                         $mrp = $productData->getPrice();
