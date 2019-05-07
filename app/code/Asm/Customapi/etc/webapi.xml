@@ -72,4 +72,20 @@
             <resource ref="anonymous"/>
         </resources>
     </route>
+
+    <!-- custom order details -->
+    <route url="/V1/order/details" method="POST">
+        <service class="Asm\Customapi\Api\OrderdetailsInterface" method="orderdetails"/>
+        <resources>
+            <resource ref="anonymous"/>
+        </resources>
+    </route>
+
+    <!-- orgnized retailer info -->
+    <route url="/V1/orgnizedretailer/info" method="POST">
+        <service class="Asm\Customapi\Api\OrgnizedretailerinfoInterface" method="orgnizedretailerinfo"/>
+        <resources>
+            <resource ref="anonymous"/>
+        </resources>
+    </route>
 </routes>

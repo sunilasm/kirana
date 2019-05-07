@@ -29,4 +29,8 @@
     <preference for="Asm\Customapi\Api\ClearcartInterface" type="Asm\Customapi\Model\Clearcartview" />
     <!-- Orgnized retailer Add -->
     <preference for="Asm\Customapi\Api\AddorgnizedretailerInterface" type="Asm\Customapi\Model\Addorgreailerview" />
+    <!-- Custom order details -->
+    <preference for="Asm\Customapi\Api\OrderdetailsInterface" type="Asm\Customapi\Model\Orderdetailsview" />
+    <!-- Orginzed retailer info -->
+    <preference for="Asm\Customapi\Api\OrgnizedretailerinfoInterface" type="Asm\Customapi\Model\Orgnizedretailerinfoview" />
 </config>
