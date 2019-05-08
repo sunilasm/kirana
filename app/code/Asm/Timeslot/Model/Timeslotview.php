@@ -42,7 +42,7 @@ class Timeslotview implements TimeslotInterface
         $resultPage = $this->_timeslot->create();
         $collectionTimeslot = $resultPage->getCollection();
         $collectionTimeslot->addFieldToFilter('order_id',$post['order_id']); 
-        // print_r($collectionTimeslot->getData());
+        // print_r($collectionTimeslot->getData());exit;
         if(!count($collectionTimeslot)){
           $resource = $objectManager->get('\Magento\Framework\App\ResourceConnection');
           $connection = $resource->getConnection();
@@ -65,6 +65,7 @@ class Timeslotview implements TimeslotInterface
         
         $items = $order->getAllItems();
         foreach ($items as $item) {
+          // print_r($item->getData());
           // print_r($item->getData());
             if(!in_array($item->getSeller_id(), $tempOrgnizedSellerIdArray))
             {
@@ -92,6 +93,7 @@ class Timeslotview implements TimeslotInterface
             }
 
             $subTotal = 0;
+            // print_r($item->getPrice_type());exit;
             $selllers[$item->getSeller_id()]['cart_summary']['total_item_count'] += $item->getQty_ordered();
             if($item->getPrice_type() == 1)
             {
@@ -109,8 +111,12 @@ class Timeslotview implements TimeslotInterface
             $collectionTimeslot->addFieldToFilter('order_id',$post['order_id']); 
             $collectionTimeslot->addFieldToFilter('store_id',$item->getSeller_id()); 
             $timeSlot = $collectionTimeslot->getData();
-            $selllers[$item->getSeller_id()]['date_slot'] = $timeSlot[0]['date_slot'];
-            $selllers[$item->getSeller_id()]['time_slot'] = $timeSlot[0]['time_slot'];
+            // print_r($collectionTimeslot->getSelect()->__toString());exit;
+            if(count($timeSlot)){
+                $selllers[$item->getSeller_id()]['time_slot_type'] = $timeSlot[0]['time_slot_type'];
+                $selllers[$item->getSeller_id()]['date_slot'] = $timeSlot[0]['date_slot'];
+                $selllers[$item->getSeller_id()]['time_slot'] = $timeSlot[0]['time_slot'];
+            }
             
             $response = array();
             $i=0;
@@ -131,8 +137,10 @@ class Timeslotview implements TimeslotInterface
             $data = array($response);
 
         }
+        // exit;
         return $data;
         // print_r($selllers);echo "<br/>";
         // exit;       
     }
 }
+
