@@ -128,11 +128,35 @@ class Timeslotview implements TimeslotInterface
                 }
                 
             }
+            if(isset($response['pick_up_from_store']) && count($response['pick_up_from_store']))
+            {
+                $temp_response = $this->sort_by_total_item_count($response['pick_up_from_store']);
+                $response['pick_up_from_store'] = $temp_response;
+            }
             $data = array($response);
 
         }
         return $data;
         // print_r($selllers);echo "<br/>";
         // exit;       
+    }
+    private function sort_by_total_item_count($array) 
+    {
+        $sorter = array();
+        $ret = array();
+        reset($array);
+        $count_array = array();
+        foreach($array as $key => $store)
+        {
+            $count_array[$key] = $store['cart_summary']['total_item_count'];
+        }
+        arsort($count_array);
+        $response = array();
+        foreach($count_array as $key => $value)
+        {
+            $response[] = $array[$key];
+        }
+        //print_r($response);exit;
+        return $response;
     }
 }
