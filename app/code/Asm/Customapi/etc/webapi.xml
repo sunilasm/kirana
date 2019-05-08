@@ -37,4 +37,11 @@
             <resource ref="anonymous"/>
         </resources>
     </route>
+    <!-- Address change -->
+    <route url="/V1/address/change" method="POST">
+        <service class="Asm\Customapi\Api\AddresschangeInterface" method="addresschange"/>
+        <resources>
+            <resource ref="anonymous"/>
+        </resources>
+    </route>
 </routes>
