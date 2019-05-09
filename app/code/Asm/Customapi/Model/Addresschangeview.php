@@ -88,17 +88,16 @@ class Addresschangeview implements AddresschangeInterface
                         $wishlist = $this->_wishlistRepository->create()->loadByCustomerId($customerId, true);
                         $wishlist->addNewItem($product);
                         $wishlist->save();
-                        $this->removeItem($post['quote_id'], $item->getItemId());
-                    }else{
-                        // Remove from cart
-                        $removeProductsArray[] = $item->getProduct_id();
-                        $this->removeItem($post['quote_id'], $item->getItemId());    
+                        // $this->removeItem($post['quote_id'], $item->getItemId());
                     }
+                    // Remove from cart
+                    $removeProductsArray[] = $item->getProduct_id();
+                    $this->removeItem($post['quote_id'], $item->getItemId());    
                 }
                 // print_r($tempSellerProductArray);exit;
             }
         }
-        $currentCartItems = count($items) - count($wishlistProductsArray) - count($removeProductsArray);
+        $currentCartItems = count($items) - count($removeProductsArray);
         $data = array("total_count" => count($items),"wishlist_count" => count($wishlistProductsArray), "removed_count" => count($removeProductsArray),"current_cart_count" => $currentCartItems);
         $response = array($data);
         return $response;
