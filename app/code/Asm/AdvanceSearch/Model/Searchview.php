@@ -4,6 +4,7 @@ use Asm\AdvanceSearch\Api\SearchInterface;
 use Lof\MarketPlace\Model\SellerProductFactory as SellerProduct;
 use Magento\Catalog\Api\ProductRepositoryInterfaceFactory as ProductRepository;
 use Magento\Framework\Event\ObserverInterface;
+use Retailinsights\Promotion\Model\PostTableFactory;
  
 class Searchview implements SearchInterface
 {
@@ -25,6 +26,7 @@ class Searchview implements SearchInterface
     private $productsRepository;
     public function __construct(
         ProductRepository $productRepository,
+        PostTableFactory $PostTableFactory ,
         \Magento\Quote\Model\Quote\ItemFactory $itemFactory,
         SellerProduct $sellerProduct,
        \Magento\Framework\App\RequestInterface $request,
@@ -35,6 +37,7 @@ class Searchview implements SearchInterface
        \Magento\Catalog\Api\ProductRepositoryInterface $productsRepository
     ) {
        $this->_productRepository = $productRepository;
+       $this->_PostTableFactory = $PostTableFactory;
        $this->itemFactory = $itemFactory;
        $this->sellerProduct = $sellerProduct; 
        $this->request = $request;
@@ -272,6 +275,83 @@ class Searchview implements SearchInterface
                 $entColl['doorstep_delivery'] = $chsnRetailPrice;                
             }
             
+            //=====adding promotions
+            $mapped_data = $this->_PostTableFactory->create()->getCollection();
+             $orgret_arr = array();
+            $kirana_arr = array();
+            foreach ($mapped_data->getData() as $k => $promo) {    //store-promo-mapp data array  
+                $skus = array(); 
+                $disc_amt = 0;
+                $disc_per = 0;
+                $add_kiranapromo = $add_orgpromo = 0;
+                $p_action = $promo['simple_action'];    //by_percent or by_fixed
+                $con_arr = json_decode($promo['conditions_serialized'] , true); 
+                if(!empty($con_arr['conditions'])){
+                    $conditionsarr = $con_arr['conditions'];
+                    foreach($conditionsarr as $ck => $con){  // promo rule conditions array
+                        if($con['attribute']=='sku'){
+                            $skus[] = $con['value'];
+                        }
+                        if(!empty($con['conditions'])){
+                            foreach($con['conditions'] as $c_inn => $c_inn_val){
+                                if($c_inn_val['attribute']=='sku'){
+                                    $skus[] = $c_inn_val['value'];
+                                }
+                            }
+                        }
+                    }
+                }    
+                if(!empty($entColl['kirana'])){
+                    if(($promo['store_id']== $entColl['kirana']) && ($promo['status']==1)){
+                        if(!empty($skus)){
+                            if(in_array($product['sku'], $skus)){
+                                $add_kiranapromo = 1;
+                            }
+                        }else{
+                            $add_kiranapromo = 1;
+                        }
+                    }
+                }
+                if(!empty($entColl['org_retail'])){ 
+                    if(($promo['store_id']== $entColl['org_retail'])  && ($promo['status']==1)){
+                        if(!empty($skus)){
+                            if(in_array($product['sku'], $skus)){
+                                $add_orgpromo = 1;
+                            }
+                        }else{
+                                $add_orgpromo = 1;
+                        }
+                    }  
+                    
+                }       
+                if($add_kiranapromo == 1){
+                    if($p_action == 'by_fixed'){
+                        $disc_amt = $promo['discount_amount'];
+                        $disc_per = ($promo['discount_amount']*100)/$chsnRetailPrice ;
+                    }else{
+                        $disc_amt = ($chsnRetailPrice * $promo['discount_amount'])/100 ;
+                        $disc_per = $promo['discount_amount'];
+                    }
+                    $kirana_temp['discount_percent'] = ceil($disc_per);
+                    $kirana_temp['final_amt'] = ceil($chsnRetailPrice - $disc_amt); 
+                    array_push($kirana_arr,$kirana_temp);
+                } 
+                if($add_orgpromo == 1){
+                    if($p_action == 'by_fixed'){
+                         $disc_amt = $promo['discount_amount'];
+                         $disc_per = ($promo['discount_amount']*100)/$chsnOrgPrice ;
+                    }else{
+                         $disc_amt = ($chsnOrgPrice * $promo['discount_amount'])/100 ;
+                         $disc_per = $promo['discount_amount'];
+                    } 
+                    $orgret_temp['message'] = $promo['description'];
+                    $orgret_temp['discount_percent'] = ceil($disc_per);
+                    $orgret_temp['final_amt'] = ceil($chsnOrgPrice - $disc_amt);                    
+                    array_push($orgret_arr,$orgret_temp);
+                }
+            }//store-promo-mapp data array end 
+            $entColl['promotion']['kirana'] = $kirana_arr;
+            $entColl['promotion']['org_retail'] = $orgret_arr;
             $result[] = $entColl;
 
          }
