@@ -269,17 +269,17 @@ class Seller extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
                     foreach ($products as $product) {
                         $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
                         $productData = $objectManager->create('Magento\Catalog\Model\Product')->load($product->getId());
-                        if($productData->getPrice() <= 4 || $productData->getPrice() <= 4.00){
+                        if($productData->getPrice() <= 5 || $productData->getPrice() <= 5.00){
                             $doorsetp = $productData->getPrice();
                             $pickup = $productData->getPrice();
                         }elseif($product->getSku() == 'SKU590000592'){
-                            $doorsetp = ($productData->getPrice()*0.8+10);
+                            $doorsetp = ($productData->getPrice()*0.8-4);
                             $pickup = $productData->getPrice();
                         }elseif($product->getSku() == 'SKU590000692'){
                             $doorsetp = $productData->getPrice();
                             $pickup = ($productData->getPrice()*0.9);
                         }else{
-                            $doorsetp = ($productData->getPrice()*0.8+10);
+                            $doorsetp = ($productData->getPrice()*0.8-4);
                             $pickup = ($productData->getPrice()*0.9);
                         }
                         $mrp = $productData->getPrice();

@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../Magento/Backend/etc/menu.xsd">
+    <menu>
+        <add id="Retailinsights_Promotion::promotion" title="Promotions" module="Retailinsights_Promotion"
+        sortOrder="51" resource="Retailinsights_Promotion::promotion"/>
+
+        <add id="Retailinsights_Promotion::post" title="Promotion" module="Retailinsights_Promotion" 
+        sortOrder="10" action="retailinsights_promotion/post/index" 
+        resource="Retailinsights_Promotion::post" parent="Retailinsights_Promotion::promotion"/>
+
+        
+    </menu>
+</config>

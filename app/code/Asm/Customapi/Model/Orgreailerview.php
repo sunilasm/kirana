@@ -73,20 +73,22 @@ class Orgreailerview implements OrgnizedretailerInterface
 
                 // Quote Data
                 $cartSubTotal = 0;
-                foreach ($items as $item) 
+		        $cartPresentProducts = 0;
+                $cartNotPresentProducts = 0;               
+	            foreach ($items as $item) 
                 {
                     $collection = $this->_productCollectionFactory->create();
                     $collection->addAttributeToSelect('*');
                     $collection->addAttributeToSort('price', 'asc');
                     $produt_found = 0;
-                    //print_r($item->getSku());exit;
+                    // print_r($item->getSku());exit;
                     // If seller have products.
                     if(count($tempSellerProductArray))
                     {
                         $collection->addFieldToFilter('entity_id', array('in' => $tempSellerProductIdArray));
 
                         if($item->getName() != null){
-                            $collection->addFieldToFilter([['attribute' => 'name', 'like' => '%'.$item->getName().'%']]);
+                            $collection->addFieldToFilter([['attribute' => 'sku', 'like' => '%'.$item->getSku().'%']]);
                         }
                         
                         $products = $collection->getData();
@@ -107,7 +109,7 @@ class Orgreailerview implements OrgnizedretailerInterface
                                 {
                                     $cartSubTotal += ($seller_products[$product->getId()]['pickup_from_store'] * $item->getQty());
                                 }
-                                
+                                $cartPresentProducts += $item->getQty();
                                 $produt_found = 1;
                             }
                             
@@ -137,12 +139,13 @@ class Orgreailerview implements OrgnizedretailerInterface
                             if(array_key_exists($product->getId(), $seller_productsNew)){
                                 $collectionNew['pickup_from_store'] = $seller_productsNew[$product->getId()]['pickup_from_store'];
                             }
+			    $cartNotPresentProducts += $item->getQty();
                             $productNotPresentCollArray[] = $collectionNew;
                         endforeach;
                     }           
                 }
 
-                $cartSummeryArray = array('total_item_count' => $quote->getItemsCount(), 'present_item_count' => count($productPresentCollArray), 'not_present_item_count' => count($productNotPresentCollArray), 'sub_total' => number_format($cartSubTotal, 2));
+                $cartSummeryArray = array('total_item_count' => ($cartPresentProducts + $cartNotPresentProducts), 'present_item_count' => $cartPresentProducts, 'not_present_item_count' => $cartNotPresentProducts, 'sub_total' => number_format((float)$cartSubTotal, 2, '.', ''));
 
                 $response[$i]['store'] = $sellerData;
                 $response[$i]['present_data'] = $productPresentCollArray;
@@ -151,8 +154,38 @@ class Orgreailerview implements OrgnizedretailerInterface
                 $i++;
             }
         }
+        if(count($response))
+        {
+            $response = $this->sort_by_present_item_count($response);
+            $final_response = array();
+            $org_return_count = 3;
+            for($i=0; $i<$org_return_count; $i++)
+            {
+                $final_response[$i] = $response[$i];
+            }
+            $response = $final_response;
+        }
         $data = $response;
         return $data;
+    }
+
+    private function sort_by_present_item_count($array) 
+    {
+        $sorter = array();
+        $ret = array();
+        reset($array);
+        $count_array = array();
+        foreach($array as $key => $store)
+        {
+            $count_array[$key] = $store['cart_summary']['present_item_count'];
+        }
+        arsort($count_array);
+        $response = array();
+        foreach($count_array as $key => $value)
+        {
+            $response[] = $array[$key];
+        }
+        return $response;
     }
 
     public function getInRangeSeller($lat, $lon){
@@ -182,8 +215,8 @@ class Orgreailerview implements OrgnizedretailerInterface
         ->addFieldToFilter('geo_lng',array('gteq'=>$minLon))
         ->addFieldToFilter('geo_lat',array('lteq'=>$maxLat))
         ->addFieldToFilter('geo_lng',array('lteq'=>$maxLon))
-        ->addFieldToFilter('status',1)
-        ->setPageSize(3);
+        ->addFieldToFilter('status',1);
+        //->setPageSize(3);
         // get Seller id's
         $sellerData = $sellerCollection->getData();
 
@@ -192,6 +225,7 @@ class Orgreailerview implements OrgnizedretailerInterface
             $selerIdArray[] = $seldata['seller_id'];
             
         endforeach;
+	//print_r($selerIdArray);exit;
         return  $selerIdArray;
     }
    

@@ -37,6 +37,13 @@
             <resource ref="anonymous"/>
         </resources>
     </route>
+    <!-- Address change -->
+    <route url="/V1/address/change" method="POST">
+        <service class="Asm\Customapi\Api\AddresschangeInterface" method="addresschange"/>
+        <resources>
+            <resource ref="anonymous"/>
+        </resources>
+    </route>
 
     <route url="/V1/outofrange/" method="POST">
         <service class="Asm\Customapi\Api\OutofrangeInterface" method="outofrange"/>
@@ -68,6 +75,22 @@
     <!-- Orgnized retailer Add -->
     <route url="/V1/orgnizedretailer/add" method="POST">
         <service class="Asm\Customapi\Api\AddorgnizedretailerInterface" method="addorgreailer"/>
+        <resources>
+            <resource ref="anonymous"/>
+        </resources>
+    </route>
+
+    <!-- custom order details -->
+    <route url="/V1/order/details" method="POST">
+        <service class="Asm\Customapi\Api\OrderdetailsInterface" method="orderdetails"/>
+        <resources>
+            <resource ref="anonymous"/>
+        </resources>
+    </route>
+
+    <!-- orgnized retailer info -->
+    <route url="/V1/orgnizedretailer/info" method="POST">
+        <service class="Asm\Customapi\Api\OrgnizedretailerinfoInterface" method="orgnizedretailerinfo"/>
         <resources>
             <resource ref="anonymous"/>
         </resources>

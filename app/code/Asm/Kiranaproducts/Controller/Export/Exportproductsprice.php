@@ -99,7 +99,7 @@ class Exportproductsprice extends \Magento\Framework\App\Action\Action
                 $pickup = $productData->getPrice();
                 // print_r($doorsetp.'---'.$pickup);exit;
             }else{
-                $doorsetp = ($productData->getPrice()*0.8+10);
+                $doorsetp = (($productData->getPrice()*0.8)-4);
                 $pickup = ($productData->getPrice()*0.9);
             }
             // print_r($productData->getPrice()."--");
@@ -110,7 +110,7 @@ class Exportproductsprice extends \Magento\Framework\App\Action\Action
                 $productData->getPrice(),
             ];
         }
-
+        //print_r($result);exit;
         return $result;
     }
 }
