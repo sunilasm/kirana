@@ -74,46 +74,55 @@ class Setproductsellerid implements \Magento\Framework\Event\ObserverInterface
 
     public function execute(\Magento\Framework\Event\Observer $observer)
     {
-        // $writer = new \Zend\Log\Writer\Stream(BP . '/var/log/templog.log');
-        // $logger = new \Zend\Log\Logger();
-        // $logger->addWriter($writer);
-        // $logger->info("Setproductsellerrrrrrrrrrr xxxxxx");
 
         $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
         $request = $objectManager->get('\Magento\Framework\Webapi\Rest\Request');
         $seller_id = array();
+        $price_type = array();
         if($request->getBodyParams())
         {
             $post = $request->getBodyParams();
-            // $logger->info('In observer');
-            // $logger->info(print_r($post), true);
-            // $logger->info(print_r($post,true));
-            // $logger->info("product_id-->");
-            // $logger->info($post['product_id']);
-            // $logger->info("seller_id-->>");
-            // $logger->info($post['seller_id']);
-
+          
             if(isset($post['product_id'])){
                 $seller_id["product_id"] = $post['product_id'];
                 $seller_id["seller_id"] = $post['seller_id'];
+                $seller_id["price_type"] = $post['price_type'];
+                /*$seller_id["seller_kirana_id"] = $post["seller_kirana_id"];
+                $seller_id["seller_org_store_id"] = $post["seller_org_store_id"];
+                $seller_id["org_store_qty"] = $post["org_store_qty"];
+                $seller_id["kirana_qty"] = $post["kirana_qty"];*/
+
                 $quote = $observer->getQuote();
                 $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
                 $customerSession = $objectManager->create('Magento\Customer\Model\Session');
                 foreach ($quote->getAllItems() as $quoteItem) {
                     if($seller_id["product_id"]){
                         if($seller_id["product_id"] == $quoteItem->getProductId()){
-                            // $logger->info("quoteItem");
-                            // $logger->info($quoteItem->getProductId());
                             $quoteItem->setSellerId($seller_id["seller_id"]);
+                            $quoteItem->setPriceType($seller_id["price_type"]);
+                           /* $quoteItem->setSellerKiranaId($seller_id["seller_kirana_id"]);
+                            $quoteItem->setSellerOrgStoreId($seller_id["seller_org_store_id"]);
+                            $quoteItem->setOrgStoreQty($quoteItem->getOrgStoreQty()+$seller_id["org_store_qty"]);
+                            $quoteItem->setKiranaQty($quoteItem->getKiranaQty()+$seller_id["kirana_qty"]);*/
+                            $quoteItem->save();
+
                             $itemExtAttr = $quoteItem->getExtensionAttributes();
                             if ($itemExtAttr === null) {
                                 $itemExtAttr = $this->extensionFactory->create();
                             }
+                            
                             $itemExtAttr->setSellerId($seller_id["seller_id"]);
+                            $itemExtAttr->setPriceType($seller_id["price_type"]);
+                            // $itemExtAttr->setSellerKiranaId($seller_id["seller_kirana_id"]);
+                            // $itemExtAttr->setSellerOrgStoreId($seller_id["seller_org_store_id"]);
+                            // $itemExtAttr->setOrgStoreQty($quoteItem->getOrgStoreQty()+$seller_id["org_store_qty"]);
+                            // $itemExtAttr->setKiranaQty($quoteItem->getKiranaQty()+$seller_id["kirana_qty"]);
+
                             $quoteItem->setExtensionAttributes($itemExtAttr);
                         }
                     }
                 }
+                $quote->save();
             }
         }
         return $this;

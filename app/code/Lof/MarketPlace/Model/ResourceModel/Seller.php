@@ -254,11 +254,46 @@ class Seller extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
                 $this->getConnection()->delete($table, $where);
                 $data = [];
                 foreach ($quetionProducts as $k => $_post) {
+
+                    // Get Doorstep price and Pickup from store.
+                    $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+                    $products = $objectManager->create('\Magento\Catalog\Model\Product')->getCollection();
+                    $products->addAttributeToSelect(array('name'))
+                    ->addFieldToFilter('entity_id', ['in' => $k])
+                    ->addFieldTofilter('type_id','simple')
+                    ->addFieldToFilter('visibility', \Magento\Catalog\Model\Product\Visibility::VISIBILITY_BOTH)
+                    ->addFieldToFilter('status', \Magento\Catalog\Model\Product\Attribute\Source\Status::STATUS_ENABLED)
+                    ->load();
+                    
+                    // Product deatil
+                    foreach ($products as $product) {
+                        $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+                        $productData = $objectManager->create('Magento\Catalog\Model\Product')->load($product->getId());
+                        if($productData->getPrice() <= 5 || $productData->getPrice() <= 5.00){
+                            $doorsetp = $productData->getPrice();
+                            $pickup = $productData->getPrice();
+                        }elseif($product->getSku() == 'SKU590000592'){
+                            $doorsetp = ($productData->getPrice()*0.8-4);
+                            $pickup = $productData->getPrice();
+                        }elseif($product->getSku() == 'SKU590000692'){
+                            $doorsetp = $productData->getPrice();
+                            $pickup = ($productData->getPrice()*0.9);
+                        }else{
+                            $doorsetp = ($productData->getPrice()*0.8-4);
+                            $pickup = ($productData->getPrice()*0.9);
+                        }
+                        $mrp = $productData->getPrice();
+                    }
+
                     $data[] = [
                     'seller_id' => (int)$object->getId(),
                     'product_id' => $k,
-                    'position' => $_post['product_position']
+                    'position' => $_post['product_position'],
+                    'doorstep_price' => $doorsetp,
+                    'pickup_from_store' => $pickup,
+                    'mrp' => $mrp
                     ];
+
                       $product_data2 = [
                         'seller_id' => (int)$object->getId(),
                         'approval' => 2

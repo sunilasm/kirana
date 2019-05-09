@@ -10,5 +10,5 @@
         <arguments>
             <argument name="productCollectionFactory" xsi:type="object">Magento\CatalogSearch\Model\ResourceModel\Advanced\CollectionFactory</argument>
         </arguments>
-    </type>
+ </type>
 </config>

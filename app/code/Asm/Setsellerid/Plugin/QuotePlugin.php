@@ -8,21 +8,28 @@
 namespace Asm\Setsellerid\Plugin;
 
 use Magento\Quote\Api\Data\CartInterface;
+use Lof\MarketPlace\Model\ResourceModel\SellerProduct\CollectionFactory;
 
 class QuotePlugin {
-
+ 
+    protected $collectionFactory;
     /**
      * @param \Magento\Quote\Api\Data\CartItemExtensionFactory $cartItemExtension
      * @param \Magento\Catalog\Api\ProductRepositoryInterface $productRepository
      */
     protected $helperData;
     public function __construct(
+        CollectionFactory $collectionFactory,
+
         \Magento\Quote\Api\Data\CartItemExtensionFactory $cartItemExtension, 
         \Lof\MarketPlace\Helper\Data $helperData,
         \Magento\Catalog\Api\ProductRepositoryInterfaceFactory $productRepository        ) {
         $this->cartItemExtension = $cartItemExtension;
+                $this->collectionFactory = $collectionFactory;
+
         $this->helperData = $helperData;
         $this->productRepository = $productRepository;
+       
     }
 
     /**
@@ -60,6 +67,7 @@ class QuotePlugin {
      * @return  $extensionAttributes
      */
     private function setAttributeValue($quote) {
+
         $data = [];
         if (count($quote->getItems())) {
             foreach ($quote->getItems() as $item) { 
@@ -71,13 +79,20 @@ class QuotePlugin {
                 }
                 $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
                 $productData = $objectManager->create('Magento\Catalog\Model\Product')->load($item->getId());
-
-               // $productData = $this->productRepository->create()->get($item->getId());                
                 $extensionAttributes->setImage($productData->getThumbnail());
                 $sellerName = $this->helperData->getSellernameId($item->getSellerId());
+            /*    $sellerKiranaName = $this->helperData->getSellernameId($item->getSellerKiranaId());
+                $sellerOrgStoreName = $this->helperData->getSellernameId($item->getSellerOrgStoreId());*/
+
                 $extensionAttributes->setSellerName($sellerName);
                 $extensionAttributes->setSellerId($item->getSellerId());
                 $extensionAttributes->setProductId($item->getProductId());
+                /*$extensionAttributes->setSellerKiranaId($item->getSellerKiranaId());
+                $extensionAttributes->setSellerOrgStoreId($item->getSellerOrgStoreId());
+                $extensionAttributes->setKiranaQty($item->getKiranaQty());
+                $extensionAttributes->setOrgStoreQty($item->getOrgStoreQty());
+                $extensionAttributes->setSellerKiranaName($sellerKiranaName);
+                $extensionAttributes->setSellerOrgStoreName($sellerOrgStoreName);*/
                 $item->setExtensionAttributes($extensionAttributes);
             }
         } 

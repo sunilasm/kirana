@@ -21,4 +21,19 @@
     <preference for="Asm\Customapi\Api\LocalityInterface" type="Asm\Customapi\Model\Localityview" />/>
     <!-- Address change -->
     <preference for="Asm\Customapi\Api\AddresschangeInterface" type="Asm\Customapi\Model\Addresschangeview" />
+    <preference for="Asm\Customapi\Api\LocalityInterface" type="Asm\Customapi\Model\Localityview" />
+    <!-- Get Outofrange -->
+    <preference for="Asm\Customapi\Api\OutofrangeInterface" type="Asm\Customapi\Model\Outofrangeview" />
+    <!-- Get flushcart -->
+    <preference for="Asm\Customapi\Api\FlushcartInterface" type="Asm\Customapi\Model\Flushcartview" />
+    <!-- Orgnized retailer -->
+    <preference for="Asm\Customapi\Api\OrgnizedretailerInterface" type="Asm\Customapi\Model\Orgreailerview" /> 
+    <!-- Clear Cart -->
+    <preference for="Asm\Customapi\Api\ClearcartInterface" type="Asm\Customapi\Model\Clearcartview" />
+    <!-- Orgnized retailer Add -->
+    <preference for="Asm\Customapi\Api\AddorgnizedretailerInterface" type="Asm\Customapi\Model\Addorgreailerview" />
+    <!-- Custom order details -->
+    <preference for="Asm\Customapi\Api\OrderdetailsInterface" type="Asm\Customapi\Model\Orderdetailsview" />
+    <!-- Orginzed retailer info -->
+    <preference for="Asm\Customapi\Api\OrgnizedretailerinfoInterface" type="Asm\Customapi\Model\Orgnizedretailerinfoview" />
 </config>

@@ -1,0 +1,3 @@
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_ImportExport:etc/import.xsd">
+    <entity name="mglof_marketplace_product" label="Kirana Products Import" model="Asm\Kiranaproducts\Model\Import\CustomImport" behaviorModel="Magento\ImportExport\Model\Source\Import\Behavior\Basic" />
+</config>
