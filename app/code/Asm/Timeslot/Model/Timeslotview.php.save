@@ -42,7 +42,7 @@ class Timeslotview implements TimeslotInterface
         $resultPage = $this->_timeslot->create();
         $collectionTimeslot = $resultPage->getCollection();
         $collectionTimeslot->addFieldToFilter('order_id',$post['order_id']); 
-       // print_r($collectionTimeslot->getData());exit;
+        //print_r($collectionTimeslot->getData());exit;
         if(!count($collectionTimeslot)){
           $resource = $objectManager->get('\Magento\Framework\App\ResourceConnection');
           $connection = $resource->getConnection();
@@ -111,7 +111,7 @@ class Timeslotview implements TimeslotInterface
             $collectionTimeslot->addFieldToFilter('order_id',$post['order_id']); 
             $collectionTimeslot->addFieldToFilter('store_id',$item->getSeller_id()); 
             $timeSlot = $collectionTimeslot->getData();
-            //print_r($collectionTimeslot->getSelect()->__toString());exit;
+            print_r($collectionTimeslot->getSelect()->__toString());exit;
             if(count($timeSlot)){
                 $selllers[$item->getSeller_id()]['time_slot_type'] = $timeSlot[0]['time_slot_type'];
                 $selllers[$item->getSeller_id()]['date_slot'] = $timeSlot[0]['date_slot'];
@@ -143,7 +143,7 @@ class Timeslotview implements TimeslotInterface
 
         }
         // exit;
- //print_r($selllers);echo "<br/>";exit;
+ print_r($selllers);echo "<br/>";exit;
         return $data;
        // print_r($selllers);echo "<br/>";
         // exit;       

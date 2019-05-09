@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../Magento/Backend/etc/menu.xsd">
+    <menu>
+        <add id="Retailinsights_Slider::parent" title="Promotion Images" module="Retailinsights_Slider" sortOrder="100" resource="Retailinsights_Slider::parent"/>
+        <add id="Retailinsights_Slider::index" title="Upload Images" module="Retailinsights_Slider" sortOrder="10" action="slider/index" resource="Retailinsights_Slider::index" parent="Retailinsights_Slider::parent"/>
+		
+    </menu>
+</config>
