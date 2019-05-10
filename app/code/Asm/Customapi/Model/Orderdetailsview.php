@@ -30,7 +30,7 @@ class Orderdetailsview implements OrderdetailsInterface
     }
 
     public function orderdetails() {
-        // print_r("Api execute successfully");exit;
+        //print_r("Api execute successfully");exit;
         $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
         $request = $objectManager->get('\Magento\Framework\Webapi\Rest\Request');
         $post = $request->getBodyParams();
@@ -54,11 +54,11 @@ class Orderdetailsview implements OrderdetailsInterface
             $orgnizedRetailrProductArray = array();
             $kiranaProductArray = array();
             $kiranaNamesArray = array();
-            $sellers = array();
+            $selllers = array();
             foreach ($items as $item) 
             {
-            $organizedQtyCount = 0;
-            $kiranaQtyCount = 0;
+                $organizedQtyCount = 0;
+                $kiranaQtyCount = 0;
                 // Pickup from store
                 // if($item->getPrice_type() == 1)
                 // {
@@ -135,7 +135,8 @@ class Orderdetailsview implements OrderdetailsInterface
             $response = array();
             $i=0;
             $j=0;
-            foreach ($selllers as $seller) {
+            foreach ($selllers as $seller) 
+            {
                 if($seller['type'] == 'org')
                 {
                     $response['pick_up_from_store'][$i] = $seller;
@@ -148,11 +149,53 @@ class Orderdetailsview implements OrderdetailsInterface
                 }
                 
             }
+            if(isset($response['pick_up_from_store']) && count($response['pick_up_from_store']))
+            {
+                $temp_response = $this->sort_by_total_item_count($response['pick_up_from_store']);
+                $response['pick_up_from_store'] = $temp_response;
+            }
             $data = array($response);
         }
         return $data;
     }
 
-    
+    private function sort_by_total_item_count($array) 
+    {
+        $sorter = array();
+        $ret = array();
+        reset($array);
+        $count_array = array();
+        
+        foreach($array as $key => $store)
+        {
+            $count_array[$key] = $store['cart_summary']['total_item_count'];
+        }
+        arsort($count_array);
+        $response = array();
+        foreach($count_array as $key => $value)
+        {
+            $response[] = $array[$key];
+        }
+        for($i=0; $i<count($response); $i++)
+        {
+            $temp = $i+1;
+            if($temp < count($response))
+            { 
+                if($response[$i]['cart_summary']['total_item_count'] > 0)
+                {
+                    if($response[$i]['cart_summary']['total_item_count'] == $response[$temp]['cart_summary']['total_item_count'])
+                    {
+                        if($response[$i]['cart_summary']['sub_total'] > $response[$temp]['cart_summary']['sub_total'])
+                        {
+                            $temp_array = $response[$i];
+                            $response[$i] = $response[$temp];
+                            $response[$temp] = $temp_array;
+                        }
+                    }
+                }
+            }
+        }
+        return $response;
+    }
    
 }

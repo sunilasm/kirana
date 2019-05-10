@@ -143,6 +143,8 @@ return [
         'Mageplaza_Smtp' => 1,
         'Ranosys_CancelOrder' => 1,
         'Retailinsights_Cartrules' => 1,
+        'Retailinsights_Promotion' => 1,
+        'Retailinsights_Slider' => 1,
         'TEXT_Smsnotifications' => 1,
         'Temando_Shipping' => 1,
         'Vertex_Tax' => 1
