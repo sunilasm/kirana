@@ -18,6 +18,9 @@
     <!-- Get Area -->
     <preference for="Asm\Customapi\Api\AreaInterface" type="Asm\Customapi\Model\Areaview" />
     <!-- Get Locality -->
+    <preference for="Asm\Customapi\Api\LocalityInterface" type="Asm\Customapi\Model\Localityview" />/>
+    <!-- Address change -->
+    <preference for="Asm\Customapi\Api\AddresschangeInterface" type="Asm\Customapi\Model\Addresschangeview" />
     <preference for="Asm\Customapi\Api\LocalityInterface" type="Asm\Customapi\Model\Localityview" />
     <!-- Get Outofrange -->
     <preference for="Asm\Customapi\Api\OutofrangeInterface" type="Asm\Customapi\Model\Outofrangeview" />
