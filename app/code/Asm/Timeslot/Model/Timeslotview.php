@@ -19,11 +19,13 @@ class Timeslotview implements TimeslotInterface
        \Magento\Framework\App\RequestInterface $request,
        \Magento\Sales\Api\OrderRepositoryInterface $orderRepository,
        \Lof\MarketPlace\Model\Seller $sellerCollection,
+       \Lof\MarketPlace\Model\SellerProduct $sellerProductCollection,
        \Asm\Timeslot\Model\TimeslotFactory $timeslotCollection
     ) {
        $this->request = $request;
        $this->orderRepository = $orderRepository;
        $this->_sellerCollection = $sellerCollection;
+       $this->_sellerProductCollection = $sellerProductCollection;
        $this->_timeslot = $timeslotCollection;
     }
 
@@ -95,14 +97,22 @@ class Timeslotview implements TimeslotInterface
             $subTotal = 0;
             // print_r($item->getPrice_type());exit;
             $selllers[$item->getSeller_id()]['cart_summary']['total_item_count'] += $item->getQty_ordered();
-            if($item->getPrice_type() == 1)
-            {
-                $subTotal = ($item->getPrice() * $item->getQty_ordered());
+            $sellerProductCollection = $this->_sellerProductCollection->getCollection()->addFieldToFilter('product_id', array('in' => $item->getProduct_id()))->addFieldToFilter('seller_id', array('in' => $item->getSeller_id()));
+                    // print_r($sellerProductCollection->getData());exit;
+            foreach($sellerProductCollection as $sellProducts){
+                        // print_r($sellProducts->getPickup_from_store());exit;
+                if($item->getPrice_type() == 1)
+                {
+                    // print_r("1111");exit;
+                    $subTotal = ($sellProducts->getPickup_from_store() * $item->getQty_ordered());
+                }
+                else
+                {
+                    // print_r("2222");exit;
+                    $subTotal = ($sellProducts->getDoorstep_price() * $item->getQty_ordered());
+                }
             }
-            else
-            {
-              $subTotal = ($item->getPrice() * $item->getQty_ordered());
-            }
+            // print_r($subTotal);exit;
             $selllers[$item->getSeller_id()]['cart_summary']['sub_total'] += $subTotal;
             $selllers[$item->getSeller_id()]['cart_summary']['sub_total'] = number_format((float)$selllers[$item->getSeller_id()]['cart_summary']['sub_total'], 2, '.', '');
 
