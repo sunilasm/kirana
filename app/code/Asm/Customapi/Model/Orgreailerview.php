@@ -158,7 +158,11 @@ class Orgreailerview implements OrgnizedretailerInterface
         {
             $response = $this->sort_by_present_item_count($response);
             $final_response = array();
-            $org_return_count = 3;
+		$org_return_count = 3;
+            if(count($response) < 3)
+            {
+                $org_return_count = count($response);
+            }
             for($i=0; $i<$org_return_count; $i++)
             {
                 $final_response[$i] = $response[$i];
