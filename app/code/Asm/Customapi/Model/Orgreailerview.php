@@ -185,6 +185,26 @@ class Orgreailerview implements OrgnizedretailerInterface
         {
             $response[] = $array[$key];
         }
+
+        for($i=0; $i<count($response); $i++)
+        {
+            $temp = $i+1;
+            if($temp < count($response))
+            { 
+                if($response[$i]['cart_summary']['present_item_count'] > 0)
+                {
+                    if($response[$i]['cart_summary']['present_item_count'] == $response[$temp]['cart_summary']['present_item_count'])
+                    {
+                        if($response[$i]['cart_summary']['sub_total'] > $response[$temp]['cart_summary']['sub_total'])
+                        {
+                            $temp_array = $response[$i];
+                            $response[$i] = $response[$temp];
+                            $response[$temp] = $temp_array;
+                        }
+                    }
+                }
+            }
+        }
         return $response;
     }
 

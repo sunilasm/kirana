@@ -54,11 +54,11 @@ class Orderdetailsview implements OrderdetailsInterface
             $orgnizedRetailrProductArray = array();
             $kiranaProductArray = array();
             $kiranaNamesArray = array();
-            $sellers = array();
+            $selllers = array();
             foreach ($items as $item) 
             {
-            $organizedQtyCount = 0;
-            $kiranaQtyCount = 0;
+                $organizedQtyCount = 0;
+                $kiranaQtyCount = 0;
                 // Pickup from store
                 // if($item->getPrice_type() == 1)
                 // {
@@ -176,7 +176,25 @@ class Orderdetailsview implements OrderdetailsInterface
         {
             $response[] = $array[$key];
         }
-        //print_r($response);exit;
+        for($i=0; $i<count($response); $i++)
+        {
+            $temp = $i+1;
+            if($temp < count($response))
+            { 
+                if($response[$i]['cart_summary']['total_item_count'] > 0)
+                {
+                    if($response[$i]['cart_summary']['total_item_count'] == $response[$temp]['cart_summary']['total_item_count'])
+                    {
+                        if($response[$i]['cart_summary']['sub_total'] > $response[$temp]['cart_summary']['sub_total'])
+                        {
+                            $temp_array = $response[$i];
+                            $response[$i] = $response[$temp];
+                            $response[$temp] = $temp_array;
+                        }
+                    }
+                }
+            }
+        }
         return $response;
     }
    
