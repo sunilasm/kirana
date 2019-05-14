@@ -70,8 +70,27 @@ class Orderdetailsview implements OrderdetailsInterface
                         $sellerCollectionDetails = $this->_sellerCollection->getCollection()->addFieldToFilter('seller_id', array('in' => $item->getSeller_id()));
 
                         foreach($sellerCollectionDetails as $sellcoll):
+				$sellerData = $sellcoll->getData();
+			   //Set Contact Number
+                            if ($sellerData['contact_number']) {
+                               if(preg_match( '/(\d{2})(\d{4})(\d{4})$/', $sellerData['contact_number'],  $matches ) )
+                                {
+                                    $result = '0'.$matches[1] . '-' .$matches[2] . '-' . $matches[3];
+                                   // print_r($result) ;
+                                    $sellerData['contact_number'] = $result;
+                                }
+                            }
+			  //Set kirana landline
+			   if ($sellerData['telephone']) {
+                               if(preg_match( '/(\d{2})(\d{4})(\d{4})$/', $sellerData['telephone'],  $matches ) )
+                                {
+                                    $result = '0'.$matches[1] . '-' .$matches[2] . '-' . $matches[3];
+                                   // print_r($result) ;
+                                    $sellerData['telephone'] = $result;
+                                }
+                            }
                             $tempOrgnizedNameArray[$item->getSeller_id()]['name'] = $sellcoll->getName();
-                            $selllers[$item->getSeller_id()]['store'] = $sellcoll->getData();
+                            $selllers[$item->getSeller_id()]['store'] = $sellerData;
                             $selllers[$item->getSeller_id()]['cart_summary']['total_item_count'] = 0;
                             $selllers[$item->getSeller_id()]['cart_summary']['sub_total'] = 0;
                             if($item->getPrice_type() == 1)

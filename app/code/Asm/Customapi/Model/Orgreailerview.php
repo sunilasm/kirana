@@ -69,7 +69,25 @@ class Orgreailerview implements OrgnizedretailerInterface
                 $sellerData = array();
                 foreach($sellerCollectionDetails as $sellcoll):
                     $sellerData = $sellcoll->getData();
-                endforeach;
+                    //Set contact number
+                    if ($sellerData['contact_number']) {
+                        if(preg_match( '/(\d{2})(\d{4})(\d{4})$/', $sellerData['contact_number'],  $matches ) )
+                        {
+                           $result = '0'.$matches[1] . '-' .$matches[2] . '-' . $matches[3];
+                           $sellerData['contact_number'] = $result;
+                        }
+                     }
+
+       		   //Set kirana landline
+		    if ($sellerData['telephone']) {
+   			if(preg_match( '/(\d{2})(\d{4})(\d{4})$/', $sellerData['telephone'],  $matches ) )
+    			{
+        		   $result = '0'.$matches[1] . '-' .$matches[2] . '-' . $matches[3];
+        		   $sellerData['telephone'] = $result;
+    			}
+		     }
+
+		endforeach;
 
                 // Quote Data
                 $cartSubTotal = 0;
