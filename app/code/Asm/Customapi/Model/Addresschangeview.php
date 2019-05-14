@@ -57,12 +57,17 @@ class Addresschangeview implements AddresschangeInterface
             // print_r($item->getData());exit;
             if(!in_array($item->getSeller_id(), $sellerId)){
 
-                $sellerCollection = $this->_sellerProductCollection->getCollection()->addFieldToFilter('product_id', array('in' => $item->getProduct_id()));
-                $tempSellerProductArray = array();
-                foreach($sellerCollection as $seller):
-                    if(in_array($seller['seller_id'], $sellerId)){
+                $sellerProductCollection = $this->_sellerProductCollection->getCollection()->addFieldToFilter('product_id', array('in' => $item->getProduct_id()));
+                //print_r();exit;
+		$tempSellerProductArray = array();
+                foreach($sellerProductCollection as $seller):
+		   if(in_array($seller['seller_id'], $sellerId['retail'])){
                         $tempSellerProductArray[] = $seller['seller_id'];
                     }
+                    elseif(in_array($seller['seller_id'], $sellerId['orgretail']))
+                    {
+                        $tempSellerProductArray[] = $seller['seller_id'];
+                    }	
                     //$i++;
                 endforeach;
                 if(count($tempSellerProductArray)){
