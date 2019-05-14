@@ -36,4 +36,6 @@
     <preference for="Asm\Customapi\Api\OrderdetailsInterface" type="Asm\Customapi\Model\Orderdetailsview" />
     <!-- Orginzed retailer info -->
     <preference for="Asm\Customapi\Api\OrgnizedretailerinfoInterface" type="Asm\Customapi\Model\Orgnizedretailerinfoview" />
+    <!-- Add New Customer Address -->
+    <preference for="Asm\Customapi\Api\NewaddressInterface" type="Asm\Customapi\Model\Newaddressview" />
 </config>
