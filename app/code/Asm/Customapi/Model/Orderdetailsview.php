@@ -89,6 +89,16 @@ class Orderdetailsview implements OrderdetailsInterface
                                     $sellerData['telephone'] = $result;
                                 }
                             }
+			
+			    //Set kirana fax
+                	    if ($sellerData['kirana_fixed_line']) {
+                        	if(preg_match( '/(\d{2})(\d{4})(\d{4})$/', $sellerData['kirana_fixed_line'],  $matches ) )
+                        	{
+                           		$result = '0'.$matches[1] . '-' .$matches[2] . '-' . $matches[3];
+                           		$sellerData['kirana_fixed_line'] = $result;
+                        	}
+                    	    }
+
                             $tempOrgnizedNameArray[$item->getSeller_id()]['name'] = $sellcoll->getName();
                             $selllers[$item->getSeller_id()]['store'] = $sellerData;
                             $selllers[$item->getSeller_id()]['cart_summary']['total_item_count'] = 0;

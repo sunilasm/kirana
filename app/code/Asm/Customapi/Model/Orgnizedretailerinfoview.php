@@ -72,6 +72,16 @@ class Orgnizedretailerinfoview implements OrgnizedretailerinfoInterface
 		        $sellerData['telephone'] = $result;
     		   }
 		}
+		
+		//Set kirana fax
+                    if ($sellerData['kirana_fixed_line']) {
+                        if(preg_match( '/(\d{2})(\d{4})(\d{4})$/', $sellerData['kirana_fixed_line'],  $matches ) )
+                        {
+                           $result = '0'.$matches[1] . '-' .$matches[2] . '-' . $matches[3];
+                           $sellerData['kirana_fixed_line'] = $result;
+                        }
+                    }
+
                 $sellerData['group_name'] = $groupName;
                 $sellerNew[] = $sellerData;
             endforeach;
