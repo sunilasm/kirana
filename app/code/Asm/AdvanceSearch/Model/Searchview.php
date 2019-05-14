@@ -126,7 +126,7 @@ class Searchview implements SearchInterface
         //$rangeInKm = 10;
         if($rangeSetting == 1){
             if($rangeInKm){
-                $distance = $rangeInKm; //your distance in KM
+                $distance = (is_numeric($rangeInKm)) ? $rangeInKm : 1; //your distance in KM
             }else{
                 $distance = 1; //your distance in KM
             }
