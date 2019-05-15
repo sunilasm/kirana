@@ -1,0 +1,36 @@
+table {
+    font-family: arial, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+td, th {
+	width: 20%;
+    border: 1px solid #dddddd;
+    text-align: center;
+    padding: 8px;
+}
+
+tr:nth-child(odd) {
+    background-color: #ece7e7;
+}
+
+/* Button */
+.button{
+   border: 0px;
+   background-color: deepskyblue;
+   color: white;
+   padding: 5px 15px;
+   margin-left: 10px;
+}
+#popup-modal, 
+.modal-slide._inner-scroll .modal-footer {
+      display: none;
+}
+.modal-popup .modal-inner-wrap{
+	width: 35%;
+}
+.modal-slide .modal-title {
+    text-align: center;
+    margin-bottom: 15px;
+}

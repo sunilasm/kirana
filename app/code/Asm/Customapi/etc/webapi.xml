@@ -37,6 +37,13 @@
             <resource ref="anonymous"/>
         </resources>
     </route>
+    <!-- Address change -->
+    <route url="/V1/address/change" method="POST">
+        <service class="Asm\Customapi\Api\AddresschangeInterface" method="addresschange"/>
+        <resources>
+            <resource ref="anonymous"/>
+        </resources>
+    </route>
 
     <route url="/V1/outofrange/" method="POST">
         <service class="Asm\Customapi\Api\OutofrangeInterface" method="outofrange"/>
@@ -84,6 +91,13 @@
     <!-- orgnized retailer info -->
     <route url="/V1/orgnizedretailer/info" method="POST">
         <service class="Asm\Customapi\Api\OrgnizedretailerinfoInterface" method="orgnizedretailerinfo"/>
+        <resources>
+            <resource ref="anonymous"/>
+        </resources>
+    </route>
+    <!-- Add new customer address -->
+    <route url="/V1/add/customer/address" method="POST">
+        <service class="Asm\Customapi\Api\NewaddressInterface" method="newcustomeraddress"/>
         <resources>
             <resource ref="anonymous"/>
         </resources>
