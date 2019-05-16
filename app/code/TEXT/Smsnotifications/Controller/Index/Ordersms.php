@@ -82,6 +82,7 @@ class Ordersms extends \Magento\Framework\App\Action\Action
                 $telephone = $customer->getPrimaryBillingAddress()->getTelephone();
                         if(in_array('placeorder', $final_array))
                 {
+		    $admin_recipients = array();
                     if ($telephone)     
                     {
                         $text= $settings['new_order'];
