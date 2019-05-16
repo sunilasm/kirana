@@ -95,4 +95,11 @@
             <resource ref="anonymous"/>
         </resources>
     </route>
+    <!-- Add new customer address -->
+    <route url="/V1/add/customer/address" method="POST">
+        <service class="Asm\Customapi\Api\NewaddressInterface" method="newcustomeraddress"/>
+        <resources>
+            <resource ref="anonymous"/>
+        </resources>
+    </route>
 </routes>

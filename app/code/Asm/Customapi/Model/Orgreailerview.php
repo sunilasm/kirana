@@ -69,7 +69,33 @@ class Orgreailerview implements OrgnizedretailerInterface
                 $sellerData = array();
                 foreach($sellerCollectionDetails as $sellcoll):
                     $sellerData = $sellcoll->getData();
-                endforeach;
+                    //Set contact number
+                    if ($sellerData['contact_number']) {
+                        if(preg_match( '/(\d{2})(\d{4})(\d{4})$/', $sellerData['contact_number'],  $matches ) )
+                        {
+                           $result = '0'.$matches[1] . '-' .$matches[2] . '-' . $matches[3];
+                           $sellerData['contact_number'] = $result;
+                        }
+                     }
+
+       		   //Set kirana landline
+		    if ($sellerData['telephone']) {
+   			if(preg_match( '/(\d{2})(\d{4})(\d{4})$/', $sellerData['telephone'],  $matches ) )
+    			{
+        		   $result = '0'.$matches[1] . '-' .$matches[2] . '-' . $matches[3];
+        		   $sellerData['telephone'] = $result;
+    			}
+		     }
+		    //Set kirana fax
+                    if ($sellerData['kirana_fixed_line']) {
+                        if(preg_match( '/(\d{2})(\d{4})(\d{4})$/', $sellerData['kirana_fixed_line'],  $matches ) )
+                        {
+                           $result = '0'.$matches[1] . '-' .$matches[2] . '-' . $matches[3];
+                           $sellerData['kirana_fixed_line'] = $result;
+                        }
+                    }
+
+		endforeach;
 
                 // Quote Data
                 $cartSubTotal = 0;
@@ -158,7 +184,11 @@ class Orgreailerview implements OrgnizedretailerInterface
         {
             $response = $this->sort_by_present_item_count($response);
             $final_response = array();
-            $org_return_count = 3;
+		$org_return_count = 3;
+            if(count($response) < 3)
+            {
+                $org_return_count = count($response);
+            }
             for($i=0; $i<$org_return_count; $i++)
             {
                 $final_response[$i] = $response[$i];
@@ -184,6 +214,26 @@ class Orgreailerview implements OrgnizedretailerInterface
         foreach($count_array as $key => $value)
         {
             $response[] = $array[$key];
+        }
+
+        for($i=0; $i<count($response); $i++)
+        {
+            $temp = $i+1;
+            if($temp < count($response))
+            { 
+                if($response[$i]['cart_summary']['present_item_count'] > 0)
+                {
+                    if($response[$i]['cart_summary']['present_item_count'] == $response[$temp]['cart_summary']['present_item_count'])
+                    {
+                        if($response[$i]['cart_summary']['sub_total'] > $response[$temp]['cart_summary']['sub_total'])
+                        {
+                            $temp_array = $response[$i];
+                            $response[$i] = $response[$temp];
+                            $response[$temp] = $temp_array;
+                        }
+                    }
+                }
+            }
         }
         return $response;
     }
