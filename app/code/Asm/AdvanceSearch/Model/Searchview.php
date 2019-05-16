@@ -264,7 +264,8 @@ class Searchview implements SearchInterface
             $entColl['image'] = $product->getData('image');
             $entColl['small_image'] = $product->getData('small_image');
             $entColl['thumbnail'] = $product->getData('thumbnail'); 
-            $entColl['volume'] = $product->getData('volume');         
+            $entColl['volume'] = $product->getData('volume');   
+            $entColl['price'] = $product->getData('price');   
             $entColl['unitm'] = (round($product->getData('weight'),0)).' '.($product->getData('uom_label'));
             if(!empty($chsnOrgId && $chsnOrgPrice)){
                 $entColl['org_retail'] = $chsnOrgId;
@@ -327,26 +328,26 @@ class Searchview implements SearchInterface
                 if($add_kiranapromo == 1){
                     if($p_action == 'by_fixed'){
                         $disc_amt = $promo['discount_amount'];
-                        $disc_per = ($promo['discount_amount']*100)/$chsnRetailPrice ;
+                        $disc_per = ($promo['discount_amount']*100)/$entColl['price'] ;
                     }else{
-                        $disc_amt = ($chsnRetailPrice * $promo['discount_amount'])/100 ;
+                        $disc_amt = ($entColl['price'] * $promo['discount_amount'])/100 ;
                         $disc_per = $promo['discount_amount'];
                     }
-                    $kirana_temp['discount_percent'] = ceil($disc_per);
-                    $kirana_temp['final_amt'] = ceil($chsnRetailPrice - $disc_amt); 
+                    $kirana_temp['discount_percent'] = $this->roundDown($disc_per,0);
+                    $kirana_temp['final_amt'] = $this->roundUp($entColl['price'] - $disc_amt,2); 
                     array_push($kirana_arr,$kirana_temp);
                 } 
                 if($add_orgpromo == 1){
                     if($p_action == 'by_fixed'){
                          $disc_amt = $promo['discount_amount'];
-                         $disc_per = ($promo['discount_amount']*100)/$chsnOrgPrice ;
+                         $disc_per = ($promo['discount_amount']*100)/$entColl['price'] ;
                     }else{
-                         $disc_amt = ($chsnOrgPrice * $promo['discount_amount'])/100 ;
+                         $disc_amt = ($entColl['price'] * $promo['discount_amount'])/100 ;
                          $disc_per = $promo['discount_amount'];
                     } 
                     $orgret_temp['message'] = $promo['description'];
-                    $orgret_temp['discount_percent'] = ceil($disc_per);
-                    $orgret_temp['final_amt'] = ceil($chsnOrgPrice - $disc_amt);                    
+                    $orgret_temp['discount_percent'] = $this->roundDown($disc_per,0);
+                    $orgret_temp['final_amt'] = $this->roundUp($entColl['price'] - $disc_amt,2);                    
                     array_push($orgret_arr,$orgret_temp);
                 }
             }//store-promo-mapp data array end 
@@ -364,3 +365,12 @@ class Searchview implements SearchInterface
         return $fnlRslt;       
     }
 }
+
+    public function roundUp ( $value, $precision ) { 
+        $pow = pow ( 10, $precision ); 
+        return ( ceil ( $pow * $value ) + ceil ( $pow * $value - ceil ( $pow * $value ) ) ) / $pow; 
+    }
+    public function roundDown ( $value, $precision ) { 
+        $pow = pow ( 10, $precision ); 
+        return ( floor ( $pow * $value ) + floor ( $pow * $value - floor ( $pow * $value ) ) ) / $pow; 
+    }
