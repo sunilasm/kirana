@@ -36,8 +36,8 @@
 	/* Declarations */
 	$base_url = $storeManager->getStore()->getBaseUrl();
 	$admin_credentials= [
-		"username" => "sunil.n",   // faizal.h
-		"password" => "admin123"   //Admin@123
+		"username" => "faizal.h",
+		"password" => "Admin@123"
 	];
 	$unsuccessful_order_ids = [];
 		
