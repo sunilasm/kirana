@@ -364,8 +364,6 @@ class Searchview implements SearchInterface
          //print_r($fnlRslt); exit();
         return $fnlRslt;       
     }
-}
-
     public function roundUp ( $value, $precision ) { 
         $pow = pow ( 10, $precision ); 
         return ( ceil ( $pow * $value ) + ceil ( $pow * $value - ceil ( $pow * $value ) ) ) / $pow; 
@@ -374,3 +372,6 @@ class Searchview implements SearchInterface
         $pow = pow ( 10, $precision ); 
         return ( floor ( $pow * $value ) + floor ( $pow * $value - floor ( $pow * $value ) ) ) / $pow; 
     }
+}
+
+    
