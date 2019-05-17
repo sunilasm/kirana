@@ -89,7 +89,7 @@
 					$new_price = $mrp - $discount;
 			   }else{
 				    $discount = ($mrp * $rule['discount_amount'])/100 ;
-				    $new_price = $mrp - $rule['discount_amount'];
+				    $new_price = $mrp - $discount;
 			   }
 			   $new_price = roundUp($new_price,2);
 			   if(($product['pickup_from_store_old']==0) || ($product['pickup_from_store_old']==NULL)){ 
@@ -108,7 +108,7 @@
 					$new_price = $mrp - $discount;
 		   	  }else{
 					$discount = ($mrp * $rule['discount_amount'])/100 ;
-					$new_price = $mrp - $rule['discount_amount'];
+					$new_price = $mrp - $discount;
 			  }
 			  $new_price = roundUp($new_price,2);
 			  if(($product['doorstep_price_old']==0) || ($product['doorstep_price_old']==NULL)){ 
