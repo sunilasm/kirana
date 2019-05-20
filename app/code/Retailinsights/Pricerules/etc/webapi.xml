@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+<routes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Webapi:etc/webapi.xsd">
+    <route url="/V1/Pricerules/getRule/" method="GET">
+        <service class="Retailinsights\Pricerules\Api\CatalogRuleRepositoryInterface"
+         method="getRule"/>
+        <resources>
+            <resource ref="anonymous"/>
+        </resources>
+    </route>
+     <route url="/V1/Pricerules/getRuleList/" method="GET">
+        <service class="Retailinsights\Pricerules\Api\CatalogRuleRepositoryInterface"
+         method="getRuleList"/>
+        <resources>
+            <resource ref="anonymous"/>
+        </resources>
+    </route>
+    
+<route url="/V1/Pricerules/getBuythree/" method="GET">
+        <service class="Retailinsights\Pricerules\Api\CatalogRuleRepositoryInterface"
+         method="getBuythree"/>
+        <resources>
+            <resource ref="anonymous"/>
+        </resources>
+    </route>
+
+     <route url="/V1/Pricerules/getBuyXgetFixed/" method="GET">
+        <service class="Retailinsights\Pricerules\Api\CatalogRuleRepositoryInterface"
+         method="getBuyXgetFixed"/>
+        <resources>
+            <resource ref="anonymous"/>
+        </resources>
+    </route>
+
+   
+    
+     <route url="/V1/Pricerules/getBuyXXXgetY/" method="GET">
+        <service class="Retailinsights\Pricerules\Api\CatalogRuleRepositoryInterface"
+         method="getBuyXXXgetY"/>
+        <resources>
+            <resource ref="anonymous"/>
+        </resources>
+    </route>
+
+      <route url="/V1/Pricerules/getBuyXYZ/" method="GET">
+        <service class="Retailinsights\Pricerules\Api\CatalogRuleRepositoryInterface"
+         method="getBuyXYZ"/>
+        <resources>
+            <resource ref="anonymous"/>
+        </resources>
+    </route>
+
+    
+</routes>

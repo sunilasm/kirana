@@ -237,7 +237,7 @@ class Searchview implements SearchInterface
                 }
                 $Productcollection->setCurPage($current_page)->setPageSize($page_size);
          $result = array();
-         
+         $mappedRulesArray = $this->getCustomTableRules();
          foreach($Productcollection->getData() as $product){
             $chsnOrgId = $chsnOrgPrice = $chsnRetailId = $chsnRetailPrice = "";
             $entColl = array();
@@ -264,7 +264,8 @@ class Searchview implements SearchInterface
             $entColl['image'] = $product->getData('image');
             $entColl['small_image'] = $product->getData('small_image');
             $entColl['thumbnail'] = $product->getData('thumbnail'); 
-            $entColl['volume'] = $product->getData('volume');         
+            $entColl['volume'] = $product->getData('volume');   
+            $entColl['price'] = $product->getData('price');   
             $entColl['unitm'] = (round($product->getData('weight'),0)).' '.($product->getData('uom_label'));
             if(!empty($chsnOrgId && $chsnOrgPrice)){
                 $entColl['org_retail'] = $chsnOrgId;
@@ -276,44 +277,87 @@ class Searchview implements SearchInterface
             }
             
             //=====adding promotions
-            $mapped_data = $this->_PostTableFactory->create()->getCollection();
+            //$mapped_data = $this->_PostTableFactory->create()->getCollection();
              $orgret_arr = array();
             $kirana_arr = array();
-            foreach ($mapped_data->getData() as $k => $promo) {    //store-promo-mapp data array  
+            $kirana_temp = array();
+            $orgret_temp = array();
+            //foreach ($mapped_data->getData() as $k => $promo) {    //store-promo-mapp data array  
                 $skus = array(); 
                 $disc_amt = 0;
                 $disc_per = 0;
                 $add_kiranapromo = $add_orgpromo = 0;
-                $p_action = $promo['simple_action'];    //by_percent or by_fixed
-                $con_arr = json_decode($promo['conditions_serialized'] , true); 
-                if(!empty($con_arr['conditions'])){
-                    $conditionsarr = $con_arr['conditions'];
-                    foreach($conditionsarr as $ck => $con){  // promo rule conditions array
-                        if($con['attribute']=='sku'){
-                            $skus[] = $con['value'];
+                if(isset($entColl['kirana'])) {
+                    if(isset($mappedRulesArray[$entColl['kirana']])) {
+                            foreach($mappedRulesArray[$entColl['kirana']] as $k => $promo) {
+                            $p_action = $promo['simple_action'];    //by_percent or by_fixed
+                            $con_arr = json_decode($promo['conditions_serialized'] , true); 
+                            if(!empty($con_arr['conditions'])) {
+                                $conditionsarr = $con_arr['conditions'];
+                                foreach($conditionsarr as $ck => $con){  // promo rule conditions array
+                                    if($con['attribute']=='sku'){
+                                        $skus[] = $con['value'];
+                                    }
+                                    if(!empty($con['conditions'])){
+                                        foreach($con['conditions'] as $c_inn => $c_inn_val){
+                                            if($c_inn_val['attribute']=='sku'){
+                                                $skus[] = $c_inn_val['value'];
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+    
+                            if(!empty($skus)){
+                                if(in_array($product['sku'], $skus)){
+                                    $add_kiranapromo = 1;
+                                }
+                            }else{
+                                $add_kiranapromo = 1;
+                            }
+    
+                            if($add_kiranapromo == 1){
+                                if($p_action == 'by_fixed'){
+                                    $disc_amt = $promo['discount_amount'];
+                                    $disc_per = ($promo['discount_amount']*100)/$entColl['price'] ;
+                                }
+                                if($p_action == 'by_percent') {
+                                    $disc_amt = ($entColl['price'] * $promo['discount_amount'])/100 ;
+                                    $disc_per = $promo['discount_amount'];
+                                }
+                                $kirana_temp['discount_percent'] = $this->roundDown($disc_per,0);
+                                $kirana_temp['final_amt'] = $this->roundUp($entColl['price'] - $disc_amt,2); 
+                                array_push($kirana_arr,$kirana_temp);
+                            }
+    
                         }
-                        if(!empty($con['conditions'])){
-                            foreach($con['conditions'] as $c_inn => $c_inn_val){
-                                if($c_inn_val['attribute']=='sku'){
-                                    $skus[] = $c_inn_val['value'];
+                        
+                    }
+                    
+                        
+                    
+                }
+                if(isset($entColl['org_retail'])){ 
+                    if(isset($mappedRulesArray[$entColl['org_retail']])) {
+                        foreach($mappedRulesArray[$entColl['org_retail']] as $k => $promo) {
+                        $p_action = $promo['simple_action'];    //by_percent or by_fixed
+                        $con_arr = json_decode($promo['conditions_serialized'] , true); 
+                        if(!empty($con_arr['conditions'])) {
+                            $conditionsarr = $con_arr['conditions'];
+                            foreach($conditionsarr as $ck => $con){  // promo rule conditions array
+                                if($con['attribute']=='sku'){
+                                    $skus[] = $con['value'];
+                                }
+                                if(!empty($con['conditions'])){
+                                    foreach($con['conditions'] as $c_inn => $c_inn_val){
+                                        if($c_inn_val['attribute']=='sku'){
+                                            $skus[] = $c_inn_val['value'];
+                                        }
+                                    }
                                 }
                             }
                         }
-                    }
-                }    
-                if(!empty($entColl['kirana'])){
-                    if(($promo['store_id']== $entColl['kirana']) && ($promo['status']==1)){
-                        if(!empty($skus)){
-                            if(in_array($product['sku'], $skus)){
-                                $add_kiranapromo = 1;
-                            }
-                        }else{
-                            $add_kiranapromo = 1;
-                        }
-                    }
-                }
-                if(!empty($entColl['org_retail'])){ 
-                    if(($promo['store_id']== $entColl['org_retail'])  && ($promo['status']==1)){
+
                         if(!empty($skus)){
                             if(in_array($product['sku'], $skus)){
                                 $add_orgpromo = 1;
@@ -321,35 +365,39 @@ class Searchview implements SearchInterface
                         }else{
                                 $add_orgpromo = 1;
                         }
-                    }  
-                    
-                }       
-                if($add_kiranapromo == 1){
-                    if($p_action == 'by_fixed'){
-                        $disc_amt = $promo['discount_amount'];
-                        $disc_per = ($promo['discount_amount']*100)/$chsnRetailPrice ;
-                    }else{
-                        $disc_amt = ($chsnRetailPrice * $promo['discount_amount'])/100 ;
-                        $disc_per = $promo['discount_amount'];
+
+                        if($add_orgpromo == 1){
+                            if($promo['rule_type']== 1) {
+                                if($p_action == 'by_fixed'){
+                                    $disc_amt = $promo['discount_amount'];
+                                    $disc_per = ($promo['discount_amount']*100)/$entColl['price'] ;
+                                } 
+                                if ($p_action == 'by_percent') {
+                                    $disc_amt = ($entColl['price'] * $promo['discount_amount'])/100 ;
+                                    $disc_per = $promo['discount_amount'];
+                                }
+                               $orgret_temp['discount_percent'] = $this->roundDown($disc_per,0);
+                               $orgret_temp['final_amt'] = $this->roundUp($entColl['price'] - $disc_amt,2);   
+                               
+                            } else {
+                                if($p_action == 'buy_x_get_x'){
+                                    $orgret_temp['message'] = "Store Offer: ".$promo['description'];
+                                }
+                                if($p_action == 'buy_x_get_y'){
+                                    $orgret_temp['message'] = "Store Offer: ".$promo['description'];
+                                }
+                               
+                            }                    
+                        }
+                        
+                        }
                     }
-                    $kirana_temp['discount_percent'] = ceil($disc_per);
-                    $kirana_temp['final_amt'] = ceil($chsnRetailPrice - $disc_amt); 
-                    array_push($kirana_arr,$kirana_temp);
-                } 
-                if($add_orgpromo == 1){
-                    if($p_action == 'by_fixed'){
-                         $disc_amt = $promo['discount_amount'];
-                         $disc_per = ($promo['discount_amount']*100)/$chsnOrgPrice ;
-                    }else{
-                         $disc_amt = ($chsnOrgPrice * $promo['discount_amount'])/100 ;
-                         $disc_per = $promo['discount_amount'];
-                    } 
-                    $orgret_temp['message'] = $promo['description'];
-                    $orgret_temp['discount_percent'] = ceil($disc_per);
-                    $orgret_temp['final_amt'] = ceil($chsnOrgPrice - $disc_amt);                    
-                    array_push($orgret_arr,$orgret_temp);
-                }
-            }//store-promo-mapp data array end 
+
+                    }
+            //}//store-promo-mapp data array end 
+            if(!empty($orgret_temp)) {
+                array_push($orgret_arr,$orgret_temp);
+            }
             $entColl['promotion']['kirana'] = $kirana_arr;
             $entColl['promotion']['org_retail'] = $orgret_arr;
             $result[] = $entColl;
@@ -360,7 +408,40 @@ class Searchview implements SearchInterface
          $noOfPages = ceil($count/$page_size);
          $fnlRslt[]['pages'] = $noOfPages;
          $fnlRslt[]['items'] = $result;
+         //$fnlRslt[]['rules'] = $mappedRulesArray;
          //print_r($fnlRslt); exit();
         return $fnlRslt;       
     }
+    public function roundUp ( $value, $precision ) { 
+        $pow = pow ( 10, $precision ); 
+        return ( ceil ( $pow * $value ) + ceil ( $pow * $value - ceil ( $pow * $value ) ) ) / $pow; 
+    }
+    public function roundDown ( $value, $precision ) { 
+        $pow = pow ( 10, $precision ); 
+        return ( floor ( $pow * $value ) + floor ( $pow * $value - floor ( $pow * $value ) ) ) / $pow; 
+    }
+
+    public function getCustomTableRules() {
+        $mapped_rules = [];
+        $mapped_data = $this->_PostTableFactory->create()->getCollection()
+        ->setOrder('p_id','ASC')
+        ->addFieldToFilter('status',1);
+        $count = 0;
+        foreach ($mapped_data->getData() as $k => $promo) {
+            
+            
+            if(isset($mapped_rules[$promo['store_id']])) {
+                array_push($mapped_rules[$promo['store_id']],$promo);
+            } else {
+                $mapped_rules[$promo['store_id']] = array($promo);
+            }
+            //$mapped_rules[$promo['store_id']].push($promo);
+            //$count++;
+        }
+
+        //return $count;
+        return $mapped_rules;
+    }
 }
+
+    

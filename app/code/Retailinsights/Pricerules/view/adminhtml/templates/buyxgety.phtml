@@ -1,0 +1,166 @@
+<?php
+
+$edit = $this->getRule();
+if($edit['0']['customer_group']!= '')
+               {
+               $csg = $edit['0']['customer_group'];
+               $arr_csg = explode(",",$csg);
+            }else{
+                $arr_csg = '';
+            }
+
+// //logger
+$writer = new \Zend\Log\Writer\Stream(BP . '/var/log/pvn.log');
+ $logger = new \Zend\Log\Logger(); $logger->addWriter($writer);
+  $logger->info($edit);
+?>
+
+    <p><?php    $customer_group = $block->getCustomerGroups(); 
+                //print_r($customer_group);?> 
+    </p>
+
+
+
+<form id="buy_and_get_product" align="center">
+
+    <fieldset class="fieldset">
+        <legend class="legend"><span><?php /* @escapeNotVerified */ //echo __('Test Form') ?></span></legend><br>
+        <div class="field required">
+            <div class="control mb-20">
+                <span type="" class="buy_prdt  text-label">Name
+                    <span style="margin-left: 5px;color: #e02b27;font-size:1.2rem">*</span>
+                </span>
+                <span class="priority">
+                <input type="text" id="name"  value="<?php echo  $edit['0']['name']; ?>" required class="input-text" placeholder="Enter Name">
+                <div  style="display: none;"></div></span>
+            </div><br>
+
+            <div class="control mb-20">
+                <span type="" class="buy_prdt  text-label">Store Id
+                    <span style="margin-left: 5px;color: #e02b27;font-size:1.2rem">*</span>
+                </span>
+                <span class="priority">
+                <input type="text" id="store_id" required class="input-text" value="<?php echo  $edit['0']['store_id']; ?>"  placeholder="Enter Store Id">
+                <!-- value="<?php //echo  $edit['0']['store_id']; ?>" -->
+               
+                <div  style="display: none;"></div></span>
+            </div><br>
+
+
+
+            <div class="control mb-20">
+                <span type="" class="buy_prdt text-label">Buy Product
+                    <span style="margin-left: 5px;color: #e02b27;font-size:1.2rem">*</span>
+                </span>
+                <span>
+                <input type="text" id="buy_product" value="<?php echo  $edit['0']['buy_product']; ?>" required name="number" class="input-text" placeholder="Enter Product">
+                <input type='hidden' id="post_id" name="post_id" value="<?php echo  $edit['0']['post_id']; ?>"/>
+    
+                <div class="buy-btn-create" style="display: none;"></div></span>
+            </div><br>
+
+             <div class="control mb-20">
+                <span type="" class="text-label">buy Product Quantity
+                    <span style="margin-left: 5px;color: #e02b27;font-size:1.2rem">*</span>
+                </span>
+                <span class="buy_quantity"><input type="number" id="buy_quantity" value="<?php echo  $edit['0']['buy_quantity']; ?>" required name="number" class="input-text" placeholder="Enter Product">
+                <div  style="display: none;"></div></span>
+            </div><br>
+
+            <div class="control mb-20">
+                <span type="" class="text-label">Get Product
+                    <span style="margin-left: 5px;color: #e02b27;font-size:1.2rem">*</span>
+                </span>
+                <span class="get_product"><input type="text" id="get_product" value="<?php echo  $edit['0']['get_product']; ?>" required name="number" class="input-text" placeholder="Enter Product">
+                <div  style="display: none;"></div></span>
+            </div><br>
+
+            <div class="control mb-20">
+                <span type="" class="text-label">Get Product Quantity
+                    <span style="margin-left: 5px;color: #e02b27;font-size:1.2rem">*</span>
+                </span>
+                <span class="get_quantity"><input type="number" id="get_quantity" value="<?php echo  $edit['0']['get_quantity']; ?>" required name="number" class="input-text" placeholder="Enter Product">
+                <div  style="display: none;"></div></span>
+            </div><br>
+
+            <div class="control mb-20">
+                <span type="" class="buy_prdt  text-label">Priority
+                    <span style="margin-left: 5px;color: #e02b27;font-size:1.2rem">*</span>
+                </span>
+                <span class="priority">
+                <input type="number" id="priority"  name="number" value="<?php echo  $edit['0']['priority']; ?>" required class="input-text" placeholder="Enter Product">
+                <div  style="display: none;"></div></span>
+            </div><br>
+
+            <div class="control mb-20">
+                <span type="" class="buy_prdt text-label">Status
+                    <span style="margin-left: 5px;color: #e02b27;font-size:1.2rem">*</span>
+                </span>
+                <span class="status">
+                <select id="status">
+                    <option value="1" <?php if(($edit['0']['status'])==1){ echo 'selected'; } ?>>Enabled</option>
+                    <option value="0" <?php if(($edit['0']['status'])==0){ echo 'selected'; } ?>>Disabled</option>
+                </select>
+                <div  style="display: none;"></div></span>
+            </div><br>
+ 
+            <div class="control-offer-from mb-20">
+                <span class="text-label">Offer From
+                    <span style="margin-left: 5px;color: #e02b27;font-size:1.2rem">*</span>
+                </span>
+                <!-- <input type="text" id="datepicker1" name="datepicker1" /> -->
+                <input type="text" id="fromdate_offer" value="<?php echo  $edit['0']['offer_from']; ?>" required name="fromdate_offer">
+                <div class="from_date" style="display: none;"></div>
+            </div><br>
+             
+            <div class="control-offer-to mb-20">
+                <span class="text-label">Offer To
+                    <span style="margin-left: 5px;color: #e02b27;font-size:1.2rem">*</span>
+                </span>
+                <input type="text" id="todate_offer" value="<?php echo  $edit['0']['offer_to']; ?>" required class="end_date" name="todate_offer">
+                <div class="to_date" style="display: none;"></div>
+            </div><br>
+            
+            <div class="control-offer-to mb-20">
+                <span class="text-label">Select Group
+                    <span style="margin-left: 5px;color: #e02b27;font-size:1.2rem">*</span>
+                </span>
+                <select class="selectpicker" multiple data-live-search="true" required>
+                  <?php foreach ($customer_group as $key => $value): ?>
+                       <?php if($arr_csg != ''){?>
+                       <option <?php foreach ($arr_csg as $key => $res) {
+                           # code...
+                           if($value['value']==$res){
+                               echo 'selected';
+                           }
+                           else{
+                               echo '';
+                               }
+                       } ?>
+                       
+                       value="<?php echo $value['value']; ?>"><?php echo $value['label']; ?></option>
+                       <?php }else{
+                       ?>
+                       <option value="<?php echo $value['value']; ?>"><?php echo $value['label']; ?></option>
+
+                       <?php
+                       } ?>
+                       <?php endforeach; ?>               
+               </select>
+                <div class="select_group" style="display: none;"></div>
+            </div><br>
+
+
+        </div>
+    </fieldset>
+    <br>
+    <div class="actions-toolbar">
+        <div class="primary">
+            <button type="" class="primary btnclass" title="<?php echo __('Submit') ?>">
+            <span><?php echo __('Submit') ?></span>
+            </button> 
+
+        </div>
+    </div>
+
+</form>

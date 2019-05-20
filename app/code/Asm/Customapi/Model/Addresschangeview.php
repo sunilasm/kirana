@@ -41,7 +41,13 @@ class Addresschangeview implements AddresschangeInterface
         $post = $request->getBodyParams();
         // print_r($post);exit;
         $quote = $this->quoteFactory->create()->load($post['quote_id']);
-        $items = $quote->getAllItems();
+        if(isset($post['guest_quote_id'])){
+            $guestquote = $this->quoteFactory->create()->load($post['guest_quote_id']);
+            $items = $guestquote->getAllItems();
+        }else{
+            // print_r("nnnn");exit;
+            $items = $quote->getAllItems();
+        }
         $sellerId = $this->inRange->getInRangeSeller($post['lat'], $post['long']);
         if(isset($post['customer_id'])){
             $customerId = $post['customer_id'];
@@ -53,15 +59,16 @@ class Addresschangeview implements AddresschangeInterface
         $currentProductsArray = array();
         foreach ($items as $item) 
         {
-            // print_r($item->getData());exit;
-            if(!in_array($item->getSeller_id(), $sellerId)){
+            //print_r($sellerId);
+            if(!in_array($item->getSeller_id(), $sellerId['retail']) || !in_array($item->getSeller_id(), $sellerId['orgretail'])){
+            // print_r($item->getProduct_id());exit;    
 
 
                 $sellerProductCollection = $this->_sellerProductCollection->getCollection()->addFieldToFilter('product_id', array('in' => $item->getProduct_id()));
-                //print_r();exit;
-		$tempSellerProductArray = array();
+                // print_r($sellerProductCollection->getData());exit;
+		        $tempSellerProductArray = array();
                 foreach($sellerProductCollection as $seller):
-		   if(in_array($seller['seller_id'], $sellerId['retail'])){
+		           if(in_array($seller['seller_id'], $sellerId['retail'])){
                         $tempSellerProductArray[] = $seller['seller_id'];
                     }
                     elseif(in_array($seller['seller_id'], $sellerId['orgretail']))
@@ -71,6 +78,7 @@ class Addresschangeview implements AddresschangeInterface
 
                     //$i++;
                 endforeach;
+                // print_r($tempSellerProductArray);exit;
                 if(count($tempSellerProductArray)){
                     $sellerCollection = $this->_sellerCollection->getCollection()
                                     ->setOrder('position','ASC')
@@ -82,7 +90,11 @@ class Addresschangeview implements AddresschangeInterface
                         $priceType = 0;
                     }
                     // Call remove item function
-                    $this->removeItem($post['quote_id'], $item->getItemId());
+                    if($post['guest_quote_id']){
+                        $this->removeItem($post['guest_quote_id'], $item->getItemId());
+                    }else{
+                        $this->removeItem($post['quote_id'], $item->getItemId());
+                    }
                     // Call add item function
                     $this->addItem($post['quote_id'], $item->getProduct_id(), $priceType,$tempSellerProductArray[0],$item->getQty(),$item->getSku());
 
@@ -94,12 +106,20 @@ class Addresschangeview implements AddresschangeInterface
                         $wishlist = $this->_wishlistRepository->create()->loadByCustomerId($customerId, true);
                         $wishlist->addNewItem($product);
                         $wishlist->save();
-                        $this->removeItem($post['quote_id'], $item->getItemId());
+                        if($post['guest_quote_id']){
+                            $this->removeItem($post['guest_quote_id'], $item->getItemId());
+                        }else{
+                            $this->removeItem($post['quote_id'], $item->getItemId());
+                        }
                     }
 			//else{
                         // Remove from cart
                         $removeProductsArray[] = $item->getProduct_id();
-                        $this->removeItem($post['quote_id'], $item->getItemId());    
+                        if($post['guest_quote_id']){
+                            $this->removeItem($post['guest_quote_id'], $item->getItemId());
+                        }else{
+                            $this->removeItem($post['quote_id'], $item->getItemId());
+                        }    
                     //}
 
                 }
