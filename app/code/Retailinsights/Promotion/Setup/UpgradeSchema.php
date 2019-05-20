@@ -15,7 +15,7 @@ class UpgradeSchema implements UpgradeSchemaInterface
 
         $installer->startSetup();
     
-        if (version_compare($context->getVersion(), '1.0.6') < 0)  {
+        if (version_compare($context->getVersion(), '1.0.9') < 0)  {
             if (!$installer->tableExists('retailinsights_promostoremapp')) {
                 $table = $installer->getConnection()->newTable(
                     $installer->getTable('retailinsights_promostoremapp')
@@ -118,6 +118,13 @@ class UpgradeSchema implements UpgradeSchemaInterface
                     ['nullable' => false],
                     'Discount Amount'
                 )
+                ->addColumn(
+                    'rule_type',
+                    \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
+                    1,
+                    ['nullable' => false],
+                    'Rule Type'
+                )
 
                     ->setComment('Promotion Store Mapping');
                 $installer->getConnection()->createTable($table);
@@ -126,10 +133,10 @@ class UpgradeSchema implements UpgradeSchemaInterface
                     $installer->getTable('retailinsights_promostoremapp'),
                     $setup->getIdxName(
                         $installer->getTable('retailinsights_promostoremapp'),
-                        ['store_id','rule_id','pstart_date','pend_date','status','description','seller_type','conditions_serialized','actions_serialized','simple_action','discount_amount'],
+                        ['store_id','rule_id','pstart_date','pend_date','status','description','seller_type','conditions_serialized','actions_serialized','simple_action','discount_amount','rule_type'],
                         \Magento\Framework\DB\Adapter\AdapterInterface::INDEX_TYPE_FULLTEXT
                     ),
-                    ['store_id','rule_id','pstart_date','pend_date','status','description','seller_type','conditions_serialized','actions_serialized','simple_action','discount_amount'],
+                    ['store_id','rule_id','pstart_date','pend_date','status','description','seller_type','conditions_serialized','actions_serialized','simple_action','discount_amount','rule_type'],
 
                     \Magento\Framework\DB\Adapter\AdapterInterface::INDEX_TYPE_FULLTEXT
                 );
