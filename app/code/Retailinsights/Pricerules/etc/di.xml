@@ -1,0 +1,99 @@
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../lib/internal/Magento/Framework/ObjectManager/etc/config.xsd">
+    <type name="Magento\Framework\View\Element\UiComponent\DataProvider\CollectionFactory">
+        <arguments>
+            <argument name="collections" xsi:type="array">
+                <item name="retailinsights_pricerules_post_listing_data_source" xsi:type="string">Retailinsights\Pricerules\Model\ResourceModel\Post\Grid\Collection</item>
+            </argument>
+        </arguments>
+    </type>
+    <virtualType name="Retailinsights\Pricerules\Model\ResourceModel\Post\Grid\Collection" type="Magento\Framework\View\Element\UiComponent\DataProvider\SearchResult">
+        <arguments>
+            <argument name="mainTable" xsi:type="string">custom_promotion_byX_getY</argument>
+            <argument name="resourceModel" xsi:type="string">Retailinsights\Pricerules\Model\ResourceModel\Post</argument>
+        </arguments>
+    </virtualType>
+
+
+        <type name="Magento\Framework\View\Element\UiComponent\DataProvider\CollectionFactory">
+        <arguments>
+            <argument name="collections" xsi:type="array">
+                <item name="retailinsights_pricerules_postfixed_listing_data_source" 
+        xsi:type="string">Retailinsights\Pricerules\Model\ResourceModel\PostFixed\Grid\Collection</item>
+            </argument>
+        </arguments>
+    </type>
+
+       <virtualType name="Retailinsights\Pricerules\Model\ResourceModel\PostFixed\Grid\Collection"
+                     type="Magento\Framework\View\Element\UiComponent\DataProvider\SearchResult">
+        <arguments>
+            <argument name="mainTable" xsi:type="string">custom_promotion_byX_getFixed</argument>
+            <argument name="resourceModel" xsi:type="string">Retailinsights\Pricerules\Model\ResourceModel\PostFixed</argument>
+        </arguments>
+    </virtualType>
+
+   
+     <type name="Magento\Framework\View\Element\UiComponent\DataProvider\CollectionFactory">
+        <arguments>
+            <argument name="collections" xsi:type="array">
+                <item name="retailinsights_pricerules_postthree_listing_data_source" xsi:type="string">Retailinsights\Pricerules\Model\ResourceModel\Postthree\Grid\Collection</item>
+            </argument>
+        </arguments>
+    </type>
+    <virtualType name="Retailinsights\Pricerules\Model\ResourceModel\Postthree\Grid\Collection" type="Magento\Framework\View\Element\UiComponent\DataProvider\SearchResult">
+        <arguments>
+            <argument name="mainTable" xsi:type="string">custom_promotion_bytwo_getfixed</argument>
+            <argument name="resourceModel" xsi:type="string">Retailinsights\Pricerules\Model\ResourceModel\Postthree</argument>
+        </arguments>
+    </virtualType>
+
+     <type name="Magento\Framework\View\Element\UiComponent\DataProvider\CollectionFactory">
+        <arguments>
+            <argument name="collections" xsi:type="array">
+                <item name="retailinsights_pricerules_postworth_listing_data_source" 
+        xsi:type="string">Retailinsights\Pricerules\Model\ResourceModel\PostWorth\Grid\Collection</item>
+            </argument>
+        </arguments>
+    </type>
+
+       <virtualType name="Retailinsights\Pricerules\Model\ResourceModel\PostWorth\Grid\Collection"
+    
+     type="Magento\Framework\View\Element\UiComponent\DataProvider\SearchResult">
+        <arguments>
+            <argument name="mainTable" xsi:type="string">custom_promotion_byXXX_getY</argument>
+            <argument name="resourceModel" xsi:type="string">Retailinsights\Pricerules\Model\ResourceModel\PostWorth</argument>
+        </arguments>
+    </virtualType>
+
+ <type name="Magento\Framework\View\Element\UiComponent\DataProvider\CollectionFactory">
+        <arguments>
+            <argument name="collections" xsi:type="array">
+                <item name="retailinsights_pricerules_postxyz_listing_data_source" 
+        xsi:type="string">Retailinsights\Pricerules\Model\ResourceModel\PostXYZ\Grid\Collection</item>
+            </argument>
+        </arguments>
+    </type>
+
+       <virtualType name="Retailinsights\Pricerules\Model\ResourceModel\PostXYZ\Grid\Collection"
+    
+     type="Magento\Framework\View\Element\UiComponent\DataProvider\SearchResult">
+        <arguments>
+            <argument name="mainTable" xsi:type="string">custom_promotion_NXNYNZ</argument>
+            <argument name="resourceModel" xsi:type="string">Retailinsights\Pricerules\Model\ResourceModel\PostXYZ</argument>
+        </arguments>
+    </virtualType>
+
+     
+     <preference for="Retailinsights\Pricerules\Api\CatalogRuleRepositoryInterface"
+                type="Retailinsights\Pricerules\Model\CatalogRuleRepository" />
+   
+<!-- Time coding -->
+     <type name="Magento\Ui\Component\Form\Element\DataType\Date">
+        <plugin name="Retailinsights_Pricerules::allow_format_from_config"
+                type="Retailinsights\Pricerules\Plugin\Ui\Component\Form\Element\DataType\Date" sortOrder="1"/>
+    </type>
+                
+        <preference for="Magento\SalesRule\Controller\Adminhtml\Promo\Quote\Save"
+        type="Retailinsights\Pricerules\Controller\Adminhtml\Promo\Quote\Save"/>
+
+     
+</config>
