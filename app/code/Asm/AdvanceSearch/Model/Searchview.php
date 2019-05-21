@@ -284,6 +284,8 @@ class Searchview implements SearchInterface
             $orgret_temp = array();
             //foreach ($mapped_data->getData() as $k => $promo) {    //store-promo-mapp data array  
                 $skus = array(); 
+                $actionSkus = array();
+                $conditionSkus = array();
                 $disc_amt = 0;
                 $disc_per = 0;
                 $add_kiranapromo = $add_orgpromo = 0;
@@ -346,12 +348,28 @@ class Searchview implements SearchInterface
                             $conditionsarr = $con_arr['conditions'];
                             foreach($conditionsarr as $ck => $con){  // promo rule conditions array
                                 if($con['attribute']=='sku'){
-                                    $skus[] = $con['value'];
+                                    $conditionSkus[] = $con['value'];
                                 }
                                 if(!empty($con['conditions'])){
                                     foreach($con['conditions'] as $c_inn => $c_inn_val){
                                         if($c_inn_val['attribute']=='sku'){
-                                            $skus[] = $c_inn_val['value'];
+                                            $conditionSkus[] = $c_inn_val['value'];
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        $action_arr = json_decode($promo['actions_serialized'] , true); 
+                        if(!empty($action_arr['conditions'])) {
+                            $conditionsarr = $action_arr['conditions'];
+                            foreach($conditionsarr as $ck => $con){  // promo rule conditions array
+                                if($con['attribute']=='sku'){
+                                    $actionSkus[] = $con['value'];
+                                }
+                                if(!empty($con['conditions'])){
+                                    foreach($con['conditions'] as $c_inn => $c_inn_val){
+                                        if($c_inn_val['attribute']=='sku'){
+                                            $actionSkus[] = $c_inn_val['value'];
                                         }
                                     }
                                 }
@@ -380,12 +398,14 @@ class Searchview implements SearchInterface
                                $orgret_temp['final_amt'] = $this->roundUp($entColl['price'] - $disc_amt,2);   
                                
                             } else {
-                                if($p_action == 'buy_x_get_x'){
-                                    $orgret_temp['message'] = "Store Offer: ".$promo['description'];
-                                }
                                 if($p_action == 'buy_x_get_y'){
-                                    $orgret_temp['message'] = "Store Offer: ".$promo['description'];
+                                    if(((in_array($product['sku'], $actionSkus)) && sizeof(array_unique($actionSkus)) == 1) || ((in_array($product['sku'], $conditionSkus)) && sizeof(array_unique($conditionSkus)) == 1) ) {
+                                        $orgret_temp['message'] = "Store Offer: ".$promo['description'];
+                                    }
                                 }
+                                // if($p_action == 'buy_x_get_y'){
+                                //     //$orgret_temp['message'] = "Store Offer: ".$promo['description'];
+                                // }
                                
                             }                    
                         }
