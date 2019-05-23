@@ -114,28 +114,20 @@ class Newaddressview implements NewaddressInterface
         $result = curl_exec($ch);
         $result = json_decode($result, 1);
         // print_r($result);exit;
+        $addressArray = array();
         for($i=0;$i<count($result['addresses']);$i++){
-            //if(count($result['addresses'] -1){
-
-            //}
             $k = 1;
             $lastEle = count($result['addresses']) - $k;
             if($lastEle == $i){
-                // $input = $result['addresses'].slice(0,1);
-            // print_r(array_pop($result['addresses']));exit;
-                // $result['addresses'] = $result['addresses'][$lastEle]
                 if(preg_match( '/(\d{2})(\d{4})(\d{4})$/', $result['addresses'][$i]['telephone'],  $matches ) )
                 {
                     $result1 = '0'.$matches[1] . '-' .$matches[2] . '-' . $matches[3];
                     $result['addresses'][$i]['telephone'] = $result1;
                 }
-                // print_r($result['addresses'][$i]);exit;
-                $result['addresses'] = array_pop($result['addresses']);
+                $addressArray = array_pop($result['addresses']);
             }
         }
-        //exit;
-        $response = array($result);
-        // print_r($response);exit;
+        $response = array($addressArray);
         return $response;
     }
 }
