@@ -327,7 +327,11 @@ class Searchview implements SearchInterface
                                     $disc_amt = ($entColl['price'] * $promo['discount_amount'])/100 ;
                                     $disc_per = $promo['discount_amount'];
                                 }
-                                $kirana_temp['discount_percent'] = $this->roundDown($disc_per,0);
+                                if($disc_per >= 5){
+                                    $kirana_temp['discount_percent'] = $this->roundDown($disc_per,0);
+                                } else {
+                                    $kirana_temp['discount_percent'] = "";
+                                }
                                 $kirana_temp['final_amt'] = $this->roundUp($entColl['price'] - $disc_amt,2); 
                                 array_push($kirana_arr,$kirana_temp);
                             }
@@ -394,7 +398,11 @@ class Searchview implements SearchInterface
                                     $disc_amt = ($entColl['price'] * $promo['discount_amount'])/100 ;
                                     $disc_per = $promo['discount_amount'];
                                 }
-                               $orgret_temp['discount_percent'] = $this->roundDown($disc_per,0);
+                                if($disc_per >= 5){
+                                    $orgret_temp['discount_percent'] = $this->roundDown($disc_per,0);
+                                } else {
+                                    $orgret_temp['discount_percent'] = "";
+                                }
                                $orgret_temp['final_amt'] = $this->roundUp($entColl['price'] - $disc_amt,2);   
                                
                             } else {
