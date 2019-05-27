@@ -89,7 +89,7 @@ class Addresschangeview implements AddresschangeInterface
                         $priceType = 0;
                     }
                     // Call remove item function
-                    if($post['guest_quote_id']){
+                    if(isset($post['guest_quote_id'])){
                         $this->removeItem($post['guest_quote_id'], $item->getItemId());
                     }else{
                         $this->removeItem($post['quote_id'], $item->getItemId());
@@ -105,7 +105,7 @@ class Addresschangeview implements AddresschangeInterface
                         $wishlist = $this->_wishlistRepository->create()->loadByCustomerId($customerId, true);
                         $wishlist->addNewItem($product);
                         $wishlist->save();
-                        if($post['guest_quote_id']){
+                        if(isset($post['guest_quote_id'])){
                             $this->removeItem($post['guest_quote_id'], $item->getItemId());
                         }else{
                             $this->removeItem($post['quote_id'], $item->getItemId());
