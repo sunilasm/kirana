@@ -342,6 +342,8 @@ class Searchview implements SearchInterface
                 if(isset($entColl['org_retail'])){ 
                     if(isset($mappedRulesArray[$entColl['org_retail']])) {
                         foreach($mappedRulesArray[$entColl['org_retail']] as $k => $promo) {
+			$actionSkus = array();
+                	$conditionSkus = array();
                         $p_action = $promo['simple_action'];    //by_percent or by_fixed
                         $con_arr = json_decode($promo['conditions_serialized'] , true); 
                         if(!empty($con_arr['conditions'])) {
