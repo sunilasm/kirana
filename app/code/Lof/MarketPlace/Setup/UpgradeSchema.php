@@ -724,7 +724,7 @@ class UpgradeSchema implements UpgradeSchemaInterface
 
 
 //Upgraded columns retail
-        if (version_compare($context->getVersion(), '1.1.0') < 0)  {
+        if (version_compare($context->getVersion(), '1.1.1') < 0)  {
             $installer->getConnection()->addColumn(
                 $installer->getTable('lof_marketplace_product'),
                 'doorstep_price',
@@ -743,6 +743,26 @@ class UpgradeSchema implements UpgradeSchemaInterface
                     'length' => 10,
                     'nullable' => true,
                     'comment' => 'pickup_from_store'
+                ]
+            );
+            $installer->getConnection()->addColumn(
+                $installer->getTable('lof_marketplace_product'),
+                'pickup_from_store_old',
+                [
+                    'type' => \Magento\Framework\DB\Ddl\Table::TYPE_DECIMAL,
+                    'length' => 10,
+                    'nullable' => true,
+                    'comment' => 'pickup_from_store_old'
+                ]
+            );
+            $installer->getConnection()->addColumn(
+                $installer->getTable('lof_marketplace_product'),
+                'doorstep_price_old',
+                [
+                    'type' => \Magento\Framework\DB\Ddl\Table::TYPE_DECIMAL,
+                    'length' => 10,
+                    'nullable' => true,
+                    'comment' => 'doorstep_price_old'
                 ]
             );
             $installer->getConnection()->addColumn(

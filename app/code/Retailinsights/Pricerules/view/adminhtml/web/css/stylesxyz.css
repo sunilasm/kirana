@@ -1,0 +1,40 @@
+.mb-20{margin-bottom: 20px;}
+.input-fields{text-align: left}
+.input-text{width: 100%;}
+#priority{
+    width: 100%;
+    height: 40px;
+    border-color: #d3d3d3;
+}
+.text-label{
+    text-align: right;
+    line-height: 25px;
+    padding-right: 20px;
+}
+.flex{
+    display: -webkit-flex;
+    display: -moz-flex;
+    display: -ms-flex;
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 15px;
+}
+.add-fields{
+    width: 100px;
+    padding: 10px;
+    font-weight: 600;
+    color: #514943 !important;
+    border: 1px solid #adadad;
+    background-color: #e3e3e3;
+    text-transform: uppercase;
+    text-decoration: none !important;
+}
+input{
+    padding:10px 30px;
+    border: 1px solid #d3d3d3;
+}
+.required-field{
+    color: #e02b27;
+    margin-left: 5px;
+    font-size:1.2rem;
+}

@@ -5,9 +5,16 @@ use Magento\ImportExport\Model\Import\ErrorProcessing\ProcessingErrorAggregatorI
 use Retailinsights\Promotion\Model\PostFactory;
 use Retailinsights\Promotion\Model\PostTableFactory;
 use Retailinsights\Promotion\Model\PostSellerFactory;
+use Retailinsights\Promotion\Model\PostFixedFactory;
+use Retailinsights\Promotion\Model\PostWorthFactory;
+use Retailinsights\Promotion\Model\PostXYZFactory;
+use Retailinsights\Promotion\Model\PostthreeFactory;
+use Retailinsights\Promotion\Model\PostByxFactory;
+
 
 class CustomImport extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
 {
+
    
     const STORE = 'rule_id';
     const RULE = 'store_id';
@@ -28,9 +35,17 @@ class CustomImport extends \Magento\ImportExport\Model\Import\Entity\AbstractEnt
     const TABLE_ENTITY = 'retailinsights_promostoremapp';
 
     protected $rule;
+    private $salesrule;
     protected $PostFactory;
     protected $PostTableFactory;
     protected $PostSellerFactory;
+
+    protected $PostWorthFactory;
+    protected $PostXYZFactory;
+    protected $PostthreeFactory;
+protected $PostByxFactory;
+
+    protected $PostFixedFactory;
     /**
      * Validation failure message template definitions
      *
@@ -54,7 +69,9 @@ class CustomImport extends \Magento\ImportExport\Model\Import\Entity\AbstractEnt
      *
      * @array
      */
-    protected $validColumnNames = [
+    
+   
+     protected $validColumnNames = [
         self::STORE,
         self::RULE,
         self::STATUS,
@@ -102,8 +119,16 @@ class CustomImport extends \Magento\ImportExport\Model\Import\Entity\AbstractEnt
         PostFactory $PostFactory,
         PostTableFactory $PostTableFactory,
         PostSellerFactory $PostSellerFactory,
+       PostFixedFactory $PostFixedFactory,
+       PostWorthFactory $PostWorthFactory,
+       PostXYZFactory $PostXYZFactory,
+       PostthreeFactory $PostthreeFactory,
+       PostByxFactory $PostByxFactory,
+
         ProcessingErrorAggregatorInterface $errorAggregator,
-        \Magento\CatalogRule\Model\RuleFactory $rule
+        \Magento\CatalogRule\Model\RuleFactory $rule,
+        
+        \Magento\SalesRule\Model\RuleFactory $salesrule
     ) {
         $this->jsonHelper = $jsonHelper;
         $this->_importExportData = $importExportData;
@@ -116,7 +141,13 @@ class CustomImport extends \Magento\ImportExport\Model\Import\Entity\AbstractEnt
         $this->PostSellerFactory = $PostSellerFactory;
         $this->PostFactory = $PostFactory;
         $this->rule = $rule;
-    }
+        $this->salesrule = $salesrule;
+        $this->PostFixedFactory = $PostFixedFactory->create();
+        $this->PostWorthFactory = $PostWorthFactory->create();
+        $this->PostXYZFactory = $PostXYZFactory->create();
+        $this->PostthreeFactory = $PostthreeFactory->create();
+        $this->PostByxFactory = $PostByxFactory->create();
+     }
  
     public function getValidColumnNames() {
         return $this->validColumnNames;
@@ -228,14 +259,33 @@ class CustomImport extends \Magento\ImportExport\Model\Import\Entity\AbstractEnt
     protected function saveAndReplaceEntity() {
         $behavior = $this->getBehavior();
         $ids = [];
+        
+        $collectionCustom= $this->PostFixedFactory->getCollection(); //custom rule information
+        $custom_data = $collectionCustom->getData();
 
         
-        $collectionSeller= $this->PostSellerFactory->create()->getCollection();
+        $collectionCustom= $this->PostWorthFactory->getCollection(); //custom worth information
+        $custom_worth = $collectionCustom->getData();
+       
+        $collectionCustom= $this->PostXYZFactory->getCollection(); //custom XYZ information
+        $custom_XYZ = $collectionCustom->getData(); 
+
+        $collectionCustom= $this->PostthreeFactory->getCollection(); //custom Three information
+        $custom_three = $collectionCustom->getData(); 
+
+        $collectionCustom= $this->PostByxFactory->getCollection(); //custom BYx information
+        $custom_byx = $collectionCustom->getData(); 
+        
+         
+        $collectionSeller= $this->PostSellerFactory->create()->getCollection(); //seller information
         $seller_data = $collectionSeller->getData();
+      
+        $collection= $this->rule->create()->getCollection(); //catalog rule collection
+        $catalog_data = $collection->getData();
 
-       $collection= $this->rule->create()->getCollection();
-       $catalog_data = $collection->getData();
-
+        $sales_collection = $this->salesrule->create()->getCollection(); //salesRules collection
+        $sales = $sales_collection->getData();
+      
        
        $rule_data = $collection->getData();
 
@@ -258,9 +308,11 @@ class CustomImport extends \Magento\ImportExport\Model\Import\Entity\AbstractEnt
 
           
 
-            foreach ($bunch as $rowNum => $rowData) { 
-                       
+            foreach ($bunch as $rowNum => $rowData) {        //$rowData CSV information
+                 if($rowData['rule_type'] == 1){         //catalog rule adding
+                   
                         foreach($rule_data as $cat){
+                         
                             if($rowData['rule_id']== $cat['name']){
                             $rule_id=$cat['rule_id'];
                             }
@@ -320,7 +372,400 @@ class CustomImport extends \Magento\ImportExport\Model\Import\Entity\AbstractEnt
                  
                 ];
             }
-           
+                if($rowData['rule_type'] == 0){     //sales rule adding
+              
+                    foreach($sales as $cat){
+                        if($rowData['rule_id']== $cat['name']){
+                        $rule_id=$cat['rule_id'];
+                        }
+
+                        foreach($sales as $cat_l){
+                            
+                            if($rule_id == $cat_l['rule_id']){
+                                $description = $cat_l['description'];
+                                $conditions_serialized= $cat_l['conditions_serialized'];
+                                $actions_serialized = $cat_l['actions_serialized'];
+                                $simple_action = $cat_l['simple_action'];
+                                $discount_amount = $cat_l['discount_amount'];
+                            }
+                        }
+                        foreach($seller_data as $seller){
+                            
+
+                            if($rowData['store_id'] == $seller['seller_id']){
+                                $seller_name = $seller['name'];
+                            
+                            }
+                        }
+                    }
+
+                    
+        
+            if (!$this->validateRow($rowData, $rowNum)) {
+                $this->addRowError(ValidatorInterface::ERROR_MESSAGE_IS_EMPTY, $rowNum);
+                continue;
+            }
+            if ($this->getErrorAggregator()->hasToBeTerminated()) {
+                $this->getErrorAggregator()->addRowToSkip($rowNum);
+                continue;
+            }
+        
+
+            $rowId= $rule_id; //
+            $ids[] = $rowId;
+            $entityList[$rowId][] = [
+            
+
+            self::STORE => $rule_id,
+            self::RULE => $rowData[self::RULE],
+            self::SDATE => $rowData[self::SDATE],
+            self::EDATE => $rowData[self::EDATE],
+            self::STATUS => $rowData[self::STATUS],
+
+            self::SELLER_NAME => $seller_name,
+            self::SELLER_TYPE => $rowData[self::SELLER_TYPE],
+
+            self::TYPE => $rowData[self::TYPE],
+            self::DESCRIPTION=> $description,
+            self::CONDITION => $conditions_serialized,
+            self::ACTION => $actions_serialized,
+            self::SIMPLE_ACTION => $simple_action,
+            self::DISCOUNT => $discount_amount,  
+            
+            ];
+          
+            }
+            if($rowData['rule_type'] == 3){    //CUSTOM COLLECTION
+                     
+                foreach($custom_data as $cat){
+                    if($rowData['rule_id']== $cat['name']){
+                        $rule_id = $cat['post_id'];
+                       }
+
+                    foreach($custom_data as $cat_l){
+                        if($rule_id == $cat_l['post_id']){
+                            $description = $cat_l['name'];
+                            $conditions_serialized= 'equals';
+
+                            $action = '[';          
+                            $action .= '{"buy_product" : "'.$cat_l["buy_product"].'" }';
+                            $action .= ',{"buy_quantity" : "'.$cat_l["quantity"].'" }';
+                            $action .="]";
+                            
+                            $actions_serialized = $action;
+                            $simple_action = 'fixed_price';
+                            $discount_amount = $cat_l['fixed_price'];
+                        }
+                    }
+                    foreach($seller_data as $seller){
+                        
+
+                        if($rowData['store_id'] == $seller['seller_id']){
+                            $seller_name = $seller['name'];
+                           
+                        }
+                    }
+                }
+
+                if (!$this->validateRow($rowData, $rowNum)) {
+                    $this->addRowError(ValidatorInterface::ERROR_MESSAGE_IS_EMPTY, $rowNum);
+                    continue;
+                }
+                if ($this->getErrorAggregator()->hasToBeTerminated()) {
+                    $this->getErrorAggregator()->addRowToSkip($rowNum);
+                    continue;
+                }
+            
+    
+                $rowId= $rule_id; //
+                $ids[] = $rowId;
+                $entityList[$rowId][] = [
+                
+    
+                self::STORE => $rule_id,
+                self::RULE => $rowData[self::RULE],
+                self::SDATE => $rowData[self::SDATE],
+                self::EDATE => $rowData[self::EDATE],
+                self::STATUS => $rowData[self::STATUS],
+    
+                self::SELLER_NAME => $seller_name,
+                self::SELLER_TYPE => $rowData[self::SELLER_TYPE],
+    
+                self::TYPE => $rowData[self::TYPE],
+                self::DESCRIPTION=> $description,
+                self::CONDITION => $conditions_serialized,
+                self::ACTION => $actions_serialized,
+                self::SIMPLE_ACTION => $simple_action,
+                self::DISCOUNT => $discount_amount,  
+                
+                ];
+            
+            }
+
+            if($rowData['rule_type'] == 4){    //CUSTOM  WORTH COLLECTION
+                    
+                foreach($custom_worth as $cat){
+                    if($rowData['rule_id']== $cat['name']){
+                        $rule_id = $cat['post_id'];   
+                    }
+
+                    foreach($custom_worth as $cat_l){
+                        if($rule_id == $cat_l['post_id']){
+                            $description = $cat_l['name'];
+                            $conditions_serialized= 'equals';
+
+                            $action = '[';          
+                            $action .= '{"subtotal" : "'.$cat_l["subtotal"].'" }';
+                            $action .= ',{"buy_quantity" : "'.$cat_l["quantity"].'" }';
+                            $action .= ',{"get_product" : "'.$cat_l["get_product"].'" }';
+                            $action .="]";
+                            
+                            $actions_serialized = $action;
+                            $simple_action = 'free_product';
+                            $discount_amount = '';
+                        }
+                    }
+                    foreach($seller_data as $seller){
+                        
+
+                        if($rowData['store_id'] == $seller['seller_id']){
+                            $seller_name = $seller['name'];
+                           
+                        }
+                    }
+                }
+
+                if (!$this->validateRow($rowData, $rowNum)) {
+                    $this->addRowError(ValidatorInterface::ERROR_MESSAGE_IS_EMPTY, $rowNum);
+                    continue;
+                }
+                if ($this->getErrorAggregator()->hasToBeTerminated()) {
+                    $this->getErrorAggregator()->addRowToSkip($rowNum);
+                    continue;
+                }
+            
+    
+                $rowId= $rule_id; //
+                $ids[] = $rowId;
+                $entityList[$rowId][] = [
+                
+    
+                self::STORE => $rule_id,
+                self::RULE => $rowData[self::RULE],
+                self::SDATE => $rowData[self::SDATE],
+                self::EDATE => $rowData[self::EDATE],
+                self::STATUS => $rowData[self::STATUS],
+    
+                self::SELLER_NAME => $seller_name,
+                self::SELLER_TYPE => $rowData[self::SELLER_TYPE],
+    
+                self::TYPE => $rowData[self::TYPE],
+                self::DESCRIPTION=> $description,
+                self::CONDITION => $conditions_serialized,
+                self::ACTION => $actions_serialized,
+                self::SIMPLE_ACTION => $simple_action,
+                self::DISCOUNT => $discount_amount,  
+                
+                ];
+            
+            }
+            if($rowData['rule_type'] == 5){    //CUSTOM XYZ COLLECTION
+                    
+                foreach($custom_XYZ as $cat){
+                    if($rowData['rule_id']== $cat['name']){
+                        $rule_id = $cat['post_id'];   
+                    }
+
+                    foreach($custom_XYZ as $cat_l){
+                        if($rule_id == $cat_l['post_id']){
+                            $description = $cat_l['name'];
+                            $conditions_serialized= 'equals';
+
+                            $action = $cat_l['rule_condition'];
+                            
+                            $actions_serialized = $action; 
+                            $simple_action = 'final_price';
+                            $discount_amount = $cat_l['discount'];
+                        }
+                    }
+                    foreach($seller_data as $seller){
+                        
+
+                        if($rowData['store_id'] == $seller['seller_id']){
+                            $seller_name = $seller['name'];
+                           
+                        }
+                    }
+                }
+
+                if (!$this->validateRow($rowData, $rowNum)) {
+                    $this->addRowError(ValidatorInterface::ERROR_MESSAGE_IS_EMPTY, $rowNum);
+                    continue;
+                }
+                if ($this->getErrorAggregator()->hasToBeTerminated()) {
+                    $this->getErrorAggregator()->addRowToSkip($rowNum);
+                    continue;
+                }
+            
+    
+                $rowId= $rule_id; //
+                $ids[] = $rowId;
+                $entityList[$rowId][] = [
+                
+    
+                self::STORE => $rule_id,
+                self::RULE => $rowData[self::RULE],
+                self::SDATE => $rowData[self::SDATE],
+                self::EDATE => $rowData[self::EDATE],
+                self::STATUS => $rowData[self::STATUS],
+    
+                self::SELLER_NAME => $seller_name,
+                self::SELLER_TYPE => $rowData[self::SELLER_TYPE],
+    
+                self::TYPE => $rowData[self::TYPE],
+                self::DESCRIPTION=> $description,
+                self::CONDITION => $conditions_serialized,
+                self::ACTION => $actions_serialized,
+                self::SIMPLE_ACTION => $simple_action,
+                self::DISCOUNT => $discount_amount,  
+                
+                ];
+            
+            }
+            if($rowData['rule_type'] == 6){    //CUSTOM Three COLLECTION
+                    
+                foreach($custom_three as $cat){
+                    if($rowData['rule_id']== $cat['name']){
+                        $rule_id = $cat['post_id'];   
+                    }
+
+                    foreach($custom_three as $cat_l){
+                        if($rule_id == $cat_l['post_id']){
+                            $description = $cat_l['name'];
+
+                            $action = '[';          
+                            $action .= '{"buy_product_one" : "'.$cat_l["buy_product_one"].'" }';
+                            $action .= ',{"buy_product_two" : "'.$cat_l["buy_product_two"].'" }';
+                            $action .="]";
+
+
+                            $conditions_serialized= 'equals';
+  
+                            $actions_serialized = $action; 
+                            $simple_action = 'fixed_price';
+                            $discount_amount = $cat_l['fixed_price'];
+                        }
+                    }
+                    foreach($seller_data as $seller){
+                        if($rowData['store_id'] == $seller['seller_id']){
+                            $seller_name = $seller['name'];
+                           
+                        }
+                    }
+                }
+
+                if (!$this->validateRow($rowData, $rowNum)) {
+                    $this->addRowError(ValidatorInterface::ERROR_MESSAGE_IS_EMPTY, $rowNum);
+                    continue;
+                }
+                if ($this->getErrorAggregator()->hasToBeTerminated()) {
+                    $this->getErrorAggregator()->addRowToSkip($rowNum);
+                    continue;
+                }
+            
+    
+                $rowId= $rule_id; //
+                $ids[] = $rowId;
+                $entityList[$rowId][] = [
+                
+    
+                self::STORE => $rule_id,
+                self::RULE => $rowData[self::RULE],
+                self::SDATE => $rowData[self::SDATE],
+                self::EDATE => $rowData[self::EDATE],
+                self::STATUS => $rowData[self::STATUS],
+    
+                self::SELLER_NAME => $seller_name,
+                self::SELLER_TYPE => $rowData[self::SELLER_TYPE],
+    
+                self::TYPE => $rowData[self::TYPE],
+                self::DESCRIPTION=> $description,
+                self::CONDITION => $conditions_serialized,
+                self::ACTION => $actions_serialized,
+                self::SIMPLE_ACTION => $simple_action,
+                self::DISCOUNT => $discount_amount,  
+                
+                ];
+            
+            }
+            if($rowData['rule_type'] == 7){    //CUSTOM BuyXGetY COLLECTION
+                     
+                foreach($custom_byx as $cat){
+                    if($rowData['rule_id']== $cat['name']){
+                        $rule_id = $cat['post_id'];
+                       }
+
+                    foreach($custom_byx as $cat_l){
+                        if($rule_id == $cat_l['post_id']){
+                            $description = $cat_l['name'];
+                            $conditions_serialized= 'equals';
+
+                            $action = '[';          
+                            $action .= '{"buy_product" : "'.$cat_l["buy_product"].'" }';
+                            $action .= ',{"buy_quantity" : "'.$cat_l["buy_quantity"].'" }';
+                            $action .= '{"buy_product" : "'.$cat_l["buy_product"].'" }';
+                            $action .= ',{"buy_quantity" : "'.$cat_l["buy_quantity"].'" }';
+                            $action .="]";
+                            
+                            $actions_serialized = $action;
+                            $simple_action = 'free';
+                            $discount_amount = '';
+                        }
+                    }
+                    foreach($seller_data as $seller){
+                        
+                        if($rowData['store_id'] == $seller['seller_id']){
+                            $seller_name = $seller['name'];
+                           
+                        }
+                    }
+                }
+
+                if (!$this->validateRow($rowData, $rowNum)) {
+                    $this->addRowError(ValidatorInterface::ERROR_MESSAGE_IS_EMPTY, $rowNum);
+                    continue;
+                }
+                if ($this->getErrorAggregator()->hasToBeTerminated()) {
+                    $this->getErrorAggregator()->addRowToSkip($rowNum);
+                    continue;
+                }
+            
+    
+                $rowId= $rule_id; //
+                $ids[] = $rowId;
+                $entityList[$rowId][] = [
+                
+    
+                self::STORE => $rule_id,
+                self::RULE => $rowData[self::RULE],
+                self::SDATE => $rowData[self::SDATE],
+                self::EDATE => $rowData[self::EDATE],
+                self::STATUS => $rowData[self::STATUS],
+    
+                self::SELLER_NAME => $seller_name,
+                self::SELLER_TYPE => $rowData[self::SELLER_TYPE],
+    
+                self::TYPE => $rowData[self::TYPE],
+                self::DESCRIPTION=> $description,
+                self::CONDITION => $conditions_serialized,
+                self::ACTION => $actions_serialized,
+                self::SIMPLE_ACTION => $simple_action,
+                self::DISCOUNT => $discount_amount,  
+                
+                ];
+            
+            }
+        }
 
             if (\Magento\ImportExport\Model\Import::BEHAVIOR_REPLACE == $behavior) {
                 if ($ids) {
@@ -344,7 +789,9 @@ class CustomImport extends \Magento\ImportExport\Model\Import\Entity\AbstractEnt
      * @return $this
      */
     protected function saveEntityFinish(array $entityData, $table) {
-      
+        $writer = new \Zend\Log\Writer\Stream(BP . '/var/log/testPvn2.log'); 
+        $logger = new \Zend\Log\Logger(); $logger->addWriter($writer); 
+           
         if ($entityData) {
           
             $tableName = $this->_connection->getTableName($table);
@@ -356,11 +803,16 @@ class CustomImport extends \Magento\ImportExport\Model\Import\Entity\AbstractEnt
             $collection= $this->PostTableFactory->create();
             $item = $collection->getCollection();
             
-            $rule_id = $entityRows[0]['rule_id'];
+          //  $rule_id = $entityRows[0]['rule_id'];
             $store_id = $entityRows[0]['store_id'];
+            $rule_type = $entityRows[0]['rule_type'];
+           
 
-            $value = $item->addFieldToFilter('rule_id', $rule_id)
-            ->addFieldToFilter('store_id', $store_id);
+            $value = $item  //->addFieldToFilter('rule_id', $rule_id)
+            ->addFieldToFilter('store_id', $store_id)
+            ->addFieldToFilter('rule_type', $rule_type);
+
+            $logger->info($value->getData());
             
            $match_data = $value->getData();
           
