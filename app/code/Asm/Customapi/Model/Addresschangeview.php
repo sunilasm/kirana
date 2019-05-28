@@ -106,7 +106,7 @@ class Addresschangeview implements AddresschangeInterface
                         $wishlist = $this->_wishlistRepository->create()->loadByCustomerId($customerId, true);
                         $wishlist->addNewItem($product);
                         $wishlist->save();
-                        if(isset($post['guest_quote_id'])){
+                      	if(isset($post['guest_quote_id'])){
                             $this->removeItem($post['guest_quote_id'], $item->getItemId());
                         }else{
                             $this->removeItem($post['quote_id'], $item->getItemId());
