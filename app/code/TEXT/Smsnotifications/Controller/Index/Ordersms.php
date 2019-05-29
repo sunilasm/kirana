@@ -78,6 +78,8 @@ class Ordersms extends \Magento\Framework\App\Action\Action
                 $totalPrice    =  number_format($order->getGrandTotal(), 2);
                 $countryCode   =  $order->getOrderCurrencyCode();
                 $customerEmail =  $order->getCustomerEmail();
+		$customerFname = $customer->getFirstname();
+                $customerLname = $customer->getLastname();
 
                 $telephone = $customer->getPrimaryBillingAddress()->getTelephone();
                         if(in_array('placeorder', $final_array))
@@ -87,8 +89,8 @@ class Ordersms extends \Magento\Framework\App\Action\Action
                     {
                         $text= $settings['new_order'];
                         $text = str_replace('{order_id}', $orderId, $text);
-                        $text = str_replace('{firstname}', $firstname, $text);
-                        $text = str_replace('{lastname}', $lastname, $text);
+                        $text = str_replace('{firstname}', $customerFname, $text);
+                        $text = str_replace('{lastname}', $customerLname, $text);
                         $text = str_replace('{price}',  $totalPrice, $text);
                         $text = str_replace('{emailid}',  $customerEmail, $text);
                         $text = str_replace('{country_code}',  $countryCode, $text);
@@ -102,7 +104,7 @@ class Ordersms extends \Magento\Framework\App\Action\Action
                 $table .= $orderId;
                 $table .= "</td>";
                 $table .= "<td style='border-right:1px solid #000'>";
-                $table .= $firstname." ".$lastname;
+                $table .= $customerFname." ".$customerLname;
                 $table .=  "</td>";
                 if($result != ''){
                 	$table .=  "<td>";
