@@ -37,7 +37,7 @@
 	$base_url = $storeManager->getStore()->getBaseUrl();
 	$admin_credentials= [
 		"username" => "faizal.h",
-		"password" => "Admin@123"
+		"password" => "Admin@1234"
 	];
 	$unsuccessful_order_ids = [];
 		
@@ -55,7 +55,7 @@
 	 * --------------- 
 	*/
 	$admin_token_url = "rest/V1/integration/admin/token";
-	$ch = curl_init($base_url.$admin_token_url);
+	$ch = curl_init('http://13.233.85.241:82/'.$admin_token_url);
 	curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
 	curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($admin_credentials));
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
