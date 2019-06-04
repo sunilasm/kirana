@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Backend:etc/menu.xsd">
+    <menu>
+    	<add id="Retailinsights_Pricerules::pricerules" title="Custom Promotions" module="Retailinsights_Pricerules" sortOrder="51" resource="Retailinsights_Pricerules::pricerules"/>
+        <add id="Retailinsights_Pricerules::post" title="Buy X Get Y" module="Retailinsights_Pricerules" sortOrder="10" action="retailinsights_pricerules/post/index" resource="Retailinsights_Pricerules::post" parent="Retailinsights_Pricerules::pricerules"/>
+       
+        <add id="Retailinsights_Pricerules::postFixed" title="Buy X at Fixed Price" module="Retailinsights_Pricerules" sortOrder="10" action="retailinsights_pricerules/postFixed/index" 
+        resource="Retailinsights_Pricerules::postFixed" parent="Retailinsights_Pricerules::pricerules"/>
+
+   <add id="Retailinsights_Pricerules::postthree" title="Buy 2 at fixed Price" module="Retailinsights_Pricerules" sortOrder="10" action="retailinsights_pricerules/postthree/index" 
+        resource="Retailinsights_Pricerules::postthree" parent="Retailinsights_Pricerules::pricerules"/>
+
+         <add id="Retailinsights_Pricerules::postWorth" title="Buy Worth XXX Get Y" module="Retailinsights_Pricerules" sortOrder="10" action="retailinsights_pricerules/postWorth/index" 
+        resource="Retailinsights_Pricerules::postWorth" parent="Retailinsights_Pricerules::pricerules"/>
+
+     
+        <add id="Retailinsights_Pricerules::postXYZ" title="Buy nX nY nZ" module="Retailinsights_Pricerules" sortOrder="10" action="retailinsights_pricerules/postXYZ/index" 
+        resource="Retailinsights_Pricerules::postXYZ" parent="Retailinsights_Pricerules::pricerules"/>
+          </menu>
+</config>
+    

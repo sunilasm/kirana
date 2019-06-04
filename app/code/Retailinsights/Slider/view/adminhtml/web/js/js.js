@@ -10,7 +10,8 @@ require(['jquery', 'jquery/ui'], function($){
              'id': btn_id
          }
      var admin_path = window.location.pathname.split('/')[1];
-         var customurl = window.location.origin+'/'+admin_path+'/admin/slider/index/delete';
+         var customurl = window.location.origin+'/'+admin_path+'/admin_lirbuz/slider/index/delete';
+        
          $.ajax({
                  url: customurl,
                  type: 'POST',
@@ -19,7 +20,7 @@ require(['jquery', 'jquery/ui'], function($){
                  showLoader: true,
                  complete: function(response) {
                      console.log(response);
-                     window.location.reload(true);
+                    window.location.reload(true);
                  },
                  error: function (xhr, status, errorThrown) {
                  }

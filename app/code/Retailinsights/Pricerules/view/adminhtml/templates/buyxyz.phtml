@@ -1,0 +1,197 @@
+<?php
+$val=0;
+$edit = $this->getXyz();
+?>
+<script>
+
+require(['jquery', 'jquery/ui'], function($) {
+    $(document).ready(function(){
+        i=0;
+        $('#add').click(function(){
+            i++;
+            $('#dynamic-field').append('<div class="flex"><input type="text" value="" required id="buy_product'+i+'"  placeholder="Enter Product Name"><input type="number" value="" required id="buy_quantity'+i+'"  placeholder="Enter Quantity"><button  name="remove" class="add-fields btn_remove" id="'+i+'">Remove</button></div>');
+            $("#genral").val(i);
+        });
+        $(document).on('click','.btn_remove', function(){
+            var button_id = $(this).attr("id");
+            $(this).parent('.flex').remove();
+            i--;
+        });
+    });
+});
+
+</script>
+    <p><?php    $customer_group = $block->getCustomerGroups(); 
+                //print_r($customer_group);?> 
+    </p>
+
+<form id="buy_and_get_product" align="center">
+
+    <fieldset class="fieldset">
+        <legend class="legend"><span><?php /* @escapeNotVerified */ //echo __('Test Form') ?></span></legend><br>
+        <div class="field required clearfix">
+            <input type='hidden' id="genral" name="genral" value="<?php echo $val ?>"/>
+
+            <input type='hidden' id="post_id" name="post_id" value="<?php echo  $edit['0']['post_id']; ?>"/>
+    
+         <div class="buy-btn-create col-xs-6" id="dynamic-field">
+         <?php if(isset($edit['0']['rule_condition'])){ ?>
+            <?php $i=0 ?> 
+                <?php foreach($edit['0']['rule_condition'] as $value){ ?>    
+                    <div class="flex">
+               
+                    <input type="text"  id="buy_product<?php echo $i; ?>" value="<?php echo $value->name ?>" required placeholder="Enter Product Name">
+                    <input type="number" id="buy_quantity<?php echo $i; ?>" value="<?php echo $value->quantity ?>" required placeholder="Enter Quantity">
+                    <a class="add-fields" href="javascript:void(0);" name="add" id="add">ADD</a>
+               
+                </div>
+                <?php $i++; }?>    
+
+        <?php }else{?>
+
+            <div class="flex">
+                    <input type="text" id="buy_product0"  required placeholder="Enter Product Name">
+                    <input type="number" id="buy_quantity0" required placeholder="Enter Quantity">
+                    <a class="add-fields" href="javascript:void(0);" name="add" id="add">ADD</a>
+                </div>
+    
+    
+             <?php }?>
+            </div>
+            <div class="col-xs-6">
+
+            <div class="control row mb-20">
+                    <span type="" class="buy_prdt col-xs-5 text-label">Name<span class="required-field">*</span></span>
+                    <span class="name col-xs-5 input-fields"><input value="<?php echo  $edit['0']['name']; ?>" type="text" required id="name" name="number" class="input-text">
+                    <div  style="display: none;"></div></span>
+                </div>
+
+                <div class="control row mb-20">
+                    <span type="" class="buy_prdt col-xs-5 text-label">Discounted Product<span class="required-field">*</span></span>
+                    <span class="discount_product col-xs-5 input-fields"><input value="<?php echo  $edit['0']['discount_product']; ?>" type="text" required id="discount_product" name="number" class="input-text">
+                    <div  style="display: none;"></div></span>
+                </div>
+
+                <div class="control row mb-20">
+                    <span type="" class="buy_prdt col-xs-5 text-label">Discount <span class="required-field">*</span></span>
+                    <span class="discount col-xs-5 input-fields"><input value="<?php echo  $edit['0']['discount']; ?>" type="text" required id="discount" name="number" class="input-text">
+                    <div  style="display: none;"></div></span>
+                </div>
+
+                <div class="control row mb-20">
+                    <span type="" class="buy_prdt col-xs-5 text-label">Store Id <span class="required-field">*</span></span>
+                    <span class="store_id col-xs-5 input-fields"><input value="<?php echo  $edit['0']['store_id']; ?>" type="text" required id="store_id" name="number" class="input-text">
+                    <div  style="display: none;"></div></span>
+                </div>
+
+                <div class="control row mb-20">
+                    <span type="" class="buy_prdt col-xs-5 text-label">Priority<span class="required-field">*</span></span>
+                    <span class="priority col-xs-5 input-fields">
+                        <input type="text" value="<?php echo  $edit['0']['priority']; ?>" id="priority" type="text" required/>
+                        <span style="display: none;"></span>
+                    </span>
+                </div>
+
+                <div class="control mb-20">
+                <span type="" class="buy_prdt text-label">Status
+                    <span style="margin-left: 5px;color: #e02b27;font-size:1.2rem">*</span>
+                </span>
+                <span class="status">
+                <select id="status">
+                    <option value="1" <?php if(($edit['0']['status'])==1){ echo 'selected'; } ?>>Enabled</option>
+                    <option value="0" <?php if(($edit['0']['status'])==0){ echo 'selected'; } ?>>Disabled</option>
+                </select>
+                <div  style="display: none;"></div></span>
+            </div><br>
+
+                <div class="control-offer-from row mb-20">
+                    <span class="col-xs-5 text-label">Offer From<span class="required-field">*</span></span>
+                    <!-- <input type="text" id="datepicker1" name="datepicker1" /> -->
+                    <div  class="col-xs-5 input-fields" >
+                    <input type="text" required id="fromdate_offer"  value="<?php echo  $edit['0']['offer_from']; ?>" name="fromdate_offer">
+                    <div class="from_date" style="display: none;"></div>
+                    </div>
+                </div>
+                <div class="control-offer-to row mb-20">
+                    <span class="col-xs-5 text-label">Offer To<span class="required-field">*</span></span>
+                    <div  class="col-xs-5 input-fields"><input type="text" required id="todate_offer"  value="<?php echo  $edit['0']['offer_to']; ?>" class="end_date" name="todate_offer">
+                    <div class="to_date" style="display: none;"></div></div>
+                </div>
+                <div class="control-offer-to row mb-20">
+                    <span class="col-xs-5 text-label">Select Group<span class="required-field">*</span></span>
+                    <select class="selectpicker col-xs-5 input-fields" required multiple data-live-search="true">
+                        <?php foreach ($customer_group as $key => $value): ?>
+<?php if($edit!==NULL){?>
+<option
+<?php if($value['value']==$edit['0']['customer_group']){
+    echo 'selected';
+    }else{
+        echo '';
+         }
+    ?>
+ value="<?php echo $value['value']; ?>"><?php echo $value['label']; ?></option>
+<?php }else{
+?>
+<option value="<?php echo $value['value']; ?>"><?php echo $value['label']; ?></option>
+
+<?php
+} ?>
+                        <?php endforeach; ?>                  
+                    </select>
+                    <div class="select_group" style="display: none;"></div>
+                </div>
+            </div>
+        </div>
+    </fieldset>
+    <br>
+    <div class="actions-toolbar">
+        <div class="primary">
+            <button type="submit" class="primary btnxyz" title="<?php echo __('Submit') ?>">
+                <span><?php echo __('Submit') ?></span>
+            </button> 
+        </div>
+    </div>
+</form>
+
+<style>
+    /* .mb-20{margin-bottom: 20px;}
+    .input-fields{text-align: left}
+    .input-text{width: 100%;}
+    #priority{
+        width: 100%;
+        height: 40px;
+        border-color: #d3d3d3;
+    }
+    .text-label{
+        text-align: right;
+        line-height: 25px;
+        padding-right: 20px;
+    }
+    .flex{
+        display: -webkit-flex;
+        display: -moz-flex;
+        display: -ms-flex;
+        display: flex;
+        justify-content: space-around;
+        margin-bottom: 15px;
+    }
+    .add-fields{
+        width: 100px;
+        padding: 10px;
+        font-weight: 600;
+        color: #514943 !important;
+        border: 1px solid #adadad;
+        background-color: #e3e3e3;
+        text-transform: uppercase;
+        text-decoration: none !important;
+    }
+    input{
+        padding:10px 30px;
+        border: 1px solid #d3d3d3;
+    }
+    .required-field{
+        color: #e02b27;
+        margin-left: 5px;
+        font-size:1.2rem;
+    } */
+</style>
