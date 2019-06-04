@@ -113,19 +113,20 @@ class Newaddressview implements NewaddressInterface
         curl_setopt($ch, CURLOPT_HTTPHEADER, array("Content-Type: application/json", "Authorization: Bearer " . json_decode($token)));
         $result = curl_exec($ch);
         $result = json_decode($result, 1);
-        // print_r($result);exit;
         $addressArray = array();
-        for($i=0;$i<count($result['addresses']);$i++){
+	for($i=0;$i<count($result['addresses']);$i++){
+            //print_r($result['addresses'][$i]['telephone']);
             $k = 1;
             $lastEle = count($result['addresses']) - $k;
             if($lastEle == $i){
-                if(preg_match( '/(\d{2})(\d{4})(\d{4})$/', $result['addresses'][$i]['telephone'],  $matches ) )
+    
+		if(preg_match( '/(\d{2})(\d{4})(\d{4})$/', $result['addresses'][$i]['telephone'],  $matches ) )
                 {
-                    $result1 = '0'.$matches[1] . '-' .$matches[2] . '-' . $matches[3];
-                    $result['addresses'][$i]['telephone'] = $result1;
-                }
-                $addressArray = array_pop($result['addresses']);
-            }
+                	$result1 = '0'.$matches[1] . '-' .$matches[2] . '-' . $matches[3];
+                	$result['addresses'][$i]['telephone'] = $result1;
+            	}
+		$addressArray = array_pop($result['addresses']);
+	    }
         }
         $response = array($addressArray);
         return $response;

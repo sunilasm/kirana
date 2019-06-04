@@ -53,7 +53,9 @@ class Item
             $fltColl = $SellerProd->addFieldToFilter('seller_id', $quoteItem->getSellerId())
                         ->addFieldToFilter('product_id', $quoteItem->getProductId());
             $idInfo = $fltColl->getData();
-           
+           $writer = new \Zend\Log\Writer\Stream(BP . '/var/log/test.log'); 
+            $logger = new \Zend\Log\Logger(); $logger->addWriter($writer); 
+            $logger->info($idInfo);
             if(!empty($idInfo)){
                         foreach($idInfo as $info){
                             $id = $info['entity_id'];
