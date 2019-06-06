@@ -81,22 +81,25 @@ class Ordersms extends \Magento\Framework\App\Action\Action
 		$customerFname = $customer->getFirstname();
                 $customerLname = $customer->getLastname();
 
-                $telephone = $customer->getPrimaryBillingAddress()->getTelephone();
-                        if(in_array('placeorder', $final_array))
+               $telephone = $customer->getPrimaryBillingAddress()->getTelephone();
+          	//print_r($customer->getData());exit;        
+	        if(in_array('placeorder', $final_array))
                 {
 		    $admin_recipients = array();
                     if ($telephone)     
                     {
                         $text= $settings['new_order'];
                         $text = str_replace('{order_id}', $orderId, $text);
-                        $text = str_replace('{firstname}', $firstname, $text);
-                        $text = str_replace('{lastname}', $lastname, $text);
+                        $text = str_replace('{firstname}', $customerFname, $text);
+                        $text = str_replace('{lastname}', $customerLname, $text);
                         $text = str_replace('{price}',  $totalPrice, $text);
                         $text = str_replace('{emailid}',  $customerEmail, $text);
                         $text = str_replace('{country_code}',  $countryCode, $text);
                     } 
                     $admin_recipients[]=$settings['admin_recipients'];
+		   // print_r($admin_recipients);
                     array_push($admin_recipients, $telephone);
+		    //print_r($admin_recipients);
                     $result = $objectManager->get('TEXT\Smsnotifications\Helper\Data')->sendSms($text,$admin_recipients);
                 }
                 $table .= "<tr style='border:1px solid #000'>";
@@ -104,7 +107,7 @@ class Ordersms extends \Magento\Framework\App\Action\Action
                 $table .= $orderId;
                 $table .= "</td>";
                 $table .= "<td style='border-right:1px solid #000'>";
-                $table .= $firstname." ".$lastname;
+                $table .= $customerFname." ".$customerLname;
                 $table .=  "</td>";
                 if($result != ''){
                 	$table .=  "<td>";
