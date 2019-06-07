@@ -126,7 +126,7 @@ class Addresschangeview implements AddresschangeInterface
             //else{
                         // Remove from cart
                         $removeProductsArray[] = $item->getProduct_id();
-                        if($post['guest_quote_id']){
+                        if(isset($post['guest_quote_id'])){
                             $this->removeItem($post['guest_quote_id'], $item->getItemId());
                         }else{
                             $this->removeItem($post['quote_id'], $item->getItemId());
