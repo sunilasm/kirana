@@ -60,29 +60,41 @@ class Addresschangeview implements AddresschangeInterface
         $currentProductsArray = array();
         foreach ($items as $item) 
         {
-            //print_r($sellerId);
+            // print_r($sellerId);exit;
             if(!in_array($item->getSeller_id(), $sellerId['retail']) || !in_array($item->getSeller_id(), $sellerId['orgretail'])){
             // print_r($item->getProduct_id());exit;    
+                $sellerProductCollection = $this->_sellerProductCollection->getCollection()->addFieldToFilter('product_id', array('in' => $item->getProduct_id()))->addFieldToFilter('seller_id', array('in' => $item->getSeller_id()));
+               // print_r($sellerProductCollection->getData());exit;
 
-                $sellerProductCollection = $this->_sellerProductCollection->getCollection()->addFieldToFilter('product_id', array('in' => $item->getProduct_id()));
-                // print_r($sellerProductCollection->getData());exit;
-		        $tempSellerProductArray = array();
+                $tempSellerProductArray = array();
+                $tempSellerType = array();
                 foreach($sellerProductCollection as $seller):
-		           if(in_array($seller['seller_id'], $sellerId['retail'])){
+                   if(in_array($seller['seller_id'], $sellerId['retail'])){
                         $tempSellerProductArray[] = $seller['seller_id'];
+                        $tempSellerType[] = 'kirana';
                     }
                     elseif(in_array($seller['seller_id'], $sellerId['orgretail']))
                     {
                         $tempSellerProductArray[] = $seller['seller_id'];
-                    }	
-                    //$i++;
+                        $tempSellerType[] = 'orgretail';
+                    }   
+                   //$i++;
                 endforeach;
-                // print_r($tempSellerProductArray);exit;
+                //print_r($tempSellerType);exit;
+
                 if(count($tempSellerProductArray)){
-                    $sellerCollection = $this->_sellerCollection->getCollection()
-                                    ->setOrder('position','ASC')
-                                    ->addFieldToFilter('seller_id',array('in'=>$tempSellerProductArray[0]));
+                    if($tempSellerType[0] == 'kirana'){
+                        $sellerCollection = $this->_sellerCollection->getCollection()
+                        ->setOrder('position','ASC')
+                        ->addFieldToFilter('seller_id',array('in'=>$tempSellerProductArray[0]));
+                    }elseif ($tempSellerType[0] == 'orgretail') {
+                        $sellerCollection = $this->_sellerCollection->getCollection()
+                        ->setOrder('position','ASC')
+                        ->addFieldToFilter('seller_id',array('in'=>$tempSellerProductArray[0]))
+                        ->addFieldToFilter('group_id',array('eq'=>2));
+                    }
                     $sellerData = $sellerCollection->getData();
+                    // print_r($tempSellerProductArray);exit;
                     if($sellerData[0]['group_id'] == 2){
                         $priceType = 1;
                     }else{
@@ -111,10 +123,10 @@ class Addresschangeview implements AddresschangeInterface
                             $this->removeItem($post['quote_id'], $item->getItemId());
                         }
                     }
-			//else{
+            //else{
                         // Remove from cart
                         $removeProductsArray[] = $item->getProduct_id();
-                        if($post['guest_quote_id']){
+                        if(isset($post['guest_quote_id'])){
                             $this->removeItem($post['guest_quote_id'], $item->getItemId());
                         }else{
                             $this->removeItem($post['quote_id'], $item->getItemId());
@@ -188,7 +200,9 @@ class Addresschangeview implements AddresschangeInterface
             $result = curl_exec($ch);
 
             $resultArray[] = json_decode($result, 1);
+            // print_r($resultArray);exit;
     }
 
    
 }
+
