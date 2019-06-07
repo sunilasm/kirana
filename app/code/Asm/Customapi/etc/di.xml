@@ -38,4 +38,6 @@
     <preference for="Asm\Customapi\Api\OrgnizedretailerinfoInterface" type="Asm\Customapi\Model\Orgnizedretailerinfoview" />
     <!-- Add New Customer Address -->
     <preference for="Asm\Customapi\Api\NewaddressInterface" type="Asm\Customapi\Model\Newaddressview" />
+    <!-- Get Wishlist Items -->
+    <preference for="Asm\Customapi\Api\WishlistInterface" type="Asm\Customapi\Model\Wishlistitemsview" />
 </config>
