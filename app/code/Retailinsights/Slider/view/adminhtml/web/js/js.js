@@ -10,7 +10,7 @@ require(['jquery', 'jquery/ui'], function($){
              'id': btn_id
          }
      var admin_path = window.location.pathname.split('/')[1];
-         var customurl = window.location.origin+'/'+admin_path+'/slider/index/delete';
+         var customurl = window.location.origin+'/'+admin_path+'/admin_lirbuz/slider/index/delete';
         
          $.ajax({
                  url: customurl,

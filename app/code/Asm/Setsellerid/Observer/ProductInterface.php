@@ -105,7 +105,8 @@ use Magento\Framework\Event\ObserverInterface;
             $subTotal = 0;
             
             foreach ($quote->getAllItems() as $quoteItem) {
-               
+                
+
                 $product = $this->productRepository->create()->getById($quoteItem->getProductId());
 
                 $SellerProd = $this->sellerProduct->create()->getCollection();
@@ -116,8 +117,8 @@ use Magento\Framework\Event\ObserverInterface;
                         foreach($idInfo as $info){
                             $id = $info['entity_id'];
                              $data = $this->sellerProduct->create()->load($id);
-                    $door = $data->getDoorstepPrice();
-                    $PickupFromStore= $data->getPickupFromStore();
+                             $door = $data->getDoorstepPrice();
+                             $PickupFromStore= $data->getPickupFromStore();
                     $PickupFromNearbyStore= $data->getPickupFromNearbyStore();
 
                         }

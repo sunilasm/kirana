@@ -22,6 +22,7 @@ xsi:noNamespaceSchemaLocation="urn:magento:framework:Api/etc/extension_attribute
     </extension_attributes>
     <extension_attributes for="Magento\Sales\Api\Data\OrderInterface">
         <attribute code="extn_grand_total" type="string" />
+        <attribute code="extn_created_date" type="string" />
     </extension_attributes>
 
 </config>
