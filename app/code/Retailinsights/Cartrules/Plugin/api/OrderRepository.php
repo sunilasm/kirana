@@ -128,6 +128,7 @@ class OrderRepository
             $grandTotal += $rowTotal;
              
             }
+            $newGrandTotal = $order->getGrandTotal();
             $orderextensionAttributes = $order->getExtensionAttributes();
 
             $created = $order->getCreatedAt();
@@ -137,7 +138,7 @@ class OrderRepository
             $dateAsString = $created->format('Y-m-d H:i:s'); //G for 24H
 
             $orderextensionAttributes = $orderextensionAttributes ? $orderextensionAttributes : $this->extensionFactory->create();
-            $orderextensionAttributes->setExtnGrandTotal($grandTotal);
+            $orderextensionAttributes->setExtnGrandTotal($newGrandTotal);
 
             $orderextensionAttributes->setExtnCreatedDate($dateAsString);
 
