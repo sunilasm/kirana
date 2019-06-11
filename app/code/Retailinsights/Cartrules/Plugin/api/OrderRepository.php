@@ -138,7 +138,9 @@ class OrderRepository
             $dateAsString = $created->format('Y-m-d H:i:s'); //G for 24H
 
             $orderextensionAttributes = $orderextensionAttributes ? $orderextensionAttributes : $this->extensionFactory->create();
+
             $orderextensionAttributes->setExtnGrandTotal($newGrandTotal);
+
 
             $orderextensionAttributes->setExtnCreatedDate($dateAsString);
 

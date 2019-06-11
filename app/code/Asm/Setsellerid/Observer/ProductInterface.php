@@ -96,6 +96,7 @@ use Magento\Framework\Event\ObserverInterface;
             $PickupFromNearbyStore=0;
 
             $door=0;
+            $price =0;
 
             $doorStepPId = 0;
             $pickupFrmStorePId = 0;
@@ -118,20 +119,23 @@ use Magento\Framework\Event\ObserverInterface;
                             $id = $info['entity_id'];
                              $data = $this->sellerProduct->create()->load($id);
                              $door = $data->getDoorstepPrice();
-                             $PickupFromStore= $data->getPickupFromStore();
+
+                            $PickupFromStore= $data->getPickupFromStore();
+
                     $PickupFromNearbyStore= $data->getPickupFromNearbyStore();
 
                         }
                 }
+                $price = $quoteItem->getPrice();
                 if($quoteItem->getPriceType() == 0){
                     $doorStepPId += $quoteItem->getQty();
-                    $dsPrice = $door * $quoteItem->getQty();
-                     $doorStepPrice += $dsPrice;
+                    $rowPrice = $price * $quoteItem->getQty();
+                     $doorStepPrice += $rowPrice;
     
                 } else if($quoteItem->getPriceType() == 1) {
                     $pickupFrmStorePId += $quoteItem->getQty();
-                    $spPrice = $PickupFromStore * $quoteItem->getQty();
-                    $pickupFrmStorePrice += $spPrice;
+                    $rowPrice = $price * $quoteItem->getQty();
+                    $pickupFrmStorePrice += $rowPrice;
 
                 }
 
@@ -161,6 +165,7 @@ use Magento\Framework\Event\ObserverInterface;
                 $itemExtAttr->setPickupFromNearbyStore($PickupFromNearbyStore);
                 
                 $itemExtAttr->setImageUrl($imageurl);
+                $itemExtAttr->setExtRowTotal($rowPrice);
                 $quoteItem->setExtensionAttributes($itemExtAttr);
     
                 }
