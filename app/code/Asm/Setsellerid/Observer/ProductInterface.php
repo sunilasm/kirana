@@ -119,9 +119,9 @@ use Magento\Framework\Event\ObserverInterface;
                             $id = $info['entity_id'];
                              $data = $this->sellerProduct->create()->load($id);
                              $door = $data->getDoorstepPrice();
+
                             $PickupFromStore= $data->getPickupFromStore();
-                          
-                             
+
                     $PickupFromNearbyStore= $data->getPickupFromNearbyStore();
 
                         }
