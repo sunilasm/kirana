@@ -55,15 +55,11 @@ class Wishlistitemsview implements WishlistInterface
                 $productCollectionArray[] = $productData;
             }
         }
-
-        // print_r($productCollectionArray);exit;
-
-        if(count($data)){
+        if(count($productCollectionArray)){
             $result = $productCollectionArray;
         }else{
             $result = array("Success" => "No products in wishlist");
         }
-        //$response = array($result);
         return $result;
     } 
 }
