@@ -143,7 +143,7 @@ class Addresschangeview implements AddresschangeInterface
                                     $resource = $objectManager->get('\Magento\Framework\App\ResourceConnection');
                                     $connection = $resource->getConnection();
                                     $tableName = $resource->getTableName('wishlist_item');
-                                    $sql = "UPDATE " . $tableName . " SET seller_id = '" . $item->getSellerId() . "', seller_name = '" . $sellerName . "', seller_price = '" . $sellerprice . "' WHERE wishlist_item_id = " . $wishItem['wishlist_item_id']." AND product_id = " . $wishItem['product_id'];
+                                    $sql = "UPDATE " . $tableName . " SET seller_id = '" . $item->getSellerId() . "', seller_name = '" . $sellerName . "', seller_price = '" . $sellerprice . "', price_type = '" . $item->getPriceType() . "' WHERE wishlist_item_id = " . $wishItem['wishlist_item_id']." AND product_id = " . $wishItem['product_id'];
                                     $connection->query($sql);
                                 }
                             endforeach;

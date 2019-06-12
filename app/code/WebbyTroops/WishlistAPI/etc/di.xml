@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <preference for="WebbyTroops\WishlistAPI\Api\WishlistRepositoryInterface" type="WebbyTroops\WishlistAPI\Model\WishlistRepository" />
+    <preference for="WebbyTroops\WishlistAPI\Api\Data\WishlistInterface" type="WebbyTroops\WishlistAPI\Model\Data\Wishlist" />
+    <preference for="WebbyTroops\WishlistAPI\Api\Data\WishlistItemsInterface" type="WebbyTroops\WishlistAPI\Model\Data\WishlistItems" />
+    <preference for="WebbyTroops\WishlistAPI\Api\Data\ResponseInterface" type="WebbyTroops\WishlistAPI\Model\Data\Response" />
+    <preference for="WebbyTroops\WishlistAPI\Api\Data\ShareWishlistInterface" type="WebbyTroops\WishlistAPI\Model\Data\ShareWishlist" />
+    <preference for="WebbyTroops\WishlistAPI\Api\Data\KeyValueInterface" type="WebbyTroops\WishlistAPI\Model\Data\KeyValue" />
+    <preference for="WebbyTroops\WishlistAPI\Api\Data\EmailInterface" type="WebbyTroops\WishlistAPI\Model\Data\Email" />
+    <preference for="WebbyTroops\WishlistAPI\Api\Data\MoveToInterface" type="WebbyTroops\WishlistAPI\Model\Data\MoveTo" />
+    <type name="Magento\Webapi\Model\Config\Converter">
+        <plugin name="wishlist_restrict_access" type="WebbyTroops\WishlistAPI\Plugin\RestrictAccess" />
+    </type>
+    <type name="Magento\Catalog\Api\ProductRepositoryInterface">
+        <plugin name="product_repository_plugin" type="WebbyTroops\WishlistAPI\Plugin\ProductRepositoryPlugin"/>
+    </type>
+</config>

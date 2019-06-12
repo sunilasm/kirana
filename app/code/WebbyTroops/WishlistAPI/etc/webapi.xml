@@ -1,0 +1,73 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+<routes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Webapi:etc/webapi.xsd">
+    <route url="/V1/wishlist/add" method="POST">
+        <service class="WebbyTroops\WishlistAPI\Api\WishlistRepositoryInterface" method="addWishlistItem"/>
+        <resources>
+            <resource ref="self"/>
+        </resources>
+        <data>
+            <parameter name="customerId" force="true">%customer_id%</parameter>
+        </data>
+    </route>
+    <route url="/V1/wishlist" method="GET">
+        <service class="WebbyTroops\WishlistAPI\Api\WishlistRepositoryInterface" method="getWishlist"/>
+        <resources>
+            <resource ref="self"/>
+        </resources>
+        <data>
+            <parameter name="customerId" force="true">%customer_id%</parameter>
+        </data>
+    </route>
+    <route url="/V1/wishlist/remove/:itemId" method="DELETE">
+        <service class="WebbyTroops\WishlistAPI\Api\WishlistRepositoryInterface" method="removeWishlistItem"/>
+        <resources>
+            <resource ref="self"/>
+        </resources>
+        <data>
+            <parameter name="customerId" force="true">%customer_id%</parameter>
+        </data>
+    </route>
+    <route url="/V1/wishlist/update" method="PUT">
+        <service class="WebbyTroops\WishlistAPI\Api\WishlistRepositoryInterface" method="updateWishlistItem"/>
+        <resources>
+            <resource ref="self"/>
+        </resources>
+        <data>
+            <parameter name="customerId" force="true">%customer_id%</parameter>
+        </data>
+    </route>
+    <route url="/V1/wishlist/move-to-cart" method="POST">
+        <service class="WebbyTroops\WishlistAPI\Api\WishlistRepositoryInterface" method="moveToCart"/>
+        <resources>
+            <resource ref="self"/>
+        </resources>
+        <data>
+            <parameter name="customerId" force="true">%customer_id%</parameter>
+        </data>
+    </route>
+    <route url="/V1/wishlist/share" method="POST">
+        <service class="WebbyTroops\WishlistAPI\Api\WishlistRepositoryInterface" method="shareWishlist"/>
+        <resources>
+            <resource ref="self"/>
+        </resources>
+        <data>
+            <parameter name="customerId" force="true">%customer_id%</parameter>
+        </data>
+    </route>
+    <route url="/V1/wishlist/move-to-wishlist" method="POST">
+        <service class="WebbyTroops\WishlistAPI\Api\WishlistRepositoryInterface" method="moveToWishlist"/>
+        <resources>
+            <resource ref="self"/>
+        </resources>
+        <data>
+            <parameter name="customerId" force="true">%customer_id%</parameter>
+        </data>
+    </route>
+</routes>

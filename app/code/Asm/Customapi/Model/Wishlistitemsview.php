@@ -51,6 +51,7 @@ class Wishlistitemsview implements WishlistInterface
                 $productData['wishlist_seller_name'] = $item['seller_name'];
                 $productData['wishlist_qty'] = $item['qty'];
                 $productData['wishlist_product_price'] = $item['seller_price'];
+                $productData['wishlist_price_type'] = $item['price_type'];
                 $productData['wishlist_added_at'] = $item['added_at'];
                 $productCollectionArray[] = $productData;
             }
