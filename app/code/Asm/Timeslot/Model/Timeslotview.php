@@ -144,12 +144,14 @@ class Timeslotview implements TimeslotInterface
                 if($item->getPrice_type() == 1)
                 {
                     // print_r("1111");exit;
-                    $subTotal = ($sellProducts->getPickup_from_store() * $item->getQty_ordered());
+                    //$subTotal = ($sellProducts->getPickup_from_store() * $item->getQty_ordered());
+		    $subTotal = ($item->getPrice() * $item->getQty_ordered());
                 }
                 else
                 {
                     // print_r("2222");exit;
-                    $subTotal = ($sellProducts->getDoorstep_price() * $item->getQty_ordered());
+                    //$subTotal = ($sellProducts->getDoorstep_price() * $item->getQty_ordered());
+		    $subTotal = ($item->getPrice() * $item->getQty_ordered());
                 }
             }
             // print_r($subTotal);exit;
