@@ -36,7 +36,7 @@ class Ordersms extends \Magento\Framework\App\Action\Action
                 //date_default_timezone_set('Asia/Kolkata'); 
                 $time = time();
                 $to = date('Y-m-d H:i:s', $time);
-                $lastTime = $time - 300; // 60*60*24
+                $lastTime = $time - 3000000; // 60*60*24
                 $from = date('Y-m-d H:i:s', $lastTime);
                 //print_r("to:-".$to);
                 //print_r("from:-".$from); exit;
@@ -78,7 +78,7 @@ class Ordersms extends \Magento\Framework\App\Action\Action
                 $totalPrice    =  number_format($order->getGrandTotal(), 2);
                 $countryCode   =  $order->getOrderCurrencyCode();
                 $customerEmail =  $order->getCustomerEmail();
-		$customerFname = $customer->getFirstname();
+		        $customerFname = $customer->getFirstname();
                 $customerLname = $customer->getLastname();
 
                $telephone = $customer->getPrimaryBillingAddress()->getTelephone();

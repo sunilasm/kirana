@@ -49,6 +49,7 @@ class Addresschangeview implements AddresschangeInterface
             $items = $quote->getAllItems();
         }
         $sellerId = $this->inRange->getInRangeSeller($post['lat'], $post['long']);
+        //print_r($sellerId);exit;
         if(isset($post['customer_id'])){
             $customerId = $post['customer_id'];
         }else{
@@ -80,8 +81,7 @@ class Addresschangeview implements AddresschangeInterface
                         $tempSellerProductArray[] = $seller['seller_id'];
                         $tempSellerType[] = 'orgretail';
                     }   
-
-                    //$i++;
+                   //$i++;
                 endforeach;
                 //print_r($tempSellerType);exit;
 
@@ -129,19 +129,17 @@ class Addresschangeview implements AddresschangeInterface
             //else{
                         // Remove from cart
                         $removeProductsArray[] = $item->getProduct_id();
-                        if(isset($post['guest_quote_id'])){
+                        if($post['guest_quote_id']){
                             $this->removeItem($post['guest_quote_id'], $item->getItemId());
                         }else{
                             $this->removeItem($post['quote_id'], $item->getItemId());
                         }    
                     //}
-
                 }
                 // print_r($tempSellerProductArray);exit;
             }
         }
         $currentCartItems = count($items) - count($removeProductsArray);
-
         $data = array("total_count" => count($items),"wishlist_count" => count($wishlistProductsArray), "removed_count" => count($removeProductsArray),"current_cart_count" => $currentCartItems);
         $response = array($data);
         return $response;
