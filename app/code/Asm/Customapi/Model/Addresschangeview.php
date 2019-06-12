@@ -64,7 +64,7 @@ class Addresschangeview implements AddresschangeInterface
             // print_r($item->getProduct_id());exit;    
 
 
-                $sellerProductCollection = $this->_sellerProductCollection->getCollection()->addFieldToFilter('product_id', array('in' => $item->getProduct_id()))->addFieldToFilter('seller_id', array('in' => $item->getSeller_id()));
+                $sellerProductCollection = $this->_sellerProductCollection->getCollection()->addFieldToFilter('product_id', array('in' => $item->getProduct_id()));
 
                 // print_r($sellerProductCollection->getData());exit;
 
