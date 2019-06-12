@@ -48,14 +48,13 @@ class RemoveWishlistItem implements \Magento\Framework\Event\ObserverInterface
             $wishlistItem = $observer->getEvent()->getItem();
             $emailWishlist = $this->emailWishlistCollection->create()
                 ->getWishlistById($wishlistItem->getWishlistId());
-
-            if ($emailWishlist->getId()) {
-                $count = $emailWishlist->getItemCount();
-                //update wishlist count and set to modified
-                $emailWishlist->setItemCount(--$count);
-                $emailWishlist->setWishlistModified(1);
-                $this->emailWishlistResource->save($emailWishlist);
-            }
+            // if ($emailWishlist->getId()) {
+            //     $count = $emailWishlist->getItemCount();
+            //     //update wishlist count and set to modified
+            //     $emailWishlist->setItemCount(--$count);
+            //     $emailWishlist->setWishlistModified(1);
+            //     $this->emailWishlistResource->save($emailWishlist);
+            // }
         } catch (\Exception $e) {
             $this->helper->log((string)$e, []);
         }

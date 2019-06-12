@@ -11,6 +11,7 @@ xsi:noNamespaceSchemaLocation="urn:magento:framework:Api/etc/extension_attribute
 	<attribute code="pickup_from_nearby_store" type="string" />
 	<attribute code="price_type" type="string" />
 	<attribute code="volume" type="string" />
+	<attribute code="ext_row_total" type="string" />
 	<attribute code="seller_id" type="string" >
     	<resources>
                 <resource  ref="anonymous"/>

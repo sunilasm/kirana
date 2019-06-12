@@ -49,22 +49,23 @@ class Item
 
             $quoteItem = $this->itemFactory->create()->load($item->getItemId());
             
-            $SellerProd = $this->sellerProduct->create()->getCollection();
-            $fltColl = $SellerProd->addFieldToFilter('seller_id', $quoteItem->getSellerId())
-                        ->addFieldToFilter('product_id', $quoteItem->getProductId());
-            $idInfo = $fltColl->getData();
-           $writer = new \Zend\Log\Writer\Stream(BP . '/var/log/test.log'); 
-            $logger = new \Zend\Log\Logger(); $logger->addWriter($writer); 
-            $logger->info($idInfo);
-            if(!empty($idInfo)){
-                        foreach($idInfo as $info){
-                            $id = $info['entity_id'];
-                        }
-                    $data = $this->sellerProduct->create()->load($id);
-                    $door = $data->getDoorstepPrice();
-                    $PickupFromStore= $data->getPickupFromStore();
-                    $PickupFromNearbyStore= $data->getPickupFromNearbyStore();
-                }
+            // $SellerProd = $this->sellerProduct->create()->getCollection();
+            // $fltColl = $SellerProd->addFieldToFilter('seller_id', $quoteItem->getSellerId())
+            //             ->addFieldToFilter('product_id', $quoteItem->getProductId());
+            // $idInfo = $fltColl->getData();
+           
+            // if(!empty($idInfo)){
+            //             foreach($idInfo as $info){
+            //                 $id = $info['entity_id'];
+            //             }
+            //         $data = $this->sellerProduct->create()->load($id);
+            //         $door = $data->getDoorstepPrice();
+            //         $PickupFromStore= $data->getPickupFromStore();
+            //         $PickupFromNearbyStore= $data->getPickupFromNearbyStore();
+            //     }
+            
+            $door = $quoteItem->getPrice();
+            $PickupFromStore = $quoteItem->getPrice();
         
                 if($quoteItem->getPriceType() == 0){
                     $doorStepPId += $quoteItem->getQty();
@@ -96,7 +97,7 @@ class Item
             $extensionAttributes->setDsSubtotal($doorStepPrice);
             $extensionAttributes->setSpCount($pickupFrmStorePId);
             $extensionAttributes->setSpSubtotal($pickupFrmStorePrice);
-            $extensionAttributes->setExtnGrandTotal($grandTotal);
+           // $extensionAttributes->setExtnGrandTotal($grandTotal);
             $totals->setExtensionAttributes($extensionAttributes);
         return $totals;
     }
