@@ -63,8 +63,11 @@ class Addresschangeview implements AddresschangeInterface
             print_r($sellerId);exit;
             if(!in_array($item->getSeller_id(), $sellerId['retail']) || !in_array($item->getSeller_id(), $sellerId['orgretail'])){
             // print_r($item->getProduct_id());exit;    
-                $sellerProductCollection = $this->_sellerProductCollection->getCollection()->addFieldToFilter('product_id', array('in' => $item->getProduct_id()))->addFieldToFilter('seller_id', array('in' => $item->getSeller_id()));
-               // print_r($sellerProductCollection->getData());exit;
+
+
+                $sellerProductCollection = $this->_sellerProductCollection->getCollection()->addFieldToFilter('product_id', array('in' => $item->getProduct_id()));
+
+                // print_r($sellerProductCollection->getData());exit;
 
                 $tempSellerProductArray = array();
                 $tempSellerType = array();
@@ -78,10 +81,9 @@ class Addresschangeview implements AddresschangeInterface
                         $tempSellerProductArray[] = $seller['seller_id'];
                         $tempSellerType[] = 'orgretail';
                     }   
+                    //print_r($seller->getData());
                    //$i++;
                 endforeach;
-                print_r($tempSellerProductArray);exit;
-
                 if(count($tempSellerProductArray)){
                     if($tempSellerType[0] == 'kirana'){
                         $sellerCollection = $this->_sellerCollection->getCollection()
