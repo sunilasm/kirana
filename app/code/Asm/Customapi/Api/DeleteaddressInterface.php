@@ -1,7 +1,7 @@
 <?php
 namespace Asm\Customapi\Api;
  
-interface NewaddressInterface
+interface DeleteaddressInterface
 {
     /**
      * Returns greeting message to user
@@ -10,7 +10,6 @@ interface NewaddressInterface
      * @param string $name Users name.
      * @return string Greeting message with users name.
      */
-    
-    // Add new address
-    public function newcustomeraddress();
+    // edit customer address
+    public function deletecustomeraddress($addressId);
 }

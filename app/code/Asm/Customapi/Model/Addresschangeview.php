@@ -49,7 +49,7 @@ class Addresschangeview implements AddresschangeInterface
             $items = $quote->getAllItems();
         }
         $sellerId = $this->inRange->getInRangeSeller($post['lat'], $post['long']);
-        //print_r($sellerId);exit;
+        print_r($sellerId);exit;
         if(isset($post['customer_id'])){
             $customerId = $post['customer_id'];
         }else{
@@ -60,7 +60,7 @@ class Addresschangeview implements AddresschangeInterface
         $currentProductsArray = array();
         foreach ($items as $item) 
         {
-            // print_r($sellerId);exit;
+            print_r($sellerId);exit;
             if(!in_array($item->getSeller_id(), $sellerId['retail']) || !in_array($item->getSeller_id(), $sellerId['orgretail'])){
             // print_r($item->getProduct_id());exit;    
                 $sellerProductCollection = $this->_sellerProductCollection->getCollection()->addFieldToFilter('product_id', array('in' => $item->getProduct_id()))->addFieldToFilter('seller_id', array('in' => $item->getSeller_id()));
@@ -80,7 +80,7 @@ class Addresschangeview implements AddresschangeInterface
                     }   
                    //$i++;
                 endforeach;
-                //print_r($tempSellerProductArray);exit;
+                print_r($tempSellerProductArray);exit;
 
                 if(count($tempSellerProductArray)){
                     if($tempSellerType[0] == 'kirana'){
@@ -119,6 +119,7 @@ class Addresschangeview implements AddresschangeInterface
                         $wishlist->save();
                         $wishlist_collection = $wishlist->getItemCollection();
                         $wishlistItemData = $wishlist_collection->getData();
+                        // print_r($wishlistItemData);exit;
                         if(count($wishlistItemData)){
                             foreach($wishlistItemData as $wishItem):
                                 if(!$wishItem['seller_id']){
