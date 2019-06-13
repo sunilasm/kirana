@@ -60,7 +60,7 @@ class Addresschangeview implements AddresschangeInterface
         $currentProductsArray = array();
         foreach ($items as $item) 
         {
-            print_r($sellerId);exit;
+            //print_r($sellerId);exit;
             if(!in_array($item->getSeller_id(), $sellerId['retail']) || !in_array($item->getSeller_id(), $sellerId['orgretail'])){
             // print_r($item->getProduct_id());exit;    
 
