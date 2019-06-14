@@ -142,6 +142,19 @@ class UpgradeSchema implements UpgradeSchemaInterface
                 );
             }
         }
+       
+        if (version_compare($context->getVersion(), '1.1.4', '<')) {
+            $setup->getConnection()->changeColumn(
+                $setup->getTable('retailinsights_promostoremapp'),
+                'rule_id',
+                'rule',
+                [
+                    'type' => \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+                    'length' => 255,
+                    'comment' => 'rule Id'
+                ]
+            );
+        }
 
         if (version_compare($context->getVersion(), '1.1.3') < 0) {
             if (!$installer->tableExists('applicable_promotions')) {
