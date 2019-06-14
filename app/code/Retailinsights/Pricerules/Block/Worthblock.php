@@ -1,10 +1,11 @@
 <?php
+
 namespace Retailinsights\Pricerules\Block;
+
 use Magento\Backend\Block\Template;
 
 class Worthblock extends Template
-{
-   
+{   
 	/**
 	 * Customer Group
 	 *
@@ -36,14 +37,11 @@ class Worthblock extends Template
 	    return $customerGroups;
 	}
 	public function getBuyXXXgetY(){
-		$objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+	$objectManager = \Magento\Framework\App\ObjectManager::getInstance();
 	$model = $objectManager->create('\Retailinsights\Pricerules\Model\CatalogRuleRepository');
 	$post_id = $this->getRequest()->getParam('post_id');
 	$temp=$model->getBuyXXXgetY($post_id);
 
 		return $temp;
-	
-
 	}
 }
-

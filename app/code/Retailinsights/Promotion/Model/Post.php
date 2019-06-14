@@ -1,5 +1,7 @@
 <?php
+
 namespace Retailinsights\Promotion\Model;
+
 class Post extends \Magento\Framework\Model\AbstractModel implements \Magento\Framework\DataObject\IdentityInterface
 {
 	const CACHE_TAG = 'salesrule';

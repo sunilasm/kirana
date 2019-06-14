@@ -1,4 +1,5 @@
 <?php
+
 namespace Retailinsights\Pricerules\Plugin\Ui\Component\Form\Element\DataType;
 
 class Date
