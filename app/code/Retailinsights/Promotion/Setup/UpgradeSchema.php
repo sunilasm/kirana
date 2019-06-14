@@ -15,7 +15,7 @@ class UpgradeSchema implements UpgradeSchemaInterface
 
         $installer->startSetup();
     
-        if (version_compare($context->getVersion(), '1.0.9') < 0)  {
+        if (version_compare($context->getVersion(), '1.1.0') < 0)  {
             if (!$installer->tableExists('retailinsights_promostoremapp')) {
                 $table = $installer->getConnection()->newTable(
                     $installer->getTable('retailinsights_promostoremapp')
@@ -41,9 +41,9 @@ class UpgradeSchema implements UpgradeSchemaInterface
                 )
                 ->addColumn(
                     'rule_id',
-                    \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
-                    1,
-                    ['nullable => false'],
+                    \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+                    225,
+                    ['nullable' => false],
                     'Rule ID'
                 )
                 ->addColumn(
@@ -143,6 +143,71 @@ class UpgradeSchema implements UpgradeSchemaInterface
             }
         }
 
+        if (version_compare($context->getVersion(), '1.1.3') < 0) {
+            if (!$installer->tableExists('applicable_promotions')) {
+                $table = $installer->getConnection()->newTable(
+                    $installer->getTable('applicable_promotions')
+                )
+                ->addColumn(
+                    'ap_id',
+                    \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
+                    null,
+                    [
+                        'identity' => true,
+                        'nullable' => false,
+                        'primary'  => true,
+                        'unsigned' => true,
+                    ],
+                    'Post ID'
+                )
+                ->addColumn(
+                    'item_qty',
+                    \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+                    2048,
+                    ['nullable => false'],
+                    'Promo Item ID Qty'
+                )
+                ->addColumn(
+                    'cart_id',
+                    \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
+                    10,
+                    ['nullable => false'],
+                    'Cart ID'
+                )
+                ->addColumn(
+                    'promo_code_id',
+                    \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+                    2048,
+                    ['nullable => false'],
+                    'Promotion Detail'
+                )
+                ->addColumn(
+                    'promo_discount',
+                    \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+                    2048,
+                    ['nullable => false'],
+                    'Custom Promo Discount'
+                )
+                ->setComment(
+                    'Promotions Application'
+                );
+                $installer->getConnection()->createTable($table);
+           
+            }
+        }
+
+        if (version_compare($context->getVersion(), '1.1.2') < 0) {
+            $installer->getConnection()->addColumn(
+                $installer->getTable('applicable_promotions'),
+                'total_discount',
+                [
+                    'type' => \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+                    'length' => '2048',
+                    'nullable' => false,
+                    'comment' => 'Total Discount'
+                ]
+            );
+        }
         
         $installer->endSetup();
     }

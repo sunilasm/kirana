@@ -1,5 +1,7 @@
 <?php
+
 namespace Retailinsights\Promotion\Model;
+
 class PostSeller extends \Magento\Framework\Model\AbstractModel implements \Magento\Framework\DataObject\IdentityInterface
 {
 	const CACHE_TAG = 'lof_marketplace_seller';

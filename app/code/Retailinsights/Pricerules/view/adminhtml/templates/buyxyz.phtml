@@ -1,6 +1,30 @@
 <?php
-$val=0;
+
 $edit = $this->getXyz();
+if($edit['0']['post_id']){
+    $val=-1;
+}else{
+    $val=0;
+}
+
+$d=0;
+
+$writer = new \Zend\Log\Writer\Stream(BP . '/var/log/test.log');
+$logger = new \Zend\Log\Logger(); 
+$logger->addWriter($writer); 
+$logger->info(count($edit['0']));
+
+
+$logger->info($edit['0']);
+//$this->messageManager->addSuccessMessage("wondows is on");
+
+if($edit['0']['customer_group']!= '')
+               {
+               $csg = $edit['0']['customer_group'];
+               $arr_csg = explode(",",$csg);
+            }else{
+                $arr_csg = '';
+            }
 ?>
 <script>
 
@@ -10,12 +34,21 @@ require(['jquery', 'jquery/ui'], function($) {
         $('#add').click(function(){
             i++;
             $('#dynamic-field').append('<div class="flex"><input type="text" value="" required id="buy_product'+i+'"  placeholder="Enter Product Name"><input type="number" value="" required id="buy_quantity'+i+'"  placeholder="Enter Quantity"><button  name="remove" class="add-fields btn_remove" id="'+i+'">Remove</button></div>');
-            $("#genral").val(i);
+            $("#genral").val(parseInt($("#genral").val())+1);
         });
         $(document).on('click','.btn_remove', function(){
             var button_id = $(this).attr("id");
             $(this).parent('.flex').remove();
             i--;
+           
+        });
+        $(document).on('click','.btn_edit_remove', function(){
+            var button_id = $(this).attr("id");
+            $(this).parent('.flex').remove();
+            $("#genral").val(parseInt($("#genral").val())-1);
+     
+         
+           
         });
     });
 });
@@ -30,22 +63,40 @@ require(['jquery', 'jquery/ui'], function($) {
     <fieldset class="fieldset">
         <legend class="legend"><span><?php /* @escapeNotVerified */ //echo __('Test Form') ?></span></legend><br>
         <div class="field required clearfix">
-            <input type='hidden' id="genral" name="genral" value="<?php echo $val ?>"/>
 
             <input type='hidden' id="post_id" name="post_id" value="<?php echo  $edit['0']['post_id']; ?>"/>
+
+
+        <div class="control mb-20">
+                <span type="" class="buy_prdt text-label"> Rule Name
+                    <span style="margin-left: 5px;color: #e02b27;font-size:1.2rem">*</span>
+                </span>
+                <span>
+                <input type="text" id="name"  value="<?php echo  $edit['0']['name']; ?>" required name="name" class="input-text" placeholder="Rule name">
+               
+    
+                <div class="buy-btn-create" style="display: none;"></div></span>
+            </div><br>    
     
          <div class="buy-btn-create col-xs-6" id="dynamic-field">
          <?php if(isset($edit['0']['rule_condition'])){ ?>
-            <?php $i=0 ?> 
-                <?php foreach($edit['0']['rule_condition'] as $value){ ?>    
+            <?php $i=0 ?>
+            <?php //print_r($edit['0']['rule_condition']);die; ?> 
+                <?php foreach($edit['0']['rule_condition'] as $v1){ 
+                        foreach($v1 as $k2 =>$value) {
+                ?>
+                        
                     <div class="flex">
                
-                    <input type="text"  id="buy_product<?php echo $i; ?>" value="<?php echo $value->name ?>" required placeholder="Enter Product Name">
-                    <input type="number" id="buy_quantity<?php echo $i; ?>" value="<?php echo $value->quantity ?>" required placeholder="Enter Quantity">
-                    <a class="add-fields" href="javascript:void(0);" name="add" id="add">ADD</a>
-               
+                    <input type="text"  id="buy_product<?php echo $i; ?>" value="<?php echo $value->sku ?>" required placeholder="Enter Product Name">
+                    <input type="number" id="buy_quantity<?php echo $i; ?>" value="<?php echo $value->qty ?>" required placeholder="Enter Quantity">
+                   
+                    <a class="add-fields" style="display: <?php if($i!=0){ echo 'none'; } ?>" href="javascript:void(0);" name="add" id="add">ADD</a>
+                    
+                    <button  name="remove" style="display:<?php if($i!=0){}else{ echo 'none'; } ?>" class="add-fields btn_edit_remove" id="<?php echo $i; ?>">Remove</button>
                 </div>
-                <?php $i++; }?>    
+                <?php $val++; ?>
+                <?php  $i++; }}?>    
 
         <?php }else{?>
 
@@ -57,16 +108,9 @@ require(['jquery', 'jquery/ui'], function($) {
     
     
              <?php }?>
+             <input type='hidden' id="genral" name="genral" value="<?php echo $val ?>"/>
             </div>
-            <div class="col-xs-6">
-
             <div class="control row mb-20">
-                    <span type="" class="buy_prdt col-xs-5 text-label">Name<span class="required-field">*</span></span>
-                    <span class="name col-xs-5 input-fields"><input value="<?php echo  $edit['0']['name']; ?>" type="text" required id="name" name="number" class="input-text">
-                    <div  style="display: none;"></div></span>
-                </div>
-
-                <div class="control row mb-20">
                     <span type="" class="buy_prdt col-xs-5 text-label">Discounted Product<span class="required-field">*</span></span>
                     <span class="discount_product col-xs-5 input-fields"><input value="<?php echo  $edit['0']['discount_product']; ?>" type="text" required id="discount_product" name="number" class="input-text">
                     <div  style="display: none;"></div></span>
@@ -77,17 +121,15 @@ require(['jquery', 'jquery/ui'], function($) {
                     <span class="discount col-xs-5 input-fields"><input value="<?php echo  $edit['0']['discount']; ?>" type="text" required id="discount" name="number" class="input-text">
                     <div  style="display: none;"></div></span>
                 </div>
-
-                <div class="control row mb-20">
+                   <div class="control row mb-20">
                     <span type="" class="buy_prdt col-xs-5 text-label">Store Id <span class="required-field">*</span></span>
                     <span class="store_id col-xs-5 input-fields"><input value="<?php echo  $edit['0']['store_id']; ?>" type="text" required id="store_id" name="number" class="input-text">
                     <div  style="display: none;"></div></span>
                 </div>
-
                 <div class="control row mb-20">
                     <span type="" class="buy_prdt col-xs-5 text-label">Priority<span class="required-field">*</span></span>
                     <span class="priority col-xs-5 input-fields">
-                        <input type="text" value="<?php echo  $edit['0']['priority']; ?>" id="priority" type="text" required/>
+                        <input type="number" value="<?php echo  $edit['0']['priority']; ?>" id="priority" type="text" required/>
                         <span style="display: none;"></span>
                     </span>
                 </div>
@@ -103,7 +145,6 @@ require(['jquery', 'jquery/ui'], function($) {
                 </select>
                 <div  style="display: none;"></div></span>
             </div><br>
-
                 <div class="control-offer-from row mb-20">
                     <span class="col-xs-5 text-label">Offer From<span class="required-field">*</span></span>
                     <!-- <input type="text" id="datepicker1" name="datepicker1" /> -->
@@ -119,25 +160,28 @@ require(['jquery', 'jquery/ui'], function($) {
                 </div>
                 <div class="control-offer-to row mb-20">
                     <span class="col-xs-5 text-label">Select Group<span class="required-field">*</span></span>
-                    <select class="selectpicker col-xs-5 input-fields" required multiple data-live-search="true">
-                        <?php foreach ($customer_group as $key => $value): ?>
-<?php if($edit!==NULL){?>
-<option
-<?php if($value['value']==$edit['0']['customer_group']){
-    echo 'selected';
-    }else{
-        echo '';
-         }
-    ?>
- value="<?php echo $value['value']; ?>"><?php echo $value['label']; ?></option>
-<?php }else{
-?>
-<option value="<?php echo $value['value']; ?>"><?php echo $value['label']; ?></option>
+                    <select class="selectpicker" multiple data-live-search="true" required>
+                  <?php foreach ($customer_group as $key => $value): ?>
+                       <?php if($arr_csg != ''){?>
+                       <option <?php foreach ($arr_csg as $key => $res) {
+                           # code...
+                           if($value['value']==$res){
+                               echo 'selected';
+                           }
+                           else{
+                               echo '';
+                               }
+                       } ?>
+                       
+                       value="<?php echo $value['value']; ?>"><?php echo $value['label']; ?></option>
+                       <?php }else{
+                       ?>
+                       <option value="<?php echo $value['value']; ?>"><?php echo $value['label']; ?></option>
 
-<?php
-} ?>
-                        <?php endforeach; ?>                  
-                    </select>
+                       <?php
+                       } ?>
+                       <?php endforeach; ?>               
+               </select>
                     <div class="select_group" style="display: none;"></div>
                 </div>
             </div>
@@ -152,46 +196,3 @@ require(['jquery', 'jquery/ui'], function($) {
         </div>
     </div>
 </form>
-
-<style>
-    /* .mb-20{margin-bottom: 20px;}
-    .input-fields{text-align: left}
-    .input-text{width: 100%;}
-    #priority{
-        width: 100%;
-        height: 40px;
-        border-color: #d3d3d3;
-    }
-    .text-label{
-        text-align: right;
-        line-height: 25px;
-        padding-right: 20px;
-    }
-    .flex{
-        display: -webkit-flex;
-        display: -moz-flex;
-        display: -ms-flex;
-        display: flex;
-        justify-content: space-around;
-        margin-bottom: 15px;
-    }
-    .add-fields{
-        width: 100px;
-        padding: 10px;
-        font-weight: 600;
-        color: #514943 !important;
-        border: 1px solid #adadad;
-        background-color: #e3e3e3;
-        text-transform: uppercase;
-        text-decoration: none !important;
-    }
-    input{
-        padding:10px 30px;
-        border: 1px solid #d3d3d3;
-    }
-    .required-field{
-        color: #e02b27;
-        margin-left: 5px;
-        font-size:1.2rem;
-    } */
-</style>

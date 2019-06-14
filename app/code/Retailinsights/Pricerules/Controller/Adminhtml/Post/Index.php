@@ -23,5 +23,4 @@ class Index extends \Magento\Backend\App\Action
 		return $resultPage;
 	}
 
-
 }

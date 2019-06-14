@@ -13,39 +13,6 @@
         </arguments>
     </virtualType>
 
-
-        <type name="Magento\Framework\View\Element\UiComponent\DataProvider\CollectionFactory">
-        <arguments>
-            <argument name="collections" xsi:type="array">
-                <item name="retailinsights_pricerules_postfixed_listing_data_source" 
-        xsi:type="string">Retailinsights\Pricerules\Model\ResourceModel\PostFixed\Grid\Collection</item>
-            </argument>
-        </arguments>
-    </type>
-
-       <virtualType name="Retailinsights\Pricerules\Model\ResourceModel\PostFixed\Grid\Collection"
-                     type="Magento\Framework\View\Element\UiComponent\DataProvider\SearchResult">
-        <arguments>
-            <argument name="mainTable" xsi:type="string">custom_promotion_byX_getFixed</argument>
-            <argument name="resourceModel" xsi:type="string">Retailinsights\Pricerules\Model\ResourceModel\PostFixed</argument>
-        </arguments>
-    </virtualType>
-
-   
-     <type name="Magento\Framework\View\Element\UiComponent\DataProvider\CollectionFactory">
-        <arguments>
-            <argument name="collections" xsi:type="array">
-                <item name="retailinsights_pricerules_postthree_listing_data_source" xsi:type="string">Retailinsights\Pricerules\Model\ResourceModel\Postthree\Grid\Collection</item>
-            </argument>
-        </arguments>
-    </type>
-    <virtualType name="Retailinsights\Pricerules\Model\ResourceModel\Postthree\Grid\Collection" type="Magento\Framework\View\Element\UiComponent\DataProvider\SearchResult">
-        <arguments>
-            <argument name="mainTable" xsi:type="string">custom_promotion_bytwo_getfixed</argument>
-            <argument name="resourceModel" xsi:type="string">Retailinsights\Pricerules\Model\ResourceModel\Postthree</argument>
-        </arguments>
-    </virtualType>
-
      <type name="Magento\Framework\View\Element\UiComponent\DataProvider\CollectionFactory">
         <arguments>
             <argument name="collections" xsi:type="array">
@@ -82,7 +49,26 @@
         </arguments>
     </virtualType>
 
-     
+
+ <type name="Magento\Framework\View\Element\UiComponent\DataProvider\CollectionFactory">
+        <arguments>
+            <argument name="collections" xsi:type="array">
+                <item name="retailinsights_pricerules_postxyzoff_listing_data_source" 
+        xsi:type="string">Retailinsights\Pricerules\Model\ResourceModel\PostXYZoff\Grid\Collection</item>
+            </argument>
+        </arguments>
+    </type>
+
+       <virtualType name="Retailinsights\Pricerules\Model\ResourceModel\PostXYZoff\Grid\Collection"
+    
+     type="Magento\Framework\View\Element\UiComponent\DataProvider\SearchResult">
+        <arguments>
+            <argument name="mainTable" xsi:type="string">custom_promotion_NXNYNZoff</argument>
+            <argument name="resourceModel" xsi:type="string">Retailinsights\Pricerules\Model\ResourceModel\PostXYZoff</argument>
+        </arguments>
+    </virtualType>
+
+
      <preference for="Retailinsights\Pricerules\Api\CatalogRuleRepositoryInterface"
                 type="Retailinsights\Pricerules\Model\CatalogRuleRepository" />
    
