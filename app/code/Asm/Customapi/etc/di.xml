@@ -46,4 +46,6 @@
     <preference for="Asm\Customapi\Api\SetdefaultaddressInterface" type="Asm\Customapi\Model\Setdefaultaddressview" />
     <!-- Get Wishlist Items -->
     <preference for="Asm\Customapi\Api\WishlistInterface" type="Asm\Customapi\Model\Wishlistitemsview" /> 
+    <!-- Add Wishlist Items -->
+    <preference for="Asm\Customapi\Api\AddwishlistInterface" type="Asm\Customapi\Model\Addwishlistview" /> 
 </config>
