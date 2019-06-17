@@ -1,6 +1,7 @@
 <?php
 namespace Asm\Timeslot\Model;
 use Asm\Timeslot\Api\TimeslotInterface;
+use Retailinsights\Promotion\Model\PromoTableFactory;
  
 class Timeslotview implements TimeslotInterface
 {
@@ -14,19 +15,22 @@ class Timeslotview implements TimeslotInterface
     protected $request;
     protected $orderRepository;
     protected $_sellerCollection;
+    protected $_promoFactory;
 
     public function __construct(
        \Magento\Framework\App\RequestInterface $request,
        \Magento\Sales\Api\OrderRepositoryInterface $orderRepository,
        \Lof\MarketPlace\Model\Seller $sellerCollection,
        \Lof\MarketPlace\Model\SellerProduct $sellerProductCollection,
-       \Asm\Timeslot\Model\TimeslotFactory $timeslotCollection
+       \Asm\Timeslot\Model\TimeslotFactory $timeslotCollection,
+       PromoTableFactory $promoFactory
     ) {
        $this->request = $request;
        $this->orderRepository = $orderRepository;
        $this->_sellerCollection = $sellerCollection;
        $this->_sellerProductCollection = $sellerProductCollection;
        $this->_timeslot = $timeslotCollection;
+       $this->_promoFactory = $promoFactory;
     }
 
     public function timeslot() {
@@ -66,6 +70,52 @@ class Timeslotview implements TimeslotInterface
        
         
         $items = $order->getAllItems();
+
+        // Queries to Store discount in Quote Tables  (Retail)
+        $quoteId = $order->getQuoteId();
+        $subTotal = $order->getBaseSubtotal();
+        $total_disc = 0;
+        $promotions = $this->_promoFactory->create()->getCollection()
+        ->addFieldToFilter('cart_id', $quoteId);
+        foreach($promotions->getData() as $promotion){   
+            $total_disc = $promotion['total_discount'];
+        }
+        $newSubTotal = ($subTotal - $total_disc);
+        $total_disc = '-'.$total_disc;
+  
+        $resource = $objectManager->get('\Magento\Framework\App\ResourceConnection');
+        $connection = $resource->getConnection();
+        $quoteAddressTableName = $resource->getTableName('quote_address');
+        $quoteTableName = $resource->getTableName('quote');
+        $salesOrderTableName = $resource->getTableName('sales_order');
+
+        $sqlQuoteAdd = "Update $quoteAddressTableName Set subtotal=".$subTotal.", base_subtotal=".$subTotal.", subtotal_with_discount =".$newSubTotal.", base_subtotal_with_discount=".$newSubTotal.",  grand_total=".$newSubTotal.",  base_grand_total=".$newSubTotal.",	discount_amount=".$total_disc.", base_discount_amount =".$total_disc." where quote_id =".$quoteId ;
+        $connection->query($sqlQuoteAdd);
+
+        $sqlQuote = "Update $quoteTableName Set subtotal=".$subTotal.", base_subtotal =".$subTotal.", subtotal_with_discount =".$newSubTotal.", base_subtotal_with_discount=".$newSubTotal.", grand_total=".$newSubTotal.", base_grand_total=".$newSubTotal." where entity_id = ".$quoteId ;
+        $connection->query($sqlQuote);
+
+        $sqlOrder = "Update $salesOrderTableName Set grand_total=".$newSubTotal.",total_due=".$newSubTotal.",base_total_due=".$newSubTotal.", base_grand_total=".$newSubTotal.",	discount_amount=".$total_disc.", base_discount_amount =".$total_disc." where quote_id =".$quoteId ;
+        $connection->query($sqlOrder);
+        
+        ///////////////////////////
+
+        ////Fetching Seller Wise Discount to calculate Cart Summary for sellers (Retail)
+        $sellerWiseDiscountArray=[];
+        $promotions = $this->_promoFactory->create()->getCollection()
+        ->addFieldToFilter('cart_id', $quoteId);
+        foreach($promotions->getData() as $promotion){   
+            $promotionDiscountArrays = json_decode($promotion['promo_discount']);
+               foreach($promotionDiscountArrays as $promotionDiscountArray) {
+                   foreach($promotionDiscountArray as $discountArray) {
+                        $discountArray = json_decode($discountArray);
+                        $sellerWiseDiscountArray[$discountArray->seller]=$discountArray->amount;
+                   }
+               }               
+        }
+        ////////////////////////
+
+
         foreach ($items as $item) {
           // print_r($item->getData());
           // print_r($item->getData());
@@ -139,19 +189,24 @@ class Timeslotview implements TimeslotInterface
             $selllers[$item->getSeller_id()]['cart_summary']['total_item_count'] += $item->getQty_ordered();
             $sellerProductCollection = $this->_sellerProductCollection->getCollection()->addFieldToFilter('product_id', array('in' => $item->getProduct_id()))->addFieldToFilter('seller_id', array('in' => $item->getSeller_id()));
                     // print_r($sellerProductCollection->getData());exit;
+            $sellerDiscount = (isset($sellerWiseDiscountArray[$item->getSeller_id()])) ? $sellerWiseDiscountArray[$item->getSeller_id()] : 0; // Single Seller Discount
             foreach($sellerProductCollection as $sellProducts){
                         // print_r($sellProducts->getPickup_from_store());exit;
                 if($item->getPrice_type() == 1)
                 {
                     // print_r("1111");exit;
                     //$subTotal = ($sellProducts->getPickup_from_store() * $item->getQty_ordered());
-		    $subTotal = ($item->getPrice() * $item->getQty_ordered());
+
+                    $subTotal = ($item->getPrice() * $item->getQty_ordered()) - $sellerDiscount ;
+
                 }
                 else
                 {
                     // print_r("2222");exit;
                     //$subTotal = ($sellProducts->getDoorstep_price() * $item->getQty_ordered());
-		    $subTotal = ($item->getPrice() * $item->getQty_ordered());
+
+                    $subTotal = ($item->getPrice() * $item->getQty_ordered()) - $sellerDiscount;
+
                 }
             }
             // print_r($subTotal);exit;

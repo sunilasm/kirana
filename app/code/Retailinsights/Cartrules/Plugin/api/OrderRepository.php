@@ -107,7 +107,7 @@ class OrderRepository
              $sku = $items->getSku();
                     
            $data = $items->getProductOptions();
-           $qty = $data['info_buyRequest']['qty'];
+           $qty = $items->getQtyOrdered(); //$data['info_buyRequest']['qty'];
 
            $rowTotal = $qty * $chosenprice;
 
@@ -138,6 +138,7 @@ class OrderRepository
             $dateAsString = $created->format('Y-m-d H:i:s'); //G for 24H
 
             $orderextensionAttributes = $orderextensionAttributes ? $orderextensionAttributes : $this->extensionFactory->create();
+
 
             $orderextensionAttributes->setExtnGrandTotal($newGrandTotal);
 
