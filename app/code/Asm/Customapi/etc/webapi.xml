@@ -130,4 +130,11 @@
             <resource ref="anonymous"/>
         </resources>
     </route>
+    <!-- Add Wishlist Item -->
+    <route url="/V1/wishlist/items/add" method="POST">
+        <service class="Asm\Customapi\Api\AddwishlistInterface" method="addwishlistitems"/>
+        <resources>
+            <resource ref="anonymous"/>
+        </resources>
+    </route>
 </routes>
