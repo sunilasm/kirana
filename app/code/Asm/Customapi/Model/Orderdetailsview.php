@@ -173,12 +173,16 @@ class Orderdetailsview implements OrderdetailsInterface
                     if($item->getPrice_type() == 1)
                     {
                         //$subTotal = ($sellerProductData[0]['pickup_from_store'] * $item->getQty());
+
                         $subTotal = ($item->getPrice() * $item->getQty()) - $sellerDiscount; //Subtracting Seller discount from total
+
                     }
                     else
                     {
                         //$subTotal = ($sellerProductData[0]['doorstep_price'] * $item->getQty());
+
                         $subTotal = ($item->getPrice() * $item->getQty()) - $sellerDiscount; //Subtracting Seller discount from total
+
                     }
                     
                     $selllers[$item->getSeller_id()]['cart_summary']['sub_total'] += $subTotal;
