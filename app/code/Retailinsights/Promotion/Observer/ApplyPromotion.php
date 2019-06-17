@@ -111,10 +111,10 @@ class ApplyPromotion implements ObserverInterface
                   foreach($ruleSku as $rule_sku =>$sku_qty){
                     if(($rule_sku == $sku) && ($sku_qty <= $quantity)){
                       $bnxafCount ++;
-                      $itemPriceTotal = $quoteItems[$key]->getPrice();
+                      $itemPriceTotal += $quoteItems[$key]->getPrice();
                     }
                   }
-                  $logger->info('skucount'.$bnxafCount.'      skulength'.$ruleSkuLen); 
+                //  $logger->info('skucount'.$bnxafCount.'      skulength'.$ruleSkuLen); 
 
                   if($ruleSkuLen == $bnxafCount){ 
                     $sku = $ruleSku;
