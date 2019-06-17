@@ -10,5 +10,7 @@ interface NewaddressInterface
      * @param string $name Users name.
      * @return string Greeting message with users name.
      */
+    
+    // Add new address
     public function newcustomeraddress();
 }

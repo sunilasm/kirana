@@ -10,30 +10,31 @@ class CatalogRuleRepository implements CatalogRuleRepositoryInterface
     protected $catalogRule;
     protected $rule;
     protected $postFactory;
-    protected $postFixedFactory;
+
     protected $postWorthFactory;
-    protected $postthreeFactory; 
+
     private $PostXYZFactory;
+    private $PostXYZoffFactory;
 
     public function __construct(
         \Retailinsights\Pricerules\Model\ResourceModel\Post\CollectionFactory $catalogRuleId,
         \Magento\CatalogRule\Model\Rule $catalogRule,
         \Magento\CatalogRule\Model\RuleFactory $rule,
         \Retailinsights\Pricerules\Model\PostFactory $postFactory,
-        \Retailinsights\Pricerules\Model\PostFixedFactory $postFixedFactory,
+
         \Retailinsights\Pricerules\Model\PostWorthFactory $postWorthFactory,
-        \Retailinsights\Pricerules\Model\PostthreeFactory $postthreeFactory,
-        \Retailinsights\Pricerules\Model\PostXYZFactory $PostXYZFactory       
+        \Retailinsights\Pricerules\Model\PostXYZFactory $PostXYZFactory,
+        \Retailinsights\Pricerules\Model\PostXYZoffFactory $PostXYZoffFactory        
     )
     { 
         $this->catalogRuleId = $catalogRuleId;
         $this->catalogRule = $catalogRule;
         $this->rule = $rule;
         $this->postFactory = $postFactory->create();
-        $this->postFixedFactory = $postFixedFactory->create();
+
         $this->postWorthFactory = $postWorthFactory->create();
-        $this->postthreeFactory = $postthreeFactory->create();
         $this->PostXYZFactory = $PostXYZFactory->create();
+        $this->PostXYZoffFactory = $PostXYZoffFactory->create();
     }
     public function getRuleList()
     {      
@@ -72,31 +73,6 @@ class CatalogRuleRepository implements CatalogRuleRepositoryInterface
         return $result;        
     }   
     
-    public function getBuyXgetFixed($ruleId) {
-        $result=array();
-        $postFixedData = $this->postFixedFactory->load($ruleId);
-
-        $fixeddata['post_id']=$postFixedData->getPostId();
-        $fixeddata['buy_product']=$postFixedData->getBuyProduct();
-         $fixeddata['quantity']=$postFixedData->getQuantity();
-
-        $fixeddata['fixed_price']=$postFixedData->getFixedPrice();
-         $fixeddata['name']=$postFixedData->getName();
-         $fixeddata['store_id']=$postFixedData->getStoreId();
-
-         $fixeddata['priority']=$postFixedData->getPriority();
-
-        $fixeddata['offer_from']=$postFixedData->getOfferFrom();
-        $fixeddata['offer_to']=$postFixedData->getOfferTo();
-        $fixeddata['customer_group']=$postFixedData->getCustomerGroup();
-        $fixeddata['status']=$postFixedData->getStatus();
-        $fixeddata['featured_image']=$postFixedData->getFeaturedImage();
-        $fixeddata['created_at']=$postFixedData->getCreatedAt();
-        $fixeddata['updated_at']=$postFixedData->getUpdatedAt();
-        array_push($result, $fixeddata);
-        return $result;
-    }    
-    
     public function getBuyXXXgetY($ruleId) {
         $result=array();
 
@@ -122,31 +98,6 @@ class CatalogRuleRepository implements CatalogRuleRepositoryInterface
         array_push($result, $worthdata);
         return $result;    
     } 
-
-    public function getBuythree($ruleId) {
-        $result=array();
-        $postthreeFixedData = $this->postthreeFactory->load($ruleId);
-
-        $fixedthreedata['post_id']=$postthreeFixedData->getPostId();
-        $fixedthreedata['buy_product_one']=$postthreeFixedData->getBuyProductOne();
-        $fixedthreedata['buy_product_two']=$postthreeFixedData->getBuyProductTwo();
-         
-        $fixedthreedata['fixed_price']=$postthreeFixedData->getFixedPrice();
-         $fixedthreedata['name']=$postthreeFixedData->getName();
-         $fixedthreedata['store_id']=$postthreeFixedData->getStoreId();
-
-         $fixedthreedata['priority']=$postthreeFixedData->getPriority();
-
-        $fixedthreedata['offer_from']=$postthreeFixedData->getOfferFrom();
-        $fixedthreedata['offer_to']=$postthreeFixedData->getOfferTo();
-        $fixedthreedata['customer_group']=$postthreeFixedData->getCustomerGroup();
-        $fixedthreedata['status']=$postthreeFixedData->getStatus();
-        $fixedthreedata['featured_image']=$postthreeFixedData->getFeaturedImage();
-        $fixedthreedata['created_at']=$postthreeFixedData->getCreatedAt();
-        $fixedthreedata['updated_at']=$postthreeFixedData->getUpdatedAt();
-        array_push($result, $fixedthreedata);
-        return $result;
-    }    
         public function getBuyXYZ($ruleId) {
         $result=array();
         $postXYZData = $this->PostXYZFactory->load($ruleId);
@@ -165,10 +116,32 @@ class CatalogRuleRepository implements CatalogRuleRepositoryInterface
         $xyzdata['status']=$postXYZData->getStatus();
     
         array_push($result, $xyzdata);
-     
+
     	return $result;    
     }    
            
+    public function getBuyXYZoff($ruleId) {
+        $result=array();
+        $postXYZoffData = $this->PostXYZoffFactory->load($ruleId);
+        $xyzoffdata['post_id']=$postXYZoffData->getPostId();
+    //JSON within JSON
+        $data = json_decode($postXYZoffData->getRuleCondition());
+        $xyzoffdata['rule_condition']= $data;
+        $xyzoffdata['name']=$postXYZoffData->getName();
+        $xyzoffdata['store_id']=$postXYZoffData->getStoreId();
+        $xyzoffdata['fixed_price']=$postXYZoffData->getFixedPrice();
+      
+        $xyzoffdata['priority']=$postXYZoffData->getPriority();
+        $xyzoffdata['offer_from']=$postXYZoffData->getOfferFrom();
+        $xyzoffdata['offer_to']=$postXYZoffData->getOfferTo();
+        $xyzoffdata['customer_group']=$postXYZoffData->getCustomerGroup();
+        $xyzoffdata['status']=$postXYZoffData->getStatus();
+    
+        array_push($result, $xyzoffdata);
+       
+    	return $result;    
+    }    
+
     public function deleteById($ruleId){
         return $this->delete($this->getById($ruleId));
     }

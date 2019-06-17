@@ -1,4 +1,5 @@
 <?php
+
 namespace Retailinsights\Pricerules\Controller\Index;
 
 class Test extends \Magento\Framework\App\Action\Action
@@ -19,4 +20,3 @@ class Test extends \Magento\Framework\App\Action\Action
 		exit;
 	}
 }
-

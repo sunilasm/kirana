@@ -1,4 +1,5 @@
 <?php
+
 namespace Retailinsights\Pricerules\Controller\BuyxGetWorth;
 
 use Magento\Framework\App\Action\Context;
@@ -14,7 +15,6 @@ class CreateBuyxGetWorth extends \Magento\Framework\App\Action\Action
     protected $_qoutesFactory;
     protected $_jsonFactory;
     protected $_quotesSellerFactory;
-
     protected $_productCollection;
 
     public function __construct(
@@ -29,17 +29,9 @@ class CreateBuyxGetWorth extends \Magento\Framework\App\Action\Action
         return parent::__construct($context);
     }
  
-    // Function for basic field validation (present and neither empty nor only white space
     public function IsNullOrEmptyString($product_search_key){
         return (!isset($product_search_key) || trim($product_search_key)==='');
     }
-
-    // public function getUom($product)
-    // {
-    //     # code...
-    //     $uom = $product->getResource()->getAttributeRawValue($product->getId(),'mandee_selling_type',1);
-    //     return $uom;
-    // }
 
     /**
      *
@@ -47,95 +39,41 @@ class CreateBuyxGetWorth extends \Magento\Framework\App\Action\Action
      */
     public function execute()
     {
-       
-       
-        // $productcollection = $this->_productCollection->create()
-        // ->addAttributeToSelect(['name'])
-        // ->addAttributeToFilter('name', array('like' => '%item%'));
-
-        // $needle = 'item';
-
-        // $productcollection = $this->_productCollection->addAttributeToFilter('name', array(
-        //     array('like' => '% '.$needle.' %'), //spaces on each side
-        //     array('like' => '% '.$needle), //space before and ends with $needle
-        //     array('like' => $needle.' %') // starts with needle and space after
-        // ));
-
-        // print_r($productcollection->getData());
-
-        // $products_array = [];       
-
-        // foreach ($productcollection as $productInfo) {
-           
-        //     $data=[];
-        //     $data['id'] = $productInfo->getId();
-        //     $data['sku'] = $productInfo->getSku();
-        //     $data['name'] = $productInfo->getName();
-
-        //     array_push($products_array, $data);
-
-        // }
-        // print('<pre>');
-        // print_r($products_array);
-        // print('</pre>');
-
-
-        // foreach ($products_array as $product) {
-        //     # code...
-        //     print('<br>');
-        //     print('id =>'.$product['id']);
-        //     print('<br>');
-        // }
-
         if ($this->getRequest()->isAjax())
         {    
-
             $product_search_key = $this->getRequest()->getParam('product_search_key');     
 
             if($this->IsNullOrEmptyString($product_search_key))
             {
-                // print('true');
-
                 $response = $this->_jsonFactory->create()->setData([
                      'success'  => false,
                      'count'   => 0,
-                     'products' => []
-                    
+                     'products' => []       
                 ]);
             }
             else
             {
-                // print('false');
-
                 $productcollection = $this->_productCollection->create()
-                                    ->addAttributeToSelect(['name'])
-                                    ->addAttributeToFilter('name', array('like' => '%'.$product_search_key.'%'));
+                    ->addAttributeToSelect(['name'])
+                    ->addAttributeToFilter('name', array('like' => '%'.$product_search_key.'%'));
 
                 $products_array = [];       
 
-                foreach ($productcollection as $productInfo) {
-                   
+                foreach ($productcollection as $productInfo) {   
                     $data=[];
                     $data['id'] = $productInfo->getId();
                     $data['sku'] = $productInfo->getSku();
                     $data['name'] = $productInfo->getName();
-                    // $data['uom'] = $this->getUom($productInfo);
-
+                    
                     array_push($products_array, $data);
-                   
                 }
-
 
                 $response = $this->_jsonFactory->create()->setData([
                      'success'  => true,
                      'count'   => count($products_array),
-                     'products' => $products_array
-                    
+                     'products' => $products_array                    
                 ]);
-
-
             }
-
             return $response;
         }
     }
