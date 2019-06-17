@@ -1,4 +1,5 @@
 <?php
+
 namespace Retailinsights\Promotion\Model\ResourceModel\PostTable;
 
 class Collection extends \Magento\Framework\Model\ResourceModel\Db\Collection\AbstractCollection
@@ -16,5 +17,4 @@ class Collection extends \Magento\Framework\Model\ResourceModel\Db\Collection\Ab
 	{
 		$this->_init('Retailinsights\Promotion\Model\PostTable', 'Retailinsights\Promotion\Model\ResourceModel\PostTable');
 	}
-
 }

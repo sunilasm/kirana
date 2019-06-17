@@ -1,15 +1,14 @@
 <?php
+
 namespace Retailinsights\Pricerules\Observer;
 
 use Magento\Framework\Event\ObserverInterface;
 use Magento\Framework\App\RequestInterface;
 
 class CustomObserver implements ObserverInterface
-{
-    
+{    
     protected $_product;
     protected $_cart;
-
     protected $formKey;
 
     public function __construct(
@@ -23,21 +22,13 @@ class CustomObserver implements ObserverInterface
     }
     public function execute(\Magento\Framework\Event\Observer $observer)
     {
-        $writer = new \Zend\Log\Writer\Stream(BP . '/var/log/testPvn.log'); 
-        $logger = new \Zend\Log\Logger(); $logger->addWriter($writer); 
-        $logger->info('*****');
-
-  
-        /*$product = $observer->getEvent()->getData('product');*/
         $items = $this->_cart->getQuote()->getAllVisibleItems();
         $isFreeItem = 0;
         $isXItem = 0;
         foreach($items as $item) {
-            // X is product id
             if($item->getProductId()=="2"){
                 $isXItem = 1;
             }
-            // Y is free product id
             if($item->getProductId()=="2"){
                 $isFreeItem = 1;
             }
@@ -56,7 +47,5 @@ class CustomObserver implements ObserverInterface
         if(!$isXItem) {
             /* Remove logic here */
         }
-       
-
     }
 }

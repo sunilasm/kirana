@@ -21,14 +21,20 @@ class PriceFix
      * @param \Magento\Quote\Api\CartRepositoryInterface $quoteRepository
      * @param   $quote
      */
+     /**
+    * @var EventManager
+    */
+    private $eventManager;
      
     public function __construct(\Magento\Quote\Api\CartRepositoryInterface $quoteRepository,
     \Magento\Quote\Api\Data\CartItemInterface $CartItem,
+    \Magento\Framework\Event\Manager $eventManager,
     SellerProduct $sellerProduct)
     {
         $this->quoteRepository = $quoteRepository;
         $this->cartItem = $CartItem;
         $this->sellerProduct = $sellerProduct;
+        $this->eventManager = $eventManager;
     }
     
     public function afterSave(\Magento\Quote\Model\Quote\Item\Repository $subject, \Magento\Quote\Api\Data\CartItemInterface $cartItem)
@@ -47,7 +53,6 @@ class PriceFix
         foreach($quoteItems as $key => $value) {
             if($sku == $quoteItems[$key]->getSku()) {
             
-$logger->info($quoteItems[$key]->getPrice()."-----".$quoteItems[$key]->getQty()."-----".$quoteItems[$key]->getSku()."--".$quoteItems[$key]->getSellerId()."-----".$quoteItems[$key]->getProductId()); 
 
             if($quoteItems[$key]->getPriceType() == 0){
                 $price = $this->getStorePrice($quoteItems[$key]->getSellerId(), $quoteItems[$key]->getProductId(), "0");
@@ -57,12 +62,12 @@ $logger->info($quoteItems[$key]->getPrice()."-----".$quoteItems[$key]->getQty().
         $quoteItems[$key]->setCustomPrice($price);
         $quoteItems[$key]->setOriginalCustomPrice($price);
         $quoteItems[$key]->save();
-$logger->info($quoteItems[$key]->getPrice()."-----".$quoteItems[$key]->getQty()."-----".$quoteItems[$key]->getSellerId()."-----".$quoteItems[$key]->getProductId()); 
         }
         }
         
         $this->quoteRepository->save($quote->collectTotals());
-        
+        $this->eventManager->dispatch('promotion_after_add_cart', ['quoteid' => $cartId ]); 
+
          return $quote->getLastAddedItem();
     }
     

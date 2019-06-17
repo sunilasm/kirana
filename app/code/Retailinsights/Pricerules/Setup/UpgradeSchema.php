@@ -1,4 +1,5 @@
 <?php
+
 namespace Retailinsights\Pricerules\Setup;
 
 use Magento\Framework\Setup\UpgradeSchemaInterface;
@@ -13,7 +14,6 @@ class UpgradeSchema implements UpgradeSchemaInterface
 
 		$installer->startSetup();
 		
-		//if(version_compare($context->getVersion(), '1.1.1') < 0) {
 		if (version_compare($context->getVersion(), '1.0.1') < 0)  {
 			if (!$installer->tableExists('custom_promotion_byX_getY')) {
 				$table = $installer->getConnection()->newTable(
@@ -159,14 +159,10 @@ class UpgradeSchema implements UpgradeSchemaInterface
 			}
 		}
 
-
 		//**New table  */
-
 		if (version_compare($context->getVersion(), '1.0.1') < 0) 
 		{
-	
 			$tableName = $installer->getTable('custom_promotion_byX_getFixed');
-	
 			if ($installer->getConnection()->isTableExists($tableName) != true) {
 			  $table = $installer->getConnection()
 				  ->newTable($tableName)
@@ -300,13 +296,10 @@ class UpgradeSchema implements UpgradeSchemaInterface
 			}
 	
 		}
-
-		
+	
 		if (version_compare($context->getVersion(), '2.0.3') < 0) 
-		{
-	
+		{	
 			$tableName = $installer->getTable('custom_promotion_bytwo_getfixed');
-	
 			if ($installer->getConnection()->isTableExists($tableName) != true) {
 			  $table = $installer->getConnection()
 				  ->newTable($tableName)
@@ -399,7 +392,6 @@ class UpgradeSchema implements UpgradeSchemaInterface
 					],
 					'To Date'
 				)
-				
 				->addColumn(
 					'status',
 					Table::TYPE_INTEGER,
@@ -439,10 +431,7 @@ class UpgradeSchema implements UpgradeSchemaInterface
 					\Magento\Framework\DB\Adapter\AdapterInterface::INDEX_TYPE_FULLTEXT
 				);
 			}
-	
 		}
-
-		//if(version_compare($context->getVersion(), '1.1.1') < 0) {
 			if (version_compare($context->getVersion(), '1.0.1') < 0)  {
 				if (!$installer->tableExists('custom_promotion_byXXX_getY')) {
 					$table = $installer->getConnection()->newTable(
@@ -579,8 +568,8 @@ class UpgradeSchema implements UpgradeSchemaInterface
 					);
 				}
 			}
-//if(version_compare($context->getVersion(), '1.1.1') < 0) {
-	if (version_compare($context->getVersion(), '1.0.6') < 0)  {
+
+		if (version_compare($context->getVersion(), '1.0.6') < 0)  {
 		if (!$installer->tableExists('custom_promotion_NXNYNZ')) {
 			$table = $installer->getConnection()->newTable(
 				$installer->getTable('custom_promotion_NXNYNZ')
@@ -716,9 +705,125 @@ class UpgradeSchema implements UpgradeSchemaInterface
 			);
 		}
 	}
+	if (version_compare($context->getVersion(), '2.0.4') < 0)  {
+		if (!$installer->tableExists('custom_promotion_NXNYNZoff')) {
+			$table = $installer->getConnection()->newTable(
+				$installer->getTable('custom_promotion_NXNYNZoff')
+			)
+				->addColumn(
+					'post_id',
+					Table::TYPE_INTEGER,
+					null,
+					[
+						'identity' => true,
+						'nullable' => false,
+						'primary'  => true,
+						'unsigned' => true,
+					],
+					'Post ID'
+				)
+				->addColumn(
+					'rule_condition',
+					Table::TYPE_TEXT,
+					255,
+					['nullable => false'],
+					'Rule Condition'
+				)
+				->addColumn(
+					'fixed_price',
+					Table::TYPE_DECIMAL,
+					[12, 4],
+					['nullable' => false, 'default' => '0.00'],
+					'fixed_price'
+				)
+				->addColumn(
+					'name',
+					Table::TYPE_TEXT,
+					255,
+					[
+						'nullable' => false,
+					],
+					'name'
+				)
+				->addColumn(
+					'priority',
+					Table::TYPE_INTEGER,
+					null,
+					['nullable => false'],
+					'priority'
+				)
+				->addColumn(
+					'offer_from',
+					Table::TYPE_TEXT,
+					255,
+					[
+						'nullable' => false,
+						'default' => ''	
+					],
+					'From Date'
+				)
+				->addColumn(
+					'offer_to',
+					Table::TYPE_TEXT,
+					null,
+					[
+						'nullable' => false,
+						'default' => ''	
+					],
+					'To Date'
+				)
+				->addColumn(
+					'customer_group',
+					Table::TYPE_TEXT,
+					255,
+					[
+						'nullable' => false,
+						'default' => ''	
+					],
+					'To Date'
+				)
+				
+				->addColumn(
+					'status',
+					Table::TYPE_INTEGER,
+					1,
+					[],
+					'Post Status'
+				)
+				->addColumn(
+					'featured_image',
+					Table::TYPE_TEXT,
+					255,
+					[],
+					'Post Featured Image'
+				)
+				->addColumn(
+					'created_at',
+					Table::TYPE_TIMESTAMP,
+					null,
+					['nullable' => false, 'default' => Table::TIMESTAMP_INIT],
+					'Created At'
+				)->addColumn(
+					'updated_at',
+					Table::TYPE_TIMESTAMP,
+					null,
+					['nullable' => false, 'default' => Table::TIMESTAMP_INIT_UPDATE],
+					'Updated At')
+				->setComment('Post Table');
+			$installer->getConnection()->createTable($table);
 
-
-		
-		$installer->endSetup();
+			$installer->getConnection()->addIndex(
+				$installer->getTable('custom_promotion_NXNYNZoff'),
+				$setup->getIdxName(
+					$installer->getTable('custom_promotion_NXNYNZoff'),
+					['rule_condition','fixed_price','name','priority','offer_from','offer_to','status','featured_image'],
+					\Magento\Framework\DB\Adapter\AdapterInterface::INDEX_TYPE_FULLTEXT
+				),
+				['rule_condition','fixed_price','name','priority','offer_from','offer_to','status','featured_image'],
+				\Magento\Framework\DB\Adapter\AdapterInterface::INDEX_TYPE_FULLTEXT
+			);
+		}
+	}
+	$installer->endSetup();
 	}
 }

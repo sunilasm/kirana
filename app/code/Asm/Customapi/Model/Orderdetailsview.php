@@ -1,6 +1,7 @@
 <?php
 namespace Asm\Customapi\Model;
 use Asm\Customapi\Api\OrderdetailsInterface;
+use Retailinsights\Promotion\Model\PromoTableFactory;
  
 class Orderdetailsview implements OrderdetailsInterface
 {
@@ -14,19 +15,22 @@ class Orderdetailsview implements OrderdetailsInterface
     protected $request;
     protected $_sellerCollection;
     protected $_productCollectionFactory;
+    protected $_promoFactory;
 
     public function __construct(
        \Magento\Framework\App\RequestInterface $request,
        \Magento\Quote\Model\QuoteFactory $quoteFactory,
        \Lof\MarketPlace\Model\Seller $sellerCollection,
        \Lof\MarketPlace\Model\SellerProduct $sellerProductCollection,
-       \Magento\Catalog\Model\ResourceModel\Product\CollectionFactory $productCollectionFactory
+       \Magento\Catalog\Model\ResourceModel\Product\CollectionFactory $productCollectionFactory,
+       PromoTableFactory $promoFactory
     ) {
        $this->request = $request;
        $this->quoteFactory = $quoteFactory;
        $this->_sellerCollection = $sellerCollection;
        $this->_sellerProductCollection = $sellerProductCollection;
        $this->_productCollectionFactory = $productCollectionFactory;
+       $this->_promoFactory = $promoFactory;
     }
 
     public function orderdetails() {
@@ -35,8 +39,25 @@ class Orderdetailsview implements OrderdetailsInterface
         $request = $objectManager->get('\Magento\Framework\Webapi\Rest\Request');
         $post = $request->getBodyParams();
         if($post['quote_id']){
+            $quoteId= $post['quote_id'];
             $quote = $this->quoteFactory->create()->load($post['quote_id']);
             $items = $quote->getAllItems();
+
+            ////Fetching Seller Wise Discount to calculate Cart Summary for sellers (Retail)
+            $sellerWiseDiscountArray=[];
+            $promotions = $this->_promoFactory->create()->getCollection()
+            ->addFieldToFilter('cart_id', $quoteId);
+            foreach($promotions->getData() as $promotion){   
+                $promotionDiscountArrays = json_decode($promotion['promo_discount']);
+                   foreach($promotionDiscountArrays as $promotionDiscountArray) {
+                       foreach($promotionDiscountArray as $discountArray) {
+                            $discountArray = json_decode($discountArray);
+                            $sellerWiseDiscountArray[$discountArray->seller]=$discountArray->amount;
+                       }
+                   }               
+            }
+            ////////////////////////
+
             $sellerData = array();
             $deliverdeatils = array();
             $pickupdeatils = array();
@@ -148,15 +169,20 @@ class Orderdetailsview implements OrderdetailsInterface
                     );
                     $subTotal = 0;
                     $selllers[$item->getSeller_id()]['cart_summary']['total_item_count'] += $item->getQty();
+                    $sellerDiscount = (isset($sellerWiseDiscountArray[$item->getSeller_id()])) ? $sellerWiseDiscountArray[$item->getSeller_id()] : 0; // Single Seller Discount
                     if($item->getPrice_type() == 1)
                     {
                         //$subTotal = ($sellerProductData[0]['pickup_from_store'] * $item->getQty());
-			 $subTotal = ($item->getPrice() * $item->getQty());
+
+                        $subTotal = ($item->getPrice() * $item->getQty()) - $sellerDiscount; //Subtracting Seller discount from total
+
                     }
                     else
                     {
                         //$subTotal = ($sellerProductData[0]['doorstep_price'] * $item->getQty());
-			$subTotal = ($item->getPrice() * $item->getQty());
+
+                        $subTotal = ($item->getPrice() * $item->getQty()) - $sellerDiscount; //Subtracting Seller discount from total
+
                     }
                     
                     $selllers[$item->getSeller_id()]['cart_summary']['sub_total'] += $subTotal;
