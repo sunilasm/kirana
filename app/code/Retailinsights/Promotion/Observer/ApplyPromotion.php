@@ -75,7 +75,9 @@ class ApplyPromotion implements ObserverInterface
         $promoFinalEntry['item'] = array();
         $checkPromo = array();
         $total_disc = 0;
-
+        $bnxafCount = 0;
+        $bnxgoCount = 0;
+        $itemPriceTotal = 0;
         foreach($quoteItems as $key => $value) {
           $sellerId = $quoteItems[$key]->getSellerId();
           $sku = $quoteItems[$key]->getSku();
@@ -84,21 +86,73 @@ class ApplyPromotion implements ObserverInterface
             foreach($mappedRulesArray[$sellerId] as $k => $promo) {
               $description = json_decode($promo['description'],true);
               $ruleCode = $description['code'];
+              $logger->info($ruleCode);
               if($ruleCode == "BXGOFF"){  
+                $logger->info('in bxgoff'); 
+
                 $checkPromo = $this->checkPromoBxgoff($promo['p_id'], $sellerId, $sku, $quantity, 0, $quoteItems[$key]->getPrice());
                 array_push($promoFinalEntry , $checkPromo);
               }
               if($ruleCode == "BXGPOFF"){
+                $logger->info('in bxgoff'); 
+
                 $checkPromo = $this->checkPromoBxgoff($promo['p_id'], $sellerId, $sku, $quantity, 1, $quoteItems[$key]->getPrice());
                 array_push($promoFinalEntry , $checkPromo);
               }
-              // if($ruleCode == "BNXAF"){
-              //   $actionArr = json_decode($promo['actions_serialized'], true);
-              //   foreach($actionArr['buy_product'] as $k => $v){
-              //     $logger->info($v['sku']); 
-              //   }
-              //   //$checkPromo = $this->checkPromoBnxaf($promo['p_id'], $sellerId, $sku, $quantity);
-              // }
+              if($ruleCode == "BNXAF"){
+                  $actionArr = json_decode($promo['actions_serialized'], true);
+                  $ruleSku = array();
+                  
+                  foreach($actionArr['buy_product'] as $k => $v){
+                    $ruleSku[$v['sku']] = $v['qty'];
+                  }
+                  $ruleSkuLen = sizeof($ruleSku);
+                  $logger->info($ruleSku);
+                  foreach($ruleSku as $rule_sku =>$sku_qty){
+                    if(($rule_sku == $sku) && ($sku_qty <= $quantity)){
+                      $bnxafCount ++;
+                      $itemPriceTotal = $quoteItems[$key]->getPrice();
+                    }
+                  }
+                  $logger->info('skucount'.$bnxafCount.'      skulength'.$ruleSkuLen); 
+
+                  if($ruleSkuLen == $bnxafCount){ 
+                    $sku = $ruleSku;
+                    $fixedPrice = $promo['discount_amount'];
+                    $discountBnxaf = ($itemPriceTotal - $fixedPrice);
+                    $checkPromo = $this->checkPromoBnxafBnxgo($discountBnxaf,$sellerId);
+                    array_push($promoFinalEntry , $checkPromo);
+                  }
+                  // $logger->info('efsf');
+                  // $logger->info($promoFinalEntry);
+              }
+              if($ruleCode == "BNXG1O"){ 
+                //$logger->info('in BNXG1O');
+                $actionArr = json_decode($promo['actions_serialized'], true);
+                $ruleSku = array();
+                
+                foreach($actionArr['buy_product'] as $k => $v){
+                  $ruleSku[$v['sku']] = $v['qty'];
+                }
+                $ruleSkuLen = sizeof($ruleSku);
+                foreach($ruleSku as $rule_sku =>$sku_qty){
+                  if(($rule_sku == $sku) && ($sku_qty <= $quantity)){
+                    $bnxgoCount ++;
+                  }
+                }
+                $discount_bnxgo = 0;
+                if($ruleSkuLen == $bnxgoCount){
+                  foreach($actionArr['discount_product'] as $k=>$v){
+                    if($v['sku'] == $sku){
+                      $discount_bnxgo = ($quoteItems[$key]->getPrice()*$v['discount_product'])/100;
+                    }
+                    // $logger->info($k);
+                    // $logger->info($v);
+                  } 
+                  $checkPromo = $this->checkPromoBnxafBnxgo($discount_bnxgo,$sellerId);
+                  array_push($promoFinalEntry , $checkPromo);
+                }
+              }
             }
             
           }
@@ -123,7 +177,8 @@ class ApplyPromotion implements ObserverInterface
             $total_disc += $amount['amount'];
           }
         }  
-        
+        // $logger->info('>>>>>>>>>>>>>>=======<<<<<<<<<<<<<<');
+        // $logger->info($checkPromo);
         if($total_disc  > 0){
           $this->_promoFactory->create()->setData(
             array(
@@ -238,8 +293,21 @@ class ApplyPromotion implements ObserverInterface
       return $promoEntry;
   }
  
-  public function checkPromoBnxaf($customPromoId, $sellerId, $sku, $quantity){
-           
+  public function checkPromoBnxafBnxgo($discountpromo,$sellerId){ 
+    $promoEntry = array();
+    $item = $discount = array();
+    if($discountpromo > 0){
+      $discount['amount'] = $discountpromo;
+      $discount['seller'] = $sellerId;
+      $item['id'] = '';
+      $item['qty'] = '';
+      $promoEntry['discount'] = [];
+      $promoEntry['item'] = [];
+      array_push($promoEntry['discount'],json_encode($discount));
+      array_push($promoEntry['item'],json_encode($item));
+     
+      return $promoEntry;
+    }
 
   }
    
