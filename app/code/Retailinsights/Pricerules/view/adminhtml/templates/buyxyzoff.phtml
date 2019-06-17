@@ -1,0 +1,191 @@
+<?php
+
+$edit = $this->getXyzoff();
+if($edit['0']['post_id']){
+    $val=-1;
+}else{
+    $val=0;
+}
+
+$d=0;
+
+if($edit['0']['customer_group']!= '')
+               {
+               $csg = $edit['0']['customer_group'];
+               $arr_csg = explode(",",$csg);
+            }else{
+                $arr_csg = '';
+            }
+?>
+<script>
+
+require(['jquery', 'jquery/ui'], function($) {
+    $(document).ready(function(){
+        i=0;
+        $('#add').click(function(){
+            i++;
+            $('#dynamic-field').append('<div class="flex"><input type="text" value="" required id="buy_product'+i+'"  placeholder="Enter Product Name"><input type="number" value="" required id="buy_quantity'+i+'"  placeholder="Enter Quantity"><button  name="remove" class="add-fields btn_remove" id="'+i+'">Remove</button></div>');
+            $("#genral").val(parseInt($("#genral").val())+1);
+        });
+        $(document).on('click','.btn_remove', function(){
+            var button_id = $(this).attr("id");
+            $(this).parent('.flex').remove();
+            i--;
+           
+        });
+        $(document).on('click','.btn_edit_remove', function(){
+            var button_id = $(this).attr("id");
+            $(this).parent('.flex').remove();
+            $("#genral").val(parseInt($("#genral").val())-1);
+     
+         
+           
+        });
+    });
+});
+
+</script>
+    <p><?php    $customer_group = $block->getCustomerGroups(); 
+                //print_r($customer_group);?> 
+    </p>
+
+<form id="buy_and_get_product" align="center">
+
+    <fieldset class="fieldset">
+        <legend class="legend"><span><?php /* @escapeNotVerified */ //echo __('Test Form') ?></span></legend><br>
+        <div class="field required clearfix">
+
+            <input type='hidden' id="post_id" name="post_id" value="<?php echo  $edit['0']['post_id']; ?>"/>
+
+
+        <div class="control mb-20">
+                <span type="" class="buy_prdt text-label"> Rule Name
+                    <span style="margin-left: 5px;color: #e02b27;font-size:1.2rem">*</span>
+                </span>
+                <span>
+                <input type="text" id="name"  value="<?php echo  $edit['0']['name']; ?>" required name="name" class="input-text" placeholder="Rule name">
+               
+    
+                <div class="buy-btn-create" style="display: none;"></div></span>
+            </div><br>    
+    
+         <div class="buy-btn-create col-xs-6" id="dynamic-field">
+         <?php if(isset($edit['0']['rule_condition'])){ ?>
+            <?php $i=0 ?>
+            <?php //print_r($edit['0']['rule_condition']);die; ?> 
+                <?php foreach($edit['0']['rule_condition'] as $v1){
+                    foreach($v1 as $k2 =>$value) {
+                 
+                ?>
+                        
+                    <div class="flex">
+               
+                    <input type="text"  id="buy_product<?php echo $i; ?>" value="<?php echo $value->sku ?>" required placeholder="Enter Product Name">
+                    <input type="number" id="buy_quantity<?php echo $i; ?>" value="<?php echo $value->qty ?>" required placeholder="Enter Quantity">
+                   
+                    <a class="add-fields" style="display: <?php if($i!=0){ echo 'none'; } ?>" href="javascript:void(0);" name="add" id="add">ADD</a>
+                    
+                    <button  name="remove" style="display:<?php if($i!=0){}else{ echo 'none'; } ?>" class="add-fields btn_edit_remove" id="<?php echo $i; ?>">Remove</button>
+                </div>
+                <?php $val++; ?>
+                <?php  $i++; }}?>    
+
+        <?php }else{?>
+
+            <div class="flex">
+                    <input type="text" id="buy_product0"  required placeholder="Enter Product Name">
+                    <input type="number" id="buy_quantity0" required placeholder="Enter Quantity">
+                    <a class="add-fields" href="javascript:void(0);" name="add" id="add">ADD</a>
+                </div>
+    
+    
+             <?php }?>
+             <input type='hidden' id="genral" name="genral" value="<?php echo $val ?>"/>
+            </div>
+            
+            <div class="col-xs-6">
+                <div class="control row mb-20">
+                    <span type="" class="buy_prdt col-xs-5 text-label">Fixed Price<span class="required-field">*</span></span>
+                    <span class="fixed_price col-xs-5 input-fields"><input value="<?php echo  $edit['0']['fixed_price']; ?>" type="decimal" required id="fixed_price" name="number" class="input-text" placeholder="Enter Price">
+                    <div  style="display: none;"></div></span>
+                </div>
+                </div>
+                   <div class="control row mb-20">
+                    <span type="" class="buy_prdt col-xs-5 text-label">Store Id <span class="required-field">*</span></span>
+                    <span class="store_id col-xs-5 input-fields"><input value="<?php echo  $edit['0']['store_id']; ?>" type="text" required id="store_id" name="number" class="input-text">
+                    <div  style="display: none;"></div></span>
+                </div>
+
+        
+                
+                
+                <div class="control row mb-20">
+                    <span type="" class="buy_prdt col-xs-5 text-label">Priority<span class="required-field">*</span></span>
+                    <span class="priority col-xs-5 input-fields">
+                        <input type="number" value="<?php echo  $edit['0']['priority']; ?>" id="priority" type="text" required/>
+                        <span style="display: none;"></span>
+                    </span>
+                </div>
+
+                <div class="control mb-20">
+                <span type="" class="buy_prdt text-label">Status
+                    <span style="margin-left: 5px;color: #e02b27;font-size:1.2rem">*</span>
+                </span>
+                <span class="status">
+                <select id="status">
+                    <option value="1" <?php if(($edit['0']['status'])==1){ echo 'selected'; } ?>>Enabled</option>
+                    <option value="0" <?php if(($edit['0']['status'])==0){ echo 'selected'; } ?>>Disabled</option>
+                </select>
+                <div  style="display: none;"></div></span>
+            </div><br>
+                <div class="control-offer-from row mb-20">
+                    <span class="col-xs-5 text-label">Offer From<span class="required-field">*</span></span>
+                    <!-- <input type="text" id="datepicker1" name="datepicker1" /> -->
+                    <div  class="col-xs-5 input-fields" >
+                    <input type="text" required id="fromdate_offer"  value="<?php echo  $edit['0']['offer_from']; ?>" name="fromdate_offer">
+                    <div class="from_date" style="display: none;"></div>
+                    </div>
+                </div>
+                <div class="control-offer-to row mb-20">
+                    <span class="col-xs-5 text-label">Offer To<span class="required-field">*</span></span>
+                    <div  class="col-xs-5 input-fields"><input type="text" required id="todate_offer"  value="<?php echo  $edit['0']['offer_to']; ?>" class="end_date" name="todate_offer">
+                    <div class="to_date" style="display: none;"></div></div>
+                </div>
+                <div class="control-offer-to row mb-20">
+                    <span class="col-xs-5 text-label">Select Group<span class="required-field">*</span></span>
+                    <select class="selectpicker" multiple data-live-search="true" required>
+                  <?php foreach ($customer_group as $key => $value): ?>
+                       <?php if($arr_csg != ''){?>
+                       <option <?php foreach ($arr_csg as $key => $res) {
+                           # code...
+                           if($value['value']==$res){
+                               echo 'selected';
+                           }
+                           else{
+                               echo '';
+                               }
+                       } ?>
+                       
+                       value="<?php echo $value['value']; ?>"><?php echo $value['label']; ?></option>
+                       <?php }else{
+                       ?>
+                       <option value="<?php echo $value['value']; ?>"><?php echo $value['label']; ?></option>
+
+                       <?php
+                       } ?>
+                       <?php endforeach; ?>               
+               </select>
+                    <div class="select_group" style="display: none;"></div>
+                </div>
+            </div>
+        </div>
+    </fieldset>
+    <br>
+    <div class="actions-toolbar">
+        <div class="primary">
+            <button type="submit" class="primary btnxyzoff" title="<?php echo __('Submit') ?>">
+                <span><?php echo __('Submit') ?></span>
+            </button> 
+        </div>
+    </div>
+</form>

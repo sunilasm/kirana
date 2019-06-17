@@ -1,4 +1,5 @@
 <?php
+
 namespace Retailinsights\Promotion\Model\Import\CustomImport;
  
 interface RowValidatorInterface extends \Magento\Framework\Validator\ValidatorInterface

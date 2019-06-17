@@ -18,7 +18,6 @@ class MassDelete extends \Magento\Backend\App\Action
      */
     protected $collectionFactory;
  
- 
     /**
      * @param Context $context
      * @param Filter $filter

@@ -1,5 +1,7 @@
 <?php
+
 namespace Retailinsights\Promotion\Model;
+
 class PostXYZ extends \Magento\Framework\Model\AbstractModel implements \Magento\Framework\DataObject\IdentityInterface
 {
 	const CACHE_TAG = 'custom_promotion_NXNYNZ';

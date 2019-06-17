@@ -1,4 +1,5 @@
 <?php
+
 namespace Retailinsights\Pricerules\Block;
 
 use Magento\Backend\Block\Template;
@@ -10,8 +11,7 @@ class XYZblock extends Template
 	 *
 	 * @var \Magento\Customer\Model\ResourceModel\Group\Collection
 	 */
-	protected $_customerGroup;
-	    
+	protected $_customerGroup;	    
 	/**
 	 * @param \Magento\Backend\Block\Template\Context $context
 	 * @param \Magento\Customer\Model\ResourceModel\Group\Collection $customerGroup
@@ -24,9 +24,6 @@ class XYZblock extends Template
 	) {
 	    $this->_customerGroup = $customerGroup;        
 		parent::__construct($context, $data);
-	
-
-	 
 	}
 	/**
 	 * Get customer groups
@@ -47,4 +44,3 @@ class XYZblock extends Template
 		return $temp;
 	}
 }
-

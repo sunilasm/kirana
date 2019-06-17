@@ -29,7 +29,7 @@ require(['jquery', 'jquery/ui',"mage/calendar"], function($) {
 
         console.log("==============");
         var genral = jQuery("#genral").val();
-        var dta = {};
+        var dta = {"buy_product":[]};
 
       //  alert("in js file:"+genral);
         var json='{';
@@ -37,9 +37,9 @@ require(['jquery', 'jquery/ui',"mage/calendar"], function($) {
          var tmpArr = {};
          var name=jQuery('#buy_product'+i).val();
          var qty=jQuery('#buy_quantity'+i).val();
-         tmpArr['name'] = name;
-         tmpArr['quantity'] = qty;
-         dta[i] = tmpArr; 
+         tmpArr['sku'] = name;
+         tmpArr['qty'] = qty;
+         dta.buy_product[i] = tmpArr;
           //json=json +"name:"+name+",quantity:"+qty+",";
         }
         console.log('dtpring');
