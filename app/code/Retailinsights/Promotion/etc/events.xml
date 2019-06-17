@@ -3,4 +3,8 @@
     <event name="promotion_after_add_cart">
         <observer name="ApplyPromotion" instance="Retailinsights\Promotion\Observer\ApplyPromotion" />
     </event>
+    <event name="checkout_submit_all_after">
+        <observer name="ModifyCart" instance="Retailinsights\Promotion\Observer\ModifyCart" />
+    </event>
+    
 </config>

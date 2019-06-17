@@ -13,7 +13,7 @@ class ApplyPromotion implements ObserverInterface
   protected $quoteRepository;
   protected $_promoFactory;
   protected $_quoteAddressFactory;
-  protected $_cartTotal;
+  protected $_connection;
 
   public function __construct(
    \Magento\Catalog\Model\ProductRepository $productRepository,
@@ -22,8 +22,8 @@ class ApplyPromotion implements ObserverInterface
    PromoTableFactory $promoFactory,
    \Magento\Quote\Api\CartRepositoryInterface $quoteRepository,
    \Magento\Quote\Model\Quote\AddressFactory $quoteAddressFactory,
-   \Magento\Quote\Model\Quote\Address\Total $total,
-   Magento\Quote\Model\Cart $cartTotal) 
+   \Magento\Framework\App\ResourceConnection $_connection
+   )
   {
       $this->_productRepository = $productRepository;
       $this->_cart = $cart;
@@ -31,60 +31,52 @@ class ApplyPromotion implements ObserverInterface
       $this->_promoFactory = $promoFactory;
       $this->quoteRepository = $quoteRepository;
       $this->_quoteAddressFactory = $quoteAddressFactory;
-      $this->_total = $total;
-      $this->_cartTotal = $cartTotal;
+      $this->_connection = $_connection;
   }
   public function execute(\Magento\Framework\Event\Observer $observer)
   {  
+    $connection = $this->_connection->getConnection();
     $quoteId = $observer->getData('quoteid');
         $writer = new \Zend\Log\Writer\Stream(BP . '/var/log/appromo.log'); 
         $logger = new \Zend\Log\Logger();
         $logger->addWriter($writer);
         $logger->info('ApplyPromo Observer');
         //Deleting promotion data in custom table 
+       
         $delData = $this->_promoFactory->create()->getCollection()
         ->addFieldToFilter('cart_id', $quoteId);
-        foreach($delData->getData() as $k => $val){
+        foreach($delData->getData() as $k => $val){           
           if($val['cart_id']==$quoteId){
-              $deletePrev = $this->_promoFactory->create();
-              $deletePrev->load($val['ap_id']);
-              $deletePrev->delete();
+            // $quoteAddressQuery  = "SELECT * FROM `mgquote_address` WHERE quote_id =".$quoteId ;
+            // $quoteAddressResult 	= $connection->rawFetchRow($quoteAddressQuery);
+            // $logger->info($quoteAddressResult);          
+            
+            // $previousDiscount = '-'.$val['total_discount'];
+            // $subTotal = $quoteAddressResult['subtotal_with_discount'];
+            // $newSubTotal = ($subTotal - $previousDiscount);
+            
+            // $sqlQuoteAdd = "Update mgquote_address Set subtotal=".$newSubTotal.", base_subtotal=".$newSubTotal.", subtotal_with_discount =".$subTotal.", base_subtotal_with_discount=".$subTotal.",  grand_total=".$newSubTotal.",  base_grand_total=".$newSubTotal.",	discount_amount=".$previousDiscount.", base_discount_amount =".$previousDiscount." where quote_id =".$quoteId ;
+            // //$connection->query($sqlQuoteAdd);
+    
+            // $sqlQuote = "Update mgquote Set subtotal=".$newSubTotal.", base_subtotal =".$newSubTotal.", subtotal_with_discount =".$subTotal.", base_subtotal_with_discount=".$subTotal.", grand_total=".$newSubTotal.", base_grand_total=".$newSubTotal." where entity_id = ".$quoteId ;
+            // //$connection->query($sqlQuote);
+            // $logger->info($sqlQuoteAdd.$sqlQuote);
+            $deletePrev = $this->_promoFactory->create();
+            $deletePrev->load($val['ap_id']);
+            $deletePrev->delete();
           }
         }
-      
-
-        // $delData->load($quoteId);
-        // $delData->delete();
 
         $quote = $this->quoteRepository->getActive($quoteId);
-        
-
-        //$quoteAdd = $this->_quoteAddressFactory->create()->getCollection()
-       // ->addFieldToFilter('quote_id',$quoteId); 
-        $grandTotal = $this->_cartTotal->setDiscountAmount(100);
-        
-        
-         $logger->info($this->_cartTotal->getDiscountAmount());         
-        $logger->info('>>--------<<');        
-          // $quoteAdd->setDiscountAmount(100);
-          // $quoteAdd->setGrandTotal(3000);	
-          // $quoteAdd->save();
-     
-         
-
-        
-
-
         $quoteItems = $quote->getItems();
         $mappedRulesArray = $this->getCustomTableRules();
         $promoFinalEntry = [];
         $promoFinalEntry['discount'] = array();
         $promoFinalEntry['item'] = array();
         $checkPromo = array();
-        $total_discount = 0;
+        $total_disc = 0;
+
         foreach($quoteItems as $key => $value) {
-          $quoteItems[0]->setDiscountAmount(100);
-          $quoteItems[0]->save();
           $sellerId = $quoteItems[$key]->getSellerId();
           $sku = $quoteItems[$key]->getSku();
           $quantity = $quoteItems[$key]->getQty();
@@ -100,9 +92,13 @@ class ApplyPromotion implements ObserverInterface
                 $checkPromo = $this->checkPromoBxgoff($promo['p_id'], $sellerId, $sku, $quantity, 1, $quoteItems[$key]->getPrice());
                 array_push($promoFinalEntry , $checkPromo);
               }
-              if($ruleCode == "BNXAF"){
-               // $checkPromo = $this->checkPromoBnxaf($promo['p_id'], $sellerId, $sku, $quantity);
-              }
+              // if($ruleCode == "BNXAF"){
+              //   $actionArr = json_decode($promo['actions_serialized'], true);
+              //   foreach($actionArr['buy_product'] as $k => $v){
+              //     $logger->info($v['sku']); 
+              //   }
+              //   //$checkPromo = $this->checkPromoBnxaf($promo['p_id'], $sellerId, $sku, $quantity);
+              // }
             }
             
           }
@@ -121,29 +117,39 @@ class ApplyPromotion implements ObserverInterface
             }
           }
         }
-        $this->_promoFactory->create()->setData(
-          array(
-          'item_qty' => json_encode($promoFinalEntry['item']),
-          'cart_id' => $quoteId,
-          'promo_code_id' => '',
-          'promo_discount'=> json_encode($promoFinalEntry['discount']),
-          'total_discount'=> 1000   
-          )        
-        )->save();
-        // foreach($promoFinalEntry['discount'] as $k => $v){
-        //   foreach($v as $a => $amt){
-        // //$logger->info(json_decode($amt, true));         
-        //   }
-        // }      
-        $logger->info('>>>>>>>>>>><<<<<<<<<<<<');         
-        $logger->info(json_encode($promoFinalEntry['discount']));
-        $logger->info(json_encode($promoFinalEntry['item']));
-        $logger->info('>>>>>>>>>>><<<<<<<<<<<<');         
-        //$logger->info($promoFinalEntry['discount']);
-     
+        foreach($promoFinalEntry['discount'] as $k => $v){
+          foreach($v as $a => $amt){
+            $amount = json_decode($amt, true);
+            $total_disc += $amount['amount'];
+          }
+        }  
+        
+        if($total_disc  > 0){
+          $this->_promoFactory->create()->setData(
+            array(
+            'item_qty' => json_encode($promoFinalEntry['item']),
+            'cart_id' => $quoteId,
+            'promo_code_id' => '',
+            'promo_discount'=> json_encode($promoFinalEntry['discount']),
+            'total_discount'=> $total_disc 
+            )        
+          )->save();    
+        }
+        $subTotal = $quote->getBaseSubtotal();
+        $newSubTotal = ($subTotal - $total_disc);
+        $total_disc = '-'.$total_disc;
+  
+          // $objectManager = \Magento\Framework\App\ObjectManager::getInstance(); 
+          // $resource = $objectManager->get('Magento\Framework\App\ResourceConnection');
+          //$connection = $this->_connection->getConnection();
+          $sqlQuoteAdd = "Update mgquote_address Set subtotal=".$subTotal.", base_subtotal=".$subTotal.", subtotal_with_discount =".$newSubTotal.", base_subtotal_with_discount=".$newSubTotal.",  grand_total=".$newSubTotal.",  base_grand_total=".$newSubTotal.",	discount_amount=".$total_disc.", base_discount_amount =".$total_disc." where quote_id =".$quoteId ;
+          $connection->query($sqlQuoteAdd);
+  
+          $sqlQuote = "Update mgquote Set subtotal=".$subTotal.", base_subtotal =".$subTotal.", subtotal_with_discount =".$newSubTotal.", base_subtotal_with_discount=".$newSubTotal.", grand_total=".$newSubTotal.", base_grand_total=".$newSubTotal." where entity_id = ".$quoteId ;
+          $connection->query($sqlQuote);
+        
+        
 
-     
-    
   }
 
  
@@ -212,11 +218,8 @@ class ApplyPromotion implements ObserverInterface
         $itemQty = $quantity ;
         $discountFactor =  floor($itemQty/$ruleQty); 
         $prDiscount =0;  
-        if($percent == 1){  
-              $totalPrice = 0;
-              $percentDisc = $promotionData[0]['discount_amount']; 
-              $totalPrice = $discountFactor * $price;
-              $prDiscount = ($percentDisc * $totalPrice)/100 ;
+        if($percent == 1){              
+              $prDiscount = ($discountFactor * $price * $ruleQty * $promotionData[0]['discount_amount'])/100 ;
           }else{
               $prDiscount = ($discountFactor * $promotionData[0]['discount_amount']);          
           }
@@ -236,13 +239,7 @@ class ApplyPromotion implements ObserverInterface
   }
  
   public function checkPromoBnxaf($customPromoId, $sellerId, $sku, $quantity){
-      $rule_data = $this->_PostTableFactory->create()->getCollection()
-      ->addFieldToFilter('p_id',$customPromoId);
-      $promotionData = $rule_data->getData();
-      // $writer = new \Zend\Log\Writer\Stream(BP . '/var/log/appromo.log'); 
-      // $logger = new \Zend\Log\Logger();
-      // $logger->addWriter($writer);
-      // $logger->info($promotionData);         
+           
 
   }
    
