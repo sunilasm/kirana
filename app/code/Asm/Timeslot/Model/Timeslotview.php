@@ -109,13 +109,17 @@ class Timeslotview implements TimeslotInterface
                foreach($promotionDiscountArrays as $promotionDiscountArray) {
                    foreach($promotionDiscountArray as $discountArray) {
                         $discountArray = json_decode($discountArray);
-                        $sellerWiseDiscountArray[$discountArray->seller]=$discountArray->amount;
+                        if(isset($sellerWiseDiscountArray[$discountArray->seller])){
+                            $sellerWiseDiscountArray[$discountArray->seller]=$sellerWiseDiscountArray[$discountArray->seller]+$discountArray->amount;
+                        } else {
+                            $sellerWiseDiscountArray[$discountArray->seller]=$discountArray->amount;
+                        }
                    }
                }               
         }
         ////////////////////////
 
-
+        $sellerCount = [];
         foreach ($items as $item) {
           // print_r($item->getData());
           // print_r($item->getData());
@@ -189,7 +193,16 @@ class Timeslotview implements TimeslotInterface
             $selllers[$item->getSeller_id()]['cart_summary']['total_item_count'] += $item->getQty_ordered();
             $sellerProductCollection = $this->_sellerProductCollection->getCollection()->addFieldToFilter('product_id', array('in' => $item->getProduct_id()))->addFieldToFilter('seller_id', array('in' => $item->getSeller_id()));
                     // print_r($sellerProductCollection->getData());exit;
-            $sellerDiscount = (isset($sellerWiseDiscountArray[$item->getSeller_id()])) ? $sellerWiseDiscountArray[$item->getSeller_id()] : 0; // Single Seller Discount
+            
+            // Single Seller Discount
+            $sellerDiscount = (isset($sellerWiseDiscountArray[$item->getSeller_id()])) ? $sellerWiseDiscountArray[$item->getSeller_id()] : 0;                    
+            if(isset($sellerCount[$item->getSeller_id()])) {
+                $sellerCount[$item->getSeller_id()] += $sellerCount[$item->getSeller_id()];
+            } else {
+                $sellerCount[$item->getSeller_id()] = 1;
+            }
+
+
             foreach($sellerProductCollection as $sellProducts){
                         // print_r($sellProducts->getPickup_from_store());exit;
                 if($item->getPrice_type() == 1)
@@ -197,16 +210,24 @@ class Timeslotview implements TimeslotInterface
                     // print_r("1111");exit;
                     //$subTotal = ($sellProducts->getPickup_from_store() * $item->getQty_ordered());
 
-                    $subTotal = ($item->getPrice() * $item->getQty_ordered()) - $sellerDiscount ;
-
+                    //Subtracting Seller discount from total
+                    if($sellerCount[$item->getSeller_id()]==1){
+                        $subTotal = ($item->getPrice() * $item->getQty_ordered()) - $sellerDiscount ;
+                    } else {
+                        $subTotal = ($item->getPrice() * $item->getQty_ordered());
+                    }
+                    
                 }
                 else
                 {
                     // print_r("2222");exit;
                     //$subTotal = ($sellProducts->getDoorstep_price() * $item->getQty_ordered());
-
-                    $subTotal = ($item->getPrice() * $item->getQty_ordered()) - $sellerDiscount;
-
+                    //Subtracting Seller discount from total
+                    if($sellerCount[$item->getSeller_id()]==1){
+                        $subTotal = ($item->getPrice() * $item->getQty_ordered()) - $sellerDiscount ;
+                    } else {
+                        $subTotal = ($item->getPrice() * $item->getQty_ordered());
+                    }
                 }
             }
             // print_r($subTotal);exit;
