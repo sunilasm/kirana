@@ -16,24 +16,6 @@ xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Webapi:etc/webapi.xsd"
         </resources>
     </route>
     
-<route url="/V1/Pricerules/getBuythree/" method="GET">
-        <service class="Retailinsights\Pricerules\Api\CatalogRuleRepositoryInterface"
-         method="getBuythree"/>
-        <resources>
-            <resource ref="anonymous"/>
-        </resources>
-    </route>
-
-     <route url="/V1/Pricerules/getBuyXgetFixed/" method="GET">
-        <service class="Retailinsights\Pricerules\Api\CatalogRuleRepositoryInterface"
-         method="getBuyXgetFixed"/>
-        <resources>
-            <resource ref="anonymous"/>
-        </resources>
-    </route>
-
-   
-    
      <route url="/V1/Pricerules/getBuyXXXgetY/" method="GET">
         <service class="Retailinsights\Pricerules\Api\CatalogRuleRepositoryInterface"
          method="getBuyXXXgetY"/>
@@ -45,6 +27,14 @@ xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Webapi:etc/webapi.xsd"
       <route url="/V1/Pricerules/getBuyXYZ/" method="GET">
         <service class="Retailinsights\Pricerules\Api\CatalogRuleRepositoryInterface"
          method="getBuyXYZ"/>
+        <resources>
+            <resource ref="anonymous"/>
+        </resources>
+    </route>
+
+          <route url="/V1/Pricerules/getBuyXYZoff/" method="GET">
+        <service class="Retailinsights\Pricerules\Api\CatalogRuleRepositoryInterface"
+         method="getBuyXYZoff"/>
         <resources>
             <resource ref="anonymous"/>
         </resources>

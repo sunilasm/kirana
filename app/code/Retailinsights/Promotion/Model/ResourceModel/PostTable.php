@@ -1,10 +1,9 @@
 <?php
+
 namespace Retailinsights\Promotion\Model\ResourceModel;
 
-
 class PostTable extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
-{
-	
+{	
 	public function __construct(
 		\Magento\Framework\Model\ResourceModel\Db\Context $context
 	)
@@ -15,6 +14,5 @@ class PostTable extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
 	protected function _construct()
 	{
 		$this->_init('retailinsights_promostoremapp', 'p_id');
-	}
-	
+	}	
 }

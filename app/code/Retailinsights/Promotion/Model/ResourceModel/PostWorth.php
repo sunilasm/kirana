@@ -1,10 +1,9 @@
 <?php
-namespace Retailinsights\Promotion\Model\ResourceModel;
 
+namespace Retailinsights\Promotion\Model\ResourceModel;
 
 class PostWorth extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
 {
-	
 	public function __construct(
 		\Magento\Framework\Model\ResourceModel\Db\Context $context
 	)
@@ -15,7 +14,5 @@ class PostWorth extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
 	protected function _construct()
 	{
 		$this->_init('custom_promotion_byXXX_getY', 'post_id');
-	}
-	
+	}	
 }
-

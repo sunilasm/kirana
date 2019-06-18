@@ -1,4 +1,5 @@
 <?php
+
 namespace Retailinsights\Promotion\Controller\Adminhtml\Post;
  
 use Magento\Framework\Controller\ResultFactory;
@@ -17,8 +18,7 @@ class MassDelete extends \Magento\Backend\App\Action
      * @var CollectionFactory
      */
     protected $collectionFactory;
- 
- 
+  
     /**
      * @param Context $context
      * @param Filter $filter
