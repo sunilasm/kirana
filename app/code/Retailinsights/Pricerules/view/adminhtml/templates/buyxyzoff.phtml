@@ -102,8 +102,8 @@ require(['jquery', 'jquery/ui'], function($) {
              <?php }?>
              <input type='hidden' id="genral" name="genral" value="<?php echo $val ?>"/>
             </div>
-            
             <div class="col-xs-6">
+            <div class="">
                 <div class="control row mb-20">
                     <span type="" class="buy_prdt col-xs-5 text-label">Fixed Price<span class="required-field">*</span></span>
                     <span class="fixed_price col-xs-5 input-fields"><input value="<?php echo  $edit['0']['fixed_price']; ?>" type="decimal" required id="fixed_price" name="number" class="input-text" placeholder="Enter Price">
@@ -153,7 +153,7 @@ require(['jquery', 'jquery/ui'], function($) {
                 </div>
                 <div class="control-offer-to row mb-20">
                     <span class="col-xs-5 text-label">Select Group<span class="required-field">*</span></span>
-                    <select class="selectpicker" multiple data-live-search="true" required>
+                    <select class="selectpicker group" multiple data-live-search="true" required>
                   <?php foreach ($customer_group as $key => $value): ?>
                        <?php if($arr_csg != ''){?>
                        <option <?php foreach ($arr_csg as $key => $res) {
@@ -178,6 +178,7 @@ require(['jquery', 'jquery/ui'], function($) {
                     <div class="select_group" style="display: none;"></div>
                 </div>
             </div>
+        </div>
         </div>
     </fieldset>
     <br>

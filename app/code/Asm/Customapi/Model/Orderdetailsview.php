@@ -52,7 +52,11 @@ class Orderdetailsview implements OrderdetailsInterface
                    foreach($promotionDiscountArrays as $promotionDiscountArray) {
                        foreach($promotionDiscountArray as $discountArray) {
                             $discountArray = json_decode($discountArray);
-                            $sellerWiseDiscountArray[$discountArray->seller]=$discountArray->amount;
+                            if(isset($sellerWiseDiscountArray[$discountArray->seller])){
+                                $sellerWiseDiscountArray[$discountArray->seller]=$sellerWiseDiscountArray[$discountArray->seller]+$discountArray->amount;
+                            } else {
+                                $sellerWiseDiscountArray[$discountArray->seller]=$discountArray->amount;
+                            }
                        }
                    }               
             }
@@ -76,6 +80,7 @@ class Orderdetailsview implements OrderdetailsInterface
             $kiranaProductArray = array();
             $kiranaNamesArray = array();
             $selllers = array();
+            $sellerCount = [];
             foreach ($items as $item) 
             {
                 $organizedQtyCount = 0;
@@ -169,20 +174,35 @@ class Orderdetailsview implements OrderdetailsInterface
                     );
                     $subTotal = 0;
                     $selllers[$item->getSeller_id()]['cart_summary']['total_item_count'] += $item->getQty();
-                    $sellerDiscount = (isset($sellerWiseDiscountArray[$item->getSeller_id()])) ? $sellerWiseDiscountArray[$item->getSeller_id()] : 0; // Single Seller Discount
+
+                    // Single Seller Discount
+                    $sellerDiscount = (isset($sellerWiseDiscountArray[$item->getSeller_id()])) ? $sellerWiseDiscountArray[$item->getSeller_id()] : 0;                    
+                    if(isset($sellerCount[$item->getSeller_id()])) {
+                        $sellerCount[$item->getSeller_id()] += $sellerCount[$item->getSeller_id()];
+                    } else {
+                        $sellerCount[$item->getSeller_id()] = 1;
+                    }
+                    //////////////////////////
+
                     if($item->getPrice_type() == 1)
                     {
                         //$subTotal = ($sellerProductData[0]['pickup_from_store'] * $item->getQty());
-
-                        $subTotal = ($item->getPrice() * $item->getQty()) - $sellerDiscount; //Subtracting Seller discount from total
-
+                        //Subtracting Seller discount from total
+                        if($sellerCount[$item->getSeller_id()]==1){
+                            $subTotal = ($item->getPrice() * $item->getQty()) - $sellerDiscount;
+                        } else {
+                            $subTotal = ($item->getPrice() * $item->getQty()); 
+                        }
                     }
                     else
                     {
                         //$subTotal = ($sellerProductData[0]['doorstep_price'] * $item->getQty());
-
-                        $subTotal = ($item->getPrice() * $item->getQty()) - $sellerDiscount; //Subtracting Seller discount from total
-
+                        //Subtracting Seller discount from total
+                        if($sellerCount[$item->getSeller_id()]==1){
+                            $subTotal = ($item->getPrice() * $item->getQty()) - $sellerDiscount;
+                        } else {
+                            $subTotal = ($item->getPrice() * $item->getQty()); 
+                        }
                     }
                     
                     $selllers[$item->getSeller_id()]['cart_summary']['sub_total'] += $subTotal;
