@@ -76,7 +76,7 @@ class ApplyPromotion implements ObserverInterface
         $checkPromo = array();
         $total_disc = 0;
         $bnxafCount = [];
-        $bnxgoCount = 0;
+        $bnxgoCount = [];
         $itemPriceTotal = 0;
         foreach($quoteItems as $key => $value) {
           $sellerId = $quoteItems[$key]->getSellerId();
