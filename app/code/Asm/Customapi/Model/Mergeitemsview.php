@@ -48,7 +48,7 @@ class Mergeitemsview implements MergeItemInterface
             }
         }
         $currentCartItems = $totalItems - count($movedProductsArray);
-        $data = array("total_count" => $totalItems, "moved_count" => count($movedProductsArray),"current_cart_count" => $currentCartItems);
+        $data = array("total_count" => $totalItems, "moved_count" => count($movedProductsArray));
         $response = array($data);
         return $response;
     } 
