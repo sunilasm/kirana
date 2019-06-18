@@ -282,13 +282,15 @@ class Searchview implements SearchInterface
             $disc_per = 0;
             $add_kiranapromo = $add_orgpromo = 0;
             if(isset($entColl['kirana'])) {
-                $entColl['promotion']['kirana'] = $this->getKiranaPromotions($entColl['kirana'],$product['sku'],$entColl['price'],$mappedRulesArray);  
+               $kiranaPromotions = $this->getKiranaPromotions($entColl['kirana'],$product['sku'],$entColl['price'],$mappedRulesArray);
+               $entColl['promotion']['kirana'] = (empty($kiranaPromotions)) ? [] : [$kiranaPromotions];  
             } else {
                 $entColl['promotion']['kirana'] = [];
             }
             
             if(isset($entColl['org_retail'])) {                     
-                $entColl['promotion']['org_retail'] = $this->getOrganizationPromotions($entColl['org_retail'],$product['sku'],$entColl['price'],$mappedRulesArray);
+               $orgPromotions = $entColl['promotion']['org_retail'] = $this->getOrganizationPromotions($entColl['org_retail'],$product['sku'],$entColl['price'],$mappedRulesArray);
+		$entColl['promotion']['org_retail'] = (empty($orgPromotions)) ? [] : [$orgPromotions];
             } else {
                 $entColl['promotion']['org_retail'] = [];
             }
