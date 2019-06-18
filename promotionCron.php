@@ -48,25 +48,6 @@
 	$customrules_query  = "SELECT * FROM `mgretailinsights_promostoremapp` WHERE rule_type = 1 AND status = 1";  // only catalog rules
 	$customrules_result 	= $connection->fetchall($customrules_query);
 	
-<<<<<<< HEAD
-	/**	
-	 * Get Admin Token
-	 * --------------- 
-	*/
-	$admin_token_url = "rest/V1/integration/admin/token";
-	$ch = curl_init('http://13.233.85.241/'.$admin_token_url);
-	curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
-	curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($admin_credentials));
-	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-	curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-		"Content-Type: application/json", 
-		"Content-Lenght: " . strlen(json_encode($admin_credentials))
-	));
-	$admin_token = curl_exec($ch);
-	//print_r($admin_token);die;
-=======
->>>>>>> development
-
 
 	if ( count($customrules_result) <= 0) {
 		# stop if no products or rules
