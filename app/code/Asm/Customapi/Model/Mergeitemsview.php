@@ -33,7 +33,7 @@ class Mergeitemsview implements MergeItemInterface
         $guestquote = $this->quoteFactory->create()->load($post['guest_quote_id']);
         $items = $guestquote->getAllItems();
         $totalItems = count($items);
-        $removeProductsArray = array();
+        $movedProductsArray = array();
         $currentProductsArray = array();
         foreach ($items as $item) 
         {
@@ -43,12 +43,12 @@ class Mergeitemsview implements MergeItemInterface
             }
             // Remove in cart
             if(isset($post['guest_quote_id'])){
-                $removeProductsArray[] = $item->getProduct_id();
+                $movedProductsArray[] = $item->getProduct_id();
                 $this->_cart->removeItem($post['guest_quote_id'], $item->getItemId());
             }
         }
-        $currentCartItems = $totalItems - count($removeProductsArray);
-        $data = array("total_count" => $totalItems, "removed_count" => count($removeProductsArray),"current_cart_count" => $currentCartItems);
+        $currentCartItems = $totalItems - count($movedProductsArray);
+        $data = array("total_count" => $totalItems, "moved_count" => count($movedProductsArray),"current_cart_count" => $currentCartItems);
         $response = array($data);
         return $response;
     } 
