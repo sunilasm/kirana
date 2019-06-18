@@ -129,7 +129,7 @@ class Searchview implements SearchInterface
                     //     if(count($wishlistdata)){
                     //         foreach($wishlistdata as $wish):
                     //             if($wish['product_id'] == $proData['entity_id']){
-                    //                 $data[1]["items"][$key] += ['wishlist' => $wish['wishlist_item_id']];
+                    //                 $data[1]["items"][$key] += ['wishlist_item_id' => $wish['wishlist_item_id']];
                     //             }
                     //         endforeach;
                     //     }
