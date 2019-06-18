@@ -49,7 +49,7 @@ class Addresschangeview implements AddresschangeInterface
             $items = $quote->getAllItems();
         }
         $sellerId = $this->inRange->getInRangeSeller($post['lat'], $post['long']);
-        //print_r($sellerId);exit;
+        print_r($sellerId);exit;
         if(isset($post['customer_id'])){
             $customerId = $post['customer_id'];
         }else{
@@ -60,11 +60,14 @@ class Addresschangeview implements AddresschangeInterface
         $currentProductsArray = array();
         foreach ($items as $item) 
         {
-            // print_r($sellerId);exit;
+            //print_r($sellerId);exit;
             if(!in_array($item->getSeller_id(), $sellerId['retail']) || !in_array($item->getSeller_id(), $sellerId['orgretail'])){
             // print_r($item->getProduct_id());exit;    
-                $sellerProductCollection = $this->_sellerProductCollection->getCollection()->addFieldToFilter('product_id', array('in' => $item->getProduct_id()))->addFieldToFilter('seller_id', array('in' => $item->getSeller_id()));
-               // print_r($sellerProductCollection->getData());exit;
+
+
+                $sellerProductCollection = $this->_sellerProductCollection->getCollection()->addFieldToFilter('product_id', array('in' => $item->getProduct_id()));
+
+                // print_r($sellerProductCollection->getData());exit;
 
                 $tempSellerProductArray = array();
                 $tempSellerType = array();
@@ -78,10 +81,9 @@ class Addresschangeview implements AddresschangeInterface
                         $tempSellerProductArray[] = $seller['seller_id'];
                         $tempSellerType[] = 'orgretail';
                     }   
+                    //print_r($seller->getData());
                    //$i++;
                 endforeach;
-                //print_r($tempSellerType);exit;
-
                 if(count($tempSellerProductArray)){
                     if($tempSellerType[0] == 'kirana'){
                         $sellerCollection = $this->_sellerCollection->getCollection()
@@ -117,6 +119,38 @@ class Addresschangeview implements AddresschangeInterface
                         $wishlist = $this->_wishlistRepository->create()->loadByCustomerId($customerId, true);
                         $wishlist->addNewItem($product);
                         $wishlist->save();
+                        $wishlist_collection = $wishlist->getItemCollection();
+                        $wishlistItemData = $wishlist_collection->getData();
+                        // print_r($wishlistItemData);exit;
+                        if(count($wishlistItemData)){
+                            foreach($wishlistItemData as $wishItem):
+                                if(!$wishItem['seller_id']){
+                                    // Get seller name
+                                    $sellerCollectionNew = $this->_sellerCollection->getCollection()
+                                    ->setOrder('position','ASC')
+                                    ->addFieldToFilter('seller_id',array('in'=>$item->getSeller_id()));
+                                    foreach ($sellerCollectionNew as $sellNew) {
+                                        $sellerName = $sellNew->getName();
+                                    }
+                                    // Get seller product price
+                                    $sellerProductCollectionNew = $this->_sellerProductCollection->getCollection()->addFieldToFilter('product_id', array('in' => $item->getProduct_id()))->addFieldToFilter('seller_id', array('in' => $item->getSeller_id()));
+                                    $sellerProductPrice = $sellerProductCollectionNew->getData();
+                                    // Get doorsetp delivery
+                                    if($item->getPriceType() == 0){
+                                        $sellerprice = $sellerProductPrice[0]['doorstep_price']; 
+                                    }
+                                    // Get pick from store
+                                    if($item->getPriceType() == 1){
+                                        $sellerprice = $sellerProductPrice[0]['pickup_from_store'];
+                                    }
+                                    $resource = $objectManager->get('\Magento\Framework\App\ResourceConnection');
+                                    $connection = $resource->getConnection();
+                                    $tableName = $resource->getTableName('wishlist_item');
+                                    $sql = "UPDATE " . $tableName . " SET seller_id = '" . $item->getSellerId() . "', seller_name = '" . $sellerName . "', seller_price = '" . $sellerprice . "', price_type = '" . $item->getPriceType() . "' WHERE wishlist_item_id = " . $wishItem['wishlist_item_id']." AND product_id = " . $wishItem['product_id'];
+                                    $connection->query($sql);
+                                }
+                            endforeach;
+                        }
                         if(isset($post['guest_quote_id'])){
                             $this->removeItem($post['guest_quote_id'], $item->getItemId());
                         }else{

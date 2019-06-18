@@ -455,7 +455,9 @@ class Searchview implements SearchInterface
                             }
                         }
                         if((in_array($productSku, $actionSkus)) && sizeof(array_unique($actionSkus)) == 1 ) {
+
                             $ruleName = str_replace("{RS}","₹",$ruleName);
+
                             $orgranzationPromotion['message'] = "Store Offer: ".$ruleName;
                         }
                     }

@@ -38,6 +38,14 @@
     <preference for="Asm\Customapi\Api\OrgnizedretailerinfoInterface" type="Asm\Customapi\Model\Orgnizedretailerinfoview" />
     <!-- Add New Customer Address -->
     <preference for="Asm\Customapi\Api\NewaddressInterface" type="Asm\Customapi\Model\Newaddressview" />
+    <!-- Edit Customer Address -->
+    <preference for="Asm\Customapi\Api\EditaddressInterface" type="Asm\Customapi\Model\Editaddressview" />
+    <!-- Delete Customer Address -->
+    <preference for="Asm\Customapi\Api\DeleteaddressInterface" type="Asm\Customapi\Model\Deleteaddressview" />
+    <!-- Set Customer Address as default -->
+    <preference for="Asm\Customapi\Api\SetdefaultaddressInterface" type="Asm\Customapi\Model\Setdefaultaddressview" />
     <!-- Get Wishlist Items -->
-    <preference for="Asm\Customapi\Api\WishlistInterface" type="Asm\Customapi\Model\Wishlistitemsview" />
+    <preference for="Asm\Customapi\Api\WishlistInterface" type="Asm\Customapi\Model\Wishlistitemsview" /> 
+    <!-- Add Wishlist Items -->
+    <preference for="Asm\Customapi\Api\AddwishlistInterface" type="Asm\Customapi\Model\Addwishlistview" /> 
 </config>

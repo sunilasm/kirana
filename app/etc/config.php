@@ -148,6 +148,7 @@ return [
         'Retailinsights_Slider' => 1,
         'TEXT_Smsnotifications' => 1,
         'Temando_Shipping' => 1,
-        'Vertex_Tax' => 1
+        'Vertex_Tax' => 1,
+        'WebbyTroops_WishlistAPI' => 1
     ]
 ];
