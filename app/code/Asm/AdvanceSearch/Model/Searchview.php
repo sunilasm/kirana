@@ -282,8 +282,8 @@ class Searchview implements SearchInterface
             $disc_per = 0;
             $add_kiranapromo = $add_orgpromo = 0;
             if(isset($entColl['kirana'])) {
-               $kiranaPromotions = $this->getKiranaPromotions($entColl['kirana'],$product['sku'],$entColl['price'],$mappedRulesArray);
-               $entColl['promotion']['kirana'] = (empty($kiranaPromotions)) ? [] : [$kiranaPromotions];  
+                $kiranaPromotions = $this->getKiranaPromotions($entColl['kirana'],$product['sku'],$entColl['price'],$mappedRulesArray);
+                $entColl['promotion']['kirana'] = (empty($kiranaPromotions)) ? [] : [$kiranaPromotions];
             } else {
                 $entColl['promotion']['kirana'] = [];
             }
@@ -455,7 +455,9 @@ class Searchview implements SearchInterface
                             }
                         }
                         if((in_array($productSku, $actionSkus)) && sizeof(array_unique($actionSkus)) == 1 ) {
-				$ruleName = str_replace("{RS}","₹",$ruleName);
+
+                            $ruleName = str_replace("{RS}","₹",$ruleName);
+
                             $orgranzationPromotion['message'] = "Store Offer: ".$ruleName;
                         }
                     }
