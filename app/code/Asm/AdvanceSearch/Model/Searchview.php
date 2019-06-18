@@ -24,6 +24,9 @@ class Searchview implements SearchInterface
     protected $_productCollectionFactory;
     protected $_sellerCollection;
     private $productsRepository;
+    protected $quoteRepository;
+    protected $_wishlistRepository;
+
     public function __construct(
         ProductRepository $productRepository,
         PostTableFactory $PostTableFactory ,
@@ -34,7 +37,9 @@ class Searchview implements SearchInterface
        \Lof\MarketPlace\Model\Seller $sellerCollection,
        \Lof\MarketPlace\Model\SellerProduct $sellerProductCollection,
        \Asm\Geolocation\Helper\Data $helperData,
-       \Magento\Catalog\Api\ProductRepositoryInterface $productsRepository
+       \Magento\Catalog\Api\ProductRepositoryInterface $productsRepository,
+       \Magento\Quote\Api\CartRepositoryInterface $quoteRepository,
+       \Magento\Wishlist\Model\WishlistFactory $wishlistRepository
     ) {
        $this->_productRepository = $productRepository;
        $this->_PostTableFactory = $PostTableFactory;
@@ -46,6 +51,8 @@ class Searchview implements SearchInterface
        $this->_sellerProductCollection = $sellerProductCollection;
        $this->helperData = $helperData;
        $this->_productsRepository = $productsRepository;
+       $this->quoteRepository = $quoteRepository;
+       $this->_wishlistRepository= $wishlistRepository;
     }
 
     public function name() {
@@ -59,6 +66,11 @@ class Searchview implements SearchInterface
         $quoteModel = $objectManager->create('Magento\Quote\Model\Quote');
         $quoteItems = $quoteModel->load($quoteId)->getAllVisibleItems();
         $quoteItemArray = array();
+
+        // Get customer id from wishlist
+        // $quote = $this->quoteRepository->get($quoteId);
+        // $customerId = $quote->getCustomer()->getId();
+
         $i = 1;
         $quoteItemSellerArray = array();
         foreach($quoteItems as $item):
@@ -96,7 +108,7 @@ class Searchview implements SearchInterface
             }
             $flag = 2;
         }
-      //  print_r($data); exit();
+       // print_r($data); exit();r
         if($flag != 1){
             if(count($data[1]["items"]) != 0){
         
@@ -108,6 +120,21 @@ class Searchview implements SearchInterface
                         $data[1]["items"][$key] += ['quote_qty' => 0];
                         $data[1]["items"][$key]['price_type'] = NULL;                      
                     }
+                    // Wishlist data
+                    // if($customerId){
+                    //     $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+                    //     $wishlist = $objectManager->get('\Magento\Wishlist\Model\Wishlist');
+                    //     $wishlist_collection = $wishlist->loadByCustomerId($customerId, true)->getItemCollection();
+                    //     $wishlistdata = $wishlist_collection->getData();
+                    //     if(count($wishlistdata)){
+                    //         foreach($wishlistdata as $wish):
+                    //             if($wish['product_id'] == $proData['entity_id']){
+                    //                 $data[1]["items"][$key] += ['wishlist' => $wish['wishlist_item_id']];
+                    //             }
+                    //         endforeach;
+                    //     }
+                    // }
+                    // end wishlist
                 endforeach;
             }
         }
