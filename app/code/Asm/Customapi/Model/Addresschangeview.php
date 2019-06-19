@@ -34,62 +34,101 @@ class Addresschangeview implements AddresschangeInterface
        $this->_sellerCollection = $sellerCollection;
     }
 
-    public function addresschange() {
+    public function addresschange() 
+    {
         // print_r("Api execute successfully");exit;
-       $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+        $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
         $request = $objectManager->get('\Magento\Framework\Webapi\Rest\Request');
         $post = $request->getBodyParams();
         // print_r($post);exit;
         $quote = $this->quoteFactory->create()->load($post['quote_id']);
-        if(isset($post['guest_quote_id'])){
+        if(isset($post['guest_quote_id']))
+        {
             $guestquote = $this->quoteFactory->create()->load($post['guest_quote_id']);
             $items = $guestquote->getAllItems();
-        }else{
-            // print_r("nnnn");exit;
+        }
+        else
+        {
             $items = $quote->getAllItems();
         }
         $sellerId = $this->inRange->getInRangeSeller($post['lat'], $post['long']);
         //print_r($sellerId);exit;
+<<<<<<< HEAD
         if(isset($post['customer_id'])){
             $customerId = $post['customer_id'];
         }else{
             $customerId = '';
         }
+=======
+        $customerId = (isset($post['customer_id'])) ? $post['customer_id'] : '';
+       
+>>>>>>> development
         $wishlistProductsArray = array();
         $removeProductsArray = array();
         $currentProductsArray = array();
         foreach ($items as $item) 
         {
+            //print_r($item->getSeller_id());
             //print_r($sellerId);exit;
-            if(!in_array($item->getSeller_id(), $sellerId['retail']) || !in_array($item->getSeller_id(), $sellerId['orgretail'])){
-            // print_r($item->getProduct_id());exit;    
-
-
+            if(!in_array($item->getSeller_id(), $sellerId['retail']) || !in_array($item->getSeller_id(), $sellerId['orgretail']))
+            {
+                $price_type = $item->getPrice_type();
+                //print_r($item->getProduct_id());exit;    
+                
                 $sellerProductCollection = $this->_sellerProductCollection->getCollection()->addFieldToFilter('product_id', array('in' => $item->getProduct_id()));
-
-                // print_r($sellerProductCollection->getData());exit;
+                //print_r($sellerProductCollection->getData());exit;
 
                 $tempSellerProductArray = array();
                 $tempSellerType = array();
-                foreach($sellerProductCollection as $seller):
-                   if(in_array($seller['seller_id'], $sellerId['retail'])){
-                        $tempSellerProductArray[] = $seller['seller_id'];
-                        $tempSellerType[] = 'kirana';
-                    }
-                    elseif(in_array($seller['seller_id'], $sellerId['orgretail']))
+                
+                // If sellers are present in given range.
+                if(count($sellerId['retail']) || count($sellerId['orgretail']))
+                {
+                    foreach($sellerProductCollection as $seller):
+                        $price_type_flag = 0;
+                        if($price_type == 0)
+                        {
+                            if(in_array($seller['seller_id'], $sellerId['retail'])){
+                                $tempSellerProductArray[] = $seller['seller_id'];
+                                $tempSellerType[] = 'kirana';
+                                $price_type_flag = 1;
+                            }
+                        }
+                        elseif($price_type == 1)
+                        {
+                            if(in_array($seller['seller_id'], $sellerId['orgretail']))
+                            {
+                                $tempSellerProductArray[] = $seller['seller_id'];
+                                $tempSellerType[] = 'orgretail';
+                                $price_type_flag = 1;
+                            } 
+                        }
+    
+                        // if($price_type_flag == 0)
+                        // {
+                        //     if(in_array($seller['seller_id'], $sellerId['retail'])){
+                        //         $tempSellerProductArray[] = $seller['seller_id'];
+                        //         $tempSellerType[] = 'kirana';
+                        //     }
+                        //     elseif(in_array($seller['seller_id'], $sellerId['orgretail']))
+                        //     {
+                        //         $tempSellerProductArray[] = $seller['seller_id'];
+                        //         $tempSellerType[] = 'orgretail';
+                        //     } 
+                        // }
+                    endforeach;
+                }
+                
+                if(count($tempSellerProductArray))
+                {
+                    if($tempSellerType[0] == 'kirana')
                     {
-                        $tempSellerProductArray[] = $seller['seller_id'];
-                        $tempSellerType[] = 'orgretail';
-                    }   
-                    //print_r($seller->getData());
-                   //$i++;
-                endforeach;
-                if(count($tempSellerProductArray)){
-                    if($tempSellerType[0] == 'kirana'){
                         $sellerCollection = $this->_sellerCollection->getCollection()
                         ->setOrder('position','ASC')
                         ->addFieldToFilter('seller_id',array('in'=>$tempSellerProductArray[0]));
-                    }elseif ($tempSellerType[0] == 'orgretail') {
+                    }
+                    elseif ($tempSellerType[0] == 'orgretail') 
+                    {
                         $sellerCollection = $this->_sellerCollection->getCollection()
                         ->setOrder('position','ASC')
                         ->addFieldToFilter('seller_id',array('in'=>$tempSellerProductArray[0]))
@@ -97,23 +136,27 @@ class Addresschangeview implements AddresschangeInterface
                     }
                     $sellerData = $sellerCollection->getData();
                     // print_r($tempSellerProductArray);exit;
-                    if($sellerData[0]['group_id'] == 2){
-                        $priceType = 1;
-                    }else{
-                        $priceType = 0;
-                    }
+
+                    // Set price type based on seller data.
+                    $priceType = ($sellerData[0]['group_id'] == 2) ? 1 : 0;
+                    
                     // Call remove item function
-                    if(isset($post['guest_quote_id'])){
+                    if(isset($post['guest_quote_id']))
+                    {
                         $this->removeItem($post['guest_quote_id'], $item->getItemId());
-                    }else{
+                    }
+                    else
+                    {
                         $this->removeItem($post['quote_id'], $item->getItemId());
                     }
                     // Call add item function
                     $this->addItem($post['quote_id'], $item->getProduct_id(), $priceType,$tempSellerProductArray[0],$item->getQty(),$item->getSku());
-
-                }else{
-                    if($customerId){
-                    // Add to wishlist
+                }
+                else
+                {
+                    if($customerId)
+                    {
+                        // Add to wishlist
                         $wishlistProductsArray[] = $item->getProduct_id();
                         $product = $this->_productRepository->getById($item->getProduct_id());
                         $wishlist = $this->_wishlistRepository->create()->loadByCustomerId($customerId, true);
@@ -122,7 +165,8 @@ class Addresschangeview implements AddresschangeInterface
                         $wishlist_collection = $wishlist->getItemCollection();
                         $wishlistItemData = $wishlist_collection->getData();
                         // print_r($wishlistItemData);exit;
-                        if(count($wishlistItemData)){
+                        if(count($wishlistItemData))
+                        {
                             foreach($wishlistItemData as $wishItem):
                                 if(!$wishItem['seller_id']){
                                     // Get seller name
@@ -151,25 +195,22 @@ class Addresschangeview implements AddresschangeInterface
                                 }
                             endforeach;
                         }
-                        if(isset($post['guest_quote_id'])){
-                            $this->removeItem($post['guest_quote_id'], $item->getItemId());
-                        }else{
-                            $this->removeItem($post['quote_id'], $item->getItemId());
-                        }
                     }
-            //else{
-                        // Remove from cart
-                        $removeProductsArray[] = $item->getProduct_id();
-                        if(isset($post['guest_quote_id'])){
-                            $this->removeItem($post['guest_quote_id'], $item->getItemId());
-                        }else{
-                            $this->removeItem($post['quote_id'], $item->getItemId());
-                        }    
-                    //}
+           
+                    // Remove from cart
+                    $removeProductsArray[] = $item->getProduct_id();
+                    if(isset($post['guest_quote_id']))
+                    {
+                        $this->removeItem($post['guest_quote_id'], $item->getItemId());
+                    }
+                    else 
+                    {
+                        $this->removeItem($post['quote_id'], $item->getItemId());
+                    }    
                 }
-                // print_r($tempSellerProductArray);exit;
             }
         }
+        
         $currentCartItems = count($items) - count($removeProductsArray);
         $data = array("total_count" => count($items),"wishlist_count" => count($wishlistProductsArray), "removed_count" => count($removeProductsArray),"current_cart_count" => $currentCartItems);
         $response = array($data);
@@ -196,7 +237,7 @@ class Addresschangeview implements AddresschangeInterface
         curl_setopt($ch, CURLOPT_HTTPHEADER, array("Content-Type: application/json", "Authorization: Bearer " . json_decode($token)));
         $result = curl_exec($ch);
         $result = json_decode($result, 1);
-        // print_r($result);exit;
+        //print_r($result);exit;
     }
 
     // add item in cart
