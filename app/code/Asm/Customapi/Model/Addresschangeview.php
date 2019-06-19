@@ -49,7 +49,7 @@ class Addresschangeview implements AddresschangeInterface
             $items = $quote->getAllItems();
         }
         $sellerId = $this->inRange->getInRangeSeller($post['lat'], $post['long']);
-        print_r($sellerId);exit;
+        
         if(isset($post['customer_id'])){
             $customerId = $post['customer_id'];
         }else{
