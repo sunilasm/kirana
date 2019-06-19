@@ -96,18 +96,18 @@ class Addresschangeview implements AddresschangeInterface
                             } 
                         }
     
-                        if($price_type_flag == 0)
-                        {
-                            if(in_array($seller['seller_id'], $sellerId['retail'])){
-                                $tempSellerProductArray[] = $seller['seller_id'];
-                                $tempSellerType[] = 'kirana';
-                            }
-                            elseif(in_array($seller['seller_id'], $sellerId['orgretail']))
-                            {
-                                $tempSellerProductArray[] = $seller['seller_id'];
-                                $tempSellerType[] = 'orgretail';
-                            } 
-                        }
+                        // if($price_type_flag == 0)
+                        // {
+                        //     if(in_array($seller['seller_id'], $sellerId['retail'])){
+                        //         $tempSellerProductArray[] = $seller['seller_id'];
+                        //         $tempSellerType[] = 'kirana';
+                        //     }
+                        //     elseif(in_array($seller['seller_id'], $sellerId['orgretail']))
+                        //     {
+                        //         $tempSellerProductArray[] = $seller['seller_id'];
+                        //         $tempSellerType[] = 'orgretail';
+                        //     } 
+                        // }
                     endforeach;
                 }
                 
