@@ -137,4 +137,11 @@
             <resource ref="anonymous"/>
         </resources>
     </route>
+    <!-- Merge cart items -->
+    <route url="/V1/merge/cart/items" method="POST">
+        <service class="Asm\Customapi\Api\MergeItemInterface" method="mergecartitems"/>
+        <resources>
+            <resource ref="anonymous"/>
+        </resources>
+    </route>
 </routes>
