@@ -89,7 +89,6 @@ use Magento\Framework\Event\ObserverInterface;
 
         public function execute(\Magento\Framework\Event\Observer $observer, string $imageType = NULL)
             {
-
             $doorStepPrice=0;
             $pickupFrmStorePrice=0;
             $PickupFromStore=0;
@@ -104,12 +103,10 @@ use Magento\Framework\Event\ObserverInterface;
             $quote = $observer->getQuote();
             
             $subTotal = 0;
-            
+              
             foreach ($quote->getAllItems() as $quoteItem) {
-                
-
                 $product = $this->productRepository->create()->getById($quoteItem->getProductId());
-
+                
                 $SellerProd = $this->sellerProduct->create()->getCollection();
                 $fltColl = $SellerProd->addFieldToFilter('seller_id', $quoteItem['seller_id'])
                         ->addFieldToFilter('product_id', $quoteItem->getProductId());
@@ -117,26 +114,20 @@ use Magento\Framework\Event\ObserverInterface;
                 if(!empty($idInfo)){
                         foreach($idInfo as $info){
                             $id = $info['entity_id'];
-                             $data = $this->sellerProduct->create()->load($id);
-                             $door = $data->getDoorstepPrice();
-
+                            $data = $this->sellerProduct->create()->load($id);
+                            $door = $data->getDoorstepPrice();
                             $PickupFromStore= $data->getPickupFromStore();
-
-                    $PickupFromNearbyStore= $data->getPickupFromNearbyStore();
-
+                            $PickupFromNearbyStore= $data->getPickupFromNearbyStore();
                         }
                 }
-                $price = $quoteItem->getPrice();
                 if($quoteItem->getPriceType() == 0){
                     $doorStepPId += $quoteItem->getQty();
-                    $rowPrice = $price * $quoteItem->getQty();
-                     $doorStepPrice += $rowPrice;
-    
+                    $rowPrice = $door * $quoteItem->getQty();
+                    $doorStepPrice += $rowPrice;
                 } else if($quoteItem->getPriceType() == 1) {
                     $pickupFrmStorePId += $quoteItem->getQty();
-                    $rowPrice = $price * $quoteItem->getQty();
+                    $rowPrice = $PickupFromStore * $quoteItem->getQty();
                     $pickupFrmStorePrice += $rowPrice;
-
                 }
 
 
