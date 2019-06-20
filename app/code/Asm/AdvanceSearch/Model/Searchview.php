@@ -24,6 +24,9 @@ class Searchview implements SearchInterface
     protected $_productCollectionFactory;
     protected $_sellerCollection;
     private $productsRepository;
+    protected $quoteRepository;
+    protected $_wishlistRepository;
+
     public function __construct(
         ProductRepository $productRepository,
         PostTableFactory $PostTableFactory ,
@@ -34,7 +37,9 @@ class Searchview implements SearchInterface
        \Lof\MarketPlace\Model\Seller $sellerCollection,
        \Lof\MarketPlace\Model\SellerProduct $sellerProductCollection,
        \Asm\Geolocation\Helper\Data $helperData,
-       \Magento\Catalog\Api\ProductRepositoryInterface $productsRepository
+       \Magento\Catalog\Api\ProductRepositoryInterface $productsRepository,
+       \Magento\Quote\Api\CartRepositoryInterface $quoteRepository,
+       \Magento\Wishlist\Model\WishlistFactory $wishlistRepository
     ) {
        $this->_productRepository = $productRepository;
        $this->_PostTableFactory = $PostTableFactory;
@@ -46,19 +51,33 @@ class Searchview implements SearchInterface
        $this->_sellerProductCollection = $sellerProductCollection;
        $this->helperData = $helperData;
        $this->_productsRepository = $productsRepository;
+       $this->quoteRepository = $quoteRepository;
+       $this->_wishlistRepository= $wishlistRepository;
     }
 
     public function name() {
+        $customerId = 0;
+        $quoteId = 0; 
+
         $title = $this->request->getParam('title');
         $lat = $this->request->getParam('latitude');
         $lon = $this->request->getParam('longitude');
         $searchtermpara = $this->request->getParam('searchterm');
         $quoteId = $this->request->getParam('quote_id');
         
+        
         $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
         $quoteModel = $objectManager->create('Magento\Quote\Model\Quote');
         $quoteItems = $quoteModel->load($quoteId)->getAllVisibleItems();
         $quoteItemArray = array();
+
+        // Get customer id from wishlist
+        if($quoteId)
+        {
+            $quote = $this->quoteRepository->get($quoteId);
+            $customerId = $quote->getCustomer()->getId();
+        }
+        
         $i = 1;
         $quoteItemSellerArray = array();
         foreach($quoteItems as $item):
@@ -72,34 +91,45 @@ class Searchview implements SearchInterface
         $flag = 0;
         $pages = 0;
         if($searchtermpara){ $searchterm = 0; }else{ $searchterm = 1; }
-        if($searchterm){
-            if($title){
-
+        if($searchterm)
+        {
+            if($title)
+            {
                 $productCollectionArray = $this->getSearchTermData($title, $lat, $lon);
-                 if($productCollectionArray){
+                if($productCollectionArray)
+                {
                     $data = $productCollectionArray;
-                }else{
+                }
+                else
+                {
                     $data = $productCollectionArray;
                 }
                 $flag = 0;
-            }else{
+            }
+            else
+            {
                 $flag = 1;
                 $data = array('message' => 'Please specify at least one search term');
             }
-        }else{
-                
+        }
+        else
+        {
             $productCollectionArray = $this->getSearchTermData($title = null,$lat, $lon);
-             if($productCollectionArray){
+            if($productCollectionArray)
+            {
                 $data = $productCollectionArray;
-            }else{
+            }
+            else
+            {
                 $data = $productCollectionArray;
             }
             $flag = 2;
         }
-      //  print_r($data); exit();
-        if($flag != 1){
-            if(count($data[1]["items"]) != 0){
-        
+       // print_r($data); exit();r
+        if($flag != 1)
+        {
+            if(count($data[1]["items"]) != 0)
+            {
                 foreach($data[1]["items"] as $key => $proData):
                     if(array_key_exists($proData['sku'], $quoteItemArray) ){
                         $data[1]["items"][$key] += ['quote_qty' => $quoteItemArray[$proData['sku']]['qty']];
@@ -108,6 +138,22 @@ class Searchview implements SearchInterface
                         $data[1]["items"][$key] += ['quote_qty' => 0];
                         $data[1]["items"][$key]['price_type'] = NULL;                      
                     }
+                    //Wishlist data
+                    if($customerId)
+                    {
+                        $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+                        $wishlist = $objectManager->get('\Magento\Wishlist\Model\Wishlist');
+                        $wishlist_collection = $wishlist->loadByCustomerId($customerId, true)->getItemCollection();
+                        $wishlistdata = $wishlist_collection->getData();
+                        if(count($wishlistdata)){
+                            foreach($wishlistdata as $wish):
+                                if($wish['product_id'] == $proData['entity_id']){
+                                    $data[1]["items"][$key] += ['wishlist_item_id' => $wish['wishlist_item_id']];
+                                }
+                            endforeach;
+                        }
+                    }
+                    //end wishlist
                 endforeach;
             }
         }
@@ -123,7 +169,7 @@ class Searchview implements SearchInterface
         $retail = array();
         $rangeSetting = $this->helperData->getGeneralConfig('enable');
         $rangeInKm = $this->helperData->getGeneralConfig('range_in_km');
-        //$rangeInKm = 10;
+        //$rangeInKm = 10;x     
         if($rangeSetting == 1){
             if($rangeInKm){
                 $distance = (is_numeric($rangeInKm)) ? $rangeInKm : 1; //your distance in KM
@@ -289,8 +335,8 @@ class Searchview implements SearchInterface
             }
             
             if(isset($entColl['org_retail'])) {                     
-                $orgPromotions = $entColl['promotion']['org_retail'] = [$this->getOrganizationPromotions($entColl['org_retail'],$product['sku'],$entColl['price'],$mappedRulesArray)];
-                $entColl['promotion']['org_retail'] = (empty($orgPromotions)) ? [] : $orgPromotions;
+               $orgPromotions = $entColl['promotion']['org_retail'] = $this->getOrganizationPromotions($entColl['org_retail'],$product['sku'],$entColl['price'],$mappedRulesArray);
+		$entColl['promotion']['org_retail'] = (empty($orgPromotions)) ? [] : [$orgPromotions];
             } else {
                 $entColl['promotion']['org_retail'] = [];
             }
@@ -455,7 +501,9 @@ class Searchview implements SearchInterface
                             }
                         }
                         if((in_array($productSku, $actionSkus)) && sizeof(array_unique($actionSkus)) == 1 ) {
+
                             $ruleName = str_replace("{RS}","₹",$ruleName);
+
                             $orgranzationPromotion['message'] = "Store Offer: ".$ruleName;
                         }
                     }
