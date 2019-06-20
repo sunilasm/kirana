@@ -53,16 +53,8 @@ class Addresschangeview implements AddresschangeInterface
         }
         $sellerId = $this->inRange->getInRangeSeller($post['lat'], $post['long']);
         //print_r($sellerId);exit;
-<<<<<<< HEAD
-        if(isset($post['customer_id'])){
-            $customerId = $post['customer_id'];
-        }else{
-            $customerId = '';
-        }
-=======
         $customerId = (isset($post['customer_id'])) ? $post['customer_id'] : '';
        
->>>>>>> development
         $wishlistProductsArray = array();
         $removeProductsArray = array();
         $currentProductsArray = array();
