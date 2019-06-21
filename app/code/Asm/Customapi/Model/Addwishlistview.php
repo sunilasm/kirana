@@ -51,36 +51,48 @@ class Addwishlistview implements AddwishlistInterface
             $wishlist->save();
             $wishlist_collection = $wishlist->getItemCollection();
             $wishlistItemData = $wishlist_collection->getData();
-            if(count($wishlistItemData)){
+            // print_r($wishlistItemData);exit;
+            if(isset($post['seller_id']) || isset($post['seller_id']) != 0){
+                // if($post['seller_id'] != 0){
+                    if(count($wishlistItemData)){
+                        foreach($wishlistItemData as $wishItem):
+                                // print_r($wishItem);exit;
+                            if(!$wishItem['seller_id']){
+                                 // Get seller name
+                                $sellerCollectionNew = $this->_sellerCollection->getCollection()
+                                ->setOrder('position','ASC')
+                                ->addFieldToFilter('seller_id',array('in'=>$post['seller_id']));
+                                foreach ($sellerCollectionNew as $sellNew) {
+                                    $sellerName = $sellNew->getName();
+                                }
+                                // Get seller product price
+                                $sellerProductCollectionNew = $this->_sellerProductCollection->getCollection()->addFieldToFilter('product_id', array('in' => $post['product_id']))->addFieldToFilter('seller_id', array('in' => $post['seller_id']));
+                                $sellerProductPrice = $sellerProductCollectionNew->getData();
+                                $sellerprice = $sellerProductPrice[0]['mrp']; 
+                                // Get doorsetp delivery
+                                // if($post['price_type'] == 0){
+                                // }
+                                // // Get pick from store
+                                // if($post['price_type'] == 1){
+                                //     $sellerprice = $sellerProductPrice[0]['pickup_from_store'];
+                                // }
+                                $resource = $objectManager->get('\Magento\Framework\App\ResourceConnection');
+                                $connection = $resource->getConnection();
+                                $tableName = $resource->getTableName('wishlist_item');
+                                $sql = "UPDATE " . $tableName . " SET seller_id = '" . $post['seller_id'] . "', seller_name = '" . $sellerName . "', seller_price = '" . $sellerprice . "' WHERE wishlist_item_id = " . $wishItem['wishlist_item_id']." AND product_id = " . $wishItem['product_id'];
+                                // print_r($sql);exit;
+                                $connection->query($sql);
+                                $wishlist_collection = $wishlist->getItemCollection();
+                                $wishlistItemData = $wishlist_collection->getData();
+                                $result['wishlist_item_id'] = $wishItem['wishlist_item_id'];
+                                $result['wishlist_id'] = $wishItem['wishlist_id'];
+                            }
+                        endforeach;
+                    }
+                // }
+            }else{
                 foreach($wishlistItemData as $wishItem):
-                        // print_r($wishItem);exit;
-                    if(!$wishItem['seller_id']){
-                         // Get seller name
-                        $sellerCollectionNew = $this->_sellerCollection->getCollection()
-                        ->setOrder('position','ASC')
-                        ->addFieldToFilter('seller_id',array('in'=>$post['seller_id']));
-                        foreach ($sellerCollectionNew as $sellNew) {
-                            $sellerName = $sellNew->getName();
-                        }
-                        // Get seller product price
-                        $sellerProductCollectionNew = $this->_sellerProductCollection->getCollection()->addFieldToFilter('product_id', array('in' => $post['product_id']))->addFieldToFilter('seller_id', array('in' => $post['seller_id']));
-                        $sellerProductPrice = $sellerProductCollectionNew->getData();
-                        $sellerprice = $sellerProductPrice[0]['mrp']; 
-                        // Get doorsetp delivery
-                        // if($post['price_type'] == 0){
-                        // }
-                        // // Get pick from store
-                        // if($post['price_type'] == 1){
-                        //     $sellerprice = $sellerProductPrice[0]['pickup_from_store'];
-                        // }
-                        $resource = $objectManager->get('\Magento\Framework\App\ResourceConnection');
-                        $connection = $resource->getConnection();
-                        $tableName = $resource->getTableName('wishlist_item');
-                        $sql = "UPDATE " . $tableName . " SET seller_id = '" . $post['seller_id'] . "', seller_name = '" . $sellerName . "', seller_price = '" . $sellerprice . "' WHERE wishlist_item_id = " . $wishItem['wishlist_item_id']." AND product_id = " . $wishItem['product_id'];
-                        // print_r($sql);exit;
-                        $connection->query($sql);
-                        $wishlist_collection = $wishlist->getItemCollection();
-                        $wishlistItemData = $wishlist_collection->getData();
+                    if($wishItem['product_id'] == $post['product_id']){
                         $result['wishlist_item_id'] = $wishItem['wishlist_item_id'];
                         $result['wishlist_id'] = $wishItem['wishlist_id'];
                     }
@@ -89,8 +101,6 @@ class Addwishlistview implements AddwishlistInterface
         }
         if(count($result)){
             $response = array($result);
-        }else{
-            $response = array("Success" => "Product already present in wishlist");
         }
         return $response;
     } 
