@@ -66,13 +66,21 @@ class ApplyPromotion implements ObserverInterface
                       $quoteQty = $quoteResult['qty'];
                       $quoteProdId = $quoteResult['product_id'];
                       $quoteSeller = $quoteResult['seller_id'];
-
-                      $qty = (($quoteQty - $itemData->qty)==0) ? "1" : ($quoteQty - $itemData->qty);                    
-                      $updateCart = $this->updateItem($quoteId,$itemData->id,$qty,$quoteProdId,$quoteSeller);
+                      $qty = (($quoteQty - $itemData->qty)==0) ? "1" : ($quoteQty - $itemData->qty);   
+                      if($itemData->type == 'BXGY'){
+                        if($quoteQty == $itemData->qty){
+                          $deleteItem = $this->removeItem($quoteId, $itemData->id);
+                        }else{
+                          $qty = ($quoteQty - $itemData->qty);
+                          $updateCart = $this->updateItem($quoteId,$itemData->id,$qty,$quoteProdId,$quoteSeller);
+                        }
+                      }else{
+                        $updateCart = $this->updateItem($quoteId,$itemData->id,$qty,$quoteProdId,$quoteSeller);
+                      }
+                      // $logger->info('Qty quote  '.$quoteQty);
+                      // $logger->info("PUT payload-----".$quoteId."-----".$itemData->id."-----".$qty."-----".$quoteProdId."-----".$quoteSeller);
                     }
                   }
-                    // $deleteItem = $this->removeItem($quoteId, $v);
-                   // $updateCart = $this->updateItem($quoteId,$item,$qty,667,1163);
                 }
             
             $deletePrev = $this->_promoFactory->create();
@@ -418,7 +426,7 @@ class ApplyPromotion implements ObserverInterface
      // $logger->info('in internal add to cart');
       //$logger->info($cart_id."------".$sku_to_add."------".$sku_qty."------".$product_id."------".$seller_id."------".$discountpromo."----SERVER---".$_SERVER['REMOTE_ADDR']."---".$_SERVER['SERVER_ADDR']);
 
-      if($_SERVER['REMOTE_ADDR']!=$_SERVER['SERVER_ADDR']){
+      if($_SERVER['REMOTE_ADDR']!=$_SERVER['SERVER_NAME']){
        // $logger->info('inside if    '.$_SERVER['REDIRECT_HTTP_AUTHORIZATION']);
           $post_req= [
             'cart_item' => [
@@ -447,7 +455,7 @@ class ApplyPromotion implements ObserverInterface
             curl_setopt($ch, CURLOPT_HTTPHEADER, array("Content-Type: application/json", "Authorization: Bearer " . json_decode($token)));
 
         $promoEntry = array();
-        $item = $discount = array();
+        $item = $discount = $type =  array();
         if($discountpromo > 0){
           $addToCart = curl_exec($ch);
          // $logger->info($addToCart);
@@ -457,12 +465,14 @@ class ApplyPromotion implements ObserverInterface
           $discount['seller'] = $seller_id;
           if($proditemId == 0){
            $item_id = $addedData['item_id'];
+           $type = 'BXGY';
           }else{
             $item_id = $proditemId;
+            $type = 'BXGX';
           }
           $item['id'] = $item_id;
           $item['qty'] = $sku_qty;
-          $item['quote_qty'] = $quoteQty;
+          $item['type'] = $type ;
           $promoEntry['discount'] = [];
           $promoEntry['item'] = [];
           array_push($promoEntry['discount'],json_encode($discount));
