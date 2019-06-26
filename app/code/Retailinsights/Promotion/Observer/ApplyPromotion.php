@@ -49,7 +49,7 @@ class ApplyPromotion implements ObserverInterface
         $writer = new \Zend\Log\Writer\Stream(BP . '/var/log/pvn.log'); 
         $logger = new \Zend\Log\Logger();
         $logger->addWriter($writer);
-       // $logger->info('ApplyPromo Observer');
+      //  $logger->info('ApplyPromo Observer');
         //Deleting promotion data in custom table 
         $base_url = $this->_storeManager->getStore()->getBaseUrl(\Magento\Framework\UrlInterface::URL_TYPE_WEB);
        
@@ -58,30 +58,23 @@ class ApplyPromotion implements ObserverInterface
         foreach($delData->getData() as $k => $val){           
           if($val['cart_id']==$quoteId){
               $itemInfo = json_decode($val['item_qty'],true);
-              $itemsToDel = json_decode($itemInfo[0][0],true);
-              if(isset($itemsToDel)){
-                foreach($itemsToDel as $k => $v){
-                  //$logger->info($v.'==++++=='.$k);
-                   if($k == 'id'){
-                    $deleteItem = $this->removeItem($quoteId, $v);
-                   }
+                foreach($itemInfo as $k => $itemArray){
+                  foreach($itemArray as $key => $value){
+                    $itemData = json_decode($value);
+                    if(isset($itemData->qty)) {
+                      $quoteResult = $this->getQuoteQty($itemData->id);
+                      $quoteQty = $quoteResult['qty'];
+                      $quoteProdId = $quoteResult['product_id'];
+                      $quoteSeller = $quoteResult['seller_id'];
+
+                      $qty = (($quoteQty - $itemData->qty)==0) ? "1" : ($quoteQty - $itemData->qty);                    
+                      $updateCart = $this->updateItem($quoteId,$itemData->id,$qty,$quoteProdId,$quoteSeller);
+                    }
+                  }
+                    // $deleteItem = $this->removeItem($quoteId, $v);
+                   // $updateCart = $this->updateItem($quoteId,$item,$qty,667,1163);
                 }
-              }
-             
-            // $quoteAddressQuery  = "SELECT * FROM `mgquote_address` WHERE quote_id =".$quoteId ;
-            // $quoteAddressResult 	= $connection->rawFetchRow($quoteAddressQuery);
-            // $logger->info($quoteAddressResult);          
             
-            // $previousDiscount = '-'.$val['total_discount'];
-            // $subTotal = $quoteAddressResult['subtotal_with_discount'];
-            // $newSubTotal = ($subTotal - $previousDiscount);
-            
-            // $sqlQuoteAdd = "Update mgquote_address Set subtotal=".$newSubTotal.", base_subtotal=".$newSubTotal.", subtotal_with_discount =".$subTotal.", base_subtotal_with_discount=".$subTotal.",  grand_total=".$newSubTotal.",  base_grand_total=".$newSubTotal.",	discount_amount=".$previousDiscount.", base_discount_amount =".$previousDiscount." where quote_id =".$quoteId ;
-            // //$connection->query($sqlQuoteAdd);
-    
-            // $sqlQuote = "Update mgquote Set subtotal=".$newSubTotal.", base_subtotal =".$newSubTotal.", subtotal_with_discount =".$subTotal.", base_subtotal_with_discount=".$subTotal.", grand_total=".$newSubTotal.", base_grand_total=".$newSubTotal." where entity_id = ".$quoteId ;
-            // //$connection->query($sqlQuote);
-            // $logger->info($sqlQuoteAdd.$sqlQuote);
             $deletePrev = $this->_promoFactory->create();
             $deletePrev->load($val['ap_id']);
             $deletePrev->delete();
@@ -197,13 +190,14 @@ class ApplyPromotion implements ObserverInterface
                    }
                   $prodQty = ($promo['discount_amount']*$qtyFactor);
                   $discPrice = ($quoteItems[$key]->getPrice()*$prodQty); 
-                  $checkPromo  = $this->internalAddtoCart($quoteId,$sku,$prodQty,$quoteItems[$key]->getProductId(),$sellerId,$discPrice);
+                  $checkPromo  = $this->internalAddtoCart($quoteId,$sku,$prodQty,$quoteItems[$key]->getProductId(),$sellerId,$discPrice,$quoteItems[$key]->getItemId(),$quantity);
                   array_push($promoFinalEntry , $checkPromo);
                 }
                
                 
               }
               if($ruleCode == "BXGY"){
+              //  $logger->info('in BXGY');
                 $actionArr = json_decode($promo['actions_serialized'], true);
                 $ruleSku = array();
                 $getProdSku = $getProdQty = $getProdId = '';
@@ -219,7 +213,6 @@ class ApplyPromotion implements ObserverInterface
                 $discPrice = $priceResult['pickup_from_store']; 
                 foreach($actionArr['buy_product'] as $k => $v){ 
                  if(($v['sku'] == $sku ) && ($v['qty'] <= $quantity)){
-                 //  $logger->info($quantity.'--__--__--'.$v['qty']);
                    if($quantity == $v['qty']){
                     $qtyFactor = 1;
                    }else{
@@ -227,7 +220,7 @@ class ApplyPromotion implements ObserverInterface
                    }
                     $getProdQty  = ($getProdQty*$qtyFactor);
                     $discPrice = ($discPrice*$getProdQty); 
-                    $checkPromo = $this->internalAddtoCart($quoteId,$getProdSku,$getProdQty,$getProdId,$sellerId,$discPrice);
+                    $checkPromo = $this->internalAddtoCart($quoteId,$getProdSku,$getProdQty,$getProdId,$sellerId,$discPrice,0,$quantity);
                     array_push($promoFinalEntry , $checkPromo);
                  }
                 }
@@ -287,7 +280,14 @@ class ApplyPromotion implements ObserverInterface
         
 
   }
-
+  public function getQuoteQty($id){
+    $objectManager = \Magento\Framework\App\ObjectManager::getInstance(); 
+    $resource = $objectManager->get('Magento\Framework\App\ResourceConnection');
+    $connection = $this->_connection->getConnection();
+    $quoteQry  = "SELECT * FROM `mgquote_item` WHERE item_id ='".$id."'" ;
+    $Result 	= $connection->rawFetchRow($quoteQry);
+    return $Result;
+  }
  
   public function getCustomTableRules() {
     $mapped_rules = [];
@@ -409,17 +409,17 @@ class ApplyPromotion implements ObserverInterface
 
   }
 
-  public function internalAddtoCart($cart_id,$sku_to_add,$sku_qty,$product_id,$seller_id,$discountpromo)
+  public function internalAddtoCart($cart_id,$sku_to_add,$sku_qty,$product_id,$seller_id,$discountpromo,$proditemId,$quoteQty)
     {
       $base_url = $this->_storeManager->getStore()->getBaseUrl(\Magento\Framework\UrlInterface::URL_TYPE_WEB);
       $writer = new \Zend\Log\Writer\Stream(BP . '/var/log/pvn.log'); 
       $logger = new \Zend\Log\Logger();
       $logger->addWriter($writer);
-    //  $logger->info('in internal add to cart');
-    //  $logger->info($cart_id."------".$sku_to_add."------".$sku_qty."------".$product_id."------".$seller_id."------".$discountpromo."----SERVER---".$_SERVER['REMOTE_ADDR']."---".$_SERVER['SERVER_ADDR']);
+     // $logger->info('in internal add to cart');
+      //$logger->info($cart_id."------".$sku_to_add."------".$sku_qty."------".$product_id."------".$seller_id."------".$discountpromo."----SERVER---".$_SERVER['REMOTE_ADDR']."---".$_SERVER['SERVER_ADDR']);
 
       if($_SERVER['REMOTE_ADDR']!=$_SERVER['SERVER_ADDR']){
-        //$logger->info('inside if    '.$_SERVER['REDIRECT_HTTP_AUTHORIZATION']);
+       // $logger->info('inside if    '.$_SERVER['REDIRECT_HTTP_AUTHORIZATION']);
           $post_req= [
             'cart_item' => [
               'quote_id' => $cart_id,
@@ -446,45 +446,23 @@ class ApplyPromotion implements ObserverInterface
             curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($post_req));
             curl_setopt($ch, CURLOPT_HTTPHEADER, array("Content-Type: application/json", "Authorization: Bearer " . json_decode($token)));
 
-          // $result = curl_exec($ch);
-         //-------------------------------------
-        //  $curl = curl_init();
-        //  curl_setopt_array($curl, array(
-        //    CURLOPT_URL => "http://hylosh.theretailinsights.co/rest/V1/carts/mine/items",
-        //    CURLOPT_RETURNTRANSFER => true,
-        //    CURLOPT_ENCODING => "",
-        //    CURLOPT_MAXREDIRS => 10,
-        //    CURLOPT_TIMEOUT => 30,
-        //    CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-        //    CURLOPT_CUSTOMREQUEST => "POST",
-        //    CURLOPT_POSTFIELDS => json_encode($post_req),
-        //    CURLOPT_HTTPHEADER => array(
-        //      "Accept: */*",
-        //      "Authorization:".$_SERVER['REDIRECT_HTTP_AUTHORIZATION'],
-        //      "Cache-Control: no-cache",
-        //      "Connection: keep-alive",
-        //      "Content-Type: application/json",
-        //      "Host: hylosh.theretailinsights.co",
-        //      "Postman-Token: 46fc30cc-b975-4424-a3ac-ff3fb4ae5ac3,7273b2b7-3cdb-4cce-ae21-e48e77239e5f",
-        //      "User-Agent: PostmanRuntime/7.15.0",
-        //      "accept-encoding: gzip, deflate",
-        //      "cache-control: no-cache",
-        //      "cookie: PHPSESSID=c45c6f3986590010a388a8f97d4688d4"
-        //    ),
-        //  ));
-         
         $promoEntry = array();
         $item = $discount = array();
         if($discountpromo > 0){
           $addToCart = curl_exec($ch);
          // $logger->info($addToCart);
           curl_close($ch);
-
           $addedData = json_decode($addToCart,true);
           $discount['amount'] = $discountpromo;
           $discount['seller'] = $seller_id;
-          $item['id'] = $addedData['item_id'];
+          if($proditemId == 0){
+           $item_id = $addedData['item_id'];
+          }else{
+            $item_id = $proditemId;
+          }
+          $item['id'] = $item_id;
           $item['qty'] = $sku_qty;
+          $item['quote_qty'] = $quoteQty;
           $promoEntry['discount'] = [];
           $promoEntry['item'] = [];
           array_push($promoEntry['discount'],json_encode($discount));
@@ -497,14 +475,7 @@ class ApplyPromotion implements ObserverInterface
       $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
       $storeManager = $objectManager->get('\Magento\Store\Model\StoreManagerInterface');
       $baseUrl = $storeManager->getStore()->getBaseUrl();
-      $userData = array("username" => "sunil.n", "password" => "admin1234");
-      $ch = curl_init($baseUrl."rest/V1/integration/admin/token");
-      curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
-      curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($userData));
-      curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-      curl_setopt($ch, CURLOPT_HTTPHEADER, array("Content-Type: application/json", "Content-Lenght: " . strlen(json_encode($userData))));
-
-      $token = curl_exec($ch);
+      $token = $this->adminToken();
       $ch = curl_init($baseUrl."rest/V1/carts/".$quoteId."/items/".$itemId);
       curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE");
       curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -512,6 +483,48 @@ class ApplyPromotion implements ObserverInterface
       $result = curl_exec($ch);
       $result = json_decode($result, 1);
       //print_r($result);exit;
+  }
+
+  public function updateItem($quoteId,$itemId,$qty,$product_id,$seller_id){
+    $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+    $storeManager = $objectManager->get('\Magento\Store\Model\StoreManagerInterface');
+    $baseUrl = $storeManager->getStore()->getBaseUrl();
+    $token = $this->adminToken();
+    $post_req= [
+      'cartItem' => [
+        'item_id' => $itemId,
+        'qty' => $qty,
+        'quote_id' => $quoteId
+      ],
+      'product_id' => $product_id,
+      'seller_id' => $seller_id,
+      'price_type' => 1
+    ];
+    $ch = curl_init($baseUrl."rest/V1/carts/".$quoteId."/items/".$itemId);
+    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($post_req));
+    curl_setopt($ch, CURLOPT_HTTPHEADER, array("Content-Type: application/json", "Authorization: Bearer " . json_decode($token)));
+    $result = curl_exec($ch);
+    $result = json_decode($result, 1);
+    $writer = new \Zend\Log\Writer\Stream(BP . '/var/log/pvn.log'); 
+    $logger = new \Zend\Log\Logger();
+    $logger->addWriter($writer);
+    return $result;
+  }
+  
+  public function adminToken(){
+    $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+    $storeManager = $objectManager->get('\Magento\Store\Model\StoreManagerInterface');
+    $baseUrl = $storeManager->getStore()->getBaseUrl();
+    $userData = array("username" => "sunil.n", "password" => "admin1234");
+    $ch = curl_init($baseUrl."rest/V1/integration/admin/token");
+    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
+    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($userData));
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, array("Content-Type: application/json", "Content-Lenght: " . strlen(json_encode($userData))));
+    $token = curl_exec($ch);
+    return $token;
   }
 }
 
