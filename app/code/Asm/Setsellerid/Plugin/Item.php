@@ -1,6 +1,8 @@
 <?php
 namespace Asm\Setsellerid\Plugin;
 use Lof\MarketPlace\Model\SellerProductFactory as SellerProduct;
+use Retailinsights\Promotion\Model\PromoTableFactory;
+
 class Item
 {
     /**
@@ -13,14 +15,17 @@ class Item
       * @param SellerProduct $sellerProduct
      */
             private $quoteItemFactory;
+            protected $_promoFactory;
     public function __construct(
          SellerProduct $sellerProduct,
+         PromoTableFactory $promoFactory,
         \Magento\Quote\Model\Quote\ItemFactory $itemFactory,
         \Magento\Quote\Api\Data\TotalsItemExtensionFactory $totalItemExtensionFactory,
          \Magento\Quote\Api\Data\TotalsExtensionFactory $totalExtensionFactory,
         \Magento\Quote\Model\Quote\ItemFactory $quoteItemFactory
     
     ) {
+        $this->_promoFactory = $promoFactory;
         $this->sellerProduct = $sellerProduct;
         $this->itemFactory = $itemFactory;
         $this->totalItemExtension = $totalItemExtensionFactory;
@@ -44,11 +49,18 @@ class Item
         $pickupFrmStorePId = 0;
         $door=0;
         $PickupFromStore=0;
+       $discount_amount = 0;
         foreach($totals->getItems() as $item)
         {
 
             $quoteItem = $this->itemFactory->create()->load($item->getItemId());
-            
+             $discountData = $this->_promoFactory->create()->getCollection()
+            ->addFieldToFilter('cart_id', $quoteItem->getQuoteId());
+            if(isset($discountData)){
+                foreach($discountData->getData() as $k => $val){ 
+                    $discount_amount = $val['total_discount'];
+                }
+            }
             // $SellerProd = $this->sellerProduct->create()->getCollection();
             // $fltColl = $SellerProd->addFieldToFilter('seller_id', $quoteItem->getSellerId())
             //             ->addFieldToFilter('product_id', $quoteItem->getProductId());
@@ -96,7 +108,7 @@ class Item
             $extensionAttributes->setDsCount($doorStepPId);
             $extensionAttributes->setDsSubtotal($doorStepPrice);
             $extensionAttributes->setSpCount($pickupFrmStorePId);
-            $extensionAttributes->setSpSubtotal($pickupFrmStorePrice);
+            $extensionAttributes->setSpSubtotal($pickupFrmStorePrice-$discount_amount);
            // $extensionAttributes->setExtnGrandTotal($grandTotal);
             $totals->setExtensionAttributes($extensionAttributes);
         return $totals;
