@@ -57,12 +57,24 @@ class Item
         // $logger->addWriter($writer);
         foreach($totals->getItems() as $item)
         {
+            $freeQty = 0;
             $quoteItem = $this->itemFactory->create()->load($item->getItemId());
             $discountData = $this->_promoFactory->create()->getCollection()
             ->addFieldToFilter('cart_id', $quoteItem->getQuoteId());
             if(isset($discountData)){
-                $discAmt = $discountData->getData();
-                $discount_amount = $discAmt[0]['total_discount'];
+                foreach($discountData->getData() as $k => $val){ 
+                        $discount_amount = $val['total_discount'];
+                        $itemInfo = json_decode($val['item_qty'],true);
+                        foreach($itemInfo as $k => $itemArray){
+                          foreach($itemArray as $key => $value){
+                            $itemData = json_decode($value);
+                            if($itemData->id == $quoteItem->getItemId()) {
+                                $freeQty = $itemData->qty;
+                            }
+
+                          }
+                        }
+                    }
             }
             
             // $SellerProd = $this->sellerProduct->create()->getCollection();
@@ -101,6 +113,7 @@ class Item
                 $extensionAttributes = $this->totalItemExtension->create();
             }
             $extensionAttributes->setExtnRowTotal($rowTotal);
+            $extensionAttributes->setExtFreeQty($freeQty);
             $item->setExtensionAttributes($extensionAttributes);
             $grandTotal += $rowTotal;
         }

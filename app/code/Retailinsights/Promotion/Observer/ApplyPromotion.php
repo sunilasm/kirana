@@ -49,7 +49,7 @@ class ApplyPromotion implements ObserverInterface
         $writer = new \Zend\Log\Writer\Stream(BP . '/var/log/pvn.log'); 
         $logger = new \Zend\Log\Logger();
         $logger->addWriter($writer);
-      //  $logger->info('ApplyPromo Observer');
+       //$logger->info('ApplyPromo Observer');
         //Deleting promotion data in custom table 
         $base_url = $this->_storeManager->getStore()->getBaseUrl(\Magento\Framework\UrlInterface::URL_TYPE_WEB);
        
@@ -285,7 +285,7 @@ class ApplyPromotion implements ObserverInterface
           $sqlQuote = "Update mgquote Set subtotal=".$subTotal.", base_subtotal =".$subTotal.", subtotal_with_discount =".$newSubTotal.", base_subtotal_with_discount=".$newSubTotal.", grand_total=".$newSubTotal.", base_grand_total=".$newSubTotal." where entity_id = ".$quoteId ;
           $connection->query($sqlQuote);
         
-        
+ 
 
   }
   public function getQuoteQty($id){
