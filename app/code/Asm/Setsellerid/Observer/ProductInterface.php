@@ -4,7 +4,7 @@
  * See COPYING.txt for license details.
  */
 namespace Asm\Setsellerid\Observer;
-
+use Retailinsights\Promotion\Model\PromoTableFactory;
 use Magento\Framework\Event\ObserverInterface;
     use Magento\Catalog\Api\ProductRepositoryInterfaceFactory as ProductRepository;
 
@@ -55,6 +55,9 @@ use Magento\Framework\Event\ObserverInterface;
         protected $extensionFactory;
 
         protected $cartExtFactory;
+  protected $_promoFactory;
+  protected $_connection;
+
 
         /**
          * @param \Magento\Framework\ObjectManagerInterface $objectManager
@@ -68,7 +71,8 @@ use Magento\Framework\Event\ObserverInterface;
          */
         public function __construct(
             \Magento\Framework\ObjectManagerInterface $objectManager,
-
+            \Magento\Framework\App\ResourceConnection $_connection,
+            PromoTableFactory $promoFactory,
             SellerProduct $sellerProduct,
             ProductRepository $productRepository,
             ProductImageHelper $productImageHelper,
@@ -85,14 +89,22 @@ use Magento\Framework\Event\ObserverInterface;
             $this->extensionFactory = $extensionFactory;
             $this->cartExtFactory = $cartExtFactory;
             $this->sellerProduct = $sellerProduct;
+        $this->_promoFactory = $promoFactory;        
+        $this->_connection = $_connection;
+
         }
 
         public function execute(\Magento\Framework\Event\Observer $observer, string $imageType = NULL)
             {
+$writer = new \Zend\Log\Writer\Stream(BP . '/var/log/pvn.log'); 
+$logger = new \Zend\Log\Logger();
+$logger->addWriter($writer);
+$logger->info('Product Interface');
             $doorStepPrice=0;
             $pickupFrmStorePrice=0;
             $PickupFromStore=0;
             $PickupFromNearbyStore=0;
+            $discount_amount = 0;
 
             $door=0;
             $price =0;
@@ -103,10 +115,27 @@ use Magento\Framework\Event\ObserverInterface;
             $quote = $observer->getQuote();
             
             $subTotal = 0;
-              
             foreach ($quote->getAllItems() as $quoteItem) {
                 $product = $this->productRepository->create()->getById($quoteItem->getProductId());
-                
+             $freeQty = 0;
+                $discountData = $this->_promoFactory->create()->getCollection()
+                ->addFieldToFilter('cart_id', $quoteItem->getQuoteId());
+                if(isset($discountData)){
+                    foreach($discountData->getData() as $k => $val){ 
+                        $discount_amount = $val['total_discount'];
+                        $itemInfo = json_decode($val['item_qty'],true);
+                        foreach($itemInfo as $k => $itemArray){
+                          foreach($itemArray as $key => $value){
+                            $itemData = json_decode($value);
+                            if($itemData->id == $quoteItem->getItemId()) {
+                                $freeQty = $itemData->qty;
+                            }
+
+                          }
+                        }
+                    }
+                }
+
                 $SellerProd = $this->sellerProduct->create()->getCollection();
                 $fltColl = $SellerProd->addFieldToFilter('seller_id', $quoteItem['seller_id'])
                         ->addFieldToFilter('product_id', $quoteItem->getProductId());
@@ -129,7 +158,15 @@ use Magento\Framework\Event\ObserverInterface;
                     $rowPrice = $PickupFromStore * $quoteItem->getQty();
                     $pickupFrmStorePrice += $rowPrice;
                 }
+                $objectManager = \Magento\Framework\App\ObjectManager::getInstance(); 
+                $resource = $objectManager->get('Magento\Framework\App\ResourceConnection');
+                $connection = $this->_connection->getConnection();
+                
+                $quoteQry  = "SELECT * FROM `mgquote_item` WHERE item_id ='".$quoteItem->getItemId()."'" ;
+                $Result 	= $connection->rawFetchRow($quoteQry);
+                $logger->info('Query QTy  '.$Result['qty']);
 
+            
 
                 $uom = $product->getUnitm();
                 $optionId = $product->getUnitm();
@@ -148,6 +185,8 @@ use Magento\Framework\Event\ObserverInterface;
                 $imageurl =$this->productImageHelper->create()->init($product, 'product_thumbnail_image')->setImageFile($product->getThumbnail())->getUrl();
 
                 $itemExtAttr->setUnitm($optionText);
+                $itemExtAttr->setExtRowQty($Result['qty']);
+                $itemExtAttr->setExtFreeQty($freeQty);
                 $itemExtAttr->setVolume($product->getVolume());
                 if(!empty($idInfo)){
                 $itemExtAttr->setDoorstepPrice($door);
@@ -169,7 +208,7 @@ use Magento\Framework\Event\ObserverInterface;
                 $itemExtAttrquote->setDsCount($doorStepPId);
             $itemExtAttrquote->setDsSubtotal($doorStepPrice);
             $itemExtAttrquote->setSpCount($pickupFrmStorePId);
-            $itemExtAttrquote->setSpSubtotal($pickupFrmStorePrice);
+            $itemExtAttrquote->setSpSubtotal($pickupFrmStorePrice - $discount_amount);
                 $quote->setExtensionAttributes($itemExtAttrquote);
 
          return;

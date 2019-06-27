@@ -12,6 +12,8 @@ xsi:noNamespaceSchemaLocation="urn:magento:framework:Api/etc/extension_attribute
 	<attribute code="price_type" type="string" />
 	<attribute code="volume" type="string" />
 	<attribute code="ext_row_total" type="string" />
+	<attribute code="ext_free_qty" type="string" />
+	<attribute code="ext_row_qty" type="string" />
 	<attribute code="seller_id" type="string" >
     	<resources>
                 <resource  ref="anonymous"/>
@@ -21,6 +23,9 @@ xsi:noNamespaceSchemaLocation="urn:magento:framework:Api/etc/extension_attribute
 
 <extension_attributes for="Magento\Quote\Api\Data\TotalsItemInterface">
 		   <attribute code="extn_row_total" type="string" />
+    </extension_attributes>
+    <extension_attributes for="Magento\Quote\Api\Data\TotalsItemInterface">
+		   <attribute code="ext_free_qty" type="string" />
     </extension_attributes>
 	<extension_attributes for="Magento\Quote\Api\Data\TotalsInterface">
 		   <attribute code="extn_grand_total" type="string" />
