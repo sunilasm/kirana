@@ -13,6 +13,7 @@ xsi:noNamespaceSchemaLocation="urn:magento:framework:Api/etc/extension_attribute
 	<attribute code="volume" type="string" />
 	<attribute code="ext_row_total" type="string" />
 	<attribute code="ext_free_qty" type="string" />
+    <attribute code="ext_free_product" type="string" />
 	<attribute code="ext_row_qty" type="string" />
 	<attribute code="seller_id" type="string" >
     	<resources>
@@ -20,7 +21,9 @@ xsi:noNamespaceSchemaLocation="urn:magento:framework:Api/etc/extension_attribute
         </resources>
     </attribute>
 </extension_attributes>
-
+<extension_attributes for="Magento\Quote\Api\Data\TotalsItemInterface">
+		   <attribute code="ext_free_product" type="string" />
+    </extension_attributes>
 <extension_attributes for="Magento\Quote\Api\Data\TotalsItemInterface">
 		   <attribute code="extn_row_total" type="string" />
     </extension_attributes>

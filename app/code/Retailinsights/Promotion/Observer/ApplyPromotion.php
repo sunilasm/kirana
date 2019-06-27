@@ -198,7 +198,7 @@ class ApplyPromotion implements ObserverInterface
                    }
                   $prodQty = ($promo['discount_amount']*$qtyFactor);
                   $discPrice = ($quoteItems[$key]->getPrice()*$prodQty); 
-                  $checkPromo  = $this->internalAddtoCart($quoteId,$sku,$prodQty,$quoteItems[$key]->getProductId(),$sellerId,$discPrice,$quoteItems[$key]->getItemId(),$quantity);
+                  $checkPromo  = $this->internalAddtoCart($quoteId,$sku,$prodQty,$quoteItems[$key]->getProductId(),$sellerId,$discPrice,$quoteItems[$key]->getItemId(),$quantity,'BXGX');
                   array_push($promoFinalEntry , $checkPromo);
                 }
                
@@ -228,7 +228,7 @@ class ApplyPromotion implements ObserverInterface
                    }
                     $getProdQty  = ($getProdQty*$qtyFactor);
                     $discPrice = ($discPrice*$getProdQty); 
-                    $checkPromo = $this->internalAddtoCart($quoteId,$getProdSku,$getProdQty,$getProdId,$sellerId,$discPrice,0,$quantity);
+                    $checkPromo = $this->internalAddtoCart($quoteId,$getProdSku,$getProdQty,$getProdId,$sellerId,$discPrice,$quoteItems[$key]->getItemId(),$quantity,'BXGY');
                     array_push($promoFinalEntry , $checkPromo);
                  }
                 }
@@ -417,7 +417,7 @@ class ApplyPromotion implements ObserverInterface
 
   }
 
-  public function internalAddtoCart($cart_id,$sku_to_add,$sku_qty,$product_id,$seller_id,$discountpromo,$proditemId,$quoteQty)
+  public function internalAddtoCart($cart_id,$sku_to_add,$sku_qty,$product_id,$seller_id,$discountpromo,$proditemId,$quoteQty,$promoType)
     {
       $base_url = $this->_storeManager->getStore()->getBaseUrl(\Magento\Framework\UrlInterface::URL_TYPE_WEB);
       $writer = new \Zend\Log\Writer\Stream(BP . '/var/log/pvn.log'); 
@@ -426,7 +426,7 @@ class ApplyPromotion implements ObserverInterface
      // $logger->info('in internal add to cart');
       //$logger->info($cart_id."------".$sku_to_add."------".$sku_qty."------".$product_id."------".$seller_id."------".$discountpromo."----SERVER---".$_SERVER['REMOTE_ADDR']."---".$_SERVER['SERVER_ADDR']);
 
-      if($_SERVER['REMOTE_ADDR']!=$_SERVER['SERVER_NAME']){
+      if($_SERVER['REMOTE_ADDR']!=$_SERVER['SERVER_ADDR']){
        // $logger->info('inside if    '.$_SERVER['REDIRECT_HTTP_AUTHORIZATION']);
           $post_req= [
             'cart_item' => [
@@ -455,7 +455,7 @@ class ApplyPromotion implements ObserverInterface
             curl_setopt($ch, CURLOPT_HTTPHEADER, array("Content-Type: application/json", "Authorization: Bearer " . json_decode($token)));
 
         $promoEntry = array();
-        $item = $discount = $type =  array();
+        $item = $discount =  $parentId =  array();
         if($discountpromo > 0){
           $addToCart = curl_exec($ch);
          // $logger->info($addToCart);
@@ -463,16 +463,17 @@ class ApplyPromotion implements ObserverInterface
           $addedData = json_decode($addToCart,true);
           $discount['amount'] = $discountpromo;
           $discount['seller'] = $seller_id;
-          if($proditemId == 0){
+          if($promoType== 'BXGY'){
            $item_id = $addedData['item_id'];
-           $type = 'BXGY';
+           $parentId = $proditemId;
           }else{
-            $item_id = $proditemId;
-            $type = 'BXGX';
+            $item_id = $proditemId;  //bxgx
+            $parentId = $item_id;
           }
           $item['id'] = $item_id;
           $item['qty'] = $sku_qty;
-          $item['type'] = $type ;
+          $item['type'] = $promoType;
+          $item['parent'] = $parentId;
           $promoEntry['discount'] = [];
           $promoEntry['item'] = [];
           array_push($promoEntry['discount'],json_encode($discount));
