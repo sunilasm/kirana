@@ -99,7 +99,7 @@ use Magento\Framework\Event\ObserverInterface;
 $writer = new \Zend\Log\Writer\Stream(BP . '/var/log/pvn.log'); 
 $logger = new \Zend\Log\Logger();
 $logger->addWriter($writer);
-$logger->info('Product Interface');
+// $logger->info('Product Interface');
             $doorStepPrice=0;
             $pickupFrmStorePrice=0;
             $PickupFromStore=0;
@@ -117,7 +117,7 @@ $logger->info('Product Interface');
             $subTotal = 0;
             foreach ($quote->getAllItems() as $quoteItem) {
                 $product = $this->productRepository->create()->getById($quoteItem->getProductId());
-             $freeQty = 0;
+             $freeQty = 0; $freeProduct = 0;
                 $discountData = $this->_promoFactory->create()->getCollection()
                 ->addFieldToFilter('cart_id', $quoteItem->getQuoteId());
                 if(isset($discountData)){
@@ -129,6 +129,9 @@ $logger->info('Product Interface');
                             $itemData = json_decode($value);
                             if($itemData->id == $quoteItem->getItemId()) {
                                 $freeQty = $itemData->qty;
+                            }
+                            if($itemData->parent == $quoteItem->getItemId()) {
+                                $freeProduct = $itemData->id;
                             }
 
                           }
@@ -187,6 +190,8 @@ $logger->info('Product Interface');
                 $itemExtAttr->setUnitm($optionText);
                 $itemExtAttr->setExtRowQty($Result['qty']);
                 $itemExtAttr->setExtFreeQty($freeQty);
+                $itemExtAttr->setExtFreeProduct($freeProduct);
+
                 $itemExtAttr->setVolume($product->getVolume());
                 if(!empty($idInfo)){
                 $itemExtAttr->setDoorstepPrice($door);

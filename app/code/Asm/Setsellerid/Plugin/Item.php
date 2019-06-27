@@ -57,7 +57,7 @@ class Item
         // $logger->addWriter($writer);
         foreach($totals->getItems() as $item)
         {
-            $freeQty = 0;
+            $freeQty = 0; $freeProduct = 0;
             $quoteItem = $this->itemFactory->create()->load($item->getItemId());
             $discountData = $this->_promoFactory->create()->getCollection()
             ->addFieldToFilter('cart_id', $quoteItem->getQuoteId());
@@ -71,7 +71,9 @@ class Item
                             if($itemData->id == $quoteItem->getItemId()) {
                                 $freeQty = $itemData->qty;
                             }
-
+                            if($itemData->parent == $quoteItem->getItemId()) {
+                                $freeProduct = $itemData->id;
+                            }
                           }
                         }
                     }
@@ -114,6 +116,8 @@ class Item
             }
             $extensionAttributes->setExtnRowTotal($rowTotal);
             $extensionAttributes->setExtFreeQty($freeQty);
+            $extensionAttributes->setExtFreeProduct($freeProduct);
+
             $item->setExtensionAttributes($extensionAttributes);
             $grandTotal += $rowTotal;
         }
