@@ -40,6 +40,11 @@ class Repository implements \Magento\Quote\Api\CartItemRepositoryInterface
      * @var CartItemOptionsProcessor
      */
     private $cartItemOptionsProcessor;
+    
+    /**
+    * @var EventManager
+    */
+      private $eventManager;
 
     /**
      * @param \Magento\Quote\Api\CartRepositoryInterface $quoteRepository
@@ -51,12 +56,14 @@ class Repository implements \Magento\Quote\Api\CartItemRepositoryInterface
         \Magento\Quote\Api\CartRepositoryInterface $quoteRepository,
         \Magento\Catalog\Api\ProductRepositoryInterface $productRepository,
         \Magento\Quote\Api\Data\CartItemInterfaceFactory $itemDataFactory,
+        \Magento\Framework\Event\Manager $eventManager,
         array $cartItemProcessors = []
     ) {
         $this->quoteRepository = $quoteRepository;
         $this->productRepository = $productRepository;
         $this->itemDataFactory = $itemDataFactory;
         $this->cartItemProcessors = $cartItemProcessors;
+        $this->eventManager = $eventManager;
     }
 
     /**
@@ -64,6 +71,7 @@ class Repository implements \Magento\Quote\Api\CartItemRepositoryInterface
      */
     public function getList($cartId)
     {
+        //$this->eventManager->dispatch('retailinsights_hyloshapi_observer_cartobserver',['quote'=>$this->quoteRepository->getActive($cartId)]);
         $output = [];
         /** @var  \Magento\Quote\Model\Quote $quote */
         $quote = $this->quoteRepository->getActive($cartId);
@@ -84,22 +92,45 @@ class Repository implements \Magento\Quote\Api\CartItemRepositoryInterface
         /** @var \Magento\Quote\Model\Quote $quote */
         $cartId = $cartItem->getQuoteId();
         $quote = $this->quoteRepository->getActive($cartId);
+        
+        $writer = new \Zend\Log\Writer\Stream(BP . '/var/log/pvn.log'); 
+        $logger = new \Zend\Log\Logger(); $logger->addWriter($writer); 
+        $logger->info('Cart Save');
 
+        
         $quoteItems = $quote->getItems();
         $quoteItems[] = $cartItem;
         $quote->setItems($quoteItems);
         $this->quoteRepository->save($quote);
         $quote->collectTotals();
+        
+        // $quote = $this->quoteRepository->getActive($cartId);
+        // $quoteItems = $quote->getItems();
+        // $price =0;
+        // foreach($quoteItems as $key => $value) {
+        //     if ($key == 0) {
+        //         $price =11;
+        //     } else {
+        //         $price =12;
+        //     }
+        // $quoteItems[$key]->setCustomPrice($price);
+        // $quoteItems[$key]->setOriginalCustomPrice($price);
+        // $quoteItems[$key]->save();
+        // $logger->info($quoteItems[$key]->getPrice()."-----".$quoteItems[$key]->getQty()); 
+        // }
+        // $this->quoteRepository->save($quote->collectTotals());
+        $logger->info('Cart after totals');
         return $quote->getLastAddedItem();
     }
 
-    /**
-     * {@inheritdoc}
-     */
+     
     public function deleteById($cartId, $itemId)
     {
         /** @var \Magento\Quote\Model\Quote $quote */
         $quote = $this->quoteRepository->getActive($cartId);
+        $writer = new \Zend\Log\Writer\Stream(BP . '/var/log/pvn.log'); 
+        $logger = new \Zend\Log\Logger(); $logger->addWriter($writer); 
+        $logger->info('Cart DElete');
         $quoteItem = $quote->getItemById($itemId);
         if (!$quoteItem) {
             throw new NoSuchEntityException(
@@ -109,6 +140,7 @@ class Repository implements \Magento\Quote\Api\CartItemRepositoryInterface
         try {
             $quote->removeItem($itemId);
             $this->quoteRepository->save($quote);
+            $this->eventManager->dispatch('promotion_after_add_cart', ['quoteid' => $cartId ]); 
         } catch (\Exception $e) {
             throw new CouldNotSaveException(__('Could not remove item from quote'));
         }
