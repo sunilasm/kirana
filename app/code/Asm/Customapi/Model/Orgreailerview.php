@@ -167,10 +167,10 @@ class Orgreailerview implements OrgnizedretailerInterface
                                         //     // $logger->info($totalDiscount." BXGY discount");
                                         // }
                                         if($ruleCode == "BXGOFF"){
-                                            $totalDiscount  +=  $this->applyBxgoff($promo,$product_price,$item->getSku(),$item->getQty(),'BXGOFF');
+                                            $totalDiscount  +=  $this->applyBxgoff($promo,$product_price,$item->getSku(),$item->getQty(),'BXGOFF',$item->getSeller_id());
                                         }
                                         if($ruleCode == "BXGPOFF"){
-                                            $totalDiscount  +=  $this->applyBxgoff($promo,$product_price,$item->getSku(),$item->getQty(),'BXGPOFF');
+                                            $totalDiscount  +=  $this->applyBxgoff($promo,$product_price,$item->getSku(),$item->getQty(),'BXGPOFF',$item->getSeller_id());
                                         }
                                     }
                                 }
@@ -396,7 +396,7 @@ class Orgreailerview implements OrgnizedretailerInterface
 
     //     return $discPrice;
     // }
-    public function applyBxgoff($promo,$product_price,$itemSku,$itemQty,$type){
+    public function applyBxgoff($promo,$product_price,$itemSku,$itemQty,$type,$seller_id){
         $prDiscount =0;  
         $description = json_decode($promo['description'],true);
         $action_arr = json_decode($promo['actions_serialized'] , true); 
@@ -404,7 +404,7 @@ class Orgreailerview implements OrgnizedretailerInterface
         if(in_array($itemSku, $actionSerSkus)){   //applypromo
           $ruleQty = $this->getActionQuantity($action_arr);
           $discountFactor =  floor($itemQty/$ruleQty); 
-          if($description['code'] == $type){
+          if(($description['code'] == $type)  && ($seller_id == $promo['store_id'])){
             if($type == 'BXGPOFF'){              
                 $prDiscount = ($discountFactor * $product_price * $ruleQty * $promo['discount_amount'])/100 ;
             }else{
