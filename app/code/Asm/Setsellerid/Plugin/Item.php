@@ -2,6 +2,10 @@
 namespace Asm\Setsellerid\Plugin;
 use Lof\MarketPlace\Model\SellerProductFactory as SellerProduct;
 use Retailinsights\Promotion\Model\PromoTableFactory;
+<<<<<<< HEAD
+=======
+use Magento\Catalog\Api\ProductRepositoryInterfaceFactory as ProductRepository;
+>>>>>>> development
 
 class Item
 {
@@ -10,27 +14,40 @@ class Item
      */
     protected $sellerProduct;
     /**
+     * @var ProductRepository
+     */
+    protected $productRepository;
+    /**
      * @param \Magento\Authorization\Model\UserContextInterface $userContext
      * @param \Hexcrypto\WishlistAPI\Helper\Data $wishlistHelper
       * @param SellerProduct $sellerProduct
      */
+<<<<<<< HEAD
             private $quoteItemFactory;
             protected $_promoFactory;
+=======
+    private $quoteItemFactory;
+    protected $_promoFactory;
+
+>>>>>>> development
     public function __construct(
          SellerProduct $sellerProduct,
          PromoTableFactory $promoFactory,
         \Magento\Quote\Model\Quote\ItemFactory $itemFactory,
         \Magento\Quote\Api\Data\TotalsItemExtensionFactory $totalItemExtensionFactory,
          \Magento\Quote\Api\Data\TotalsExtensionFactory $totalExtensionFactory,
+        ProductRepository $productRepository,
         \Magento\Quote\Model\Quote\ItemFactory $quoteItemFactory
     
     ) {
         $this->_promoFactory = $promoFactory;
         $this->sellerProduct = $sellerProduct;
+        $this->_promoFactory = $promoFactory;        
         $this->itemFactory = $itemFactory;
         $this->totalItemExtension = $totalItemExtensionFactory;
-         $this->totalExtension = $totalExtensionFactory;
+        $this->totalExtension = $totalExtensionFactory;
         $this->quoteItemFactory = $quoteItemFactory;
+        $this->productRepository = $productRepository;
     }
     /**
      * add sku in total cart items
@@ -49,11 +66,20 @@ class Item
         $pickupFrmStorePId = 0;
         $door=0;
         $PickupFromStore=0;
+<<<<<<< HEAD
        $discount_amount = 0;
+=======
+        $discount_amount = 0;
+
+        // $writer = new \Zend\Log\Writer\Stream(BP . '/var/log/appromo.log'); 
+        // $logger = new \Zend\Log\Logger();
+        // $logger->addWriter($writer);
+>>>>>>> development
         foreach($totals->getItems() as $item)
         {
-
+            $freeQty = 0; $freeProduct = 0;
             $quoteItem = $this->itemFactory->create()->load($item->getItemId());
+<<<<<<< HEAD
              $discountData = $this->_promoFactory->create()->getCollection()
             ->addFieldToFilter('cart_id', $quoteItem->getQuoteId());
             if(isset($discountData)){
@@ -61,6 +87,33 @@ class Item
                     $discount_amount = $val['total_discount'];
                 }
             }
+=======
+            $product = $this->productRepository->create()->getById($quoteItem->getProductId());
+            $discountData = $this->_promoFactory->create()->getCollection()
+            ->addFieldToFilter('cart_id', $quoteItem->getQuoteId());
+            if(isset($discountData)){
+                foreach($discountData->getData() as $k => $val){ 
+                        $discount_amount = $val['total_discount'];
+                        $itemInfo = json_decode($val['item_qty'],true);
+                        foreach($itemInfo as $k => $itemArray){
+                          foreach($itemArray as $key => $value){
+                            $itemData = json_decode($value);
+                            if(isset($itemData->id)){
+                                if($itemData->id == $quoteItem->getItemId()) {
+                                    $freeQty = $itemData->qty;
+                                }
+                            }
+                            if(isset($itemData->parent)){
+                                if($itemData->parent == $quoteItem->getItemId()) {
+                                    $freeProduct = $itemData->id;
+                                }
+                            }
+                          }
+                        }
+                    }
+            }
+            
+>>>>>>> development
             // $SellerProd = $this->sellerProduct->create()->getCollection();
             // $fltColl = $SellerProd->addFieldToFilter('seller_id', $quoteItem->getSellerId())
             //             ->addFieldToFilter('product_id', $quoteItem->getProductId());
@@ -97,6 +150,10 @@ class Item
                 $extensionAttributes = $this->totalItemExtension->create();
             }
             $extensionAttributes->setExtnRowTotal($rowTotal);
+            $extensionAttributes->setExtFreeQty($freeQty);
+            $extensionAttributes->setExtFreeProduct($freeProduct);
+            $extensionAttributes->setSku($product->getSku());
+
             $item->setExtensionAttributes($extensionAttributes);
             $grandTotal += $rowTotal;
         }

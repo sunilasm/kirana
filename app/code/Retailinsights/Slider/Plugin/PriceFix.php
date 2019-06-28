@@ -41,12 +41,12 @@ class PriceFix
     {
         $writer = new \Zend\Log\Writer\Stream(BP . '/var/log/pvn.log'); 
         $logger = new \Zend\Log\Logger(); $logger->addWriter($writer); 
-        $logger->info('PriceFix');
+        $logger->info('in PriceFix');
         
         $cartId = $cartItem->getQuoteId();
         $sku = $cartItem->getSku();
-        $logger->info($cartId);
-        $logger->info($sku);
+       // $logger->info($cartId);
+       // $logger->info($sku);
         $quote = $this->quoteRepository->getActive($cartId);
         $quoteItems = $quote->getItems();
         
@@ -64,9 +64,12 @@ class PriceFix
         $quoteItems[$key]->save();
         }
         }
-        
+       
+
         $this->quoteRepository->save($quote->collectTotals());
-        $this->eventManager->dispatch('promotion_after_add_cart', ['quoteid' => $cartId ]); 
+        if($_SERVER['REQUEST_METHOD']!= 'PUT'){
+            $this->eventManager->dispatch('promotion_after_add_cart', ['quoteid' => $cartId ]); 
+        }
 
          return $quote->getLastAddedItem();
     }
