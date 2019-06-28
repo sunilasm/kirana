@@ -2,7 +2,7 @@
 namespace Asm\Customapi\Model;
 use Asm\Customapi\Api\OrgnizedretailerInterface;
 use Retailinsights\Promotion\Model\PostTableFactory;
-use Retailinsights\Promotion\Model\PromoTableFactory;
+//use Retailinsights\Promotion\Model\PromoTableFactory;
  
 class Orgreailerview implements OrgnizedretailerInterface
 {
@@ -17,11 +17,11 @@ class Orgreailerview implements OrgnizedretailerInterface
     protected $_sellerCollection;
     protected $_productCollectionFactory;
     protected $_connection;
-    protected $_promoFactory;
+   // protected $_promoFactory;
 
     public function __construct(
        PostTableFactory $PostTableFactory ,
-       PromoTableFactory $promoFactory,
+     //  PromoTableFactory $promoFactory,
        \Magento\Framework\App\RequestInterface $request,
        \Lof\MarketPlace\Model\Seller $sellerCollection,
        \Lof\MarketPlace\Model\SellerProduct $sellerProductCollection,
@@ -38,7 +38,7 @@ class Orgreailerview implements OrgnizedretailerInterface
        $this->_productCollectionFactory = $productCollectionFactory;
        $this->_PostTableFactory = $PostTableFactory;
        $this->_connection = $_connection;
-       $this->_promoFactory = $promoFactory;
+     //  $this->_promoFactory = $promoFactory;
     }
 
     public function orgreailer() 
@@ -156,34 +156,28 @@ class Orgreailerview implements OrgnizedretailerInterface
                                          }else{
                                             $product_price = $item->getPrice(); 
                                          }
-                                        if($ruleCode == "BXGX"){
-                                           // $logger->info("in bxgx dicount");
-                                            $totalDiscount  += $this->applyBxgxBxgy($post['quote_id'],$item->getId(),$product_price,'BXGX');
-                                          //  $logger->info($totalDiscount." BXGX discount");
-                                        }
-                                        if($ruleCode == "BXGY"){
-                                            // $logger->info("in bxgy dicount");
-                                            $totalDiscount  += $this->applyBxgxBxgy($post['quote_id'],$item->getId(),$product_price,'BXGY');
-                                            // $logger->info($totalDiscount." BXGY discount");
-                                        }
+                                        // if($ruleCode == "BXGX"){
+                                        //    // $logger->info("in bxgx dicount");
+                                        //     $totalDiscount  += $this->applyBxgxBxgy($post['quote_id'],$item->getId(),$product_price,'BXGX');
+                                        //   //  $logger->info($totalDiscount." BXGX discount");
+                                        // }
+                                        // if($ruleCode == "BXGY"){
+                                        //     // $logger->info("in bxgy dicount");
+                                        //     $totalDiscount  += $this->applyBxgxBxgy($post['quote_id'],$item->getId(),$product_price,'BXGY');
+                                        //     // $logger->info($totalDiscount." BXGY discount");
+                                        // }
                                         if($ruleCode == "BXGOFF"){
-                                            // $logger->info("in BXGOFF dicount");
                                             $totalDiscount  +=  $this->applyBxgoff($promo,$product_price,$item->getSku(),$item->getQty(),'BXGOFF');
-                                            // $logger->info($totalDiscount." BXGOFF discount");
                                         }
                                         if($ruleCode == "BXGPOFF"){
-                                            // $logger->info("in BXGPOFF dicount");
                                             $totalDiscount  +=  $this->applyBxgoff($promo,$product_price,$item->getSku(),$item->getQty(),'BXGPOFF');
-                                            // $logger->info($totalDiscount." BXGOFFPER discount");
                                         }
                                     }
                                 }
 
-                              //  $logger->info($totalDiscount."  Final Discount");
                                 if(isset($seller_products[$product->getId()]['pickup_from_store']))
                                 {
                                     $cartSubTotal += ($seller_products[$product->getId()]['pickup_from_store'] * $item->getQty());
-                                    // $logger->info($cartSubTotal."========".$totalDiscount."  Final Values");
 
                                     $cartSubTotal = ($cartSubTotal - $totalDiscount);
                                 }
@@ -379,37 +373,34 @@ class Orgreailerview implements OrgnizedretailerInterface
         }
         return $actionQty;
     }
-    public function applyBxgxBxgy($quoteId,$itemId,$price,$type){
-        $discPrice = 0;
-        $applyPromoData = $this->_promoFactory->create()->getCollection()
-        ->addFieldToFilter('cart_id', $quoteId);
-        foreach($applyPromoData as $key => $val){
-            $itemInfo = json_decode($val['item_qty'],true);
-            foreach($itemInfo as $k => $itemArray){
-                foreach($itemArray as $key => $value){
-                  $itemData = json_decode($value);
-                  if(isset($itemData->qty)) {
-                      if(($itemData->id == $itemId) && ($itemData->type == $type)){
-                          $discPrice = ($price*$itemData->qty);
-                      }
-                  }
-                }
-            }
-        }
-        $writer = new \Zend\Log\Writer\Stream(BP . '/var/log/ishu.log'); 
-        $logger = new \Zend\Log\Logger();$logger->addWriter($writer);
-       // $logger->info($quoteId.".......".$itemId.".......".$price.".........".$discPrice);
+    // public function applyBxgxBxgy($quoteId,$itemId,$price,$type){
+    //     $discPrice = 0;
+    //     $applyPromoData = $this->_promoFactory->create()->getCollection()
+    //     ->addFieldToFilter('cart_id', $quoteId);
+    //     foreach($applyPromoData as $key => $val){
+    //         $itemInfo = json_decode($val['item_qty'],true);
+    //         foreach($itemInfo as $k => $itemArray){
+    //             foreach($itemArray as $key => $value){
+    //               $itemData = json_decode($value);
+    //               if(isset($itemData->qty)) {
+    //                   if(($itemData->id == $itemId) && ($itemData->type == $type)){
+    //                       $discPrice = ($price*$itemData->qty);
+    //                   }
+    //               }
+    //             }
+    //         }
+    //     }
+    //     $writer = new \Zend\Log\Writer\Stream(BP . '/var/log/ishu.log'); 
+    //     $logger = new \Zend\Log\Logger();$logger->addWriter($writer);
+    //    // $logger->info($quoteId.".......".$itemId.".......".$price.".........".$discPrice);
 
-        return $discPrice;
-    }
+    //     return $discPrice;
+    // }
     public function applyBxgoff($promo,$product_price,$itemSku,$itemQty,$type){
-        $writer = new \Zend\Log\Writer\Stream(BP . '/var/log/ishu.log'); 
-        $logger = new \Zend\Log\Logger();$logger->addWriter($writer);
         $prDiscount =0;  
         $description = json_decode($promo['description'],true);
         $action_arr = json_decode($promo['actions_serialized'] , true); 
         $actionSerSkus = $this->getActionSku($action_arr);
-       // $logger->info($itemSku.".......".$itemQty.".......".$promo['description'].".........bxgoff&p");
         if(in_array($itemSku, $actionSerSkus)){   //applypromo
           $ruleQty = $this->getActionQuantity($action_arr);
           $discountFactor =  floor($itemQty/$ruleQty); 
@@ -421,7 +412,7 @@ class Orgreailerview implements OrgnizedretailerInterface
             }
           }
         }
-       // $logger->info($prDiscount."  REturn applyBxgoff");
         return $prDiscount;   
     }
 }
+ 
