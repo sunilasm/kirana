@@ -25,6 +25,9 @@ xsi:noNamespaceSchemaLocation="urn:magento:framework:Api/etc/extension_attribute
 		   <attribute code="ext_free_product" type="string" />
     </extension_attributes>
 <extension_attributes for="Magento\Quote\Api\Data\TotalsItemInterface">
+		   <attribute code="sku" type="string" />
+    </extension_attributes>
+<extension_attributes for="Magento\Quote\Api\Data\TotalsItemInterface">
 		   <attribute code="extn_row_total" type="string" />
     </extension_attributes>
     <extension_attributes for="Magento\Quote\Api\Data\TotalsItemInterface">

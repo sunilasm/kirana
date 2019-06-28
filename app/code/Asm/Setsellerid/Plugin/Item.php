@@ -2,6 +2,7 @@
 namespace Asm\Setsellerid\Plugin;
 use Lof\MarketPlace\Model\SellerProductFactory as SellerProduct;
 use Retailinsights\Promotion\Model\PromoTableFactory;
+use Magento\Catalog\Api\ProductRepositoryInterfaceFactory as ProductRepository;
 
 class Item
 {
@@ -9,6 +10,10 @@ class Item
      * @var SellerProduct
      */
     protected $sellerProduct;
+    /**
+     * @var ProductRepository
+     */
+    protected $productRepository;
     /**
      * @param \Magento\Authorization\Model\UserContextInterface $userContext
      * @param \Hexcrypto\WishlistAPI\Helper\Data $wishlistHelper
@@ -23,6 +28,7 @@ class Item
         \Magento\Quote\Model\Quote\ItemFactory $itemFactory,
         \Magento\Quote\Api\Data\TotalsItemExtensionFactory $totalItemExtensionFactory,
          \Magento\Quote\Api\Data\TotalsExtensionFactory $totalExtensionFactory,
+        ProductRepository $productRepository,
         \Magento\Quote\Model\Quote\ItemFactory $quoteItemFactory
     
     ) {
@@ -32,6 +38,7 @@ class Item
         $this->totalItemExtension = $totalItemExtensionFactory;
         $this->totalExtension = $totalExtensionFactory;
         $this->quoteItemFactory = $quoteItemFactory;
+        $this->productRepository = $productRepository;
     }
     /**
      * add sku in total cart items
@@ -59,6 +66,7 @@ class Item
         {
             $freeQty = 0; $freeProduct = 0;
             $quoteItem = $this->itemFactory->create()->load($item->getItemId());
+            $product = $this->productRepository->create()->getById($quoteItem->getProductId());
             $discountData = $this->_promoFactory->create()->getCollection()
             ->addFieldToFilter('cart_id', $quoteItem->getQuoteId());
             if(isset($discountData)){
@@ -117,6 +125,7 @@ class Item
             $extensionAttributes->setExtnRowTotal($rowTotal);
             $extensionAttributes->setExtFreeQty($freeQty);
             $extensionAttributes->setExtFreeProduct($freeProduct);
+            $extensionAttributes->setSku($product->getSku());
 
             $item->setExtensionAttributes($extensionAttributes);
             $grandTotal += $rowTotal;
