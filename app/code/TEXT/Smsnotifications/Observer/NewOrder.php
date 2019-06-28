@@ -144,7 +144,10 @@ class NewOrder implements ObserverInterface
                 $text = str_replace('{country_code}',  $countryCode, $text);
             } 
 
-            $admin_recipients[]=$settings['admin_recipients'];
+           $admin_recipients[]=$settings['admin_recipients'];
+
+
+
             array_push($admin_recipients, $telephone);
      
             $object_manager = \Magento\Framework\App\ObjectManager::getInstance();

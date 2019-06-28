@@ -20,7 +20,7 @@ class Ordersms extends \Magento\Framework\App\Action\Action
         \Magento\Sales\Api\OrderRepositoryInterface $orderRepository,
             \Magento\Framework\Api\SearchCriteriaBuilder $searchCriteriaBuilder,
             \Magento\Framework\Api\SortOrderBuilder $sortBuilder,
-            Helper $helper,
+           Helper $helper,
             Context $context
     ) {
           $this->orderRepository = $orderRepository;
@@ -30,13 +30,12 @@ class Ordersms extends \Magento\Framework\App\Action\Action
         parent::__construct($context);
     }
 
-
     public function execute()
     {
                 //date_default_timezone_set('Asia/Kolkata'); 
                 $time = time();
                 $to = date('Y-m-d H:i:s', $time);
-                $lastTime = $time - 3000000; // 60*60*24
+                $lastTime = $time - 300; // 60*60*24
                 $from = date('Y-m-d H:i:s', $lastTime);
                 //print_r("to:-".$to);
                 //print_r("from:-".$from); exit;
@@ -44,7 +43,7 @@ class Ordersms extends \Magento\Framework\App\Action\Action
                 $OrderFactory = $objectManager->create('Magento\Sales\Model\ResourceModel\Order\CollectionFactory');
                 $orderCollection = $OrderFactory->create()->addFieldToSelect(array('*'));
                 $orderCollection->addFieldToFilter('created_at', ['lteq' => $to])->addFieldToFilter('created_at', ['gteq' => $from]);
-                //print_r($orderCollection->getSelect()->__toString());exit; 
+               //print_r($orderCollection->getSelect()->__toString());exit;  
 
                 $table = "";
 		        $table .= "<table style='border:1px solid #000'>";
@@ -78,7 +77,7 @@ class Ordersms extends \Magento\Framework\App\Action\Action
                 $totalPrice    =  number_format($order->getGrandTotal(), 2);
                 $countryCode   =  $order->getOrderCurrencyCode();
                 $customerEmail =  $order->getCustomerEmail();
-		        $customerFname = $customer->getFirstname();
+		$customerFname = $customer->getFirstname();
                 $customerLname = $customer->getLastname();
 
                $telephone = $customer->getPrimaryBillingAddress()->getTelephone();
@@ -99,12 +98,14 @@ class Ordersms extends \Magento\Framework\App\Action\Action
                     $admin_recipients[]=$settings['admin_recipients'];
 		   // print_r($admin_recipients);
                     array_push($admin_recipients, $telephone);
-		    //print_r($admin_recipients);
+	   
                     $result = $objectManager->get('TEXT\Smsnotifications\Helper\Data')->sendSms($text,$admin_recipients);
+print_r($result);                   
+ exit;
                 }
                 $table .= "<tr style='border:1px solid #000'>";
                 $table .= "<td style='border-right:1px solid #000'>";
-                $table .= $orderId;
+                $table .= $orderd;
                 $table .= "</td>";
                 $table .= "<td style='border-right:1px solid #000'>";
                 $table .= $customerFname." ".$customerLname;
@@ -122,6 +123,7 @@ class Ordersms extends \Magento\Framework\App\Action\Action
                
                 //print_r($orderId.'--send--'.$result);
                 //print_r($result);
+//exit;
              endforeach;
              $table .= "</table>";
 	         echo $table;
