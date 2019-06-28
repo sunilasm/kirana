@@ -1,6 +1,8 @@
 <?php
 namespace Asm\Customapi\Model;
 use Asm\Customapi\Api\OrgnizedretailerInterface;
+use Retailinsights\Promotion\Model\PostTableFactory;
+use Retailinsights\Promotion\Model\PromoTableFactory;
  
 class Orgreailerview implements OrgnizedretailerInterface
 {
@@ -14,13 +16,18 @@ class Orgreailerview implements OrgnizedretailerInterface
     protected $request;
     protected $_sellerCollection;
     protected $_productCollectionFactory;
+    protected $_connection;
+    protected $_promoFactory;
 
     public function __construct(
+       PostTableFactory $PostTableFactory ,
+       PromoTableFactory $promoFactory,
        \Magento\Framework\App\RequestInterface $request,
        \Lof\MarketPlace\Model\Seller $sellerCollection,
        \Lof\MarketPlace\Model\SellerProduct $sellerProductCollection,
        \Magento\Catalog\Model\ResourceModel\Product\CollectionFactory $productCollectionFactory,
        \Asm\Geolocation\Helper\Data $helperData,
+       \Magento\Framework\App\ResourceConnection $_connection,
        \Magento\Quote\Model\QuoteFactory $quoteFactory
     ) {
        $this->request = $request;
@@ -29,11 +36,14 @@ class Orgreailerview implements OrgnizedretailerInterface
        $this->_sellerProductCollection = $sellerProductCollection;
        $this->quoteFactory = $quoteFactory;
        $this->_productCollectionFactory = $productCollectionFactory;
+       $this->_PostTableFactory = $PostTableFactory;
+       $this->_connection = $_connection;
+       $this->_promoFactory = $promoFactory;
     }
 
     public function orgreailer() 
     {
-        //print_r("Api execute successfully");exit;
+        $connection = $this->_connection->getConnection();
         $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
         $request = $objectManager->get('\Magento\Framework\Webapi\Rest\Request');
         $post = $request->getBodyParams();
@@ -43,6 +53,9 @@ class Orgreailerview implements OrgnizedretailerInterface
         if($post['latitude'] != '' && $post['longitude'] != '')
         {
             $ranageSeller = $this->getInRangeSeller($post['latitude'], $post['longitude']);
+            // $writer = new \Zend\Log\Writer\Stream(BP . '/var/log/ishu.log'); 
+            // $logger = new \Zend\Log\Logger();$logger->addWriter($writer);
+            // $logger->info($ranageSeller);
             $items = $quote->getAllItems();
             $response = array();
             $i = 0;
@@ -71,21 +84,19 @@ class Orgreailerview implements OrgnizedretailerInterface
                     $sellerData = $sellcoll->getData();
                     //Set contact number
                     if ($sellerData['contact_number']) {
-                        if(preg_match( '/(\d{2})(\d{4})(\d{4})$/', $sellerData['contact_number'],  $matches ) )
-                        {
+                        if(preg_match( '/(\d{2})(\d{4})(\d{4})$/', $sellerData['contact_number'],  $matches )){
                            $result = '0'.$matches[1] . '-' .$matches[2] . '-' . $matches[3];
                            $sellerData['contact_number'] = $result;
                         }
                      }
 
        		   //Set kirana landline
-		    if ($sellerData['telephone']) {
-   			if(preg_match( '/(\d{2})(\d{4})(\d{4})$/', $sellerData['telephone'],  $matches ) )
-    			{
-        		   $result = '0'.$matches[1] . '-' .$matches[2] . '-' . $matches[3];
-        		   $sellerData['telephone'] = $result;
-    			}
-		     }
+        		    if ($sellerData['telephone']){
+           			   if(preg_match( '/(\d{2})(\d{4})(\d{4})$/', $sellerData['telephone'],  $matches )){
+                		   $result = '0'.$matches[1] . '-' .$matches[2] . '-' . $matches[3];
+                		   $sellerData['telephone'] = $result;
+            			}
+        		     }
 		    //Set kirana fax
                     if ($sellerData['kirana_fixed_line']) {
                         if(preg_match( '/(\d{2})(\d{4})(\d{4})$/', $sellerData['kirana_fixed_line'],  $matches ) )
@@ -95,7 +106,7 @@ class Orgreailerview implements OrgnizedretailerInterface
                         }
                     }
 
-		endforeach;
+		        endforeach;
 
                 // Quote Data
                 $cartSubTotal = 0;
@@ -103,6 +114,8 @@ class Orgreailerview implements OrgnizedretailerInterface
                 $cartNotPresentProducts = 0;               
 	            foreach ($items as $item) 
                 {
+                $totalDiscount  = 0;
+
                     $collection = $this->_productCollectionFactory->create();
                     $collection->addAttributeToSelect('*');
                     $collection->addAttributeToSort('price', 'asc');
@@ -118,6 +131,7 @@ class Orgreailerview implements OrgnizedretailerInterface
                         }
                         
                         $products = $collection->getData();
+                        $mappedRulesArray = $this->getCustomTableRules();  
                         
                         foreach ($collection as $product)
                         {
@@ -130,15 +144,52 @@ class Orgreailerview implements OrgnizedretailerInterface
                                 $productCollectionData['quote_qty'] = $item->getQty();
                                 $collectionNew['seller_id'] = $item->getSeller_id();
                                 $productPresentCollArray[] = $productCollectionData;
-				                //print_r($seseller_products); exit;
+                                //print_r($seseller_products); exit;
+                                if(isset($mappedRulesArray[$item->getSeller_id()])){ 
+                                    foreach($mappedRulesArray[$item->getSeller_id()] as $k => $promo) {
+                                         $description = json_decode($promo['description'],true);
+                                         $ruleCode = $description['code'];
+                                         $ruleId = $promo['p_id'];
+                                         $product_price = 0;
+                                         if(isset($seller_products[$product->getId()]['pickup_from_store'])){
+                                            $product_price = $seller_products[$product->getId()]['pickup_from_store'];
+                                         }else{
+                                            $product_price = $item->getPrice(); 
+                                         }
+                                        if($ruleCode == "BXGX"){
+                                           // $logger->info("in bxgx dicount");
+                                            $totalDiscount  += $this->applyBxgxBxgy($post['quote_id'],$item->getId(),$product_price,'BXGX');
+                                          //  $logger->info($totalDiscount." BXGX discount");
+                                        }
+                                        if($ruleCode == "BXGY"){
+                                            // $logger->info("in bxgy dicount");
+                                            $totalDiscount  += $this->applyBxgxBxgy($post['quote_id'],$item->getId(),$product_price,'BXGY');
+                                            // $logger->info($totalDiscount." BXGY discount");
+                                        }
+                                        if($ruleCode == "BXGOFF"){
+                                            // $logger->info("in BXGOFF dicount");
+                                            $totalDiscount  +=  $this->applyBxgoff($promo,$product_price,$item->getSku(),$item->getQty(),'BXGOFF');
+                                            // $logger->info($totalDiscount." BXGOFF discount");
+                                        }
+                                        if($ruleCode == "BXGPOFF"){
+                                            // $logger->info("in BXGPOFF dicount");
+                                            $totalDiscount  +=  $this->applyBxgoff($promo,$product_price,$item->getSku(),$item->getQty(),'BXGPOFF');
+                                            // $logger->info($totalDiscount." BXGOFFPER discount");
+                                        }
+                                    }
+                                }
+
+                              //  $logger->info($totalDiscount."  Final Discount");
                                 if(isset($seller_products[$product->getId()]['pickup_from_store']))
                                 {
                                     $cartSubTotal += ($seller_products[$product->getId()]['pickup_from_store'] * $item->getQty());
+                                    // $logger->info($cartSubTotal."========".$totalDiscount."  Final Values");
+
+                                    $cartSubTotal = ($cartSubTotal - $totalDiscount);
                                 }
                                 $cartPresentProducts += $item->getQty();
                                 $produt_found = 1;
                             }
-                            
                         }
                     }
                     
@@ -180,11 +231,10 @@ class Orgreailerview implements OrgnizedretailerInterface
                 $i++;
             }
         }
-        if(count($response))
-        {
+        if(count($response)){
             $response = $this->sort_by_present_item_count($response);
             $final_response = array();
-		$org_return_count = 3;
+		    $org_return_count = 3;
             if(count($response) < 3)
             {
                 $org_return_count = count($response);
@@ -260,7 +310,7 @@ class Orgreailerview implements OrgnizedretailerInterface
         // filter collection in range of lat and long
         $sellerCollection = $this->_sellerCollection->getCollection()
         ->setOrder('position','ASC')
-        ->addFieldToFilter('group_id',2)
+        ->addFieldToFilter('group_id',array('neq'=>1))
         ->addFieldToFilter('geo_lat',array('gteq'=>$minLat))
         ->addFieldToFilter('geo_lng',array('gteq'=>$minLon))
         ->addFieldToFilter('geo_lat',array('lteq'=>$maxLat))
@@ -279,4 +329,99 @@ class Orgreailerview implements OrgnizedretailerInterface
         return  $selerIdArray;
     }
    
+    public function getCustomTableRules() {
+        $mapped_rules = [];
+        $mapped_data = $this->_PostTableFactory->create()->getCollection()
+        ->setOrder('p_id','ASC')
+        ->addFieldToFilter('seller_type',1)
+        ->addFieldToFilter('status',1)
+        ->addFieldToFilter('rule_type', array('neq' => 1));
+        $count = 0;
+        foreach ($mapped_data->getData() as $k => $promo) {            
+            if(isset($mapped_rules[$promo['store_id']])) {
+                array_push($mapped_rules[$promo['store_id']],$promo);
+            } else {
+                $mapped_rules[$promo['store_id']] = array($promo);
+            }            
+            //$count++;
+        }
+        //return $count;
+        return $mapped_rules; 
+    }
+    public function getActionSku($action_array){
+      $actionSkus = array();
+      if(!empty($action_array)) {
+        $conditionsarr = $action_array['conditions'];
+        foreach($conditionsarr as $ck => $con){
+            if($con['attribute']=='sku'){
+                $actionSkus[] = $con['value'];
+            }
+            if(!empty($con['conditions'])){
+                foreach($con['conditions'] as $c_inn => $c_inn_val){
+                    if($c_inn_val['attribute']=='sku'){
+                        $actionSkus[] = $c_inn_val['value'];
+                    }
+                }
+            }
+        }
+      }
+      return $actionSkus;
+    }
+    public function getActionQuantity($action_array){
+        $actionQty = 0;
+        if(!empty($action_array)) {
+          $conditionsarr = $action_array['conditions'];
+          foreach($conditionsarr as $ck => $con){
+              if($con['attribute']=='quote_item_qty'){
+                  $actionQty = $con['value'];
+              }
+          }
+        }
+        return $actionQty;
+    }
+    public function applyBxgxBxgy($quoteId,$itemId,$price,$type){
+        $discPrice = 0;
+        $applyPromoData = $this->_promoFactory->create()->getCollection()
+        ->addFieldToFilter('cart_id', $quoteId);
+        foreach($applyPromoData as $key => $val){
+            $itemInfo = json_decode($val['item_qty'],true);
+            foreach($itemInfo as $k => $itemArray){
+                foreach($itemArray as $key => $value){
+                  $itemData = json_decode($value);
+                  if(isset($itemData->qty)) {
+                      if(($itemData->id == $itemId) && ($itemData->type == $type)){
+                          $discPrice = ($price*$itemData->qty);
+                      }
+                  }
+                }
+            }
+        }
+        $writer = new \Zend\Log\Writer\Stream(BP . '/var/log/ishu.log'); 
+        $logger = new \Zend\Log\Logger();$logger->addWriter($writer);
+       // $logger->info($quoteId.".......".$itemId.".......".$price.".........".$discPrice);
+
+        return $discPrice;
+    }
+    public function applyBxgoff($promo,$product_price,$itemSku,$itemQty,$type){
+        $writer = new \Zend\Log\Writer\Stream(BP . '/var/log/ishu.log'); 
+        $logger = new \Zend\Log\Logger();$logger->addWriter($writer);
+        $prDiscount =0;  
+        $description = json_decode($promo['description'],true);
+        $action_arr = json_decode($promo['actions_serialized'] , true); 
+        $actionSerSkus = $this->getActionSku($action_arr);
+       // $logger->info($itemSku.".......".$itemQty.".......".$promo['description'].".........bxgoff&p");
+        if(in_array($itemSku, $actionSerSkus)){   //applypromo
+          $ruleQty = $this->getActionQuantity($action_arr);
+          $discountFactor =  floor($itemQty/$ruleQty); 
+          if($description['code'] == $type){
+            if($type == 'BXGPOFF'){              
+                $prDiscount = ($discountFactor * $product_price * $ruleQty * $promo['discount_amount'])/100 ;
+            }else{
+                $prDiscount = ($discountFactor * $promo['discount_amount']);          
+            }
+          }
+        }
+       // $logger->info($prDiscount."  REturn applyBxgoff");
+        return $prDiscount;   
+    }
 }
