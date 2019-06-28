@@ -76,11 +76,15 @@ class Item
                         foreach($itemInfo as $k => $itemArray){
                           foreach($itemArray as $key => $value){
                             $itemData = json_decode($value);
-                            if($itemData->id == $quoteItem->getItemId()) {
-                                $freeQty = $itemData->qty;
+                            if(isset($itemData->id)){
+                                if($itemData->id == $quoteItem->getItemId()) {
+                                    $freeQty = $itemData->qty;
+                                }
                             }
-                            if($itemData->parent == $quoteItem->getItemId()) {
-                                $freeProduct = $itemData->id;
+                            if(isset($itemData->parent)){
+                                if($itemData->parent == $quoteItem->getItemId()) {
+                                    $freeProduct = $itemData->id;
+                                }
                             }
                           }
                         }
