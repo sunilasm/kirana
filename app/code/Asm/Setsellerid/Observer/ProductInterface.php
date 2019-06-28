@@ -57,6 +57,7 @@ use Magento\Framework\Event\ObserverInterface;
         protected $cartExtFactory;
   protected $_promoFactory;
   protected $_connection;
+  protected $quoteItemFactory;
 
 
         /**
@@ -79,7 +80,8 @@ use Magento\Framework\Event\ObserverInterface;
             StoreManager $storeManager,
             AppEmulation $appEmulation,
             CartItemExtensionFactory $extensionFactory,
-            CartExtensionFactory $cartExtFactory
+            CartExtensionFactory $cartExtFactory,
+            \Magento\Quote\Model\Quote\ItemFactory $quoteItemFactory
         ) {
             $this->_objectManager = $objectManager;
             $this->productRepository = $productRepository;
@@ -91,7 +93,7 @@ use Magento\Framework\Event\ObserverInterface;
             $this->sellerProduct = $sellerProduct;
         $this->_promoFactory = $promoFactory;        
         $this->_connection = $_connection;
-
+        $this->quoteItemFactory = $quoteItemFactory;
         }
 
         public function execute(\Magento\Framework\Event\Observer $observer, string $imageType = NULL)
@@ -116,8 +118,9 @@ $logger->addWriter($writer);
             
             $subTotal = 0;
             foreach ($quote->getAllItems() as $quoteItem) {
+
                 $product = $this->productRepository->create()->getById($quoteItem->getProductId());
-             $freeQty = 0; $freeProduct = 0;
+             $freeQty = 0; $freeProduct =  0; $freeSku = 0;
                 $discountData = $this->_promoFactory->create()->getCollection()
                 ->addFieldToFilter('cart_id', $quoteItem->getQuoteId());
                 if(isset($discountData)){
@@ -134,7 +137,9 @@ $logger->addWriter($writer);
                             }
                             if(isset($itemData->parent)){
                                 if($itemData->parent == $quoteItem->getItemId()) {
-                                    $freeProduct = $itemData->id;
+                                     $freeQuoteItem = $this->quoteItemFactory->create()->load($itemData->id);
+                                     $freeSku = $freeQuoteItem->getSku();
+                                     $freeProduct = $itemData->id;
                                 }
                             }
 
@@ -195,6 +200,7 @@ $logger->addWriter($writer);
                 $itemExtAttr->setExtRowQty($Result['qty']);
                 $itemExtAttr->setExtFreeQty($freeQty);
                 $itemExtAttr->setExtFreeProduct($freeProduct);
+                $itemExtAttr->setSku($freeSku);
 
                 $itemExtAttr->setVolume($product->getVolume());
                 if(!empty($idInfo)){

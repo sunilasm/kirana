@@ -15,6 +15,7 @@ xsi:noNamespaceSchemaLocation="urn:magento:framework:Api/etc/extension_attribute
 	<attribute code="ext_free_qty" type="string" />
     <attribute code="ext_free_product" type="string" />
 	<attribute code="ext_row_qty" type="string" />
+	<attribute code="sku" type="string" />
 	<attribute code="seller_id" type="string" >
     	<resources>
                 <resource  ref="anonymous"/>
