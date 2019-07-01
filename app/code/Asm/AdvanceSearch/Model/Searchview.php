@@ -80,10 +80,12 @@ class Searchview implements SearchInterface
         
         $i = 1;
         $quoteItemSellerArray = array();
+        $freeSkuArray = $this->getFreeProdSku();
+       
         foreach($quoteItems as $item):
             $quoteItemSellerArray[$item->getSellerId()] = $item->getItemid();
             $quoteItemArray[$item->getSku()]['qty'] = $item->getQty();
-             $quoteItemArray[$item->getSku()]['price_type'] = $item->getPriceType();
+            $quoteItemArray[$item->getSku()]['price_type'] = $item->getPriceType();
             $quoteItemIndexArray[$i] = $item->getItemid();
             $i++;
         endforeach;
@@ -131,6 +133,9 @@ class Searchview implements SearchInterface
             if(count($data[1]["items"]) != 0)
             {
                 foreach($data[1]["items"] as $key => $proData):
+                    if (array_key_exists($proData['sku'], $freeSkuArray)) {
+                        $data[1]["items"][$key]['free_item_sku'] = $freeSkuArray[$proData['sku']];
+                    }
                     if(array_key_exists($proData['sku'], $quoteItemArray) ){
                         $data[1]["items"][$key] += ['quote_qty' => $quoteItemArray[$proData['sku']]['qty']];
                         $data[1]["items"][$key]['price_type'] = $quoteItemArray[$proData['sku']]['price_type']; 
@@ -381,6 +386,39 @@ class Searchview implements SearchInterface
 
         //return $count;
         return $mapped_rules;
+    }
+    public function getFreeProdSku() {
+        $mapped_data = $this->_PostTableFactory->create()->getCollection()
+        ->setOrder('p_id','ASC')
+        ->addFieldToFilter('status',1)
+        ->addFieldToFilter('rule_type',array('in'=>array(0,7)));
+        $FreeProdArr = [];           
+        $buyProduct = '';
+        foreach ($mapped_data->getData() as $k => $promo) { 
+            if(isset($promo['description'])){
+              $description = json_decode($promo['description'],true);
+              $ruleCode = $description['code'];
+              $actionSerArr = json_decode($promo['actions_serialized'],true);
+              if($ruleCode == 'BXGX'){
+                 foreach($actionSerArr['conditions'] as $ck => $con){
+                    if($con['attribute']=='sku'){
+                        $buyProduct = $con['value'];
+                        $FreeProdArr[$buyProduct] = $buyProduct;
+                    }
+                 }
+              }
+              if($ruleCode == 'BXGY'){ 
+                 foreach($actionSerArr['buy_product'] as $k => $v){ 
+                   $buyProduct = $v['sku'];
+                 }
+                foreach($actionSerArr['get_product'] as $k => $v){ 
+                    $FreeProdArr[$buyProduct] = $v['sku'];
+                }
+              }
+            }
+        }
+
+        return $FreeProdArr;
     }
 
     public function getKiranaPromotions($kiranaId,$productSku,$productPrice,$mappedRulesArray) {
