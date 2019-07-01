@@ -5,6 +5,8 @@ use Lof\MarketPlace\Model\SellerProductFactory as SellerProduct;
 use Magento\Catalog\Api\ProductRepositoryInterfaceFactory as ProductRepository;
 use Magento\Framework\Event\ObserverInterface;
 use Retailinsights\Promotion\Model\PostTableFactory;
+use Retailinsights\Promotion\Model\PromoTableFactory;
+
  
 class Searchview implements SearchInterface
 {
@@ -26,10 +28,13 @@ class Searchview implements SearchInterface
     private $productsRepository;
     protected $quoteRepository;
     protected $_wishlistRepository;
+    protected $_promoFactory;
+
 
     public function __construct(
         ProductRepository $productRepository,
         PostTableFactory $PostTableFactory ,
+        PromoTableFactory $promoFactory,
         \Magento\Quote\Model\Quote\ItemFactory $itemFactory,
         SellerProduct $sellerProduct,
        \Magento\Framework\App\RequestInterface $request,
@@ -53,6 +58,7 @@ class Searchview implements SearchInterface
        $this->_productsRepository = $productsRepository;
        $this->quoteRepository = $quoteRepository;
        $this->_wishlistRepository= $wishlistRepository;
+       $this->_promoFactory = $promoFactory;
     }
 
     public function name() {
@@ -70,25 +76,45 @@ class Searchview implements SearchInterface
         $quoteModel = $objectManager->create('Magento\Quote\Model\Quote');
         $quoteItems = $quoteModel->load($quoteId)->getAllVisibleItems();
         $quoteItemArray = array();
-
+        $applyPromoData = [];
         // Get customer id from wishlist
         if($quoteId)
         {
             $quote = $this->quoteRepository->get($quoteId);
             $customerId = $quote->getCustomer()->getId();
+            $applyPromoData = $this->_promoFactory->create()->getCollection()
+            ->addFieldToFilter('cart_id', $quoteId);
         }
-        
+       
+       
         $i = 1;
         $quoteItemSellerArray = array();
         $freeSkuArray = $this->getFreeProdSku();
-       
+        $free_qty = 0;
         foreach($quoteItems as $item):
+            /////////////
+            foreach($applyPromoData as $key => $val){
+                $itemInfo = json_decode($val['item_qty'],true);
+                foreach($itemInfo as $k => $itemArray){
+                    foreach($itemArray as $key => $value){
+                      $itemData = json_decode($value);
+                      if(isset($itemData->qty)) {
+                          if($itemData->id == $item->getItemid()){
+                              $free_qty = $itemData->qty ;
+                          }
+                      }
+                    }
+                }
+            }
+            ////////////
             $quoteItemSellerArray[$item->getSellerId()] = $item->getItemid();
+            $quoteItemArray[$item->getSku()]['free_item_qty'] = $free_qty;
             $quoteItemArray[$item->getSku()]['qty'] = $item->getQty();
             $quoteItemArray[$item->getSku()]['price_type'] = $item->getPriceType();
             $quoteItemIndexArray[$i] = $item->getItemid();
             $i++;
         endforeach;
+        
         $data = array();
         $flag = 0;
         $pages = 0;
@@ -137,6 +163,7 @@ class Searchview implements SearchInterface
                         $data[1]["items"][$key]['free_item_sku'] = $freeSkuArray[$proData['sku']];
                     }
                     if(array_key_exists($proData['sku'], $quoteItemArray) ){
+                        $data[1]["items"][$key]['free_item_qty'] = $quoteItemArray[$proData['sku']]['free_item_qty'];
                         $data[1]["items"][$key] += ['quote_qty' => $quoteItemArray[$proData['sku']]['qty']];
                         $data[1]["items"][$key]['price_type'] = $quoteItemArray[$proData['sku']]['price_type']; 
                     }else{
