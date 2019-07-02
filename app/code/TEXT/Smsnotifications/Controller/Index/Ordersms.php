@@ -10,6 +10,7 @@
 namespace TEXT\Smsnotifications\Controller\Index;
 use Magento\Framework\App\Action\Context;
 use \TEXT\Smsnotifications\Helper\Data as Helper;
+use Magento\Framework\App\Config\ScopeConfigInterface;
 
 class Ordersms extends \Magento\Framework\App\Action\Action
 {
@@ -20,6 +21,7 @@ class Ordersms extends \Magento\Framework\App\Action\Action
         \Magento\Sales\Api\OrderRepositoryInterface $orderRepository,
             \Magento\Framework\Api\SearchCriteriaBuilder $searchCriteriaBuilder,
             \Magento\Framework\Api\SortOrderBuilder $sortBuilder,
+            ScopeConfigInterface $scopeConfig,
             Helper $helper,
             Context $context
     ) {
@@ -27,6 +29,7 @@ class Ordersms extends \Magento\Framework\App\Action\Action
               $this->searchCriteriaBuilder = $searchCriteriaBuilder;
               $this->sortBuilder = $sortBuilder;
               $this->_helper  = $helper;
+              $this->scopeConfig = $scopeConfig;
         parent::__construct($context);
     }
 
@@ -103,12 +106,13 @@ class Ordersms extends \Magento\Framework\App\Action\Action
 
                     $settings = array();
                     $settings['sms_gateway_url'] = "https://api.textlocal.in/";
-                    $settings['sms_auth_token'] = $this->getConfig('text_Smsnotifications_configuration/basic_configuration/smsnotifications_username');
-                    $settings['sms_sender_name'] = $this->getConfig('text_Smsnotifications_configuration/basic_configuration/smsnotifications_password');
+                    $settings['sms_auth_token'] = 'LcWtONwzQAo-7XakJm9eP2SBMM7DTPEriHKBgwUqiR';
+                    $settings['sms_sender_name'] = 'ASMESP';
 
                     $errors = array();
                     $apiuri = $settings['sms_gateway_url'];
                     $apiurl = $apiuri."send?&apiKey=".urlencode($settings['sms_auth_token'])."&sender=".urlencode($settings['sms_sender_name'])."&numbers=".urlencode(implode(',', $admin_recipients))."&message=".urlencode($text);
+                    //print_r($apiurl);exit;
                     $rows = file_get_contents($apiurl);
                     $result = json_decode($rows, true);
 
@@ -140,5 +144,12 @@ class Ordersms extends \Magento\Framework\App\Action\Action
              $table .= "</table>";
 	         echo $table;
     }
+
+    // public function getConfig($configPath)
+    // {
+    //     return $this->scopeConfig->getValue(
+    //         $configPath,
+    //     ScopeInterface::SCOPE_STORE);
+    // }
 }
 
