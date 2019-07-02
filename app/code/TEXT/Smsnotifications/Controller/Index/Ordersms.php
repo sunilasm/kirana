@@ -98,10 +98,21 @@ class Ordersms extends \Magento\Framework\App\Action\Action
                     $admin_recipients[]=$settings['admin_recipients'];
 		   // print_r($admin_recipients);
                     array_push($admin_recipients, $telephone);
-	   
-                    $result = $objectManager->get('TEXT\Smsnotifications\Helper\Data')->sendSms($text,$admin_recipients);
-print_r($result);                   
- exit;
+	               
+                    $settings = array();
+                    $settings['sms_gateway_url'] = "https://api.textlocal.in/";
+                    $settings['sms_auth_token'] = 'LcWtONwzQAo-7XakJm9eP2SBMM7DTPEriHKBgwUqiR';
+                    $settings['sms_sender_name'] = 'ASMESP';
+
+                    $errors = array();
+                    $apiuri = $settings['sms_gateway_url'];
+                    $apiurl = $apiuri."send?&apiKey=".urlencode($settings['sms_auth_token'])."&sender=".urlencode($settings['sms_sender_name'])."&numbers=".urlencode(implode(',', $admin_recipients))."&message=".urlencode($text);
+                    //print_r($apiurl);exit;
+                    $rows = file_get_contents($apiurl);
+                    $result = json_decode($rows, true);
+
+                    // $result = $objectManager->get('TEXT\Smsnotifications\Helper\Data')->sendSms($text,$admin_recipients);
+
                 }
                 $table .= "<tr style='border:1px solid #000'>";
                 $table .= "<td style='border-right:1px solid #000'>";
