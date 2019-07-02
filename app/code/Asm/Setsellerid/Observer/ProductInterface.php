@@ -59,6 +59,7 @@ use Magento\Framework\Event\ObserverInterface;
   protected $_connection;
   protected $quoteItemFactory;
 
+
         /**
          * @param \Magento\Framework\ObjectManagerInterface $objectManager
          * @param ProductRepository $productRepository
@@ -82,7 +83,6 @@ use Magento\Framework\Event\ObserverInterface;
             CartExtensionFactory $cartExtFactory,
             \Magento\Quote\Model\Quote\ItemFactory $quoteItemFactory
         ) {
-           $this->_promoFactory = $promoFactory;
             $this->_objectManager = $objectManager;
             $this->productRepository = $productRepository;
             $this->productImageHelper = $productImageHelper;
@@ -98,7 +98,6 @@ use Magento\Framework\Event\ObserverInterface;
 
         public function execute(\Magento\Framework\Event\Observer $observer, string $imageType = NULL)
             {
-
 $writer = new \Zend\Log\Writer\Stream(BP . '/var/log/pvn.log'); 
 $logger = new \Zend\Log\Logger();
 $logger->addWriter($writer);
@@ -121,7 +120,6 @@ $logger->addWriter($writer);
             foreach ($quote->getAllItems() as $quoteItem) {
 
                 $product = $this->productRepository->create()->getById($quoteItem->getProductId());
-
              $freeQty = 0; $freeProduct =  0; $freeSku = 0;
                 $discountData = $this->_promoFactory->create()->getCollection()
                 ->addFieldToFilter('cart_id', $quoteItem->getQuoteId());
@@ -163,12 +161,10 @@ $logger->addWriter($writer);
                             $PickupFromNearbyStore= $data->getPickupFromNearbyStore();
                         }
                 }
-
                 if($quoteItem->getPriceType() == 0){
                     $doorStepPId += $quoteItem->getQty();
                     $rowPrice = $door * $quoteItem->getQty();
                     $doorStepPrice += $rowPrice;
-
                 } else if($quoteItem->getPriceType() == 1) {
                     $pickupFrmStorePId += $quoteItem->getQty();
                     $rowPrice = $PickupFromStore * $quoteItem->getQty();
@@ -228,6 +224,7 @@ $logger->addWriter($writer);
             $itemExtAttrquote->setDsSubtotal($doorStepPrice);
             $itemExtAttrquote->setSpCount($pickupFrmStorePId);
             $itemExtAttrquote->setSpSubtotal($pickupFrmStorePrice - $discount_amount);
+                $quote->setExtensionAttributes($itemExtAttrquote);
 
          return;
 
