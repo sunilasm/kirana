@@ -113,6 +113,7 @@ class NewOrder implements ObserverInterface
      */
     public function execute(Observer $observer)
     {
+	exit;
         $settings = $this->_helper->getSettings();
         /*For multiselect array */
         $arr= $settings['order_statuss'];
