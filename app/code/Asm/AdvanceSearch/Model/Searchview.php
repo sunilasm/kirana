@@ -547,7 +547,11 @@ class Searchview implements SearchInterface
                 } else {
                     $description = json_decode($promo['description'],true);
                     $ruleCode = $description['code'];
-                    $ruleName = $description['name'];
+                    if($ruleCode == 'BXGX'){
+                        $ruleName = "Buy 1 Get 1 Free";
+                    }else{
+                        $ruleName = $description['name'];
+                    }
                     $action_arr = json_decode($promo['actions_serialized'] , true); 
                     if($ruleCode == 'BXGX' || $ruleCode == 'BXGOFF' || $ruleCode == 'BXGPOFF'){
                         if(!empty($action_arr['conditions'])) {
