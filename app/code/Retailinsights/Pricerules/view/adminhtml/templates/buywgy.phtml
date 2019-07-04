@@ -1,6 +1,6 @@
 <?php
 
-$edit = $this->getRule();
+$edit = $this->getBWGY();
 if($edit['0']['customer_group']!= '')
                {
                $csg = $edit['0']['customer_group'];
@@ -10,9 +10,8 @@ if($edit['0']['customer_group']!= '')
             }
 
 // //logger
-$writer = new \Zend\Log\Writer\Stream(BP . '/var/log/pvn.log');
- $logger = new \Zend\Log\Logger(); $logger->addWriter($writer);
-  $logger->info($edit);
+
+
 ?>
 
     <p><?php    $customer_group = $block->getCustomerGroups(); 
@@ -49,22 +48,14 @@ $writer = new \Zend\Log\Writer\Stream(BP . '/var/log/pvn.log');
 
 
             <div class="control mb-20">
-                <span type="" class="buy_prdt text-label">Buy Product
+                <span type="" class="buy_prdt text-label">Fixed Amount
                     <span style="margin-left: 5px;color: #e02b27;font-size:1.2rem">*</span>
                 </span>
                 <span>
-                <input type="text" id="buy_product" value="<?php echo  $edit['0']['buy_product']; ?>" required name="number" class="input-text" placeholder="Enter Buy Product">
+                <input type="text" id="fixed_amount" value="<?php echo  $edit['0']['fixed_amount']; ?>" required name="number" class="input-text" placeholder="Enter Fixed Amount">
                 <input type='hidden' id="post_id" name="post_id" value="<?php echo  $edit['0']['post_id']; ?>"/>
     
                 <div class="buy-btn-create" style="display: none;"></div></span>
-            </div><br>
-
-             <div class="control mb-20">
-                <span type="" class="text-label">buy Product Quantity
-                    <span style="margin-left: 5px;color: #e02b27;font-size:1.2rem">*</span>
-                </span>
-                <span class="buy_quantity"><input type="number" id="buy_quantity" value="<?php echo  $edit['0']['buy_quantity']; ?>" required name="number" class="input-text" placeholder="Enter Product Quantity">
-                <div  style="display: none;"></div></span>
             </div><br>
 
             <div class="control mb-20">
@@ -112,6 +103,21 @@ $writer = new \Zend\Log\Writer\Stream(BP . '/var/log/pvn.log');
                 <input type="text" id="fromdate_offer" value="<?php echo  $edit['0']['offer_from']; ?>" required name="fromdate_offer">
                 <div class="from_date" style="display: none;"></div>
             </div><br>
+
+              <div class="control-offer-from mb-20">
+                <span class="text-label">Select Condition
+                    <span style="margin-left: 5px;color: #e02b27;font-size:1.2rem">*</span>
+                </span>
+                <select name="condition"  id="condition">
+				  <option value="==" <?php if(($edit['0']['condition'])=="=="){ echo 'selected'; } ?>>Equals</option>
+				  <option value=">" <?php if(($edit['0']['condition'])==">"){ echo 'selected'; } ?>>Greater</option>
+				  <option value="<" <?php if(($edit['0']['condition'])=="<"){ echo 'selected'; } ?>>Less</option>
+				  <option value=">=" <?php if(($edit['0']['condition'])==">="){ echo 'selected'; } ?>>Greater & Equals</option>
+				  <option value="<=" <?php if(($edit['0']['condition'])=="<="){ echo 'selected'; } ?>>Less & Equals</option>
+				</select required>
+             
+                <div class="from_date" style="display: none;"></div>
+            </div><br>
              
             <div class="control-offer-to mb-20">
                 <span class="text-label">Offer To
@@ -156,7 +162,7 @@ $writer = new \Zend\Log\Writer\Stream(BP . '/var/log/pvn.log');
     <br>
     <div class="actions-toolbar">
         <div class="primary">
-            <button type="" class="primary btnclass" title="<?php echo __('Submit') ?>">
+            <button type="" class="primary btnbwgy" title="<?php echo __('Submit') ?>">
             <span><?php echo __('Submit') ?></span>
             </button> 
 

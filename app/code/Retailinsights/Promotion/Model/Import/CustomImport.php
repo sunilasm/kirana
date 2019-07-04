@@ -7,6 +7,7 @@ use Magento\ImportExport\Model\Import\ErrorProcessing\ProcessingErrorAggregatorI
 use Retailinsights\Promotion\Model\PostFactory;
 use Retailinsights\Promotion\Model\PostTableFactory;
 use Retailinsights\Promotion\Model\PostSellerFactory;
+use Retailinsights\Promotion\Model\PostBWGYFactory;
 
 use Retailinsights\Promotion\Model\PostWorthFactory;
 use Retailinsights\Promotion\Model\PostXYZFactory;
@@ -38,6 +39,7 @@ class CustomImport extends \Magento\ImportExport\Model\Import\Entity\AbstractEnt
     protected $PostTableFactory;
     protected $PostSellerFactory;
     protected $PostWorthFactory;
+    protected $PostBWGYFactory;
     protected $PostXYZFactory;
     protected $PostXYZoffFactory;
     protected $PostByxFactory;
@@ -101,6 +103,7 @@ class CustomImport extends \Magento\ImportExport\Model\Import\Entity\AbstractEnt
      * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
      */
     public function __construct(
+        \Retailinsights\Promotion\Model\PostTableBackFactory $PostTableBackFactory,
         \Magento\Framework\Json\Helper\Data $jsonHelper,
         \Magento\ImportExport\Helper\Data $importExportData,
         \Magento\ImportExport\Model\ResourceModel\Import\Data $importData,
@@ -111,6 +114,7 @@ class CustomImport extends \Magento\ImportExport\Model\Import\Entity\AbstractEnt
         PostTableFactory $PostTableFactory,
         PostSellerFactory $PostSellerFactory,
         PostWorthFactory $PostWorthFactory,
+        PostBWGYFactory $PostBWGYFactory,
         PostXYZFactory $PostXYZFactory,
         PostXYZoffFactory $PostXYZoffFactory,
         PostByxFactory $PostByxFactory,
@@ -118,6 +122,7 @@ class CustomImport extends \Magento\ImportExport\Model\Import\Entity\AbstractEnt
         \Magento\CatalogRule\Model\RuleFactory $rule,
         \Magento\SalesRule\Model\RuleFactory $salesrule
     ) {
+        $this->_savedata=$PostTableBackFactory;
         $this->jsonHelper = $jsonHelper;
         $this->_importExportData = $importExportData;
         $this->_resourceHelper = $resourceHelper;
@@ -131,6 +136,7 @@ class CustomImport extends \Magento\ImportExport\Model\Import\Entity\AbstractEnt
         $this->rule = $rule;
         $this->salesrule = $salesrule;
         $this->PostWorthFactory = $PostWorthFactory->create();
+        $this->PostBWGYFactory = $PostBWGYFactory->create();
         $this->PostXYZFactory = $PostXYZFactory->create();
         $this->PostXYZoffFactory = $PostXYZoffFactory->create();
         $this->PostByxFactory = $PostByxFactory->create();
@@ -249,6 +255,9 @@ class CustomImport extends \Magento\ImportExport\Model\Import\Entity\AbstractEnt
 
         $collectionCustom= $this->PostWorthFactory->getCollection(); //custom worth information
         $custom_worth = $collectionCustom->getData();
+
+        $collectionCustom= $this->PostBWGYFactory->getCollection(); //custom worth information
+        $custom_BWGY = $collectionCustom->getData();
        
         $collectionCustom= $this->PostXYZFactory->getCollection(); //custom XYZ information
         $custom_XYZ = $collectionCustom->getData(); 
@@ -463,7 +472,7 @@ if($flag==1){
                 ];
             }
             } 
-            if($rowData['rule_type'] == 5){    //CUSTOM XYZ COLLECTION
+            if($rowData['rule_type'] == 5){    //CUSTOM XYZ COLLECTION BNG1O 
                 foreach($custom_XYZ as $cat){
                     if($rowData['rule']== $cat['name']){
                         $rule_id = $cat['post_id'];   
@@ -600,7 +609,7 @@ if($flag==1){
             }
 
          
-            if($rowData['rule_type'] == 7){    //CUSTOM BuyXGetY COLLECTION    
+            if($rowData['rule_type'] == 7){    //CUSTOM BXGY COLLECTION    
                 foreach($custom_byx as $cat){
                     if($rowData['rule']== $cat['name']){
                         $rule_id = $cat['post_id'];
@@ -619,6 +628,71 @@ if($flag==1){
                             $conditions_serialized= 'equals';
                             $action = '{';          
                             $action .= '"buy_product":[{"sku" : "'.$cat_l["buy_product"].'","qty" : "'.$cat_l["buy_quantity"].'"}],"get_product":[{"sku" : "'.$cat_l["get_product"].'","qty" : "'.$cat_l["get_quantity"].'" }]';
+                            $action .="}";
+    
+                            $actions_serialized = $action;
+                            $simple_action = 'free';
+                            $discount_amount = '';
+                        }
+                    }
+                    foreach($seller_data as $seller){ 
+                        if($rowData['store_id'] == $seller['seller_id']){
+                            $seller_name = $seller['name'];
+                        }
+                    }
+                }
+            }
+            if($flag==1){
+                if (!$this->validateRow($rowData, $rowNum)) {
+                    $this->addRowError(ValidatorInterface::ERROR_MESSAGE_IS_EMPTY, $rowNum);
+                    continue;
+                }
+                if ($this->getErrorAggregator()->hasToBeTerminated()) {
+                    $this->getErrorAggregator()->addRowToSkip($rowNum);
+                    continue;
+                }
+            
+                $rowId= $rule_id;
+                $ids[] = $rowId;
+                $entityList[] = [
+                    self::STORE => $rule_id,
+                    self::RULE => $rowData[self::RULE],
+                    self::SDATE => $rowData[self::SDATE],
+                    self::EDATE => $rowData[self::EDATE],
+                    self::STATUS => $rowData[self::STATUS],
+                    self::SELLER_NAME => $seller_name,
+                    self::SELLER_TYPE => $rowData[self::SELLER_TYPE],
+                    self::TYPE => $rowData[self::TYPE],
+                    self::DESCRIPTION=> $description,
+                    self::CONDITION => $conditions_serialized,
+                    self::ACTION => $actions_serialized,
+                    self::SIMPLE_ACTION => $simple_action,
+                    self::DISCOUNT => $discount_amount,
+                ];
+            }
+            }
+
+            
+            if($rowData['rule_type'] == 9){    //CUSTOM BWGY COLLECTION  
+                foreach($custom_BWGY as $cat){
+                    if($rowData['rule']== $cat['name']){
+                        $rule_id = $cat['post_id'];
+                        $flag=1;
+                       
+
+                    foreach($custom_BWGY as $cat_l){
+                      
+                            if($rule_id == $cat_l['post_id']){
+                            $json = explode(":",$cat_l['name']);
+                            
+                            $desc = '{';
+                            $desc .= '"code":"'.$json[0].'","name":"'.$json[1].'"';
+                            $desc .= '}';
+
+                            $description = $desc;
+                            $conditions_serialized= 'equals';
+                            $action = '{';          
+                            $action .= '"base_subtotal":[{"fixed_amount" : "'.$cat_l["fixed_amount"].'","operator" : "'.$cat_l["condition"].'"}],"get_product":[{"sku" : "'.$cat_l["get_product"].'","qty" : "'.$cat_l["get_quantity"].'" }]';
                             $action .="}";
     
                             $actions_serialized = $action;
@@ -705,7 +779,30 @@ if($flag==1){
             
             $match_data = $value->getData();
           
-               if($match_data){              
+               if($match_data){    
+                   
+                 //**** ADDING To Back up Table*** */
+                 if($match_data[0]['rule_type']==1 && $match_data[0]['status']==1){
+                    $mandeetotcol = $this->_savedata->create();
+
+                    $mandeetotcol->setRule($match_data[0]['rule']);
+                    $mandeetotcol->setStoreId($match_data[0]['store_id']);
+                    $mandeetotcol->setPstartDate($match_data[0]['pstart_date']);
+                    $mandeetotcol->setPendDate($match_data[0]['pend_date']);
+                    $mandeetotcol->setStoreName($match_data[0]['store_name']); 
+                    $mandeetotcol->setSellerType($match_data[0]['seller_type']);
+                    $mandeetotcol->setStatus($match_data[0]['status']);
+                    $mandeetotcol->setRuleType($match_data[0]['rule_type']); 
+                    $mandeetotcol->setDescription($match_data[0]['description']);
+                    $mandeetotcol->setConditionsSerialized($match_data[0]['conditions_serialized']);
+                    $mandeetotcol->setActionsSerialized($match_data[0]['actions_serialized']);
+                    $mandeetotcol->setSimpleAction($match_data[0]['simple_action']);
+                    $mandeetotcol->setDiscountAmount($match_data[0]['discount_amount']);
+                       
+                    $mandeetotcol->save();
+                   
+                }
+                //*********END */
                    $collection->setPId($match_data[0]['p_id']);
                    $collection->setRule($entityRows['rule']);
                    $collection->setStoreId($entityRows['store_id']);
