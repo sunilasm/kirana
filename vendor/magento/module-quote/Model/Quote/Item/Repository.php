@@ -140,7 +140,7 @@ class Repository implements \Magento\Quote\Api\CartItemRepositoryInterface
         try {
             $quote->removeItem($itemId);
             $this->quoteRepository->save($quote);
-            $this->eventManager->dispatch('promotion_after_add_cart', ['quoteid' => $cartId ]); 
+            //$this->eventManager->dispatch('promotion_after_add_cart', ['quoteid' => $cartId ]); 
         } catch (\Exception $e) {
             throw new CouldNotSaveException(__('Could not remove item from quote'));
         }

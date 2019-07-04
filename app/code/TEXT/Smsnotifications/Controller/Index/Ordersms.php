@@ -35,7 +35,11 @@ class Ordersms extends \Magento\Framework\App\Action\Action
                 //date_default_timezone_set('Asia/Kolkata'); 
                 $time = time();
                 $to = date('Y-m-d H:i:s', $time);
+<<<<<<< HEAD
                 $lastTime = $time - 1000; // 60*60*24
+=======
+                $lastTime = $time - 300; // 60*60*24
+>>>>>>> development
                 $from = date('Y-m-d H:i:s', $lastTime);
                 //print_r("to:-".$to);
                 //print_r("from:-".$from); exit;
@@ -99,6 +103,7 @@ class Ordersms extends \Magento\Framework\App\Action\Action
                     $admin_recipients[]=$settings['admin_recipients'];
 		   // print_r($admin_recipients);
                     array_push($admin_recipients, $telephone);
+<<<<<<< HEAD
 	            //print_r($admin_recipients);
                     $settings = array();
 		    $apiurl = '';
@@ -116,6 +121,21 @@ class Ordersms extends \Magento\Framework\App\Action\Action
 		    //print_r();
                     // $result = $objectManager->get('TEXT\Smsnotifications\Helper\Data')->sendSms($text,$admin_recipients);
 
+=======
+		    //print_r($admin_recipients);
+                   // $result = $objectManager->get('TEXT\Smsnotifications\Helper\Data')->sendSms($text,$admin_recipients);
+		    $settings = array();
+                    $settings['sms_gateway_url'] = "https://api.textlocal.in/";
+                    $settings['sms_auth_token'] = 'LcWtONwzQAo-7XakJm9eP2SBMM7DTPEriHKBgwUqiR';
+                    $settings['sms_sender_name'] = 'ASMESP';
+                    $errors = array();
+                    $apiuri = $settings['sms_gateway_url'];
+                    $apiurl = $apiuri."send?&apiKey=".urlencode($settings['sms_auth_token'])."&sender=".urlencode($settings['sms_sender_name'])."&numbers=".urlencode(implode(',', $admin_recipients))."&message=".urlencode($text);
+                    $rows = file_get_contents($apiurl);
+                    $result = json_decode($rows, true);
+
+                    //$result = $objectManager->get('TEXT\Smsnotifications\Helper\Data')->sendSms($text,$admin_recipients);
+>>>>>>> development
                 }
                 $table .= "<tr style='border:1px solid #000'>";
                 $table .= "<td style='border-right:1px solid #000'>";

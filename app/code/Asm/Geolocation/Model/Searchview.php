@@ -14,17 +14,22 @@ class Searchview implements SearchInterface
     protected $request;
     protected $_productCollectionFactory;
     protected $_sellerCollection;
-
+    /**
+    * @var EventManager
+    */
+    private $eventManager;
     public function __construct(
        \Magento\Framework\App\RequestInterface $request,
        \Magento\Catalog\Model\ResourceModel\Product\CollectionFactory $productCollectionFactory,
        \Lof\MarketPlace\Model\Seller $sellerCollection,
+       \Magento\Framework\Event\Manager $eventManager,
        \Lof\MarketPlace\Model\SellerProduct $sellerProductCollection
     ) {
        $this->request = $request;
        $this->_productCollectionFactory = $productCollectionFactory; 
        $this->_sellerCollection = $sellerCollection;
        $this->_sellerProductCollection = $sellerProductCollection;
+       $this->eventManager = $eventManager;
 
     }
 
@@ -81,6 +86,7 @@ class Searchview implements SearchInterface
                 $message = 'Sku is successfully removed from cart.';
             }
         }
+        $this->eventManager->dispatch('promotion_after_add_cart', ['quoteid' => $quoteId ]);
         $data = array('status'=>'Success','message' => $message);
         //print_r($data);exit;
         return $data;
