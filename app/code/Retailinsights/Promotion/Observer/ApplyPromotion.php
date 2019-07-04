@@ -45,37 +45,48 @@ class ApplyPromotion implements ObserverInterface
   public function execute(\Magento\Framework\Event\Observer $observer)
   {  
     $connection = $this->_connection->getConnection();
-    $quoteId = $observer->getData('quoteid');
-        $writer = new \Zend\Log\Writer\Stream(BP . '/var/log/pvn.log'); 
-        $logger = new \Zend\Log\Logger();
-        $logger->addWriter($writer);
-       //$logger->info('ApplyPromo Observer');
-        //Deleting promotion data in custom table 
-        $base_url = $this->_storeManager->getStore()->getBaseUrl(\Magento\Framework\UrlInterface::URL_TYPE_WEB);
+    $quoteId = $observer->getData('quoteid');     
+    $writer = new \Zend\Log\Writer\Stream(BP . '/var/log/jannath.log'); 
+    $logger = new \Zend\Log\Logger();
+    $logger->addWriter($writer);
+    $logger->info("Delete Start");  
+    $logger->info("REquest Method: ".$_SERVER['REQUEST_METHOD']);  
+
+      //Deleting promotion data in custom table 
+      $base_url = $this->_storeManager->getStore()->getBaseUrl(\Magento\Framework\UrlInterface::URL_TYPE_WEB);
        
         $delData = $this->_promoFactory->create()->getCollection()
         ->addFieldToFilter('cart_id', $quoteId);
-        foreach($delData->getData() as $k => $val){           
+        foreach($delData->getData() as $k => $val){     
           if($val['cart_id']==$quoteId){
               $itemInfo = json_decode($val['item_qty'],true);
                 foreach($itemInfo as $k => $itemArray){
                   foreach($itemArray as $key => $value){
                     $itemData = json_decode($value);
-                    if(isset($itemData->qty)) {
+                    if(isset($itemData->qty) && !empty($itemData->qty)) {
                       $quoteResult = $this->getQuoteQty($itemData->id);
                       $quoteQty = $quoteResult['qty'];
                       $quoteProdId = $quoteResult['product_id'];
-                      $quoteSeller = $quoteResult['seller_id'];
-                      $qty = (($quoteQty - $itemData->qty)==0) ? "1" : ($quoteQty - $itemData->qty);   
-                      if($itemData->type == 'BXGY'){
+                      $quoteSeller = $quoteResult['seller_id'];                      
+                      if($itemData->type == 'BXGY' || $itemData->type == 'BWGY' ){
                         if($quoteQty == $itemData->qty){
+                          $logger->info("RemoveItem BXGY");
+                          $logger->info($quoteId);
+                          $logger->info($itemData->id);
                           $deleteItem = $this->removeItem($quoteId, $itemData->id);
-                        }else{
+                        } else {
                           $qty = ($quoteQty - $itemData->qty);
+                          $logger->info("Update BXGY ELSE ");
                           $updateCart = $this->updateItem($quoteId,$itemData->id,$qty,$quoteProdId,$quoteSeller);
+                          //$logger->info($updateCart);
+                         
                         }
-                      }else{
+                      }
+                      if($itemData->type == 'BXGX'){
+                        $logger->info("Update Item BXGX");
+                        $qty = (($quoteQty - $itemData->qty)==0) ? $quoteQty : ($quoteQty - $itemData->qty);
                         $updateCart = $this->updateItem($quoteId,$itemData->id,$qty,$quoteProdId,$quoteSeller);
+                        //$logger->info($updateCart);
                       }
                       // $logger->info('Qty quote  '.$quoteQty);
                       // $logger->info("PUT payload-----".$quoteId."-----".$itemData->id."-----".$qty."-----".$quoteProdId."-----".$quoteSeller);
@@ -89,9 +100,22 @@ class ApplyPromotion implements ObserverInterface
           }
         }
 
+        $logger->info("Delete End");
+
         $quote = $this->quoteRepository->getActive($quoteId);
         $quoteItems = $quote->getItems();
         $mappedRulesArray = $this->getCustomTableRules();
+        
+        ///////////***BWGO,BWGY,BWGPO */
+        $sellerAmount = [];
+        $sellerAmountQry="SELECT sum(row_total) as sum_row_total,seller_id FROM `mgquote_item` WHERE quote_id = $quoteId  GROUP BY seller_id";
+        $sellerAmountResult= $connection->fetchall($sellerAmountQry);
+        foreach($sellerAmountResult as $key => $value) {
+         $sellerAmount[$value['seller_id']] = $value['sum_row_total'];
+        }
+        $logger->info($sellerAmount);
+        $logger->info("Promotions Start");
+        ///////////////////////////////
         $promoFinalEntry = [];
         $promoFinalEntry['discount'] = array();
         $promoFinalEntry['item'] = array();
@@ -100,25 +124,34 @@ class ApplyPromotion implements ObserverInterface
         $bnxafCount = [];
         $bnxgoCount = [];
         $itemPriceTotal = 0;
+
         foreach($quoteItems as $key => $value) {
           $sellerId = $quoteItems[$key]->getSellerId();
           $sku = $quoteItems[$key]->getSku();
           $quantity = $quoteItems[$key]->getQty();
           if(isset($mappedRulesArray[$sellerId])){ 
             foreach($mappedRulesArray[$sellerId] as $k => $promo) {
+
+             
+
               $description = json_decode($promo['description'],true);
               $ruleCode = $description['code'];
               $ruleId = $promo['p_id'];
              
               if($ruleCode == "BXGOFF"){  
+                $logger->info("BXGOFF Start");
                 $checkPromo = $this->checkPromoBxgoff($promo['p_id'], $sellerId, $sku, $quantity, 0, $quoteItems[$key]->getPrice());
                 array_push($promoFinalEntry , $checkPromo);
+                $logger->info("BXGOFF End");
               }
               if($ruleCode == "BXGPOFF"){
+                $logger->info("BXGPOFF Start");
                 $checkPromo = $this->checkPromoBxgoff($promo['p_id'], $sellerId, $sku, $quantity, 1, $quoteItems[$key]->getPrice());
                 array_push($promoFinalEntry , $checkPromo);
+                $logger->info("BXGPOFF End");
               }
               if($ruleCode == "BNXAF"){
+                $logger->info("BNXAF Start");
                   $actionArr = json_decode($promo['actions_serialized'], true);
                   $ruleSku = array();
                   foreach($actionArr['buy_product'] as $k => $v){
@@ -145,10 +178,10 @@ class ApplyPromotion implements ObserverInterface
                       $bnxafCount[$ruleId] = 0;
                     }
                   }
-                 
-                 
+                $logger->info("BNXAF End");  
               }
-              if($ruleCode == "BNXG1O"){ 
+              if($ruleCode == "BNXG1O") {
+                $logger->info("BNXG1O Start");
                 $actionArr = json_decode($promo['actions_serialized'], true);
                 $ruleSku = array();
                 foreach($actionArr['buy_product'] as $k => $v){
@@ -177,10 +210,10 @@ class ApplyPromotion implements ObserverInterface
                     $bnxgoCount[$ruleId] = 0;
                   }
                 }
-
+                $logger->info("BNXG1O End");  
               }
               if($ruleCode == "BXGX"){ 
-               // $logger->info('in BXGX');
+                $logger->info('BXGX Start');
                 $ruleSku = $skuQty = 0;
                 $actionArr = json_decode($promo['actions_serialized'], true);
                 $ruleSku = $this->getActionSku($actionArr);
@@ -200,12 +233,13 @@ class ApplyPromotion implements ObserverInterface
                   $discPrice = ($quoteItems[$key]->getPrice()*$prodQty); 
                   $checkPromo  = $this->internalAddtoCart($quoteId,$sku,$prodQty,$quoteItems[$key]->getProductId(),$sellerId,$discPrice,$quoteItems[$key]->getItemId(),$quantity,'BXGX');
                   array_push($promoFinalEntry , $checkPromo);
+                  $logger->info('BXGX End');
                 }
                
                 
               }
               if($ruleCode == "BXGY"){
-              //  $logger->info('in BXGY');
+                $logger->info('BXGY Start');
                 $actionArr = json_decode($promo['actions_serialized'], true);
                 $ruleSku = array();
                 $getProdSku = $getProdQty = $getProdId = '';
@@ -232,14 +266,132 @@ class ApplyPromotion implements ObserverInterface
                     array_push($promoFinalEntry , $checkPromo);
                  }
                 }
+                $logger->info('BXGY End');
               }
             }
             
           }
         }
-           
+        $logger->info("Promotions End");
+        $logger->info("Order Level Promotions Start");
+        foreach($sellerAmount as $seller_id => $org_total) {
+          if(isset($mappedRulesArray[$seller_id])){ 
+              foreach($mappedRulesArray[$seller_id] as $k => $promo) {
+                  $description = json_decode($promo['description'],true);
+                  $ruleCode = $description['code'];
+                  $ruleId = $promo['p_id'];
+                  $discountAmount = $promo['discount_amount'];
+                  if($ruleCode == "BWGO"){  
+                      $logger->info('BWGO Start');
+                      $checkPromo = $this->checkPromoBuyWorth($promo['p_id'], $seller_id, 0, $discountAmount,$org_total);
+                      array_push($promoFinalEntry , $checkPromo);
+                      $logger->info('BWGO End');
+                  }
+                  if($ruleCode == "BWGOP"){  
+                    $logger->info('BWGOP Start');
+                    $checkPromo = $this->checkPromoBuyWorth($promo['p_id'], $seller_id, 1, $discountAmount,$org_total);
+                    array_push($promoFinalEntry , $checkPromo);
+                    $logger->info('BWGOP End');
+                  }
+                  if($ruleCode == "BWGY") {
+                    $logger->info('BWGY Start');
+                    $writer = new \Zend\Log\Writer\Stream(BP . '/var/log/jannath.log'); 
+                    $logger = new \Zend\Log\Logger();
+                    $logger->addWriter($writer);
+                      $actionArr = json_decode($promo['actions_serialized'], true);
+                      $getProdSku = $getProdQty = $getProdId = '';
+                      foreach($actionArr['base_subtotal'] as $k => $v){ 
+                        $operator = $v['operator'];
+                        $baseSubtotal = $v['fixed_amount'];
+                      }
+                      if($operator == ">") {
+                        if($org_total > $baseSubtotal) {
+                          foreach($actionArr['get_product'] as $k => $v){ 
+                            $getProdSku = $v['sku'];
+                            $getProdQty = $v['qty'];
+                            $productQry  = "SELECT * FROM `mgcatalog_product_entity` WHERE sku ='".$getProdSku."'" ;
+                            $productResult 	= $connection->rawFetchRow($productQry);
+                            $getProdId = $productResult['entity_id'];  
+                            $priceQry = "SELECT * FROM `mglof_marketplace_product`WHERE product_id = ".$getProdId." and seller_id =".$seller_id;
+                            $priceResult 	= $connection->rawFetchRow($priceQry);
+                            $discPrice = $priceResult['pickup_from_store']; 
+                            $checkPromo = $this->internalAddtoCart($quoteId,$getProdSku,$getProdQty,$getProdId,$seller_id,$discPrice,null,null,'BWGY');
+                            array_push($promoFinalEntry , $checkPromo);
+                          }
+                        }
+                      }
+                      if($operator == ">=") {
+                        if($org_total >= $baseSubtotal) {
+                          foreach($actionArr['get_product'] as $k => $v){ 
+                            $getProdSku = $v['sku'];
+                            $getProdQty = $v['qty'];
+                            $productQry  = "SELECT * FROM `mgcatalog_product_entity` WHERE sku ='".$getProdSku."'" ;
+                            $productResult 	= $connection->rawFetchRow($productQry);
+                            $getProdId = $productResult['entity_id'];  
+                            $priceQry = "SELECT * FROM `mglof_marketplace_product`WHERE product_id = ".$getProdId." and seller_id =".$seller_id;
+                            $priceResult 	= $connection->rawFetchRow($priceQry);
+                            $discPrice = $priceResult['pickup_from_store']; 
+                            $checkPromo = $this->internalAddtoCart($quoteId,$getProdSku,$getProdQty,$getProdId,$seller_id,$discPrice,null,null,'BWGY');
+                            array_push($promoFinalEntry , $checkPromo);
+                          }
+                        }
+                      }  
+                      if($operator == "<") {
+                        if($org_total < $baseSubtotal) {
+                          foreach($actionArr['get_product'] as $k => $v){ 
+                            $getProdSku = $v['sku'];
+                            $getProdQty = $v['qty'];
+                            $productQry  = "SELECT * FROM `mgcatalog_product_entity` WHERE sku ='".$getProdSku."'" ;
+                            $productResult 	= $connection->rawFetchRow($productQry);
+                            $getProdId = $productResult['entity_id'];  
+                            $priceQry = "SELECT * FROM `mglof_marketplace_product`WHERE product_id = ".$getProdId." and seller_id =".$seller_id;
+                            $priceResult 	= $connection->rawFetchRow($priceQry);
+                            $discPrice = $priceResult['pickup_from_store']; 
+                            $checkPromo = $this->internalAddtoCart($quoteId,$getProdSku,$getProdQty,$getProdId,$seller_id,$discPrice,null,null,'BWGY');
+                            array_push($promoFinalEntry , $checkPromo);
+                          }
+                        }
+                      }
+                      if($operator == "<=") {
+                        if($org_total <= $baseSubtotal) {
+                          foreach($actionArr['get_product'] as $k => $v){ 
+                            $getProdSku = $v['sku'];
+                            $getProdQty = $v['qty'];
+                            $productQry  = "SELECT * FROM `mgcatalog_product_entity` WHERE sku ='".$getProdSku."'" ;
+                            $productResult 	= $connection->rawFetchRow($productQry);
+                            $getProdId = $productResult['entity_id'];  
+                            $priceQry = "SELECT * FROM `mglof_marketplace_product`WHERE product_id = ".$getProdId." and seller_id =".$seller_id;
+                            $priceResult 	= $connection->rawFetchRow($priceQry);
+                            $discPrice = $priceResult['pickup_from_store']; 
+                            $checkPromo = $this->internalAddtoCart($quoteId,$getProdSku,$getProdQty,$getProdId,$seller_id,$discPrice,null,null,'BWGY');
+                            array_push($promoFinalEntry , $checkPromo);
+                          }
+                        }
+                      }
+                      if($operator == "==") {
+                        if($org_total == $baseSubtotal) {
+                          foreach($actionArr['get_product'] as $k => $v){ 
+                            $getProdSku = $v['sku'];
+                            $getProdQty = $v['qty'];
+                            $productQry  = "SELECT * FROM `mgcatalog_product_entity` WHERE sku ='".$getProdSku."'" ;
+                            $productResult 	= $connection->rawFetchRow($productQry);
+                            $getProdId = $productResult['entity_id'];  
+                            $priceQry = "SELECT * FROM `mglof_marketplace_product`WHERE product_id = ".$getProdId." and seller_id =".$seller_id;
+                            $priceResult 	= $connection->rawFetchRow($priceQry);
+                            $discPrice = $priceResult['pickup_from_store']; 
+                            $checkPromo = $this->internalAddtoCart($quoteId,$getProdSku,$getProdQty,$getProdId,$seller_id,$discPrice,null,null,'BWGY');
+                            array_push($promoFinalEntry , $checkPromo);
+                          }
+                        }
+                      } 
+                    $logger->info('BWGY End');
 
-        foreach($promoFinalEntry as $key => $value){
+                  }
+              }
+          }
+       }
+       $logger->info("Order Level Promotions End");      
+       foreach($promoFinalEntry as $key => $value){
           if(isset($value)){
             foreach($value as $k => $v){
               if($k == "discount"){
@@ -251,13 +403,14 @@ class ApplyPromotion implements ObserverInterface
             }
           }
         }
+        $logger->info($promoFinalEntry);
         foreach($promoFinalEntry['discount'] as $k => $v){
           foreach($v as $a => $amt){
             $amount = json_decode($amt, true);
             $total_disc += $amount['amount'];
           }
-        }  
-       
+        }
+        $logger->info("Total Discount: ".$total_disc);
         if($total_disc  > 0){
           $this->_promoFactory->create()->setData(
             array(
@@ -267,7 +420,8 @@ class ApplyPromotion implements ObserverInterface
             'promo_discount'=> json_encode($promoFinalEntry['discount']),
             'total_discount'=> $total_disc 
             )        
-          )->save();    
+          )->save(); 
+          $logger->info("Save");
         }
         $quote = $this->_mgQuote->loadActive(($quoteId));
         $subTotal = $quote->getBaseSubtotal();
@@ -284,7 +438,7 @@ class ApplyPromotion implements ObserverInterface
   
           $sqlQuote = "Update mgquote Set subtotal=".$subTotal.", base_subtotal =".$subTotal.", subtotal_with_discount =".$newSubTotal.", base_subtotal_with_discount=".$newSubTotal.", grand_total=".$newSubTotal.", base_grand_total=".$newSubTotal." where entity_id = ".$quoteId ;
           $connection->query($sqlQuote);
-        
+          $logger->info("Queries Saved");
  
 
   }
@@ -376,7 +530,7 @@ class ApplyPromotion implements ObserverInterface
           $promoEntry['item'] = [];
 
           array_push($promoEntry['discount'],json_encode($discount));
-          array_push($promoEntry['item'],json_encode($item));
+          //array_push($promoEntry['item'],json_encode($item));
         }
       }
       return $promoEntry;
@@ -393,7 +547,7 @@ class ApplyPromotion implements ObserverInterface
       $promoEntry['discount'] = [];
       $promoEntry['item'] = [];
       array_push($promoEntry['discount'],json_encode($discount));
-      array_push($promoEntry['item'],json_encode($item));
+      //array_push($promoEntry['item'],json_encode($item));
      
       return $promoEntry;
     }
@@ -410,7 +564,7 @@ class ApplyPromotion implements ObserverInterface
       $promoEntry['discount'] = [];
       $promoEntry['item'] = [];
       array_push($promoEntry['discount'],json_encode($discount));
-      array_push($promoEntry['item'],json_encode($item));
+      //array_push($promoEntry['item'],json_encode($item));
      
       return $promoEntry;
     }
@@ -426,13 +580,13 @@ class ApplyPromotion implements ObserverInterface
      // $logger->info('in internal add to cart');
       //$logger->info($cart_id."------".$sku_to_add."------".$sku_qty."------".$product_id."------".$seller_id."------".$discountpromo."----SERVER---".$_SERVER['REMOTE_ADDR']."---".$_SERVER['SERVER_ADDR']);
 
-      if($_SERVER['REMOTE_ADDR']!=$_SERVER['SERVER_ADDR']){
+      if($_SERVER['REMOTE_ADDR']!=$_SERVER['SERVER_NAME']){
        // $logger->info('inside if    '.$_SERVER['REDIRECT_HTTP_AUTHORIZATION']);
           $post_req= [
             'cart_item' => [
               'quote_id' => $cart_id,
               'sku' => $sku_to_add,
-              'qty' => $sku_qty
+              'qty' => $sku_qty,
             ],
             'product_id' => $product_id,
             'seller_id' => $seller_id,
@@ -441,7 +595,7 @@ class ApplyPromotion implements ObserverInterface
           $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
           $storeManager = $objectManager->get('\Magento\Store\Model\StoreManagerInterface');
           $baseUrl = $storeManager->getStore()->getBaseUrl();
-          $userData = array("username" => "sunil.n", "password" => "admin1234");
+          $userData = array("username" => "adminapi", "password" => "Admin@123");
           $ch = curl_init($baseUrl."rest/V1/integration/admin/token");
           curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
           curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($userData));
@@ -463,7 +617,7 @@ class ApplyPromotion implements ObserverInterface
           $addedData = json_decode($addToCart,true);
           $discount['amount'] = $discountpromo;
           $discount['seller'] = $seller_id;
-          if($promoType== 'BXGY'){
+          if($promoType== 'BXGY' || $promoType == 'BWGY'){
            $item_id = $addedData['item_id'];
            $parentId = $proditemId;
           }else{
@@ -528,7 +682,7 @@ class ApplyPromotion implements ObserverInterface
     $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
     $storeManager = $objectManager->get('\Magento\Store\Model\StoreManagerInterface');
     $baseUrl = $storeManager->getStore()->getBaseUrl();
-    $userData = array("username" => "sunil.n", "password" => "admin1234");
+    $userData = array("username" => "adminapi", "password" => "Admin@123");
     $ch = curl_init($baseUrl."rest/V1/integration/admin/token");
     curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
     curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($userData));
@@ -537,5 +691,116 @@ class ApplyPromotion implements ObserverInterface
     $token = curl_exec($ch);
     return $token;
   }
-}
 
+  public function  checkPromoBuyWorth($customPromoId, $sellerId, $percent, $discountAmount,$sellerAmount) {
+    // $writer = new \Zend\Log\Writer\Stream(BP . '/var/log/jannath.log'); 
+    // $logger = new \Zend\Log\Logger();
+    // $logger->addWriter($writer);
+
+    $promoEntry = array();
+    $discount = array();
+    $rule_data = $this->_PostTableFactory->create()->getCollection()
+    ->addFieldToFilter('p_id',$customPromoId);
+    $promotionData = $rule_data->getData();
+    $conditions_arr = json_decode($promotionData[0]['conditions_serialized'] , true); 
+    //$action_arr = json_decode($promotionData[0]['action_serialized'] , true); 
+
+    // $logger->info($rule_data->getData());
+
+    $getConditionsParameters = $this->getConditionsParameters($conditions_arr);
+ 
+    foreach ($getConditionsParameters as $operator => $value) {
+
+        if($operator == ">") {
+            if($sellerAmount > $value){
+                if($discountAmount > 0) {
+                    if($percent == 1){              
+                        $appliedDiscount = $sellerAmount*$discountAmount/100;
+                    } else {
+                        $appliedDiscount = $discountAmount;         
+                    }
+                    $discount['amount'] = $appliedDiscount;
+                    $discount['seller'] = $sellerId;
+                    $promoEntry['discount'] = [];
+ 
+                    array_push($promoEntry['discount'],json_encode($discount));
+                }
+            }
+        }
+        if($operator == "==") {
+          if($sellerAmount == $value){
+              if($discountAmount > 0) {
+                  if($percent == 1){              
+                      $appliedDiscount = $sellerAmount*$discountAmount/100;
+                  } else {
+                      $appliedDiscount = $discountAmount;         
+                  }
+                  $discount['amount'] = $appliedDiscount;
+                  $discount['seller'] = $sellerId;
+                  $promoEntry['discount'] = [];
+
+                  array_push($promoEntry['discount'],json_encode($discount));
+              }
+          }
+        }
+        if($operator == "<") {
+          if($sellerAmount < $value){
+              if($discountAmount > 0) {
+                  if($percent == 1){              
+                      $appliedDiscount = $sellerAmount*$discountAmount/100;
+                  } else {
+                      $appliedDiscount = $discountAmount;         
+                  }
+                  $discount['amount'] = $appliedDiscount;
+                  $discount['seller'] = $sellerId;
+                  $promoEntry['discount'] = [];
+
+                  array_push($promoEntry['discount'],json_encode($discount));
+              }
+          }
+        }
+        if($operator == ">=") {
+          if($sellerAmount >= $value){
+              if($discountAmount > 0) {
+                  if($percent == 1){              
+                      $appliedDiscount = $sellerAmount*$discountAmount/100;
+                  } else {
+                      $appliedDiscount = $discountAmount;         
+                  }
+                  $discount['amount'] = $appliedDiscount;
+                  $discount['seller'] = $sellerId;
+                  $promoEntry['discount'] = [];
+
+                  array_push($promoEntry['discount'],json_encode($discount));
+              }
+          }
+        }
+        if($operator == "<=") {
+          if($sellerAmount <= $value){
+              if($discountAmount > 0) {
+                  if($percent == 1){              
+                      $appliedDiscount = $sellerAmount*$discountAmount/100;
+                  } else {
+                      $appliedDiscount = $discountAmount;         
+                  }
+                  $discount['amount'] = $appliedDiscount;
+                  $discount['seller'] = $sellerId;
+                  $promoEntry['discount'] = [];
+
+                  array_push($promoEntry['discount'],json_encode($discount));
+              }
+          }
+       }    
+    }
+    return $promoEntry;
+ }
+
+ public function getConditionsParameters($conditions_arr){
+  $condition = array();
+  if(!empty($conditions_arr)) {
+      $conditionarray = $conditions_arr['conditions'][0];
+      $condition[$conditionarray['operator']] = $conditionarray['value'];
+    }
+    return $condition;
+   }
+}

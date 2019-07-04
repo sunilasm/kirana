@@ -3,14 +3,14 @@
 <type name="Magento\Framework\View\Element\UiComponent\DataProvider\CollectionFactory">
         <arguments>
             <argument name="collections" xsi:type="array">
-                <item name="retailinsights_promotion_post_listing_data_source" xsi:type="string">Retailinsights\Promotion\Model\ResourceModel\Post\Grid\Collection</item>
+                <item name="retailinsights_promotion_posttable_listing_data_source" xsi:type="string">Retailinsights\Promotion\Model\ResourceModel\PostTable\Grid\Collection</item>
             </argument>
         </arguments>
     </type>
-    <virtualType name="Retailinsights\Promotion\Model\ResourceModel\Post\Grid\Collection" type="Magento\Framework\View\Element\UiComponent\DataProvider\SearchResult">
+    <virtualType name="Retailinsights\Promotion\Model\ResourceModel\PostTable\Grid\Collection" type="Magento\Framework\View\Element\UiComponent\DataProvider\SearchResult">
         <arguments>
             <argument name="mainTable" xsi:type="string">retailinsights_promostoremapp</argument>
-            <argument name="resourceModel" xsi:type="string">Retailinsights\Promotion\Model\ResourceModel\Post</argument>
+            <argument name="resourceModel" xsi:type="string">Retailinsights\Promotion\Model\ResourceModel\PostTable</argument>
         </arguments>
     </virtualType>
 
