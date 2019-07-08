@@ -152,6 +152,7 @@ class ApplyPromotion implements ObserverInterface
               }
               if($ruleCode == "BNXAF"){
                 $logger->info("BNXAF Start");
+                $discountBnxaf = 0;
                   $actionArr = json_decode($promo['actions_serialized'], true);
                   $ruleSku = array();
                   foreach($actionArr['buy_product'] as $k => $v){
@@ -159,6 +160,9 @@ class ApplyPromotion implements ObserverInterface
                   }
                   $ruleSkuLen = sizeof($ruleSku);
                   foreach($ruleSku as $rule_sku =>$sku_qty){
+                  $qtyFactor = floor($quantity/$sku_qty);
+                  $qtyCheck = ($quantity%$sku_qty);
+
                     if(($rule_sku == $sku) && ($sku_qty <= $quantity)){
                       if(isset($bnxafCount[$ruleId])) {
                         $bnxafCount[$ruleId]++;
@@ -166,15 +170,21 @@ class ApplyPromotion implements ObserverInterface
                         $bnxafCount[$ruleId] = 1;
                       }
                       $itemPriceTotal += $quoteItems[$key]->getPrice()*$quantity;
+                      $fixedPrice = $promo['discount_amount']; 
+                      $disc_amt = ($fixedPrice*$qtyFactor);
+                      $additional_item = 0;
+                      if(($quantity > $sku_qty) && ($qtyCheck!=0)){
+                        $additional_item = $quoteItems[$key]->getPrice();  //($quantity - $sku_qty)*
+                      }
+                      $discountBnxaf = ($itemPriceTotal -  $disc_amt)-$additional_item;
+
+                      $logger->info("BNXAF Price disc".$discountBnxaf);
                       $logger->info("BNXAF Price total".$itemPriceTotal);
                     }
                   }
                   if(isset($bnxafCount[$ruleId])){
                     if($ruleSkuLen == $bnxafCount[$ruleId]){ 
                       $sku = $ruleSku;
-                      $fixedPrice = $promo['discount_amount'];
-                      $discountBnxaf = ($itemPriceTotal - $fixedPrice);
-                      $logger->info("BNXAF Price disc".$discountBnxaf);
                       $checkPromo = $this->checkPromoBnxaf($discountBnxaf,$sellerId);
                       array_push($promoFinalEntry , $checkPromo);
                       $bnxafCount[$ruleId] = 0;
@@ -582,7 +592,7 @@ class ApplyPromotion implements ObserverInterface
      // $logger->info('in internal add to cart');
       //$logger->info($cart_id."------".$sku_to_add."------".$sku_qty."------".$product_id."------".$seller_id."------".$discountpromo."----SERVER---".$_SERVER['REMOTE_ADDR']."---".$_SERVER['SERVER_ADDR']);
 
-      if($_SERVER['REMOTE_ADDR']!=$_SERVER['SERVER_NAME']){
+      if($_SERVER['REMOTE_ADDR']!=$_SERVER['SERVER_ADDR']){
        // $logger->info('inside if    '.$_SERVER['REDIRECT_HTTP_AUTHORIZATION']);
           $post_req= [
             'cart_item' => [
