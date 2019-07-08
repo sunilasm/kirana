@@ -165,7 +165,8 @@ class ApplyPromotion implements ObserverInterface
                       } else {
                         $bnxafCount[$ruleId] = 1;
                       }
-                      $itemPriceTotal += $quoteItems[$key]->getPrice();
+                      $itemPriceTotal += $quoteItems[$key]->getPrice()*$quantity;
+                      $logger->info("BNXAF Price total".$itemPriceTotal);
                     }
                   }
                   if(isset($bnxafCount[$ruleId])){
@@ -173,6 +174,7 @@ class ApplyPromotion implements ObserverInterface
                       $sku = $ruleSku;
                       $fixedPrice = $promo['discount_amount'];
                       $discountBnxaf = ($itemPriceTotal - $fixedPrice);
+                      $logger->info("BNXAF Price disc".$discountBnxaf);
                       $checkPromo = $this->checkPromoBnxaf($discountBnxaf,$sellerId);
                       array_push($promoFinalEntry , $checkPromo);
                       $bnxafCount[$ruleId] = 0;

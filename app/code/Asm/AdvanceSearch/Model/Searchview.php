@@ -526,23 +526,30 @@ class Searchview implements SearchInterface
                 }        
                         
                 if($promo['rule_type']== 1) {
+                    $description = json_decode($promo['description'],true);
+                    $ruleName = str_replace("{RS}","₹",$description['name']);
                     $con_arr = json_decode($promo['conditions_serialized'] , true); 
                     $conditionSkus = explode(',', str_replace(' ','',$conditionSkus[0]));                                
                     if(in_array($productSku, $conditionSkus)){
-                        if($p_action == 'by_fixed'){
-                            $disc_amt = $promo['discount_amount'];
-                            $disc_per = ($promo['discount_amount']*100)/$productPrice ;
-                        } 
-                        if ($p_action == 'by_percent') {
-                            $disc_amt = ($productPrice * $promo['discount_amount'])/100 ;
-                            $disc_per = $promo['discount_amount'];
+                        if($p_action == 'to_fixed'){
+                            $orgranzationPromotion['message'] = "Store Offer: ".$ruleName;
+                        }else{
+                            if($p_action == 'by_fixed'){
+                                $disc_amt = $promo['discount_amount'];
+                                $disc_per = ($promo['discount_amount']*100)/$productPrice ;
+                            } 
+                            if ($p_action == 'by_percent') {
+                                $disc_amt = ($productPrice * $promo['discount_amount'])/100 ;
+                                $disc_per = $promo['discount_amount'];
+                            }
+                            
+                            if($disc_per >= 5){
+                                $orgranzationPromotion['discount_percent'] = $this->roundDown($disc_per,0);
+                            } else {
+                                $orgranzationPromotion['discount_percent'] = "";
+                            }
+                            $orgranzationPromotion['final_amt'] = $this->roundUp($productPrice - $disc_amt,2);
                         }
-                        if($disc_per >= 5){
-                            $orgranzationPromotion['discount_percent'] = $this->roundDown($disc_per,0);
-                        } else {
-                            $orgranzationPromotion['discount_percent'] = "";
-                        }
-                        $orgranzationPromotion['final_amt'] = $this->roundUp($productPrice - $disc_amt,2);   
                     }
                 } else {
                     $description = json_decode($promo['description'],true);
