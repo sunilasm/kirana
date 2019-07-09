@@ -69,7 +69,7 @@ class Mergeitemsview implements MergeItemInterface
                             if($itemData->type == "BXGX" && $itemData->parent == $item->getItemId()){
                                 $qty = ($item->getQty()-$itemData->qty);
                             }
-                            if(($itemData->type == "BXGY" || $itemData->type == "BWGY") && $itemData->parent == $item->getItemId()){
+                            if(($itemData->type == "BXGY" || $itemData->type == "BWGY") && $itemData->id == $item->getItemId()){
                                 $bxgy = 1;
                             }  
                         }
@@ -90,7 +90,7 @@ class Mergeitemsview implements MergeItemInterface
         $currentCartItems = $totalItems - count($movedProductsArray);
         $data = array("total_count" => $totalItems, "moved_count" => count($movedProductsArray));
         $response = array($data);
-        return $response;
+        return $response; 
     } 
 }
 
