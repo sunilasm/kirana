@@ -772,12 +772,20 @@ if($flag==1){
             $item = $collection->getCollection();
             $rule_id = $entityRows['rule'];
             $rule_type = $entityRows['rule_type'];
+            $store_id = $entityRows['store_id'];
            
             $value = $item
             ->addFieldToFilter('rule', $rule_id)
-            ->addFieldToFilter('rule_type', $rule_type);
+            ->addFieldToFilter('rule_type', $rule_type)
+            ->addFieldToFilter('store_id', $store_id);
             
             $match_data = $value->getData();
+
+            $writer = new \Zend\Log\Writer\Stream(BP . '/var/log/testPvbb.log'); 
+            $logger = new \Zend\Log\Logger(); $logger->addWriter($writer); 
+          //  $logger->info('here'); 
+           // $logger->info($value->getData()); 
+
           
                if($match_data){    
                    
