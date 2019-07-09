@@ -135,7 +135,7 @@ $logger->addWriter($writer);
                                     $freeQty = $itemData->qty;
                                 }
                             }
-                            if(isset($itemData->type) && ($itemData->type == 'BXGY') && ($itemData->id == $quoteItem->getItemId())){
+                            if(isset($itemData->type) && (($itemData->type == 'BXGY')|| ($itemData->type == 'BWGY')) && ($itemData->id == $quoteItem->getItemId())){
                                 $isEditable = 0;
                              }
                             if(isset($itemData->parent)){
