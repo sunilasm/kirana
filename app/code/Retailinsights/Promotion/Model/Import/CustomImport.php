@@ -783,8 +783,8 @@ if($flag==1){
 
             $writer = new \Zend\Log\Writer\Stream(BP . '/var/log/testPvbb.log'); 
             $logger = new \Zend\Log\Logger(); $logger->addWriter($writer); 
-            $logger->info('here'); 
-            $logger->info($value->getData()); 
+          //  $logger->info('here'); 
+           // $logger->info($value->getData()); 
 
           
                if($match_data){    
