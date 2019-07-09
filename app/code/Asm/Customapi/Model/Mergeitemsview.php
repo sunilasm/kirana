@@ -51,7 +51,7 @@ class Mergeitemsview implements MergeItemInterface
                 $itemInfo = json_decode($val['item_qty'],true);        
             }
         }
-        $bxgy = 0;
+        
         $guestquote = $this->quoteFactory->create()->load($post['guest_quote_id']);
         $items = $guestquote->getAllItems();
         $totalItems = count($items);
@@ -62,6 +62,7 @@ class Mergeitemsview implements MergeItemInterface
             $qty = $item->getQty();
             foreach($itemInfo as $k => $itemArray){
                 if(isset($itemInfo)){
+                    $bxgy = 0;
                     foreach($itemArray as $key => $value){
                         $itemData = json_decode($value);
                         if(isset($itemData->qty) && !empty($itemData->qty)) {
@@ -85,7 +86,7 @@ class Mergeitemsview implements MergeItemInterface
                 $this->_cart->removeItem($post['guest_quote_id'], $item->getItemId());
             }
         }
-        $this->eventManager->dispatch('promotion_after_add_cart', ['quoteid' => $cartId ]); 
+        $this->eventManager->dispatch('promotion_after_add_cart', ['quoteid' => $post['quote_id'] ]); 
         $currentCartItems = $totalItems - count($movedProductsArray);
         $data = array("total_count" => $totalItems, "moved_count" => count($movedProductsArray));
         $response = array($data);
