@@ -50,7 +50,7 @@ class ApplyPromotion implements ObserverInterface
     $logger = new \Zend\Log\Logger();
     $logger->addWriter($writer);
     $logger->info("Delete Start");  
-    $logger->info("REquest Method: ".$_SERVER['REQUEST_METHOD']);  
+    $logger->info("Request Method: ".$_SERVER['REQUEST_METHOD']);  
 
       //Deleting promotion data in custom table 
       $base_url = $this->_storeManager->getStore()->getBaseUrl(\Magento\Framework\UrlInterface::URL_TYPE_WEB);
@@ -112,8 +112,10 @@ class ApplyPromotion implements ObserverInterface
         $sellerAmountResult= $connection->fetchall($sellerAmountQry);
         foreach($sellerAmountResult as $key => $value) {
          $sellerAmount[$value['seller_id']] = $value['sum_row_total'];
+
         }
         $logger->info($sellerAmount);
+
         $logger->info("Promotions Start");
         ///////////////////////////////
         $promoFinalEntry = [];
@@ -177,6 +179,10 @@ class ApplyPromotion implements ObserverInterface
                         $additional_item = $quoteItems[$key]->getPrice();  //($quantity - $sku_qty)*
                       }
                       $discountBnxaf = ($itemPriceTotal -  $disc_amt)-$additional_item;
+
+                      if(isset($sellerAmount[$sellerId])) {
+                        $sellerAmount[$sellerId] -= $discountBnxaf;
+                      }
 
                       $logger->info("BNXAF Price disc".$discountBnxaf);
                       $logger->info("BNXAF Price total".$itemPriceTotal);
@@ -244,11 +250,9 @@ class ApplyPromotion implements ObserverInterface
                   $prodQty = ($promo['discount_amount']*$qtyFactor);
                   $discPrice = ($quoteItems[$key]->getPrice()*$prodQty); 
                   $checkPromo  = $this->internalAddtoCart($quoteId,$sku,$prodQty,$quoteItems[$key]->getProductId(),$sellerId,$discPrice,$quoteItems[$key]->getItemId(),$quantity,'BXGX');
-                  array_push($promoFinalEntry , $checkPromo);
-                  $logger->info('BXGX End');
+                  array_push($promoFinalEntry , $checkPromo);                 
                 }
-               
-                
+                $logger->info('BXGX End');
               }
               if($ruleCode == "BXGY"){
                 $logger->info('BXGY Start');
@@ -287,6 +291,9 @@ class ApplyPromotion implements ObserverInterface
         $logger->info("Promotions End");
         $logger->info("Order Level Promotions Start");
         foreach($sellerAmount as $seller_id => $org_total) {
+          $logger->info('org_total');
+          $logger->info($org_total);
+
           if(isset($mappedRulesArray[$seller_id])){ 
               foreach($mappedRulesArray[$seller_id] as $k => $promo) {
                   $description = json_decode($promo['description'],true);
@@ -527,19 +534,23 @@ class ApplyPromotion implements ObserverInterface
         $ruleQty = $this->getActionQuantity($action_arr);
         $itemQty = $quantity ;
         $discountFactor =  floor($itemQty/$ruleQty); 
-        $prDiscount =0;  
+        $prDiscount =0;
+        $type ='';
         if($percent == 1){              
               $prDiscount = ($discountFactor * $price * $ruleQty * $promotionData[0]['discount_amount'])/100 ;
+              $type = 'BXGPOFF';
           }else{
               $prDiscount = ($discountFactor * $promotionData[0]['discount_amount']);          
+              $type = 'BXGOFF';
           }
         if($prDiscount > 0){
           $discount['amount'] = $prDiscount;
           $discount['seller'] = $sellerId;
-          $item['id'] = '';
-          $item['qty'] = '';
+          $discount['type'] = $type;
+          //$item['id'] = '';
+          //$item['qty'] = '';
           $promoEntry['discount'] = [];
-          $promoEntry['item'] = [];
+          //$promoEntry['item'] = [];
 
           array_push($promoEntry['discount'],json_encode($discount));
           //array_push($promoEntry['item'],json_encode($item));
@@ -554,10 +565,11 @@ class ApplyPromotion implements ObserverInterface
     if($discountpromo > 0){
       $discount['amount'] = $discountpromo;
       $discount['seller'] = $sellerId;
-      $item['id'] = '';
-      $item['qty'] = '';
+      $discount['type'] = 'BNXAF';
+      //$item['id'] = '';
+      //$item['qty'] = '';
       $promoEntry['discount'] = [];
-      $promoEntry['item'] = [];
+      //$promoEntry['item'] = [];
       array_push($promoEntry['discount'],json_encode($discount));
       //array_push($promoEntry['item'],json_encode($item));
      
@@ -571,10 +583,11 @@ class ApplyPromotion implements ObserverInterface
     if($discountpromo > 0){
       $discount['amount'] = $discountpromo;
       $discount['seller'] = $sellerId;
-      $item['id'] = '';
-      $item['qty'] = '';
+      $discount['type'] = 'BNXG1O';
+      //$item['id'] = '';
+      //$item['qty'] = '';
       $promoEntry['discount'] = [];
-      $promoEntry['item'] = [];
+      //$promoEntry['item'] = [];
       array_push($promoEntry['discount'],json_encode($discount));
       //array_push($promoEntry['item'],json_encode($item));
      
@@ -629,6 +642,7 @@ class ApplyPromotion implements ObserverInterface
           $addedData = json_decode($addToCart,true);
           $discount['amount'] = $discountpromo;
           $discount['seller'] = $seller_id;
+          $discount['type'] = $promoType;
           if($promoType== 'BXGY' || $promoType == 'BWGY'){
            $item_id = $addedData['item_id'];
            $parentId = $proditemId;
@@ -722,17 +736,20 @@ class ApplyPromotion implements ObserverInterface
     $getConditionsParameters = $this->getConditionsParameters($conditions_arr);
  
     foreach ($getConditionsParameters as $operator => $value) {
-
+      $type ='';
         if($operator == ">") {
             if($sellerAmount > $value){
                 if($discountAmount > 0) {
-                    if($percent == 1){              
+                    if($percent == 1){
+                        $type = 'BWGOP';       
                         $appliedDiscount = $sellerAmount*$discountAmount/100;
                     } else {
+                        $type = 'BWGO';
                         $appliedDiscount = $discountAmount;         
                     }
                     $discount['amount'] = $appliedDiscount;
                     $discount['seller'] = $sellerId;
+                    $discount['type'] = $type;
                     $promoEntry['discount'] = [];
  
                     array_push($promoEntry['discount'],json_encode($discount));
@@ -742,13 +759,16 @@ class ApplyPromotion implements ObserverInterface
         if($operator == "==") {
           if($sellerAmount == $value){
               if($discountAmount > 0) {
-                  if($percent == 1){              
+                  if($percent == 1){ 
+                      $type = 'BWGOP';            
                       $appliedDiscount = $sellerAmount*$discountAmount/100;
                   } else {
+                      $type = 'BWGO'; 
                       $appliedDiscount = $discountAmount;         
                   }
                   $discount['amount'] = $appliedDiscount;
                   $discount['seller'] = $sellerId;
+                  $discount['type'] = $type;
                   $promoEntry['discount'] = [];
 
                   array_push($promoEntry['discount'],json_encode($discount));
@@ -758,13 +778,16 @@ class ApplyPromotion implements ObserverInterface
         if($operator == "<") {
           if($sellerAmount < $value){
               if($discountAmount > 0) {
-                  if($percent == 1){              
+                  if($percent == 1){    
+                      $type = 'BWGOP';           
                       $appliedDiscount = $sellerAmount*$discountAmount/100;
                   } else {
+                      $type = 'BWGO'; 
                       $appliedDiscount = $discountAmount;         
                   }
                   $discount['amount'] = $appliedDiscount;
                   $discount['seller'] = $sellerId;
+                  $discount['type'] = $type;
                   $promoEntry['discount'] = [];
 
                   array_push($promoEntry['discount'],json_encode($discount));
@@ -774,13 +797,16 @@ class ApplyPromotion implements ObserverInterface
         if($operator == ">=") {
           if($sellerAmount >= $value){
               if($discountAmount > 0) {
-                  if($percent == 1){              
+                  if($percent == 1){  
+                      $type = 'BWGOP';             
                       $appliedDiscount = $sellerAmount*$discountAmount/100;
                   } else {
+                      $type = 'BWGO'; 
                       $appliedDiscount = $discountAmount;         
                   }
                   $discount['amount'] = $appliedDiscount;
                   $discount['seller'] = $sellerId;
+                  $discount['type'] = $type;
                   $promoEntry['discount'] = [];
 
                   array_push($promoEntry['discount'],json_encode($discount));
@@ -790,13 +816,16 @@ class ApplyPromotion implements ObserverInterface
         if($operator == "<=") {
           if($sellerAmount <= $value){
               if($discountAmount > 0) {
-                  if($percent == 1){              
+                  if($percent == 1){    
+                    $type = 'BWGOP';           
                       $appliedDiscount = $sellerAmount*$discountAmount/100;
                   } else {
+                    $type = 'BWGO'; 
                       $appliedDiscount = $discountAmount;         
                   }
                   $discount['amount'] = $appliedDiscount;
                   $discount['seller'] = $sellerId;
+                  $discount['type'] = $type;
                   $promoEntry['discount'] = [];
 
                   array_push($promoEntry['discount'],json_encode($discount));
