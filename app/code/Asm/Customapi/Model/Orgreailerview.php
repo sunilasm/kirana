@@ -179,6 +179,36 @@ class Orgreailerview implements OrgnizedretailerInterface
                                             $totalDiscount  +=  $this->applyBxgoff($promo,$product_price,$item->getSku(),$item->getQty(),'BXGPOFF',$item->getSeller_id());
                                             $logger->info($totalDiscount." BXGPOFF discount");
                                         }
+                                        if($ruleCode == "BNXAF" && ($orgretailer==$promo['store_id'])){
+                                            $itemPriceTotal = 0;
+                                            $actionArr = json_decode($promo['actions_serialized'], true);
+                                            $ruleSku = array();
+                                            foreach($actionArr['buy_product'] as $k => $v){
+                                              $ruleSku[$v['sku']] = $v['qty'];
+                                            }
+                                            $ruleSkuLen = sizeof($ruleSku);
+                                            $quantity = $item->getQty();
+                                            foreach($ruleSku as $rule_sku =>$sku_qty){
+                                            $qtyFactor = floor($quantity/$sku_qty);
+                                            $qtyCheck = ($quantity%$sku_qty);
+                          
+                                              if(($rule_sku == $item->getSku()) && ($sku_qty <= $quantity)){
+                                                $itemPriceTotal += $item->getPrice()*$quantity;
+                                                $fixedPrice = $promo['discount_amount']; 
+                                                $disc_amt = ($fixedPrice*$qtyFactor);
+                                                $additional_item = 0;
+                                                if(($quantity > $sku_qty) && ($qtyCheck!=0)){
+                                                  $additional_item = $quoteItems[$key]->getPrice();  //($quantity - $sku_qty)*
+                                                }
+                                                $totalDiscount = ($itemPriceTotal -  $disc_amt)-$additional_item;
+                          
+                                                // if(isset($sellerAmount[$sellerId])) {
+                                                //   $sellerAmount[$sellerId] -= $discountBnxaf;
+                                                // }
+                                              }
+                                            }
+                          
+                                        }
                                     }
                                 }
                         
