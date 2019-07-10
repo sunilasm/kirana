@@ -160,24 +160,34 @@ class Orgreailerview implements OrgnizedretailerInterface
                                             $product_price = $item->getPrice(); 
                                          }
                                         if($ruleCode == "BXGX" && ($orgretailer==$promo['store_id'])){
-                                            $logger->info("in bxgx dicount");
-                                            $totalDiscount  += $this->applyBxgxBxgy($post['quote_id'],$item->getId(),$product_price,'BXGX');
-                                            $logger->info($totalDiscount." BXGX discount");
+                                          //  $logger->info("in bxgx dicount");
+                                            $actionArr = json_decode($promo['actions_serialized'], true);
+                                            $ruleSku = $this->getActionSku($actionArr);
+                                            $skubxgx = '';
+                                            foreach($actionArr['conditions'] as $ck => $con){
+                                                if($con['attribute']=='sku'){
+                                                    $skubxgx = $con['value'];
+                                                }
+                                            }
+                                            if($item->getSku() == $skubxgx){
+                                                $totalDiscount  += $this->applyBxgxBxgy($post['quote_id'],$item->getId(),$product_price,'BXGX');
+                                            }
+                                           // $logger->info($totalDiscount." BXGX discount");
                                         }
                                         if($ruleCode == "BXGY" && ($orgretailer==$promo['store_id'])){
-                                            $logger->info("in bxgy dicount");
+                                           // $logger->info("in bxgy dicount");
                                             $totalDiscount  += $this->applyBxgxBxgy($post['quote_id'],$item->getId(),$product_price,'BXGY');
-                                            $logger->info($totalDiscount." BXGY discount");
+                                           // $logger->info($totalDiscount." BXGY discount");
                                         }
                                         if($ruleCode == "BXGOFF" && ($orgretailer==$promo['store_id'])){
-                                            $logger->info("in BXGOFF dicount");
+                                           // $logger->info("in BXGOFF dicount");
                                             $totalDiscount  +=  $this->applyBxgoff($promo,$product_price,$item->getSku(),$item->getQty(),'BXGOFF',$item->getSeller_id());
-                                            $logger->info($totalDiscount." BXGOFF discount");
+                                           // $logger->info($totalDiscount." BXGOFF discount");
                                         }
                                         if($ruleCode == "BXGPOFF" && ($orgretailer==$promo['store_id'])){
-                                            $logger->info("in BXGPOFF dicount");
+                                           // $logger->info("in BXGPOFF dicount");
                                             $totalDiscount  +=  $this->applyBxgoff($promo,$product_price,$item->getSku(),$item->getQty(),'BXGPOFF',$item->getSeller_id());
-                                            $logger->info($totalDiscount." BXGPOFF discount");
+                                           // $logger->info($totalDiscount." BXGPOFF discount");
                                         }
                                         if($ruleCode == "BNXAF" && ($orgretailer==$promo['store_id'])){
                                             $itemPriceTotal = 0;
@@ -200,7 +210,7 @@ class Orgreailerview implements OrgnizedretailerInterface
                                                 if(($quantity > $sku_qty) && ($qtyCheck!=0)){
                                                   $additional_item = $quoteItems[$key]->getPrice();  //($quantity - $sku_qty)*
                                                 }
-                                                $totalDiscount = ($itemPriceTotal -  $disc_amt)-$additional_item;
+                                                $totalDiscount += ($itemPriceTotal -  $disc_amt)-$additional_item;
                           
                                                 // if(isset($sellerAmount[$sellerId])) {
                                                 //   $sellerAmount[$sellerId] -= $discountBnxaf;
@@ -225,7 +235,7 @@ class Orgreailerview implements OrgnizedretailerInterface
                             }
                         }
                     }
-                    
+                    $logger->info(" subtotal with @@@ discount  ". $cartSubTotal);
                     // If product not present with store.
                     if($produt_found == 0)
                     {
