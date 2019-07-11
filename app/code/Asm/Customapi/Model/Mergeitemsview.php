@@ -60,9 +60,9 @@ class Mergeitemsview implements MergeItemInterface
         foreach ($items as $item) 
         {
             $qty = $item->getQty();
+            $bxgy = 0;
             if(isset($itemInfo) && !empty($itemInfo)){
                 foreach($itemInfo as $k => $itemArray){
-                    $bxgy = 0;
                     foreach($itemArray as $key => $value){
                         $itemData = json_decode($value);
                         if(isset($itemData->qty) && !empty($itemData->qty)) {
