@@ -217,8 +217,7 @@ class Orgreailerview implements OrgnizedretailerInterface
                                                 // }
                                               }
                                             }
-                          
-                                        }
+                      
                                     }
                                 }
                         
@@ -485,6 +484,7 @@ class Orgreailerview implements OrgnizedretailerInterface
         }
         return $actionQty;
     }
+
     public function applyBxgxBxgy($quoteId,$itemId,$price,$type){
         $discPrice = 0;
         $applyPromoData = $this->_promoFactory->create()->getCollection()
@@ -507,6 +507,8 @@ class Orgreailerview implements OrgnizedretailerInterface
        // $logger->info($quoteId.".......".$itemId.".......".$price.".........".$discPrice);
         return $discPrice;
     }
+
+   
     public function applyBxgoff($promo,$product_price,$itemSku,$itemQty,$type,$seller_id){
         $prDiscount =0;  
         $description = json_decode($promo['description'],true);

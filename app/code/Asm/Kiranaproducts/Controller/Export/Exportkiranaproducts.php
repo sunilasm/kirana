@@ -14,6 +14,7 @@ class Exportkiranaproducts extends \Magento\Framework\App\Action\Action
         \Magento\Framework\File\Csv $csvProcessor,
         \Magento\Framework\App\Filesystem\DirectoryList $directoryList,
         \Magento\Catalog\Model\Product $product,
+        \Lof\MarketPlace\Model\Seller $sellerCollection,
         \Lof\MarketPlace\Model\SellerProduct $sellerProductCollection
     )
     {
@@ -23,6 +24,7 @@ class Exportkiranaproducts extends \Magento\Framework\App\Action\Action
         $this->_customerSession = $customerSession;
         $this->product = $product;
         $this->_sellerProductCollection = $sellerProductCollection;
+        $this->_sellerCollection = $sellerCollection;
         parent::__construct($context, $customerSession);
     }
 
@@ -87,21 +89,36 @@ class Exportkiranaproducts extends \Magento\Framework\App\Action\Action
         foreach ($kirnaProducts as $product) {
             $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
             $productData = $objectManager->create('Magento\Catalog\Model\Product')->load($product->getProduct_id());
-            $doorsetp = (($productData->getPrice()*0.8)-4);
-            $pickup = ($productData->getPrice()*0.9);
+            $kiranaCollection = $this->_sellerCollection->getCollection()->addFieldTofilter('seller_id',$product->getSeller_id());
+            $kiranaData = $kiranaCollection->getData();
+            if($productData->getPrice() <= 5 || $productData->getPrice() <= 5.00){
+                $doorsetp = $productData->getPrice();
+                $pickup = $productData->getPrice();
+            }elseif($product->getSku() == 'SKU590000592'){
+                $doorsetp = ($productData->getPrice()*0.8-4);
+                $pickup = $productData->getPrice();
+            }elseif($product->getSku() == 'SKU590000692'){
+                $doorsetp = $productData->getPrice();
+                $pickup = ($productData->getPrice()*0.9);
+            }else{
+                $doorsetp = ($productData->getPrice()*0.8-4);
+                $pickup = ($productData->getPrice()*0.9);
+            }
+
             $result[] = [
                 $product->getEntity_id(),
                 $product->getProduct_id(),
                 $product->getSeller_id(),
-                $product->getProduct_name(),
-                $product->getName(),
+                $productData->getName(),
+                $kiranaData[0]['name'],
                 $doorsetp,
                 $pickup,
                 $productData->getPrice(),
             ];
-            //print_r($result);exit;
+            // print_r($result);exit;
         }
 
         return $result;
     }
 }
+
