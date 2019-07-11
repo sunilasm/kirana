@@ -61,10 +61,8 @@ class Item
         $pickupFrmStorePId = 0;
         $door=0;
         $PickupFromStore=0;
-	 $discount_amount = 0;
-
-      
-
+        $discount_amount = 0;
+        $isEditable = 1;
         // $writer = new \Zend\Log\Writer\Stream(BP . '/var/log/appromo.log'); 
         // $logger = new \Zend\Log\Logger();
         // $logger->addWriter($writer);
@@ -89,6 +87,9 @@ class Item
                                     $freeQty = $itemData->qty;
                                 }
                             }
+                            if(isset($itemData->type) && (($itemData->type == 'BXGY') || ($itemData->type == 'BWGY')) && ($itemData->id == $quoteItem->getItemId())){
+                                $isEditable = 0;
+                             }
                             if(isset($itemData->parent)){
                                 if($itemData->parent == $quoteItem->getItemId()) {
                                     $freeProduct = $itemData->id;
@@ -135,10 +136,12 @@ class Item
             if ($extensionAttributes === null) {
                 $extensionAttributes = $this->totalItemExtension->create();
             }
+            $extensionAttributes->setIsEditable($isEditable);
             $extensionAttributes->setExtnRowTotal($rowTotal);
             $extensionAttributes->setExtFreeQty($freeQty);
             $extensionAttributes->setExtFreeProduct($freeProduct);
             $extensionAttributes->setSku($product->getSku());
+            
 
             $item->setExtensionAttributes($extensionAttributes);
             $grandTotal += $rowTotal;

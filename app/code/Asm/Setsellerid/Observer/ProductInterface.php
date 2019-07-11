@@ -107,7 +107,7 @@ $logger->addWriter($writer);
             $PickupFromStore=0;
             $PickupFromNearbyStore=0;
             $discount_amount = 0;
-
+            $isEditable = 1;
             $door=0;
             $price =0;
 
@@ -135,6 +135,9 @@ $logger->addWriter($writer);
                                     $freeQty = $itemData->qty;
                                 }
                             }
+                            if(isset($itemData->type) && (($itemData->type == 'BXGY')|| ($itemData->type == 'BWGY')) && ($itemData->id == $quoteItem->getItemId())){
+                                $isEditable = 0;
+                             }
                             if(isset($itemData->parent)){
                                 if($itemData->parent == $quoteItem->getItemId()) {
                                      $freeQuoteItem = $this->quoteItemFactory->create()->load($itemData->id);
@@ -201,6 +204,7 @@ $logger->addWriter($writer);
                 $itemExtAttr->setExtFreeQty($freeQty);
                 $itemExtAttr->setExtFreeProduct($freeProduct);
                 $itemExtAttr->setSku($freeSku);
+                $itemExtAttr->setIsEditable($isEditable);
 
                 $itemExtAttr->setVolume($product->getVolume());
                 if(!empty($idInfo)){

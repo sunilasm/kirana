@@ -16,6 +16,20 @@
      <type name="Magento\Framework\View\Element\UiComponent\DataProvider\CollectionFactory">
         <arguments>
             <argument name="collections" xsi:type="array">
+                <item name="retailinsights_pricerules_postbwgy_listing_data_source" xsi:type="string">Retailinsights\Pricerules\Model\ResourceModel\PostBWGY\Grid\Collection</item>
+            </argument>
+        </arguments>
+    </type>
+    <virtualType name="Retailinsights\Pricerules\Model\ResourceModel\PostBWGY\Grid\Collection" type="Magento\Framework\View\Element\UiComponent\DataProvider\SearchResult">
+        <arguments>
+            <argument name="mainTable" xsi:type="string">custom_promotion_BWGY</argument>
+            <argument name="resourceModel" xsi:type="string">Retailinsights\Pricerules\Model\ResourceModel\PostBWGY</argument>
+        </arguments>
+    </virtualType>
+
+     <type name="Magento\Framework\View\Element\UiComponent\DataProvider\CollectionFactory">
+        <arguments>
+            <argument name="collections" xsi:type="array">
                 <item name="retailinsights_pricerules_postworth_listing_data_source" 
         xsi:type="string">Retailinsights\Pricerules\Model\ResourceModel\PostWorth\Grid\Collection</item>
             </argument>

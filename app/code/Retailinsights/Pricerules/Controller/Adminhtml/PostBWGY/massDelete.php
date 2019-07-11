@@ -1,11 +1,10 @@
 <?php
-
-namespace Retailinsights\Promotion\Controller\Adminhtml\Post;
+namespace Retailinsights\Pricerules\Controller\Adminhtml\PostBWGY;
  
 use Magento\Framework\Controller\ResultFactory;
 use Magento\Backend\App\Action\Context;
 use Magento\Ui\Component\MassAction\Filter;
-use Retailinsights\Promotion\Model\ResourceModel\PostTable\CollectionFactory;
+use Retailinsights\Pricerules\Model\ResourceModel\PostBWGY\CollectionFactory;
  
 class MassDelete extends \Magento\Backend\App\Action
 {
@@ -18,7 +17,7 @@ class MassDelete extends \Magento\Backend\App\Action
      * @var CollectionFactory
      */
     protected $collectionFactory;
-  
+ 
     /**
      * @param Context $context
      * @param Filter $filter
