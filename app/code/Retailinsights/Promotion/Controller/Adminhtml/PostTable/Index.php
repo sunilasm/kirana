@@ -1,6 +1,6 @@
 <?php
 
-namespace Retailinsights\Promotion\Controller\Adminhtml\Post;
+namespace Retailinsights\Promotion\Controller\Adminhtml\PostTable;
 
 class Index extends \Magento\Backend\App\Action
 {

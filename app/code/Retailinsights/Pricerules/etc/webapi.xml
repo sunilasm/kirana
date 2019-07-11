@@ -31,6 +31,14 @@ xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Webapi:etc/webapi.xsd"
             <resource ref="anonymous"/>
         </resources>
     </route>
+    
+    <route url="/V1/Pricerules/getBWGY/" method="GET">
+        <service class="Retailinsights\Pricerules\Api\CatalogRuleRepositoryInterface"
+         method="getBWGY"/>
+        <resources>
+            <resource ref="anonymous"/>
+        </resources>
+    </route>
 
           <route url="/V1/Pricerules/getBuyXYZoff/" method="GET">
         <service class="Retailinsights\Pricerules\Api\CatalogRuleRepositoryInterface"
