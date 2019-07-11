@@ -6,6 +6,7 @@ use Magento\Framework\View\Element\Template;
 
 class CatalogRuleRepository implements CatalogRuleRepositoryInterface
 {
+    protected $postBWGYFactory;
     protected $catalogRuleId;
     protected $catalogRule;
     protected $rule;
@@ -21,6 +22,7 @@ class CatalogRuleRepository implements CatalogRuleRepositoryInterface
         \Magento\CatalogRule\Model\Rule $catalogRule,
         \Magento\CatalogRule\Model\RuleFactory $rule,
         \Retailinsights\Pricerules\Model\PostFactory $postFactory,
+        \Retailinsights\Pricerules\Model\PostBWGYFactory $postBWGYFactory,
 
         \Retailinsights\Pricerules\Model\PostWorthFactory $postWorthFactory,
         \Retailinsights\Pricerules\Model\PostXYZFactory $PostXYZFactory,
@@ -31,6 +33,7 @@ class CatalogRuleRepository implements CatalogRuleRepositoryInterface
         $this->catalogRule = $catalogRule;
         $this->rule = $rule;
         $this->postFactory = $postFactory->create();
+        $this->postBWGYFactory = $postBWGYFactory->create();
 
         $this->postWorthFactory = $postWorthFactory->create();
         $this->PostXYZFactory = $PostXYZFactory->create();
@@ -72,6 +75,35 @@ class CatalogRuleRepository implements CatalogRuleRepositoryInterface
         array_push($result, $modeldata);
         return $result;        
     }   
+
+    public function getBWGY($ruleId) {
+
+        /* test */
+         $result=array();
+
+        $postBWGYData = $this->postBWGYFactory->load($ruleId);
+
+        $modelbwgy['post_id']=$postBWGYData->getPostId();
+        $modelbwgy['fixed_amount']=$postBWGYData->getFixedAmount();
+         $modelbwgy['get_product']=$postBWGYData->getGetProduct();
+         $modelbwgy['get_quantity']=$postBWGYData->getGetQuantity();
+         $modelbwgy['condition']=$postBWGYData->getCondition();
+         $modelbwgy['name']=$postBWGYData->getName();
+         $modelbwgy['store_id']=$postBWGYData->getStoreId();
+
+         $modelbwgy['priority']=$postBWGYData->getPriority();
+
+      
+        $modelbwgy['offer_from']=$postBWGYData->getOfferFrom();
+        $modelbwgy['offer_to']=$postBWGYData->getOfferTo();
+        $modelbwgy['customer_group']=$postBWGYData->getCustomerGroup();
+        $modelbwgy['status']=$postBWGYData->getStatus();
+        $modelbwgy['featured_image']=$postBWGYData->getFeaturedImage();
+        $modelbwgy['created_at']=$postBWGYData->getCreatedAt();
+        $modelbwgy['updated_at']=$postBWGYData->getUpdatedAt();
+        array_push($result, $modelbwgy);
+        return $result;        
+    } 
     
     public function getBuyXXXgetY($ruleId) {
         $result=array();

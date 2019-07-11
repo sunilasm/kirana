@@ -292,6 +292,7 @@ class QuoteManagement implements \Magento\Quote\Api\CartManagementInterface
             $quoteIdMask->delete();
         }
         $this->quoteRepository->save($quote);
+        $this->eventManager->dispatch('promotion_after_add_cart', ['quoteid' => $cartId]); 
         return true;
     }
 
@@ -338,6 +339,7 @@ class QuoteManagement implements \Magento\Quote\Api\CartManagementInterface
     public function placeOrder($cartId, PaymentInterface $paymentMethod = null)
     {
         $quote = $this->quoteRepository->getActive($cartId);
+      
         if ($paymentMethod) {
             $paymentMethod->setChecks([
                 \Magento\Payment\Model\Method\AbstractMethod::CHECK_USE_CHECKOUT,
