@@ -31,7 +31,7 @@ public function __construct(
 
      public function execute()
  {
-    print_r("here");exit;
+   // print_r("here");exit;
     // $customerCollection = $this->getCustomerCollection();
      $settings = $this->_helper->getSettings();
 
