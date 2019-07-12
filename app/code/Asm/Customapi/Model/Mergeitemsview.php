@@ -57,6 +57,7 @@ class Mergeitemsview implements MergeItemInterface
         $totalItems = count($items);
         $movedProductsArray = array();
         $currentProductsArray = array();
+        $bxgy = 0;
         foreach ($items as $item) 
         {
             $qty = $item->getQty();
