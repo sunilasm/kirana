@@ -29,10 +29,28 @@ class Index extends \Magento\Backend\App\Action
         $this->_messageManager = $messageManager;
     }
     public function execute()
-    { 
+
+    {
         if(isset($_POST["submit"]) && !empty($_POST["submit"]))
         { 
-           $selected_val = $_POST['select_values'];
+          if(isset($_POST['slider_id'])){    //***STATUS ENABLE DISABLE */
+            $slider_id = $_POST['slider_id'];
+            $status= $_POST['status'];
+
+           
+            $this->_postFactory->create()->setData(
+              array(
+              'ps_id' => $slider_id,
+              'status' => $status
+              )
+           )->save(); 
+            
+          }
+
+          if(!isset($_POST['slider_id'])){
+          
+          $selected_val = $_POST['select_values'];
+           $status = $_POST['status'];
             if($selected_val == "no")
             { 
               $this->messageManager->addError(__('Choose a promotion type'));
@@ -42,6 +60,7 @@ class Index extends \Magento\Backend\App\Action
             $check = true;
             $target_dir = "pub/media/uploads/";
             $selected_val = $_POST['select_values'];
+            $status = $_POST['status'];
             
             //echo $selected_val;
             $img_name = rand()."_".$_FILES["img_upload"]["name"];
@@ -66,7 +85,8 @@ class Index extends \Magento\Backend\App\Action
               }
             }
             }
-
+          
+      
           // Check if file already exists
           if (file_exists($target_file)) {
               // echo "Sorry, file already exists.";
@@ -113,6 +133,7 @@ class Index extends \Magento\Backend\App\Action
                       $this->_postFactory->create()->setData(
                           array(
                           'promo_type' => $selected_val,
+                          'status' => $status,
                           'image_path' => $base_url.$target_file
                           )
                       )->save(); 
@@ -136,7 +157,7 @@ class Index extends \Magento\Backend\App\Action
               }
           }
         }
-
+      }
         $this->_view->loadLayout();
         $this->_view->getLayout()->initMessages();
         $this->_view->renderLayout();
