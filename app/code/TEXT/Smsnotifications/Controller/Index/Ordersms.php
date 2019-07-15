@@ -10,6 +10,7 @@
 namespace TEXT\Smsnotifications\Controller\Index;
 use Magento\Framework\App\Action\Context;
 use \TEXT\Smsnotifications\Helper\Data as Helper;
+use Magento\Framework\App\Config\ScopeConfigInterface;
 
 class Ordersms extends \Magento\Framework\App\Action\Action
 {
@@ -20,6 +21,7 @@ class Ordersms extends \Magento\Framework\App\Action\Action
         \Magento\Sales\Api\OrderRepositoryInterface $orderRepository,
             \Magento\Framework\Api\SearchCriteriaBuilder $searchCriteriaBuilder,
             \Magento\Framework\Api\SortOrderBuilder $sortBuilder,
+            ScopeConfigInterface $scopeConfig,
             Helper $helper,
             Context $context
     ) {
@@ -27,6 +29,7 @@ class Ordersms extends \Magento\Framework\App\Action\Action
               $this->searchCriteriaBuilder = $searchCriteriaBuilder;
               $this->sortBuilder = $sortBuilder;
               $this->_helper  = $helper;
+              $this->scopeConfig = $scopeConfig;
         parent::__construct($context);
     }
 
@@ -36,7 +39,7 @@ class Ordersms extends \Magento\Framework\App\Action\Action
                 //date_default_timezone_set('Asia/Kolkata'); 
                 $time = time();
                 $to = date('Y-m-d H:i:s', $time);
-                $lastTime = $time - 3000000; // 60*60*24
+                $lastTime = $time - 300; // 60*60*24
                 $from = date('Y-m-d H:i:s', $lastTime);
                 //print_r("to:-".$to);
                 //print_r("from:-".$from); exit;
@@ -100,7 +103,19 @@ class Ordersms extends \Magento\Framework\App\Action\Action
 		   // print_r($admin_recipients);
                     array_push($admin_recipients, $telephone);
 		    //print_r($admin_recipients);
-                    $result = $objectManager->get('TEXT\Smsnotifications\Helper\Data')->sendSms($text,$admin_recipients);
+                   // $result = $objectManager->get('TEXT\Smsnotifications\Helper\Data')->sendSms($text,$admin_recipients);
+		    $settings = array();
+                    $settings['sms_gateway_url'] = "https://api.textlocal.in/";
+                    $settings['sms_auth_token'] = 'LcWtONwzQAo-7XakJm9eP2SBMM7DTPEriHKBgwUqiR';
+                    $settings['sms_sender_name'] = 'ASMESP';
+                    $errors = array();
+                    $apiuri = $settings['sms_gateway_url'];
+                    $apiurl = $apiuri."send?&apiKey=".urlencode($settings['sms_auth_token'])."&sender=".urlencode($settings['sms_sender_name'])."&numbers=".urlencode(implode(',', $admin_recipients))."&message=".urlencode($text);
+                    //print_r($apiurl);exit;
+                    $rows = file_get_contents($apiurl);
+                    $result = json_decode($rows, true);
+
+                    //$result = $objectManager->get('TEXT\Smsnotifications\Helper\Data')->sendSms($text,$admin_recipients);
                 }
                 $table .= "<tr style='border:1px solid #000'>";
                 $table .= "<td style='border-right:1px solid #000'>";
@@ -126,5 +141,12 @@ class Ordersms extends \Magento\Framework\App\Action\Action
              $table .= "</table>";
 	         echo $table;
     }
+
+    // public function getConfig($configPath)
+    // {
+    //     return $this->scopeConfig->getValue(
+    //         $configPath,
+    //     ScopeInterface::SCOPE_STORE);
+    // }
 }
 
