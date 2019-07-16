@@ -65,25 +65,25 @@ class Addresschangeview implements AddresschangeInterface
             if(!in_array($item->getSeller_id(), $sellerId['retail']) || !in_array($item->getSeller_id(), $sellerId['orgretail']))
             {
                 $price_type = $item->getPrice_type();
-                //print_r($item->getProduct_id());exit;    
+               // print_r($price_type);exit;    
                 
                 $sellerProductCollection = $this->_sellerProductCollection->getCollection()->addFieldToFilter('product_id', array('in' => $item->getProduct_id()));
                 //print_r($sellerProductCollection->getData());exit;
 
                 $tempSellerProductArray = array();
                 $tempSellerType = array();
-                
                 // If sellers are present in given range.
                 if(count($sellerId['retail']) || count($sellerId['orgretail']))
                 {
+		    $price_type_flag = 0;
                     foreach($sellerProductCollection as $seller):
-                        $price_type_flag = 0;
                         if($price_type == 0)
                         {
                             if(in_array($seller['seller_id'], $sellerId['retail'])){
                                 $tempSellerProductArray[] = $seller['seller_id'];
                                 $tempSellerType[] = 'kirana';
                                 $price_type_flag = 1;
+                                break;
                             }
                         }
                         elseif($price_type == 1)
@@ -93,11 +93,15 @@ class Addresschangeview implements AddresschangeInterface
                                 $tempSellerProductArray[] = $seller['seller_id'];
                                 $tempSellerType[] = 'orgretail';
                                 $price_type_flag = 1;
+                                break;
                             } 
                         }
     
-                        if($price_type_flag == 0)
-                        {
+                    endforeach;
+                    // Product not in kirana or orginized retailer
+                    if($price_type_flag == 0)
+                    {
+                        foreach($sellerProductCollection as $seller):
                             if(in_array($seller['seller_id'], $sellerId['retail'])){
                                 $tempSellerProductArray[] = $seller['seller_id'];
                                 $tempSellerType[] = 'kirana';
@@ -106,13 +110,15 @@ class Addresschangeview implements AddresschangeInterface
                             {
                                 $tempSellerProductArray[] = $seller['seller_id'];
                                 $tempSellerType[] = 'orgretail';
-                            } 
-                        }
-                    endforeach;
+                            }
+                        endforeach;     
+                    }
                 }
                 
+		//print_r($tempSellerProductArray);exit;
                 if(count($tempSellerProductArray))
                 {
+		   //print_r($tempSellerType[0]);exit;
                     if($tempSellerType[0] == 'kirana')
                     {
                         $sellerCollection = $this->_sellerCollection->getCollection()
