@@ -43,6 +43,20 @@ xsi:noNamespaceSchemaLocation="urn:magento:framework:Api/etc/extension_attribute
 		   <attribute code="extn_grand_total" type="string" />
     </extension_attributes>
     
+    <extension_attributes for="Magento\Quote\Api\Data\TotalsItemInterface">
+		   <attribute code="product_img" type="string" />
+    </extension_attributes>
+    <extension_attributes for="Magento\Quote\Api\Data\TotalsItemInterface">
+		   <attribute code="product_name" type="string" />
+    </extension_attributes>
+    <extension_attributes for="Magento\Quote\Api\Data\TotalsItemInterface">
+		   <attribute code="product_uom" type="string" />
+    </extension_attributes>
+    <extension_attributes for="Magento\Quote\Api\Data\TotalsItemInterface">
+		   <attribute code="product_price_type" type="string" />
+    </extension_attributes>
+    
+    
 
 	<extension_attributes for="Magento\Quote\Api\Data\TotalsInterface">
 		   <attribute code="ds_count" type="string" />

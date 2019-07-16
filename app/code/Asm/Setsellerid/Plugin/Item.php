@@ -3,6 +3,7 @@ namespace Asm\Setsellerid\Plugin;
 use Lof\MarketPlace\Model\SellerProductFactory as SellerProduct;
 use Retailinsights\Promotion\Model\PromoTableFactory;
 use Magento\Catalog\Api\ProductRepositoryInterfaceFactory as ProductRepository;
+use Magento\Catalog\Helper\ImageFactory as ProductImageHelper;
 
 class Item
 {
@@ -19,11 +20,16 @@ class Item
      * @param \Hexcrypto\WishlistAPI\Helper\Data $wishlistHelper
       * @param SellerProduct $sellerProduct
      */
+    /**
+         *@var \Magento\Catalog\Helper\ImageFactory
+         */
+    protected $productImageHelper;
     private $quoteItemFactory;
     protected $_promoFactory;
 
     public function __construct(
          SellerProduct $sellerProduct,
+         ProductImageHelper $productImageHelper,
          PromoTableFactory $promoFactory,
         \Magento\Quote\Model\Quote\ItemFactory $itemFactory,
         \Magento\Quote\Api\Data\TotalsItemExtensionFactory $totalItemExtensionFactory,
@@ -32,6 +38,7 @@ class Item
         \Magento\Quote\Model\Quote\ItemFactory $quoteItemFactory
     
     ) {
+        $this->productImageHelper = $productImageHelper;
         $this->sellerProduct = $sellerProduct;
         $this->_promoFactory = $promoFactory;        
         $this->itemFactory = $itemFactory;
@@ -65,8 +72,21 @@ class Item
         foreach($totals->getItems() as $item)
         {
             $freeQty = 0; $freeProduct = 0;
+            $productName = $productImg = $productUom = $productPriceType = '';
+
             $quoteItem = $this->itemFactory->create()->load($item->getItemId());
             $product = $this->productRepository->create()->getById($quoteItem->getProductId());
+
+            $productName = $product->getName();
+            $productImg = $this->productImageHelper->create()->init($product, 'product_thumbnail_image')->setImageFile($product->getThumbnail())->getUrl();
+            $optionId = $product->getUnitm();
+                $weight = round($product->getWeight(), 0);
+                $attribute = $product->getResource()->getAttribute('unitm');
+                if ($attribute->usesSource()) {
+                    $productUom = $weight." ".$attribute->getSource()->getOptionText($optionId);
+                }
+            $productPriceType = $quoteItem->getPriceType();
+
             $discountData = $this->_promoFactory->create()->getCollection()
             ->addFieldToFilter('cart_id', $quoteItem->getQuoteId());
             if(isset($discountData)){
@@ -89,6 +109,7 @@ class Item
                                     $freeProduct = $itemData->id;
                                 }
                             }
+                                
                           }
                         }
                     }
@@ -134,6 +155,12 @@ class Item
             $extensionAttributes->setExtFreeQty($freeQty);
             $extensionAttributes->setExtFreeProduct($freeProduct);
             $extensionAttributes->setSku($product->getSku());
+
+            $extensionAttributes->setProductName($productName);
+            $extensionAttributes->setProductImg($productImg);
+            $extensionAttributes->setProductUom($productUom);
+            $extensionAttributes->setProductPriceType($productPriceType);
+
             
 
             $item->setExtensionAttributes($extensionAttributes);
