@@ -3,6 +3,10 @@ table {
     border-collapse: collapse;
     width: 100%;
 }
+.noActive{
+color: #3276b1;
+background-color: #fff;
+}
 
 td, th {
 	width: 20%;
