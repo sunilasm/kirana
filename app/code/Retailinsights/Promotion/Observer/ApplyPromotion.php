@@ -144,7 +144,6 @@ class ApplyPromotion implements ObserverInterface
                 $logger->info("BXGOFF Start");
                 $checkPromo = $this->checkPromoBxgoff($promo['p_id'], $sellerId, $sku, $quantity, 0, $quoteItems[$key]->getPrice());
                 array_push($promoFinalEntry , $checkPromo);
-                //------
                 if(isset($checkPromo)){
                   foreach($checkPromo as $a => $b){
                     $thisPromoDisc = 0;
@@ -158,15 +157,14 @@ class ApplyPromotion implements ObserverInterface
                     }
                 }
                 //------
-                $logger->info("BXGOFF Ends");
-
+                // $logger->info("BXGOFF End");
               }
               if($ruleCode == "BXGPOFF"){
                 $logger->info("BXGPOFF Start");
                 $checkPromo = $this->checkPromoBxgoff($promo['p_id'], $sellerId, $sku, $quantity, 1, $quoteItems[$key]->getPrice());
                 array_push($promoFinalEntry , $checkPromo);
-                 //------
-                 if(isset($checkPromo)){
+     //------
+                if(isset($checkPromo)){
                   foreach($checkPromo as $a => $b){
                     $thisPromoDisc = 0;
                       foreach($b as $c => $d){
@@ -179,7 +177,8 @@ class ApplyPromotion implements ObserverInterface
                     }
                 }
                 //------
-                $logger->info("BXGPOFF End");
+
+                //$logger->info("BXGPOFF End");
               }
               if($ruleCode == "BNXAF"){
                 $logger->info("BNXAF Start");
