@@ -76,14 +76,15 @@ class Addresschangeview implements AddresschangeInterface
                 // If sellers are present in given range.
                 if(count($sellerId['retail']) || count($sellerId['orgretail']))
                 {
+                    $price_type_flag = 0;
                     foreach($sellerProductCollection as $seller):
-                        $price_type_flag = 0;
                         if($price_type == 0)
                         {
                             if(in_array($seller['seller_id'], $sellerId['retail'])){
                                 $tempSellerProductArray[] = $seller['seller_id'];
                                 $tempSellerType[] = 'kirana';
                                 $price_type_flag = 1;
+                                break;
                             }
                         }
                         elseif($price_type == 1)
@@ -93,11 +94,15 @@ class Addresschangeview implements AddresschangeInterface
                                 $tempSellerProductArray[] = $seller['seller_id'];
                                 $tempSellerType[] = 'orgretail';
                                 $price_type_flag = 1;
+                                break;
                             } 
                         }
     
-                        if($price_type_flag == 0)
-                        {
+                    endforeach;
+                    // Product not in kirana or orginized retailer
+                    if($price_type_flag == 0)
+                    {
+                        foreach($sellerProductCollection as $seller):
                             if(in_array($seller['seller_id'], $sellerId['retail'])){
                                 $tempSellerProductArray[] = $seller['seller_id'];
                                 $tempSellerType[] = 'kirana';
@@ -106,9 +111,9 @@ class Addresschangeview implements AddresschangeInterface
                             {
                                 $tempSellerProductArray[] = $seller['seller_id'];
                                 $tempSellerType[] = 'orgretail';
-                            } 
-                        }
-                    endforeach;
+                            }
+                        endforeach;     
+                    }
                 }
                 
                 if(count($tempSellerProductArray))
