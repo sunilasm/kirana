@@ -208,7 +208,7 @@ class Orgreailerview implements OrgnizedretailerInterface
                                                 $disc_amt = ($fixedPrice*$qtyFactor);
                                                 $additional_item = 0;
                                                 if(($quantity > $sku_qty) && ($qtyCheck!=0)){
-                                                  $additional_item = $quoteItems[$key]->getPrice();  //($quantity - $sku_qty)*
+                                                  $additional_item = $item->getPrice();  //($quantity - $sku_qty)*
                                                 }
                                                 $totalDiscount += ($itemPriceTotal -  $disc_amt)-$additional_item;
                           
