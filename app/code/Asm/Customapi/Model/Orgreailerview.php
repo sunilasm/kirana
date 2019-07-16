@@ -217,7 +217,8 @@ class Orgreailerview implements OrgnizedretailerInterface
                                                 // }
                                               }
                                             }
-                                        } 
+
+                                        }
                                     }
                                 }
                         

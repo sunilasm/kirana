@@ -144,12 +144,41 @@ class ApplyPromotion implements ObserverInterface
                 $logger->info("BXGOFF Start");
                 $checkPromo = $this->checkPromoBxgoff($promo['p_id'], $sellerId, $sku, $quantity, 0, $quoteItems[$key]->getPrice());
                 array_push($promoFinalEntry , $checkPromo);
-                $logger->info("BXGOFF End");
+                //------
+                if(isset($checkPromo)){
+                  foreach($checkPromo as $a => $b){
+                    $thisPromoDisc = 0;
+                      foreach($b as $c => $d){
+                        $e = json_decode($d);
+                        $thisPromoDisc = $e->amount;
+                        if(isset($sellerAmount[$sellerId]) && $thisPromoDisc > 0) {
+                          $sellerAmount[$sellerId] -= $thisPromoDisc;
+                        }
+                      }
+                    }
+                }
+                //------
+                $logger->info("BXGOFF Ends");
+
               }
               if($ruleCode == "BXGPOFF"){
                 $logger->info("BXGPOFF Start");
                 $checkPromo = $this->checkPromoBxgoff($promo['p_id'], $sellerId, $sku, $quantity, 1, $quoteItems[$key]->getPrice());
                 array_push($promoFinalEntry , $checkPromo);
+                 //------
+                 if(isset($checkPromo)){
+                  foreach($checkPromo as $a => $b){
+                    $thisPromoDisc = 0;
+                      foreach($b as $c => $d){
+                        $e = json_decode($d);
+                        $thisPromoDisc = $e->amount;
+                        if(isset($sellerAmount[$sellerId]) && $thisPromoDisc > 0) {
+                          $sellerAmount[$sellerId] -= $thisPromoDisc;
+                        }
+                      }
+                    }
+                }
+                //------
                 $logger->info("BXGPOFF End");
               }
               if($ruleCode == "BNXAF"){
@@ -226,6 +255,9 @@ class ApplyPromotion implements ObserverInterface
                     $checkPromo = $this->checkPromoBnxgo($discount_bnxgo,$sellerId);
                     array_push($promoFinalEntry , $checkPromo);
                     $bnxgoCount[$ruleId] = 0;
+                    if(isset($sellerAmount[$sellerId])) {
+                      $sellerAmount[$sellerId] -= $discount_bnxgo;
+                    }
                   }
                 }
                 $logger->info("BNXG1O End");  
