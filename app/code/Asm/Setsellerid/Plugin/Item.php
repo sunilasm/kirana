@@ -5,6 +5,7 @@ use Retailinsights\Promotion\Model\PromoTableFactory;
 use Magento\Catalog\Api\ProductRepositoryInterfaceFactory as ProductRepository;
 use Magento\Catalog\Helper\ImageFactory as ProductImageHelper;
 
+
 class Item
 {
     /**
@@ -34,17 +35,18 @@ class Item
         \Magento\Quote\Model\Quote\ItemFactory $itemFactory,
         \Magento\Quote\Api\Data\TotalsItemExtensionFactory $totalItemExtensionFactory,
          \Magento\Quote\Api\Data\TotalsExtensionFactory $totalExtensionFactory,
-        ProductRepository $productRepository,
-        \Magento\Quote\Model\Quote\ItemFactory $quoteItemFactory
+        ProductRepository $productRepository
+      //  \Magento\Quote\Model\Quote\ItemFactory $quoteItemFactory
     
     ) {
+        $this->_promoFactory = $promoFactory;
         $this->productImageHelper = $productImageHelper;
         $this->sellerProduct = $sellerProduct;
-        $this->_promoFactory = $promoFactory;        
+             
         $this->itemFactory = $itemFactory;
         $this->totalItemExtension = $totalItemExtensionFactory;
         $this->totalExtension = $totalExtensionFactory;
-        $this->quoteItemFactory = $quoteItemFactory;
+       // $this->quoteItemFactory = $quoteItemFactory;
         $this->productRepository = $productRepository;
     }
     /**
@@ -69,12 +71,14 @@ class Item
         // $writer = new \Zend\Log\Writer\Stream(BP . '/var/log/appromo.log'); 
         // $logger = new \Zend\Log\Logger();
         // $logger->addWriter($writer);
+
         foreach($totals->getItems() as $item)
         {
             $freeQty = 0; $freeProduct = 0;
             $productName = $productImg = $productUom = $productPriceType = '';
 
             $quoteItem = $this->itemFactory->create()->load($item->getItemId());
+         
             $product = $this->productRepository->create()->getById($quoteItem->getProductId());
 
             $productName = $product->getName();
@@ -115,6 +119,7 @@ class Item
                     }
             }
             
+
             // $SellerProd = $this->sellerProduct->create()->getCollection();
             // $fltColl = $SellerProd->addFieldToFilter('seller_id', $quoteItem->getSellerId())
             //             ->addFieldToFilter('product_id', $quoteItem->getProductId());

@@ -94,10 +94,7 @@ class ForgotPassword implements ObserverInterface
      * @param Context $context
      * @param Helper $helper _helper
      */
-    public function __construct(
-        Context $context,
-        Helper $helper
-    ) {
+    public function __construct( Context $context, Helper $helper) {
         $this->_helper  = $helper;
         $this->_request = $context->getRequest();
         $this->_layout  = $context->getLayout();
@@ -110,44 +107,38 @@ class ForgotPassword implements ObserverInterface
      */
     public function execute(Observer $observer)
     {
-         $settings = $this->_helper->getSettings();
-            $this->username = $this->_helper->getSmsnotificationsApiUsername();
-            $this->password = $this->_helper->getSmsnotificationsApiPassword();
-            
-            $customer_email = '';
-            if(isset($_POST["email"])){
-                $customer_email = $_POST["email"];
-            }
-            $objectManager = \Magento\Framework\App\ObjectManager ::getInstance();
-            $CustomerModel = $objectManager->create('Magento\Customer\Model\Customer');
-            $CustomerModel->setWebsiteId(1); 
-            $CustomerModel->loadByEmail($customer_email);
+        $settings = $this->_helper->getSettings();
+        
+        $this->username = $this->_helper->getSmsnotificationsApiUsername();
+        $this->password = $this->_helper->getSmsnotificationsApiPassword();
+        
+        $customer_email =$_POST["email"];
+        $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+        $CustomerModel = $objectManager->create('Magento\Customer\Model\Customer');
+        $CustomerModel->setWebsiteId(1); 
+        $CustomerModel->loadByEmail($customer_email);
 
-            $firstname          =   $CustomerModel->getFirstname();
-            $lastname           =   $CustomerModel->getLastname();
-            $emailid            =   $CustomerModel->getEmail();
+        $firstname          =   $CustomerModel->getFirstname();
+        $lastname           =   $CustomerModel->getLastname();
+        $emailid            =   $CustomerModel->getEmail();
 
-           /*get mobile number through emailid */
-           $telephone= $CustomerModel->getAddressesCollection()->getFirstitem()->getTelephone();
+        /*get mobile number through emailid */
+        $telephone= $CustomerModel->getAddressesCollection()->getFirstitem()->getTelephone();
     
-            if ($telephone)   {
-                               $text =  $settings['forgot_password'];
-                               $text = str_replace('{firstname}',  $firstname , $text);
-                               $text = str_replace('{lastname}',  $lastname , $text);
-                               $text = str_replace('{emailid}',  $emailid , $text);
-                              
-                                } 
-
+        if ($telephone)   {
+            $text =  $settings['forgot_password'];
+            $text = str_replace('{firstname}',  $firstname , $text);
+            $text = str_replace('{lastname}',  $lastname , $text);
+            $text = str_replace('{emailid}',  $emailid , $text);
+            
             $admin_recipients[]=$settings['admin_recipients'];
- 
-          array_push($admin_recipients, $telephone);
+            array_push($admin_recipients, $telephone);
 
-           $object_manager = \Magento\Framework\App\ObjectManager ::getInstance();
+           $object_manager = \Magento\Framework\App\ObjectManager::getInstance();
            $result = $object_manager->get('TEXT\Smsnotifications\Helper\Data')->sendSms($text,$admin_recipients);
         
            return($result );
-    
-          
-            }
+        }
     }
+}
     

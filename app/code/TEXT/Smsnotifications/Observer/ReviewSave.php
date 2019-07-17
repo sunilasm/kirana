@@ -94,10 +94,7 @@ class ReviewSave implements ObserverInterface
      * @param Context $context
      * @param Helper $helper _helper
      */
-    public function __construct(
-        Context $context,
-        Helper $helper
-    ) {
+    public function __construct( Context $context, Helper $helper) {
         $this->_helper  = $helper;
         $this->_request = $context->getRequest();
         $this->_layout  = $context->getLayout();
@@ -110,37 +107,31 @@ class ReviewSave implements ObserverInterface
      */
     public function execute(Observer $observer)
     {
-         $settings = $this->_helper->getSettings();
+        $settings = $this->_helper->getSettings();
 
-         $this->username = $this->_helper->getSmsnotificationsApiUsername();
-         $this->password = $this->_helper->getSmsnotificationsApiPassword();
+        $this->username = $this->_helper->getSmsnotificationsApiUsername();
+        $this->password = $this->_helper->getSmsnotificationsApiPassword();
            
-            $om = \Magento\Framework\App\ObjectManager::getInstance();
-            $customerSession = $om->create('Magento\Customer\Model\Session');
-             $customer_id= $customerSession->getCustomerId();
-            $name= $customerSession->getCustomer()->getName();
-            $emailid=$customerSession->getCustomer()->getEmail();
+        $om = \Magento\Framework\App\ObjectManager::getInstance();
+        $customerSession = $om->create('Magento\Customer\Model\Session');
+        $customer_id= $customerSession->getCustomerId();
+        $name= $customerSession->getCustomer()->getName();
+        $emailid=$customerSession->getCustomer()->getEmail();
 
-            /*get login customer mobile number */
-          $telephone= $customerSession->getCustomer()->getPrimaryBillingAddress()->getTelephone();
-       if ($telephone) {
-                          $text=$settings['review_submit'];
-                          $text = str_replace('{customer_id}', $customer_id, $text);
-                          $text = str_replace('{name}',  $name, $text);
-                          $text = str_replace('{emailid}',  $emailid, $text);
-                        } 
-       $admin_recipients[]=$settings['admin_recipients'];
- 
-    array_push($admin_recipients, $telephone);
-
-       $object_manager = \Magento\Framework\App\ObjectManager ::getInstance();
-        $result = $object_manager->get('TEXT\Smsnotifications\Helper\Data')->sendSms($text,$admin_recipients);
+        /*get login customer mobile number */
+        $telephone= $customerSession->getCustomer()->getPrimaryBillingAddress()->getTelephone();
+        if ($telephone) {
+            $text=$settings['review_submit'];
+            $text = str_replace('{customer_id}', $customer_id, $text);
+            $text = str_replace('{name}',  $name, $text);
+            $text = str_replace('{emailid}',  $emailid, $text);
+        } 
         
-     return($result );
-
-     
-    
-          
-            }
-        }
+        $admin_recipients[]=$settings['admin_recipients'];
+        array_push($admin_recipients, $telephone);
+        $object_manager = \Magento\Framework\App\ObjectManager::getInstance();
+        $result = $object_manager->get('TEXT\Smsnotifications\Helper\Data')->sendSms($text,$admin_recipients);
+        return($result );
+    }
+}
     

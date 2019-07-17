@@ -94,10 +94,7 @@ class Registration implements ObserverInterface
      * @param Context $context
      * @param Helper $helper _helper
      */
-    public function __construct(
-        Context $context,
-        Helper $helper
-    ) {
+    public function __construct( Context $context, Helper $helper) {
         $this->_helper  = $helper;
         $this->_request = $context->getRequest();
         $this->_layout  = $context->getLayout();
@@ -111,31 +108,19 @@ class Registration implements ObserverInterface
     public function execute(Observer $observer)
     {
         $settings = $this->_helper->getSettings();
-        $objectManager = \Magento\Framework\App\ObjectManager ::getInstance();
-        $writer = new \Zend\Log\Writer\Stream(BP . '/var/log/templog.log');
-        $logger = new \Zend\Log\Logger();
-        $logger->addWriter($writer);
-        $logger->info("---- Customer Reg ----");
+        $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
         $CustomerModel = $objectManager->create('Magento\Customer\Model\Customer');
-        $telephone = '';
-        if(isset($_POST['telephone'])){
-            $telephone = $_POST['telephone'];
-        }
-        $logger->info("Telephone : ".$telephone);
-        if ($telephone) 
-        {
-            $text = $settings['customer_register'];
-            $logger->info("Text : ".$text);
-            $admin_recipients[]=$settings['admin_recipients'];
-            array_push($admin_recipients, $telephone);
-            $logger->info(print_r($admin_recipients,true));
-            $object_manager = \Magento\Framework\App\ObjectManager ::getInstance();
-            $result = $object_manager->get('TEXT\Smsnotifications\Helper\Data')->sendSms($text,
-            $admin_recipients);
-            $logger->info("Reg : ". $result);
-            $logger->info("---- Customer Reg End----");
+        
+        $telephone = $_POST['telephone'];
+     
+        if ($telephone) {
+            $text=$settings['customer_register'];
         } 
-            return;
+        
+        $admin_recipients[]=$settings['admin_recipients'];
+        array_push($admin_recipients, $telephone);
+        $object_manager = \Magento\Framework\App\ObjectManager::getInstance();
+        $result = $object_manager->get('TEXT\Smsnotifications\Helper\Data')->sendSms($text,$admin_recipients);
+        return;
     }
 }
-    

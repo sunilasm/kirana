@@ -33,9 +33,8 @@ class Ordersms extends \Magento\Framework\App\Action\Action
         parent::__construct($context);
     }
 
-
     public function execute()
-    {
+    {exit;
                 //date_default_timezone_set('Asia/Kolkata'); 
                 $time = time();
                 $to = date('Y-m-d H:i:s', $time);
@@ -47,7 +46,7 @@ class Ordersms extends \Magento\Framework\App\Action\Action
                 $OrderFactory = $objectManager->create('Magento\Sales\Model\ResourceModel\Order\CollectionFactory');
                 $orderCollection = $OrderFactory->create()->addFieldToSelect(array('*'));
                 $orderCollection->addFieldToFilter('created_at', ['lteq' => $to])->addFieldToFilter('created_at', ['gteq' => $from]);
-                //print_r($orderCollection->getSelect()->__toString());exit; 
+               //print_r($orderCollection->getData());exit;  
 
                 $table = "";
 		        $table .= "<table style='border:1px solid #000'>";
@@ -72,7 +71,8 @@ class Ordersms extends \Magento\Framework\App\Action\Action
                 $arr= $settings['order_statuss'];
                 $a = explode(',', $settings['order_statuss']);
                 $b = explode(',', $settings['order_statuss']);
-                $final_array = array_combine($a, $b);
+                $final_array = array();
+		$final_array = array_combine($a, $b);
 
                 $orderId       =  $order->getIncrementId();
                 $firstname     =  $order->getBillingAddress()->getFirstName();
@@ -81,9 +81,9 @@ class Ordersms extends \Magento\Framework\App\Action\Action
                 $totalPrice    =  number_format($order->getGrandTotal(), 2);
                 $countryCode   =  $order->getOrderCurrencyCode();
                 $customerEmail =  $order->getCustomerEmail();
-		        $customerFname = $customer->getFirstname();
+		$customerFname = $customer->getFirstname();
                 $customerLname = $customer->getLastname();
-
+		$telephone = '';
                $telephone = $customer->getPrimaryBillingAddress()->getTelephone();
           	//print_r($customer->getData());exit;        
 	        if(in_array('placeorder', $final_array))
@@ -137,9 +137,10 @@ class Ordersms extends \Magento\Framework\App\Action\Action
                
                 //print_r($orderId.'--send--'.$result);
                 //print_r($result);
+//exit;
              endforeach;
              $table .= "</table>";
-	         echo $table;
+	        // echo $table;
     }
 
     // public function getConfig($configPath)

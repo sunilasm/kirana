@@ -97,21 +97,13 @@ class NewOrder implements ObserverInterface
 
      protected $connector;
 
-public function __construct(
-
-
-        Context $context,
-        Helper $helper,
-         \Magento\Sales\Api\Data\OrderInterface $order
-       
-    ) {
-    $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+    public function __construct( Context $context, Helper $helper, \Magento\Sales\Api\Data\OrderInterface $order) {
+        
+        $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
         $this->_helper  = $helper;
         $this->_request = $context->getRequest();
         $this->_layout  = $context->getLayout();
         $this->order = $order;    
-
-
     }
 
     /**
@@ -121,12 +113,14 @@ public function __construct(
      */
     public function execute(Observer $observer)
     {
+	exit;
         $settings = $this->_helper->getSettings();
-           /*For multiselect array */
+        /*For multiselect array */
         $arr= $settings['order_statuss'];
         $a = explode(',', $settings['order_statuss']);
         $b = explode(',', $settings['order_statuss']);
         $final_array = array_combine($a, $b);
+
         /*get order details */
         $orderId = $observer->getEvent()->getOrderIds();
         $order = $this->order->load($orderId);
@@ -137,13 +131,11 @@ public function __construct(
         $totalPrice    =  number_format($order->getGrandTotal(), 2);
         $countryCode   =  $order->getOrderCurrencyCode();
         $customerEmail =  $order->getCustomerEmail();
+        
         /*Get telephone number of order customer*/
-        $text = '';
         $telephone = $this->destination  = $order->getBillingAddress()->getTelephone();
-        if(in_array('placeorder', $final_array))
-        {
-            if ($telephone)     
-            {
+        if(in_array('placeorder', $final_array)){
+            if ($telephone)     {
                 $text= $settings['new_order'];
                 $text = str_replace('{order_id}', $orderId, $text);
                 $text = str_replace('{firstname}', $firstname, $text);
@@ -152,17 +144,17 @@ public function __construct(
                 $text = str_replace('{emailid}',  $customerEmail, $text);
                 $text = str_replace('{country_code}',  $countryCode, $text);
             } 
-            $admin_recipients[]=$settings['admin_recipients'];
+
+           $admin_recipients[]=$settings['admin_recipients'];
+
+
+
             array_push($admin_recipients, $telephone);
-            $object_manager = \Magento\Framework\App\ObjectManager ::getInstance();
+     
+            $object_manager = \Magento\Framework\App\ObjectManager::getInstance();
             $result = $object_manager->get('TEXT\Smsnotifications\Helper\Data')->sendSms($text,$admin_recipients);
+            
             return($result);
         }
     }
 }
-
-
-
-            
-
-    
