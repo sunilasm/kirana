@@ -10,6 +10,7 @@
 namespace TEXT\Smsnotifications\Controller\Index;
 use Magento\Framework\App\Action\Context;
 use \TEXT\Smsnotifications\Helper\Data as Helper;
+use Magento\Framework\App\Config\ScopeConfigInterface;
 
 class Ordersms extends \Magento\Framework\App\Action\Action
 {
@@ -20,6 +21,7 @@ class Ordersms extends \Magento\Framework\App\Action\Action
         \Magento\Sales\Api\OrderRepositoryInterface $orderRepository,
             \Magento\Framework\Api\SearchCriteriaBuilder $searchCriteriaBuilder,
             \Magento\Framework\Api\SortOrderBuilder $sortBuilder,
+            ScopeConfigInterface $scopeConfig,
             Helper $helper,
             Context $context
     ) {
@@ -27,16 +29,16 @@ class Ordersms extends \Magento\Framework\App\Action\Action
               $this->searchCriteriaBuilder = $searchCriteriaBuilder;
               $this->sortBuilder = $sortBuilder;
               $this->_helper  = $helper;
+              $this->scopeConfig = $scopeConfig;
         parent::__construct($context);
     }
 
-
     public function execute()
-    {
+    {exit;
                 //date_default_timezone_set('Asia/Kolkata'); 
                 $time = time();
                 $to = date('Y-m-d H:i:s', $time);
-                $lastTime = $time - 3000000; // 60*60*24
+                $lastTime = $time - 300; // 60*60*24
                 $from = date('Y-m-d H:i:s', $lastTime);
                 //print_r("to:-".$to);
                 //print_r("from:-".$from); exit;
@@ -44,7 +46,7 @@ class Ordersms extends \Magento\Framework\App\Action\Action
                 $OrderFactory = $objectManager->create('Magento\Sales\Model\ResourceModel\Order\CollectionFactory');
                 $orderCollection = $OrderFactory->create()->addFieldToSelect(array('*'));
                 $orderCollection->addFieldToFilter('created_at', ['lteq' => $to])->addFieldToFilter('created_at', ['gteq' => $from]);
-                //print_r($orderCollection->getSelect()->__toString());exit; 
+               //print_r($orderCollection->getData());exit;  
 
                 $table = "";
 		        $table .= "<table style='border:1px solid #000'>";
@@ -69,7 +71,8 @@ class Ordersms extends \Magento\Framework\App\Action\Action
                 $arr= $settings['order_statuss'];
                 $a = explode(',', $settings['order_statuss']);
                 $b = explode(',', $settings['order_statuss']);
-                $final_array = array_combine($a, $b);
+                $final_array = array();
+		$final_array = array_combine($a, $b);
 
                 $orderId       =  $order->getIncrementId();
                 $firstname     =  $order->getBillingAddress()->getFirstName();
@@ -78,9 +81,9 @@ class Ordersms extends \Magento\Framework\App\Action\Action
                 $totalPrice    =  number_format($order->getGrandTotal(), 2);
                 $countryCode   =  $order->getOrderCurrencyCode();
                 $customerEmail =  $order->getCustomerEmail();
-		        $customerFname = $customer->getFirstname();
+		$customerFname = $customer->getFirstname();
                 $customerLname = $customer->getLastname();
-
+		$telephone = '';
                $telephone = $customer->getPrimaryBillingAddress()->getTelephone();
           	//print_r($customer->getData());exit;        
 	        if(in_array('placeorder', $final_array))
@@ -100,7 +103,19 @@ class Ordersms extends \Magento\Framework\App\Action\Action
 		   // print_r($admin_recipients);
                     array_push($admin_recipients, $telephone);
 		    //print_r($admin_recipients);
-                    $result = $objectManager->get('TEXT\Smsnotifications\Helper\Data')->sendSms($text,$admin_recipients);
+                   // $result = $objectManager->get('TEXT\Smsnotifications\Helper\Data')->sendSms($text,$admin_recipients);
+		    $settings = array();
+                    $settings['sms_gateway_url'] = "https://api.textlocal.in/";
+                    $settings['sms_auth_token'] = 'LcWtONwzQAo-7XakJm9eP2SBMM7DTPEriHKBgwUqiR';
+                    $settings['sms_sender_name'] = 'ASMESP';
+                    $errors = array();
+                    $apiuri = $settings['sms_gateway_url'];
+                    $apiurl = $apiuri."send?&apiKey=".urlencode($settings['sms_auth_token'])."&sender=".urlencode($settings['sms_sender_name'])."&numbers=".urlencode(implode(',', $admin_recipients))."&message=".urlencode($text);
+                    //print_r($apiurl);exit;
+                    $rows = file_get_contents($apiurl);
+                    $result = json_decode($rows, true);
+
+                    //$result = $objectManager->get('TEXT\Smsnotifications\Helper\Data')->sendSms($text,$admin_recipients);
                 }
                 $table .= "<tr style='border:1px solid #000'>";
                 $table .= "<td style='border-right:1px solid #000'>";
@@ -122,9 +137,17 @@ class Ordersms extends \Magento\Framework\App\Action\Action
                
                 //print_r($orderId.'--send--'.$result);
                 //print_r($result);
+//exit;
              endforeach;
              $table .= "</table>";
-	         echo $table;
+	        // echo $table;
     }
+
+    // public function getConfig($configPath)
+    // {
+    //     return $this->scopeConfig->getValue(
+    //         $configPath,
+    //     ScopeInterface::SCOPE_STORE);
+    // }
 }
 

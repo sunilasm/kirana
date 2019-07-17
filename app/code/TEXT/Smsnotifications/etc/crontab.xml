@@ -1,12 +1,12 @@
 <?xml version="1.0" ?>
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Cron:etc/crontab.xsd">
 	<group id="default">
-		<job instance="TEXT\Smsnotifications\Controller\Index\Customersms" method="execute" name="send_customer_register_sms">
+	 <!--	<job instance="TEXT\Smsnotifications\Controller\Index\Customersms" method="execute" name="send_customer_register_sms">
 			<schedule>*/5 * * * *</schedule>
 		</job>
 		<job instance="TEXT\Smsnotifications\Controller\Index\Index" method="execute" name="send_order_sms">
 			<schedule>*/5 * * * *</schedule>
-		</job>
+		</job> -->
 	</group>
 </config>
 

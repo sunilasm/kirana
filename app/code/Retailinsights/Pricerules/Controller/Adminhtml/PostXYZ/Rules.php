@@ -18,19 +18,8 @@ class Rules extends \Magento\Backend\App\Action
 
 	 public function execute()
    {
-	// $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
-	// $model = $objectManager->create('\Retailinsights\Pricerules\Model\CatalogRuleRepository');
-	// $post_id = $this->getRequest()->getParam('post_id');
-	// $temp=$model->getBuyXYZ($post_id);
-	
-	 //$rule_condition=$this->getRequest()->getParam('rule_condition');   
-
        $this->_view->loadLayout();
 	   $this->_view->getLayout()->initMessages();
-	 //  $block = $this->_view->getLayout()->createBlock('Retailinsights\Pricerules\Block\XYZblock', 'XYZblock',['postid'=>"hello"]);
-
-       $this->_view->renderLayout();
-}
-
-
+	   $this->_view->renderLayout();
+	}
 }

@@ -95,10 +95,7 @@ class OrderUnHold implements ObserverInterface
      * @param Context $context
      * @param Helper $helper _helper
      */
-    public function __construct(
-        Context $context,
-        Helper  $helper
-    ) {
+    public function __construct( Context $context, Helper  $helper) {
         $this->_helper  = $helper;
         $this->_request = $context->getRequest();
         $this->_layout  = $context->getLayout();
@@ -113,47 +110,44 @@ class OrderUnHold implements ObserverInterface
     {
 
         $settings = $this->_helper->getSettings();
-           /*For multiselect array */
-         $arr= $settings['order_statuss'];
-         $a = explode(',', $settings['order_statuss']);
-         $b = explode(',', $settings['order_statuss']);
-         $final_array = array_combine($a, $b);
-         
-
-         $admin_recipients = array();
+        /*For multiselect array */
+        $arr= $settings['order_statuss'];
+        $a = explode(',', $settings['order_statuss']);
+        $b = explode(',', $settings['order_statuss']);
+        $final_array = array_combine($a, $b);
+        
+        $admin_recipients = array();
+        
         if (strpos($_SERVER['REQUEST_URI'], 'order/unhold') !== false && in_array('unhold', $final_array)) {
-               $this->username         = $this->_helper->getSmsnotificationsApiUsername();
-               $this->password         = $this->_helper->getSmsnotificationsApiPassword();
-                   
-                    $order              = $this->_helper->getOrder($observer);
-                    $orderId       =  $order->getIncrementId();
-                    $firstname     =  $order->getBillingAddress()->getFirstName();
-                    $middlename    =  $order->getBillingAddress()->getMiddlename();
-                    $lastname      =  $order->getBillingAddress()->getLastname();
-                    $totalPrice    =  number_format($order->getGrandTotal(), 2);
-                    $countryCode   =  $order->getOrderCurrencyCode();
-                    $customerEmail =  $order->getCustomerEmail();
-    
-
+            $this->username         = $this->_helper->getSmsnotificationsApiUsername();
+            $this->password         = $this->_helper->getSmsnotificationsApiPassword();
+            $order              = $this->_helper->getOrder($observer);
+            $orderId       =  $order->getIncrementId();
+            $firstname     =  $order->getBillingAddress()->getFirstName();
+            $middlename    =  $order->getBillingAddress()->getMiddlename();
+            $lastname      =  $order->getBillingAddress()->getLastname();
+            $totalPrice    =  number_format($order->getGrandTotal(), 2);
+            $countryCode   =  $order->getOrderCurrencyCode();
+            $customerEmail =  $order->getCustomerEmail();
+            
             $telephone=  $this->destination  = $order->getBillingAddress()->getTelephone();
 
             if ($telephone){
                 $text= $settings['admin_unhold'];
+                
                 $text = str_replace('{order_id}', $orderId, $text);
-              $text = str_replace('{firstname}', $firstname, $text);
-              $text = str_replace('{lastname}', $lastname, $text);
-              $text = str_replace('{price}',  $totalPrice, $text);
-              $text = str_replace('{emailid}',  $customerEmail, $text);
-              $text = str_replace('{country_code}',  $countryCode, $text);
-
+                $text = str_replace('{firstname}', $firstname, $text);
+                $text = str_replace('{lastname}', $lastname, $text);
+                $text = str_replace('{price}',  $totalPrice, $text);
+                $text = str_replace('{emailid}',  $customerEmail, $text);
+                $text = str_replace('{country_code}',  $countryCode, $text);
             }
-$admin_recipients[]=$settings['admin_recipients'];
-   array_push($admin_recipients, $telephone);
-     
-       $object_manager = \Magento\Framework\App\ObjectManager ::getInstance();
-        $result = $object_manager->get('TEXT\Smsnotifications\Helper\Data')->sendSms($text,$admin_recipients);
-     return($result );
-  }
-                }
+            
+            $admin_recipients[]=$settings['admin_recipients'];
+            array_push($admin_recipients, $telephone);
+            $object_manager = \Magento\Framework\App\ObjectManager::getInstance();
+            $result = $object_manager->get('TEXT\Smsnotifications\Helper\Data')->sendSms($text,$admin_recipients);
+            return($result);
+        }
+    }
 }
-        

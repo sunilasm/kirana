@@ -1,6 +1,11 @@
 <?php
 namespace Asm\Setsellerid\Plugin;
 use Lof\MarketPlace\Model\SellerProductFactory as SellerProduct;
+use Retailinsights\Promotion\Model\PromoTableFactory;
+use Magento\Catalog\Api\ProductRepositoryInterfaceFactory as ProductRepository;
+use Magento\Catalog\Helper\ImageFactory as ProductImageHelper;
+
+
 class Item
 {
     /**
@@ -8,24 +13,41 @@ class Item
      */
     protected $sellerProduct;
     /**
+     * @var ProductRepository
+     */
+    protected $productRepository;
+    /**
      * @param \Magento\Authorization\Model\UserContextInterface $userContext
      * @param \Hexcrypto\WishlistAPI\Helper\Data $wishlistHelper
       * @param SellerProduct $sellerProduct
      */
-            private $quoteItemFactory;
+    /**
+         *@var \Magento\Catalog\Helper\ImageFactory
+         */
+    protected $productImageHelper;
+    private $quoteItemFactory;
+    protected $_promoFactory;
+
     public function __construct(
          SellerProduct $sellerProduct,
+         ProductImageHelper $productImageHelper,
+         PromoTableFactory $promoFactory,
         \Magento\Quote\Model\Quote\ItemFactory $itemFactory,
         \Magento\Quote\Api\Data\TotalsItemExtensionFactory $totalItemExtensionFactory,
          \Magento\Quote\Api\Data\TotalsExtensionFactory $totalExtensionFactory,
-        \Magento\Quote\Model\Quote\ItemFactory $quoteItemFactory
+        ProductRepository $productRepository
+      //  \Magento\Quote\Model\Quote\ItemFactory $quoteItemFactory
     
     ) {
+        $this->_promoFactory = $promoFactory;
+        $this->productImageHelper = $productImageHelper;
         $this->sellerProduct = $sellerProduct;
+             
         $this->itemFactory = $itemFactory;
         $this->totalItemExtension = $totalItemExtensionFactory;
-         $this->totalExtension = $totalExtensionFactory;
-        $this->quoteItemFactory = $quoteItemFactory;
+        $this->totalExtension = $totalExtensionFactory;
+       // $this->quoteItemFactory = $quoteItemFactory;
+        $this->productRepository = $productRepository;
     }
     /**
      * add sku in total cart items
@@ -44,27 +66,77 @@ class Item
         $pickupFrmStorePId = 0;
         $door=0;
         $PickupFromStore=0;
+        $discount_amount = 0;
+        $isEditable = 1;
+        // $writer = new \Zend\Log\Writer\Stream(BP . '/var/log/appromo.log'); 
+        // $logger = new \Zend\Log\Logger();
+        // $logger->addWriter($writer);
+
         foreach($totals->getItems() as $item)
         {
+            $freeQty = 0; $freeProduct = 0;
+            $productName = $productImg = $productUom = $productPriceType = '';
 
             $quoteItem = $this->itemFactory->create()->load($item->getItemId());
-            
-            $SellerProd = $this->sellerProduct->create()->getCollection();
-            $fltColl = $SellerProd->addFieldToFilter('seller_id', $quoteItem->getSellerId())
-                        ->addFieldToFilter('product_id', $quoteItem->getProductId());
-            $idInfo = $fltColl->getData();
-           $writer = new \Zend\Log\Writer\Stream(BP . '/var/log/test.log'); 
-            $logger = new \Zend\Log\Logger(); $logger->addWriter($writer); 
-            $logger->info($idInfo);
-            if(!empty($idInfo)){
-                        foreach($idInfo as $info){
-                            $id = $info['entity_id'];
-                        }
-                    $data = $this->sellerProduct->create()->load($id);
-                    $door = $data->getDoorstepPrice();
-                    $PickupFromStore= $data->getPickupFromStore();
-                    $PickupFromNearbyStore= $data->getPickupFromNearbyStore();
+         
+            $product = $this->productRepository->create()->getById($quoteItem->getProductId());
+
+            $productName = $product->getName();
+            $productImg = $this->productImageHelper->create()->init($product, 'product_thumbnail_image')->setImageFile($product->getThumbnail())->getUrl();
+            $optionId = $product->getUnitm();
+                $weight = round($product->getWeight(), 0);
+                $attribute = $product->getResource()->getAttribute('unitm');
+                if ($attribute->usesSource()) {
+                    $productUom = $weight." ".$attribute->getSource()->getOptionText($optionId);
                 }
+            $productPriceType = $quoteItem->getPriceType();
+
+            $discountData = $this->_promoFactory->create()->getCollection()
+            ->addFieldToFilter('cart_id', $quoteItem->getQuoteId());
+            if(isset($discountData)){
+                foreach($discountData->getData() as $k => $val){ 
+                        $discount_amount = $val['total_discount'];
+                        $itemInfo = json_decode($val['item_qty'],true);
+                        foreach($itemInfo as $k => $itemArray){
+                          foreach($itemArray as $key => $value){
+                            $itemData = json_decode($value);
+                            if(isset($itemData->id)){
+                                if($itemData->id == $quoteItem->getItemId()) {
+                                    $freeQty = $itemData->qty;
+                                }
+                            }
+                            if(isset($itemData->type) && (($itemData->type == 'BXGY') || ($itemData->type == 'BWGY')) && ($itemData->id == $quoteItem->getItemId())){
+                                $isEditable = 0;
+                             }
+                            if(isset($itemData->parent)){
+                                if($itemData->parent == $quoteItem->getItemId()) {
+                                    $freeProduct = $itemData->id;
+                                }
+                            }
+                                
+                          }
+                        }
+                    }
+            }
+            
+
+            // $SellerProd = $this->sellerProduct->create()->getCollection();
+            // $fltColl = $SellerProd->addFieldToFilter('seller_id', $quoteItem->getSellerId())
+            //             ->addFieldToFilter('product_id', $quoteItem->getProductId());
+            // $idInfo = $fltColl->getData();
+           
+            // if(!empty($idInfo)){
+            //             foreach($idInfo as $info){
+            //                 $id = $info['entity_id'];
+            //             }
+            //         $data = $this->sellerProduct->create()->load($id);
+            //         $door = $data->getDoorstepPrice();
+            //         $PickupFromStore= $data->getPickupFromStore();
+            //         $PickupFromNearbyStore= $data->getPickupFromNearbyStore();
+            //     }
+            
+            $door = $quoteItem->getPrice();
+            $PickupFromStore = $quoteItem->getPrice();
         
                 if($quoteItem->getPriceType() == 0){
                     $doorStepPId += $quoteItem->getQty();
@@ -83,7 +155,19 @@ class Item
             if ($extensionAttributes === null) {
                 $extensionAttributes = $this->totalItemExtension->create();
             }
+            $extensionAttributes->setIsEditable($isEditable);
             $extensionAttributes->setExtnRowTotal($rowTotal);
+            $extensionAttributes->setExtFreeQty($freeQty);
+            $extensionAttributes->setExtFreeProduct($freeProduct);
+            $extensionAttributes->setSku($product->getSku());
+
+            $extensionAttributes->setProductName($productName);
+            $extensionAttributes->setProductImg($productImg);
+            $extensionAttributes->setProductUom($productUom);
+            $extensionAttributes->setProductPriceType($productPriceType);
+
+            
+
             $item->setExtensionAttributes($extensionAttributes);
             $grandTotal += $rowTotal;
         }
@@ -95,8 +179,8 @@ class Item
             $extensionAttributes->setDsCount($doorStepPId);
             $extensionAttributes->setDsSubtotal($doorStepPrice);
             $extensionAttributes->setSpCount($pickupFrmStorePId);
-            $extensionAttributes->setSpSubtotal($pickupFrmStorePrice);
-            $extensionAttributes->setExtnGrandTotal($grandTotal);
+            $extensionAttributes->setSpSubtotal($pickupFrmStorePrice-$discount_amount);
+           // $extensionAttributes->setExtnGrandTotal($grandTotal);
             $totals->setExtensionAttributes($extensionAttributes);
         return $totals;
     }

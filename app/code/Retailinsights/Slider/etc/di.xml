@@ -1,4 +1,7 @@
 <?xml version="1.0"?>
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
 <preference type="Retailinsights\Slider\Model\Sliderimages" for="Retailinsights\Slider\Api\SliderimagesInterface"/>
+  <type name="\Magento\Quote\Model\Quote\Item\Repository">
+    <plugin name="change_product_price" type="Retailinsights\Slider\Plugin\PriceFix" sortOrder="1" disabled="false"/>
+  </type>
 </config>

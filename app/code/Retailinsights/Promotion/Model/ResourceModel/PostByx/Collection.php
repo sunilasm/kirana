@@ -1,4 +1,5 @@
 <?php
+
 namespace Retailinsights\Promotion\Model\ResourceModel\PostByx;
 
 class Collection extends \Magento\Framework\Model\ResourceModel\Db\Collection\AbstractCollection
@@ -16,5 +17,4 @@ class Collection extends \Magento\Framework\Model\ResourceModel\Db\Collection\Ab
 	{
 		$this->_init('Retailinsights\Promotion\Model\PostByx', 'Retailinsights\Promotion\Model\ResourceModel\PostByx');
 	}
-
 }

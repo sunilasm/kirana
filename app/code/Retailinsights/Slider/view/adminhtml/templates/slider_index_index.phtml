@@ -1,18 +1,26 @@
 
 <form class="uploads" action="<?php echo $this->getUrl('slider/index/index') ?>" method="POST" enctype="multipart/form-data">
-	    <?php echo $block->getBlockHtml('formkey'); ?>
+        <?php echo $block->getBlockHtml('formkey'); ?>
 
-	   <div class="select_box"> <label class="label2">Promotion Type:</label>
+       <div class="select_box"> <label class="label2">Promotion Type:</label>
         <select class="select_values" name="select_values" required class="required-entry">
           <option value="no">Choose Any</option>
-	   	  <option value="catalog">Catalog Rule</option>
+             <option value="catalog">Catalog Rule</option>
           <option value="cart">Cart Rule</option>
-		</select>
+        </select>
        </div>
-	 
-	    <div class='space'>
+
+       <div class="select_box"> <label class="label2">Status:</label>
+        <select class="select_values" name="status" required class="required-entry">
+       
+             <option selected="selected" value="1">Enabled</option>
+          <option value="0">Disabled</option>
+        </select>
+       </div>
+     
+        <div class='space'>
         <label class="label2" for="trad_upload">Choose Image to Upload:</label>
-	    <input type="hidden" name="slider_img_id" value="" class="slider_img_id">
+        <input type="hidden" name="slider_img_id" value="" class="slider_img_id">
         <input type="file"  style="margin-top:20px;" name="img_upload" class="img_upload" id="img_upload" required>
         </div>
 
@@ -21,11 +29,14 @@
         </div>
 </form>
 
+
 <table id="table_format">
-  <tr>	    
+  <tr>        
     <th>Id</th>
     <th>Images</th>
+    <th>Status</th>
     <th>Promotion Type</th>
+     <th>Update</th>
     <th>Delete Images</th>
   </tr>
   <?php $baseUrl = $block->getBaseUrl(); ?>
@@ -36,15 +47,33 @@
   }else{
   foreach ($ImgCollection as $slider_img) { 
     $id = $slider_img->getData('ps_id');
-  	$img = $slider_img->getData('image_path');
-  	$rule = $slider_img->getData('promo_type');
+      $img = $slider_img->getData('image_path');
+         $status = $slider_img->getData('status');
+      $rule = $slider_img->getData('promo_type');
   ?>
-	  <tr class="content">
-	    <td><?php echo $id; ?></td>
-	    <td><img src="<?php echo $img; ?>" alt="" height="42" width="42"></td>
-	    <td><?php echo ucwords($rule); ?> Rule</td>
-	    <td><button id="<?php echo $id;?>" class="btn_delete">Delete</button></td>
-	  </tr>
+  <form class="uploads" action="<?php echo $this->getUrl('slider/index/index') ?>" method="POST" enctype="multipart/form-data">
+   <?php echo $block->getBlockHtml('formkey'); ?>
+      <tr class="content">
+        <td><?php echo $id; ?></td>
+        <td><img src="<?php echo $img; ?>" alt="" height="42" width="42"></td>
+		<td>
+		        <select class="status" name="status">
+		      		<option value="1" <?php if($status==1){ echo 'selected'; } ?>>Enabled</option>
+		      		<option value="0" <?php if($status==0){ echo 'selected'; } ?>>Disabled</option>
+		      	</select>
+		</td>
+		
+       <!--  <td><?php //echo $status; ?></td> -->
+        <td><?php echo ucwords($rule); ?> Rule</td>
+        <td>
+          <input type="hidden" name="slider_id" class="slider_id" value="<?php echo $id; ?>">
+
+          <!--  <button type="" id="<?php //echo $id;?>" class="btnbwgy">button</button> -->
+        <button type="submit" name="submit" id="submit_edit" value="submit" class="btn_upload" style="margin-top:20px;margin-bottom:20px;">Update</button>
+              </td>
+        <td><button id="<?php echo $id;?>" class="btn_delete">Delete</button></td>
+      </tr>
+      </form>
   <?php } 
   }?>
 </table>

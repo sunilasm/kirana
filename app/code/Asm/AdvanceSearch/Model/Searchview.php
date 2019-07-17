@@ -5,6 +5,8 @@ use Lof\MarketPlace\Model\SellerProductFactory as SellerProduct;
 use Magento\Catalog\Api\ProductRepositoryInterfaceFactory as ProductRepository;
 use Magento\Framework\Event\ObserverInterface;
 use Retailinsights\Promotion\Model\PostTableFactory;
+use Retailinsights\Promotion\Model\PromoTableFactory;
+
  
 class Searchview implements SearchInterface
 {
@@ -24,9 +26,15 @@ class Searchview implements SearchInterface
     protected $_productCollectionFactory;
     protected $_sellerCollection;
     private $productsRepository;
+    protected $quoteRepository;
+    protected $_wishlistRepository;
+    protected $_promoFactory;
+
+
     public function __construct(
         ProductRepository $productRepository,
         PostTableFactory $PostTableFactory ,
+        PromoTableFactory $promoFactory,
         \Magento\Quote\Model\Quote\ItemFactory $itemFactory,
         SellerProduct $sellerProduct,
        \Magento\Framework\App\RequestInterface $request,
@@ -34,7 +42,9 @@ class Searchview implements SearchInterface
        \Lof\MarketPlace\Model\Seller $sellerCollection,
        \Lof\MarketPlace\Model\SellerProduct $sellerProductCollection,
        \Asm\Geolocation\Helper\Data $helperData,
-       \Magento\Catalog\Api\ProductRepositoryInterface $productsRepository
+       \Magento\Catalog\Api\ProductRepositoryInterface $productsRepository,
+       \Magento\Quote\Api\CartRepositoryInterface $quoteRepository,
+       \Magento\Wishlist\Model\WishlistFactory $wishlistRepository
     ) {
        $this->_productRepository = $productRepository;
        $this->_PostTableFactory = $PostTableFactory;
@@ -46,68 +56,136 @@ class Searchview implements SearchInterface
        $this->_sellerProductCollection = $sellerProductCollection;
        $this->helperData = $helperData;
        $this->_productsRepository = $productsRepository;
+       $this->quoteRepository = $quoteRepository;
+       $this->_wishlistRepository= $wishlistRepository;
+       $this->_promoFactory = $promoFactory;
     }
 
     public function name() {
+        $customerId = 0;
+        $quoteId = 0; 
+
         $title = $this->request->getParam('title');
         $lat = $this->request->getParam('latitude');
         $lon = $this->request->getParam('longitude');
         $searchtermpara = $this->request->getParam('searchterm');
         $quoteId = $this->request->getParam('quote_id');
         
+        
         $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
         $quoteModel = $objectManager->create('Magento\Quote\Model\Quote');
         $quoteItems = $quoteModel->load($quoteId)->getAllVisibleItems();
         $quoteItemArray = array();
+        $applyPromoData = [];
+        // Get customer id from wishlist
+        if($quoteId)
+        {
+            $quote = $this->quoteRepository->get($quoteId);
+            $customerId = $quote->getCustomer()->getId();
+            $applyPromoData = $this->_promoFactory->create()->getCollection()
+            ->addFieldToFilter('cart_id', $quoteId);
+        }
+       
+       
         $i = 1;
         $quoteItemSellerArray = array();
+        $freeSkuArray = $this->getFreeProdSku();
+        $free_qty = 0;
         foreach($quoteItems as $item):
+            /////////////
+            foreach($applyPromoData as $key => $val){
+                $itemInfo = json_decode($val['item_qty'],true);
+                foreach($itemInfo as $k => $itemArray){
+                    foreach($itemArray as $key => $value){
+                      $itemData = json_decode($value);
+                      if(isset($itemData->qty)) {
+                          if($itemData->id == $item->getItemid()){
+                              $free_qty = $itemData->qty ;
+                          }
+                      }
+                    }
+                }
+            }
+            ////////////
             $quoteItemSellerArray[$item->getSellerId()] = $item->getItemid();
+            $quoteItemArray[$item->getSku()]['free_item_qty'] = $free_qty;
             $quoteItemArray[$item->getSku()]['qty'] = $item->getQty();
-             $quoteItemArray[$item->getSku()]['price_type'] = $item->getPriceType();
+            $quoteItemArray[$item->getSku()]['price_type'] = $item->getPriceType();
             $quoteItemIndexArray[$i] = $item->getItemid();
             $i++;
         endforeach;
+        
         $data = array();
         $flag = 0;
         $pages = 0;
         if($searchtermpara){ $searchterm = 0; }else{ $searchterm = 1; }
-        if($searchterm){
-            if($title){
-
+        if($searchterm)
+        {
+            if($title)
+            {
                 $productCollectionArray = $this->getSearchTermData($title, $lat, $lon);
-                 if($productCollectionArray){
+                if($productCollectionArray)
+                {
                     $data = $productCollectionArray;
-                }else{
+                }
+                else
+                {
                     $data = $productCollectionArray;
                 }
                 $flag = 0;
-            }else{
+            }
+            else
+            {
                 $flag = 1;
                 $data = array('message' => 'Please specify at least one search term');
             }
-        }else{
-                
+        }
+        else
+        {
             $productCollectionArray = $this->getSearchTermData($title = null,$lat, $lon);
-             if($productCollectionArray){
+            if($productCollectionArray)
+            {
                 $data = $productCollectionArray;
-            }else{
+            }
+            else
+            {
                 $data = $productCollectionArray;
             }
             $flag = 2;
         }
-      //  print_r($data); exit();
-        if($flag != 1){
-            if(count($data[1]["items"]) != 0){
-        
+       // print_r($data); exit();r
+        if($flag != 1)
+        {
+            if(count($data[1]["items"]) != 0)
+            {
                 foreach($data[1]["items"] as $key => $proData):
+                    if (array_key_exists($proData['sku'], $freeSkuArray)) {
+                        $data[1]["items"][$key]['free_item_sku'] = $freeSkuArray[$proData['sku']];
+                    }
                     if(array_key_exists($proData['sku'], $quoteItemArray) ){
+                        $data[1]["items"][$key]['free_item_qty'] = $quoteItemArray[$proData['sku']]['free_item_qty'];
                         $data[1]["items"][$key] += ['quote_qty' => $quoteItemArray[$proData['sku']]['qty']];
                         $data[1]["items"][$key]['price_type'] = $quoteItemArray[$proData['sku']]['price_type']; 
                     }else{
                         $data[1]["items"][$key] += ['quote_qty' => 0];
                         $data[1]["items"][$key]['price_type'] = NULL;                      
                     }
+                    //Wishlist data
+                    if($customerId)
+                    {
+                        $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+                        $wishlist = $objectManager->get('\Magento\Wishlist\Model\Wishlist');
+                        $wishlist_collection = $wishlist->loadByCustomerId($customerId, true)->getItemCollection();
+                        $wishlistdata = $wishlist_collection->getData();
+                        if(count($wishlistdata)){
+                            foreach($wishlistdata as $wish):
+                                if($wish['product_id'] == $proData['entity_id']){
+                                    $data[1]["items"][$key] += ['wishlist_item_id' => $wish['wishlist_item_id']];
+                                }
+                            endforeach;
+                        }
+                    }
+                    //end wishlist
                 endforeach;
             }
         }
@@ -123,7 +201,7 @@ class Searchview implements SearchInterface
         $retail = array();
         $rangeSetting = $this->helperData->getGeneralConfig('enable');
         $rangeInKm = $this->helperData->getGeneralConfig('range_in_km');
-        //$rangeInKm = 10;
+        //$rangeInKm = 10;x     
         if($rangeSetting == 1){
             if($rangeInKm){
                 $distance = (is_numeric($rangeInKm)) ? $rangeInKm : 1; //your distance in KM
@@ -259,7 +337,6 @@ class Searchview implements SearchInterface
                 $chsnRetailPrice = $retsellers[$chsnRetailId];
             }
             
-           
             $entColl['name'] = $product->getData('name');
             $entColl['image'] = $product->getData('image');
             $entColl['small_image'] = $product->getData('small_image');
@@ -276,152 +353,27 @@ class Searchview implements SearchInterface
                 $entColl['doorstep_delivery'] = $chsnRetailPrice;                
             }
             
-            //=====adding promotions
-            //$mapped_data = $this->_PostTableFactory->create()->getCollection();
-             $orgret_arr = array();
-            $kirana_arr = array();
-            $kirana_temp = array();
-            $orgret_temp = array();
-            //foreach ($mapped_data->getData() as $k => $promo) {    //store-promo-mapp data array  
-                $skus = array(); 
-                $actionSkus = array();
-                $conditionSkus = array();
-                $disc_amt = 0;
-                $disc_per = 0;
-                $add_kiranapromo = $add_orgpromo = 0;
-                if(isset($entColl['kirana'])) {
-                    if(isset($mappedRulesArray[$entColl['kirana']])) {
-                            foreach($mappedRulesArray[$entColl['kirana']] as $k => $promo) {
-                            $p_action = $promo['simple_action'];    //by_percent or by_fixed
-                            $con_arr = json_decode($promo['conditions_serialized'] , true); 
-                            if(!empty($con_arr['conditions'])) {
-                                $conditionsarr = $con_arr['conditions'];
-                                foreach($conditionsarr as $ck => $con){  // promo rule conditions array
-                                    if($con['attribute']=='sku'){
-                                        $skus[] = $con['value'];
-                                    }
-                                    if(!empty($con['conditions'])){
-                                        foreach($con['conditions'] as $c_inn => $c_inn_val){
-                                            if($c_inn_val['attribute']=='sku'){
-                                                $skus[] = $c_inn_val['value'];
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-    
-                            if(!empty($skus)){
-                                if(in_array($product['sku'], $skus)){
-                                    $add_kiranapromo = 1;
-                                }
-                            }else{
-                                $add_kiranapromo = 1;
-                            }
-    
-                            if($add_kiranapromo == 1){
-                                if($p_action == 'by_fixed'){
-                                    $disc_amt = $promo['discount_amount'];
-                                    $disc_per = ($promo['discount_amount']*100)/$entColl['price'] ;
-                                }
-                                if($p_action == 'by_percent') {
-                                    $disc_amt = ($entColl['price'] * $promo['discount_amount'])/100 ;
-                                    $disc_per = $promo['discount_amount'];
-                                }
-                                $kirana_temp['discount_percent'] = $this->roundDown($disc_per,0);
-                                $kirana_temp['final_amt'] = $this->roundUp($entColl['price'] - $disc_amt,2); 
-                                array_push($kirana_arr,$kirana_temp);
-                            }
-    
-                        }
-                        
-                    }
-                    
-                        
-                    
-                }
-                if(isset($entColl['org_retail'])){ 
-                    if(isset($mappedRulesArray[$entColl['org_retail']])) {
-                        foreach($mappedRulesArray[$entColl['org_retail']] as $k => $promo) {
-			$actionSkus = array();
-                	$conditionSkus = array();
-                        $p_action = $promo['simple_action'];    //by_percent or by_fixed
-                        $con_arr = json_decode($promo['conditions_serialized'] , true); 
-                        if(!empty($con_arr['conditions'])) {
-                            $conditionsarr = $con_arr['conditions'];
-                            foreach($conditionsarr as $ck => $con){  // promo rule conditions array
-                                if($con['attribute']=='sku'){
-                                    $conditionSkus[] = $con['value'];
-                                }
-                                if(!empty($con['conditions'])){
-                                    foreach($con['conditions'] as $c_inn => $c_inn_val){
-                                        if($c_inn_val['attribute']=='sku'){
-                                            $conditionSkus[] = $c_inn_val['value'];
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                        $action_arr = json_decode($promo['actions_serialized'] , true); 
-                        if(!empty($action_arr['conditions'])) {
-                            $conditionsarr = $action_arr['conditions'];
-                            foreach($conditionsarr as $ck => $con){  // promo rule conditions array
-                                if($con['attribute']=='sku'){
-                                    $actionSkus[] = $con['value'];
-                                }
-                                if(!empty($con['conditions'])){
-                                    foreach($con['conditions'] as $c_inn => $c_inn_val){
-                                        if($c_inn_val['attribute']=='sku'){
-                                            $actionSkus[] = $c_inn_val['value'];
-                                        }
-                                    }
-                                }
-                            }
-                        }
-
-                        if(!empty($skus)){
-                            if(in_array($product['sku'], $skus)){
-                                $add_orgpromo = 1;
-                            }
-                        }else{
-                                $add_orgpromo = 1;
-                        }
-
-                        if($add_orgpromo == 1){
-                            if($promo['rule_type']== 1) {
-                                if($p_action == 'by_fixed'){
-                                    $disc_amt = $promo['discount_amount'];
-                                    $disc_per = ($promo['discount_amount']*100)/$entColl['price'] ;
-                                } 
-                                if ($p_action == 'by_percent') {
-                                    $disc_amt = ($entColl['price'] * $promo['discount_amount'])/100 ;
-                                    $disc_per = $promo['discount_amount'];
-                                }
-                               $orgret_temp['discount_percent'] = $this->roundDown($disc_per,0);
-                               $orgret_temp['final_amt'] = $this->roundUp($entColl['price'] - $disc_amt,2);   
-                               
-                            } else {
-                                if($p_action == 'buy_x_get_y'){
-                                    if(((in_array($product['sku'], $actionSkus)) && sizeof(array_unique($actionSkus)) == 1) || ((in_array($product['sku'], $conditionSkus)) && sizeof(array_unique($conditionSkus)) == 1) ) {
-                                        $orgret_temp['message'] = "Store Offer: ".$promo['description'];
-                                    }
-                                }
-                                // if($p_action == 'buy_x_get_y'){
-                                //     //$orgret_temp['message'] = "Store Offer: ".$promo['description'];
-                                // }
-                               
-                            }                    
-                        }
-                        
-                        }
-                    }
-
-                    }
-            //}//store-promo-mapp data array end 
-            if(!empty($orgret_temp)) {
-                array_push($orgret_arr,$orgret_temp);
+            // Adding promotions Start
+            
+            $disc_amt = 0;
+            $disc_per = 0;
+            $add_kiranapromo = $add_orgpromo = 0;
+            if(isset($entColl['kirana'])) {
+                $kiranaPromotions = $this->getKiranaPromotions($entColl['kirana'],$product['sku'],$entColl['price'],$mappedRulesArray);
+                $entColl['promotion']['kirana'] = (empty($kiranaPromotions)) ? [] : [$kiranaPromotions];
+            } else {
+                $entColl['promotion']['kirana'] = [];
             }
-            $entColl['promotion']['kirana'] = $kirana_arr;
-            $entColl['promotion']['org_retail'] = $orgret_arr;
+            
+            if(isset($entColl['org_retail'])) {                     
+               $orgPromotions = $entColl['promotion']['org_retail'] = $this->getOrganizationPromotions($entColl['org_retail'],$product['sku'],$entColl['price'],$mappedRulesArray);
+		$entColl['promotion']['org_retail'] = (empty($orgPromotions)) ? [] : [$orgPromotions];
+            } else {
+                $entColl['promotion']['org_retail'] = [];
+            }
+
+            // Adding promotions End
+            
             $result[] = $entColl;
 
          }
@@ -449,21 +401,217 @@ class Searchview implements SearchInterface
         ->setOrder('p_id','ASC')
         ->addFieldToFilter('status',1);
         $count = 0;
-        foreach ($mapped_data->getData() as $k => $promo) {
-            
-            
+        foreach ($mapped_data->getData() as $k => $promo) {            
             if(isset($mapped_rules[$promo['store_id']])) {
                 array_push($mapped_rules[$promo['store_id']],$promo);
             } else {
                 $mapped_rules[$promo['store_id']] = array($promo);
-            }
-            //$mapped_rules[$promo['store_id']].push($promo);
+            }            
             //$count++;
         }
 
         //return $count;
         return $mapped_rules;
     }
+    public function getFreeProdSku() {
+        $mapped_data = $this->_PostTableFactory->create()->getCollection()
+        ->setOrder('p_id','ASC')
+        ->addFieldToFilter('status',1)
+        ->addFieldToFilter('rule_type',array('in'=>array(0,7)));
+        $FreeProdArr = [];           
+        $buyProduct = '';
+        foreach ($mapped_data->getData() as $k => $promo) { 
+            if(isset($promo['description'])){
+              $description = json_decode($promo['description'],true);
+              $ruleCode = $description['code'];
+              $actionSerArr = json_decode($promo['actions_serialized'],true);
+              if($ruleCode == 'BXGX'){
+                 foreach($actionSerArr['conditions'] as $ck => $con){
+                    if($con['attribute']=='sku'){
+                        $buyProduct = $con['value'];
+                        $FreeProdArr[$buyProduct] = $buyProduct;
+                    }
+                 }
+              }
+              if($ruleCode == 'BXGY'){ 
+                 foreach($actionSerArr['buy_product'] as $k => $v){ 
+                   $buyProduct = $v['sku'];
+                 }
+                foreach($actionSerArr['get_product'] as $k => $v){ 
+                    $FreeProdArr[$buyProduct] = $v['sku'];
+                }
+              }
+            }
+        }
+
+        return $FreeProdArr;
+    }
+
+    public function getKiranaPromotions($kiranaId,$productSku,$productPrice,$mappedRulesArray) {
+        $kiranaPromotion = array();
+        if(isset($mappedRulesArray[$kiranaId])) {
+            foreach($mappedRulesArray[$kiranaId] as $k => $promo) {
+                $skus = array();
+                $conditionsarr=array();
+                if($promo['rule_type']==1) {
+                $p_action = $promo['simple_action'];    
+                $con_arr = json_decode($promo['conditions_serialized'] , true); 
+                if(!empty($con_arr['conditions'])) {
+                    $conditionsarr = $con_arr['conditions'];
+                    foreach($conditionsarr as $ck => $con){  
+                        if($con['attribute']=='sku'){
+                            $skus[] = $con['value'];
+                        }
+                        if(!empty($con['conditions'])){
+                            foreach($con['conditions'] as $c_inn => $c_inn_val){
+                                if($c_inn_val['attribute']=='sku'){
+                                    $skus[] = $c_inn_val['value'];
+                                }
+                            }
+                        }
+                    }
+                }                         
+                if(!empty($skus)){
+                    $skus = explode(',', str_replace(' ','',$skus[0]));                                      
+                    if(in_array($productSku, $skus)){
+                        
+                        if($p_action == 'by_fixed'){
+                            $disc_amt = $promo['discount_amount'];
+                            $disc_per = ($promo['discount_amount']*100)/$productPrice ;
+                        }
+                        if($p_action == 'by_percent') {
+                            $disc_amt = ($productPrice * $promo['discount_amount'])/100 ;
+                            $disc_per = $promo['discount_amount'];
+                        }
+                        if($disc_per >= 5){
+                            $kiranaPromotion['discount_percent'] = $this->roundDown($disc_per,0);
+                        } else {
+                            $kiranaPromotion['discount_percent'] = "";
+                        }
+                        $kiranaPromotion['final_amt'] = $this->roundUp($productPrice - $disc_amt,2); 
+                    }
+                }
+                }                
+
+            }
+            
+        }
+        return $kiranaPromotion;
+    }
+
+    public function getOrganizationPromotions($organizationId,$productSku,$productPrice,$mappedRulesArray) {
+        $orgranzationPromotion = array();
+        if(isset($mappedRulesArray[$organizationId])) {
+            foreach($mappedRulesArray[$organizationId] as $k => $promo) {
+                $actionSkus = array();
+                $conditionSkus = array();
+                $con_arr = json_decode($promo['conditions_serialized'] , true); 
+                $p_action = $promo['simple_action'];    //by_percent or by_fixed
+            
+                if(!empty($con_arr['conditions'])) {
+                    $conditionsarr = $con_arr['conditions'];
+                    foreach($conditionsarr as $ck => $con){  // promo rule conditions array
+                        if($con['attribute']=='sku'){
+                            $conditionSkus[] = $con['value'];
+                        }
+                        if(!empty($con['conditions'])){
+                            foreach($con['conditions'] as $c_inn => $c_inn_val){
+                                if($c_inn_val['attribute']=='sku'){
+                                    $conditionSkus[] = $c_inn_val['value'];
+                                }
+                            }
+                        }
+                    }
+                }        
+                        
+                if($promo['rule_type']== 1) {
+                    $description = json_decode($promo['description'],true);
+                    $ruleName = str_replace("{RS}","₹",$description['name']);
+                                             
+                    if(in_array($productSku, $conditionSkus)){
+                        if($p_action == 'to_fixed'){
+                            $orgranzationPromotion['message'] = "Store Offer: ".$ruleName;
+                        }else{
+                            $con_arr = json_decode($promo['conditions_serialized'] , true); 
+                            $conditionSkus = explode(',', str_replace(' ','',$conditionSkus[0]));       
+                            if($p_action == 'by_fixed'){
+                                $disc_amt = $promo['discount_amount'];
+                                $disc_per = ($promo['discount_amount']*100)/$productPrice ;
+                            } 
+                            if ($p_action == 'by_percent') {
+                                $disc_amt = ($productPrice * $promo['discount_amount'])/100 ;
+                                $disc_per = $promo['discount_amount'];
+                            }
+                            
+                            if($disc_per >= 5){
+                                $orgranzationPromotion['discount_percent'] = $this->roundDown($disc_per,0);
+                            } else {
+                                $orgranzationPromotion['discount_percent'] = "";
+                            }
+                            $orgranzationPromotion['final_amt'] = $this->roundUp($productPrice - $disc_amt,2);
+                        }
+                    }
+                } else {
+                    $description = json_decode($promo['description'],true);
+                    $ruleCode = $description['code'];
+                    if($ruleCode == 'BXGX'){
+                        $ruleName = "Buy 1 Get 1 Free";
+                    }else{
+                        $ruleName = $description['name'];
+                    }
+                    $action_arr = json_decode($promo['actions_serialized'] , true); 
+                    if($ruleCode == 'BXGX' || $ruleCode == 'BXGOFF' || $ruleCode == 'BXGPOFF'){
+                        if(!empty($action_arr['conditions'])) {
+                            $conditionsarr = $action_arr['conditions'];
+                            foreach($conditionsarr as $ck => $con){  // promo rule conditions array
+                                if($con['attribute']=='sku'){
+                                    $actionSkus[] = $con['value'];
+                                }
+                                if(!empty($con['conditions'])){
+                                    foreach($con['conditions'] as $c_inn => $c_inn_val){
+                                        if($c_inn_val['attribute']=='sku'){
+                                            $actionSkus[] = $c_inn_val['value'];
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        if((in_array($productSku, $actionSkus)) && sizeof(array_unique($actionSkus)) == 1 ) {
+
+                            $ruleName = str_replace("{RS}","₹",$ruleName);
+
+                            $orgranzationPromotion['message'] = "Store Offer: ".$ruleName;
+                        }
+                    }
+                    if($ruleCode == 'BXGY'){
+                        if($action_arr['buy_product'][0]['sku'] == $productSku) {
+                            $orgranzationPromotion['message'] = "Store Offer: ".$ruleName;
+                        }
+                    }
+                    if($ruleCode == 'BNXG1O') {
+                        foreach($action_arr['buy_product'] as $key=>$value) {
+                            if($value['sku'] == $productSku) {
+                                $orgranzationPromotion['message'] = "Store Offer: ".$ruleName;
+                            }
+                        }                        
+                    }
+                    if($ruleCode == 'BNXAF') {
+                        foreach($action_arr['buy_product'] as $key=>$value) {
+                            if($value['sku'] == $productSku) {
+                                $ruleName = str_replace("{RS}","₹",$ruleName);
+                                $orgranzationPromotion['message'] = "Store Offer: ".$ruleName;
+                            }
+                        }                        
+                    }                        
+                    
+                }      
+            
+            }
+        }
+        return $orgranzationPromotion;
+    }
+
+
+
 }
 
-    

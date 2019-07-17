@@ -18,10 +18,8 @@ class Index extends \Magento\Backend\App\Action
 	public function execute()
 	{
 		$resultPage = $this->resultPageFactory->create();
-		$resultPage->getConfig()->getTitle()->prepend((__('Buy X Y Z at One Price')));
+		$resultPage->getConfig()->getTitle()->prepend((__('Buy X Y Z and get off on one')));
 
 		return $resultPage;
 	}
-
-
 }

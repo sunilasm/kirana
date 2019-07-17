@@ -102,4 +102,46 @@
             <resource ref="anonymous"/>
         </resources>
     </route>
+    <!-- Edit customer address -->
+    <route url="/V1/edit/customer/address" method="POST">
+        <service class="Asm\Customapi\Api\EditaddressInterface" method="editcustomeraddress"/>
+        <resources>
+            <resource ref="anonymous"/>
+        </resources>
+    </route>
+    <!-- Delete customer address -->
+    <route url="/V1/delete/customer/address/:addressId" method="DELETE">
+        <service class="Asm\Customapi\Api\DeleteaddressInterface" method="deletecustomeraddress"/>
+        <resources>
+            <resource ref="anonymous"/>
+        </resources>
+    </route>
+    <!-- Set customer address as default -->
+    <route url="/V1/setdeafult/customer/address/" method="POST">
+        <service class="Asm\Customapi\Api\SetdefaultaddressInterface" method="setdefaultcustomeraddress"/>
+        <resources>
+            <resource ref="anonymous"/>
+        </resources>
+    </route>
+    <!-- Get Wishlist Item -->
+    <route url="/V1/wishlist/items" method="POST">
+        <service class="Asm\Customapi\Api\WishlistInterface" method="wishlistitems"/>
+        <resources>
+            <resource ref="anonymous"/>
+        </resources>
+    </route>
+    <!-- Add Wishlist Item -->
+    <route url="/V1/wishlist/items/add" method="POST">
+        <service class="Asm\Customapi\Api\AddwishlistInterface" method="addwishlistitems"/>
+        <resources>
+            <resource ref="anonymous"/>
+        </resources>
+    </route>
+    <!-- Merge cart items -->
+    <route url="/V1/merge/cart/items" method="POST">
+        <service class="Asm\Customapi\Api\MergeItemInterface" method="mergecartitems"/>
+        <resources>
+            <resource ref="anonymous"/>
+        </resources>
+    </route>
 </routes>

@@ -1,10 +1,11 @@
 <?php
+
 namespace Retailinsights\Pricerules\Block;
+
 use Magento\Backend\Block\Template;
 
 class Promoblock extends Template
-{
-   
+{   
 	/**
 	 * Customer Group
 	 *
@@ -35,6 +36,7 @@ class Promoblock extends Template
 	    array_unshift($customerGroups, array('value'=>'', 'label'=>'Any'));
 	    return $customerGroups;
 	}
+
 	public function getRule(){
 		$objectManager = \Magento\Framework\App\ObjectManager::getInstance();
 	$model = $objectManager->create('\Retailinsights\Pricerules\Model\CatalogRuleRepository');
@@ -42,9 +44,5 @@ class Promoblock extends Template
 	$temp=$model->getRule($post_id);
 
 		return $temp;
-	
-
 	}
-
 }
-

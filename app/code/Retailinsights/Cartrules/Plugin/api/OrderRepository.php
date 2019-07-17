@@ -1,17 +1,20 @@
 <?php
 namespace Retailinsights\Cartrules\Plugin\api;
+
 use Magento\Catalog\Api\ProductRepositoryInterfaceFactory as ProductRepository;
 use Magento\Sales\Api\Data\OrderExtensionFactory;
 use Magento\Sales\Api\Data\OrderItemExtensionFactory;
-
 use Magento\Sales\Api\Data\OrderInterface;
 use Magento\Sales\Api\Data\OrderSearchResultInterface;
 use Magento\Sales\Api\OrderRepositoryInterface;
 use Magento\Catalog\Helper\ImageFactory as ProductImageHelper;
-use Lof\MarketPlace\Model\SellerProductFactory as SellerProduct;
+use Lof\MarketPlace\Model\SellerProductFactory as SellerProduct;        
 
 class OrderRepository
 {
+    protected $getOrderCollectionFactory;
+    
+    private $timezone;
     const FIELD_NAME = 'unitm';
     /**
     *@var \Magento\Catalog\Helper\ImageFactory
@@ -36,25 +39,33 @@ class OrderRepository
 
     protected $itemextensionFactory;
     public function __construct(
+        \Magento\Framework\Stdlib\DateTime\TimezoneInterface $timezone,
         SellerProduct $sellerProduct,
         ProductImageHelper $productImageHelper,
         OrderExtensionFactory $extensionFactory,
         OrderItemExtensionFactory $itemextensionFactory,
+        \Magento\Sales\Model\ResourceModel\Order\Collection $getOrderCollectionFactory,
         \Magento\Catalog\Api\ProductRepositoryInterface $productRepository
 
     )
     {
+        $this->timezone = $timezone;
         $this->itemextensionFactory = $itemextensionFactory;
         $this->extensionFactory = $extensionFactory;
         $this->_productRepository = $productRepository;
         $this->productImageHelper = $productImageHelper;
         $this->sellerProduct = $sellerProduct;
+        $this->_getOrderCollectionFactory = $getOrderCollectionFactory;
 
     }
     public function afterGetList(OrderRepositoryInterface $subject, OrderSearchResultInterface $searchResult)
     {
-       
+     
+        $objectManager =  \Magento\Framework\App\ObjectManager::getInstance();
+        $orderDatamodel = $objectManager->get('Magento\Sales\Model\Order')->getCollection();
+     
         $orders = $searchResult->getItems();
+        
         foreach ($orders as &$order) {
                 $addAtt = array();
                 $info = array(); 
@@ -78,9 +89,9 @@ class OrderRepository
                         }
                          $data = $this->sellerProduct->create()->load($id);
                          if($priceType == '0'){  
-                          $chosenprice = $data->getDoorstepPrice();
+                          $chosenprice = $items->getPrice();
                         } else if ($priceType == '1'){
-                          $chosenprice  = $data->getPickupFromStore();
+                          $chosenprice  = $items->getPrice();
                         } else {
                           $chosenprice = $data->getPickupFromNearbyStore();
                         }
@@ -96,7 +107,7 @@ class OrderRepository
              $sku = $items->getSku();
                     
            $data = $items->getProductOptions();
-           $qty = $data['info_buyRequest']['qty'];
+           $qty = $items->getQtyOrdered(); //$data['info_buyRequest']['qty'];
 
            $rowTotal = $qty * $chosenprice;
 
@@ -117,9 +128,23 @@ class OrderRepository
             $grandTotal += $rowTotal;
              
             }
+            $newGrandTotal = $order->getGrandTotal();
             $orderextensionAttributes = $order->getExtensionAttributes();
+
+            $created = $order->getCreatedAt();
+
+            $created = $this->timezone->date(new \DateTime($created));
+
+            $dateAsString = $created->format('Y-m-d H:i:s'); //G for 24H
+
             $orderextensionAttributes = $orderextensionAttributes ? $orderextensionAttributes : $this->extensionFactory->create();
-            $orderextensionAttributes->setExtnGrandTotal($grandTotal);
+
+
+            $orderextensionAttributes->setExtnGrandTotal($newGrandTotal);
+
+
+            $orderextensionAttributes->setExtnCreatedDate($dateAsString);
+
             $order->setExtensionAttributes($orderextensionAttributes);
 
             $info[] = $addAtt; 

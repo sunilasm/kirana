@@ -4,7 +4,7 @@ namespace TEXT\Smsnotifications\Observer;
 use Magento\Framework\Event\ObserverInterface;
 use \Magento\Framework\Event\Observer       as Observer;
 use \Magento\Framework\View\Element\Context as Context;
-use \TEXT\Smsnotifications\Helper\Data       as Helper;
+use \TEXT\Smsnotifications\Helper\Data      as Helper;
 /**
  * Customer login observer
  */
@@ -94,10 +94,7 @@ class Configsave implements ObserverInterface
      * @param Context $context
      * @param Helper $helper _helper
      */
-    public function __construct(
-        Context $context,
-        Helper $helper
-    ) {
+    public function __construct( Context $context,Helper $helper ) {
         $this->_helper  = $helper;
         $this->_request = $context->getRequest();
         $this->_layout  = $context->getLayout();
@@ -108,25 +105,19 @@ class Configsave implements ObserverInterface
      * @param Observer $observer
      * @return void
      */
-public function execute(Observer $observer)
-{
-      $settings = $this->_helper->getSettings();
-       $this->username = $this->_helper->getSmsnotificationsApiUsername();
-      $this->password = $this->_helper->getSmsnotificationsApiPassword();
+    public function execute(Observer $observer)
+    {
+        $settings = $this->_helper->getSettings();
+        $this->username = $this->_helper->getSmsnotificationsApiUsername();
+        $this->password = $this->_helper->getSmsnotificationsApiPassword();
     
-    $object_manager = \Magento\Framework\App\ObjectManager ::getInstance();
-    $result = $object_manager->get('TEXT\Smsnotifications\Helper\Data')->sendSms('Congratulations, you have configured the extension correctly!');
+        $object_manager = \Magento\Framework\App\ObjectManager::getInstance();
+        $result = $object_manager->get('TEXT\Smsnotifications\Helper\Data')->sendSms('Congratulations, you have configured the extension correctly!');
     
         if ($result) {
-    echo"A test message has been sent to the following recipient(s): %s. Please verify that all recipients received this test message. If not, correct the number(s) below.";
-        } else {
-    echo"Unable to send test message. Please verify that all your settings are correct and try again.";
-   }
- }
+            echo"A test message has been sent to the following recipient(s): %s. Please verify that all recipients received this test message. If not, correct the number(s) below.";
+        }else{
+            echo"Unable to send test message. Please verify that all your settings are correct and try again.";
+        }
+    }
 }
-        
-
-
-
-  
-    
