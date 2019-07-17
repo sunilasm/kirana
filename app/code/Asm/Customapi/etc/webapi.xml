@@ -144,4 +144,11 @@
             <resource ref="anonymous"/>
         </resources>
     </route>
+    <!-- Re Order -->
+    <route url="/V1/reorder" method="POST">
+        <service class="Asm\Customapi\Api\ReorderInterface" method="reorder"/>
+        <resources>
+            <resource ref="anonymous"/>
+        </resources>
+    </route>
 </routes>
