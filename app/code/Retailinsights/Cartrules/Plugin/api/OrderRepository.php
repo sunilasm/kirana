@@ -79,24 +79,27 @@ class OrderRepository
                 $grandTotal = 0;
                 $chosenprice = 0;
                 $free_price = '';
+
             foreach($orderItems as $items){
             $priceType = $items->getPriceType();
            //-----------------
            $discountData = $this->_promoFactory->create()->getCollection()
-           ->addFieldToFilter('cart_id', $items->getQuoteId());
+           ->addFieldToFilter('cart_id', $order->getQuoteId());
+
            if(isset($discountData)){
                foreach($discountData->getData() as $k => $val){ 
                        $itemInfo = json_decode($val['item_qty'],true);
                        foreach($itemInfo as $k => $itemArray){
                          foreach($itemArray as $key => $value){
                            $itemData = json_decode($value);
-                           if(isset($itemData->type) && (($itemData->type == 'BXGY') || ($itemData->type == 'BWGY')) && ($itemData->id == $items->getItemId())){
+                           if(isset($itemData->type) && (($itemData->type == 'BXGY') || ($itemData->type == 'BWGY')) && ($itemData->id == $items->getQuoteItemId())){
                                $free_price = "00.00";
                             }
                          }
                        }
                    }
            }
+
            //-----------------
             $product = $this->_productRepository->getById($items->getProductId());
             $SellerProd = $this->sellerProduct->create()->getCollection();
