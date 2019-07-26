@@ -66,6 +66,7 @@ class Item
         $PickupFromStore=0;
         $discount_amount = 0;
         $isEditable = 1;
+        $free_price = '';
         // $writer = new \Zend\Log\Writer\Stream(BP . '/var/log/appromo.log'); 
         // $logger = new \Zend\Log\Logger();
         // $logger->addWriter($writer);
@@ -103,6 +104,7 @@ class Item
                             }
                             if(isset($itemData->type) && (($itemData->type == 'BXGY') || ($itemData->type == 'BWGY')) && ($itemData->id == $quoteItem->getItemId())){
                                 $isEditable = 0;
+                                $free_price = "00.00";
                              }
                             if(isset($itemData->parent)){
                                 if($itemData->parent == $quoteItem->getItemId()) {
@@ -155,6 +157,7 @@ class Item
             $extensionAttributes->setExtFreeQty($freeQty);
             $extensionAttributes->setExtFreeProduct($freeProduct);
             $extensionAttributes->setSku($product->getSku());
+            $extensionAttributes->setFreePrice($free_price);
 
             $extensionAttributes->setProductName($productName);
             $extensionAttributes->setProductImg($productImg);

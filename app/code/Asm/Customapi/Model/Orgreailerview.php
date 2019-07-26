@@ -48,20 +48,18 @@ class Orgreailerview implements OrgnizedretailerInterface
         $request = $objectManager->get('\Magento\Framework\Webapi\Rest\Request');
         $post = $request->getBodyParams();
         $quote = $this->quoteFactory->create()->load($post['quote_id']);
-        $flag = 0;
-        $sellerData = '';
+        $flag = $sendFreePrice = 0;
+        $sellerData = $free_price = '';
         if($post['latitude'] != '' && $post['longitude'] != '')
         {
             $ranageSeller = $this->getInRangeSeller($post['latitude'], $post['longitude']);
-            $writer = new \Zend\Log\Writer\Stream(BP . '/var/log/ishu.log'); 
-            $logger = new \Zend\Log\Logger();$logger->addWriter($writer);
-            $logger->info($ranageSeller);
+            
             $items = $quote->getAllItems();
             $response = array();
             $i = 0;
             foreach($ranageSeller as $orgretailer)
             {
-            $logger->info("STORE  ".$orgretailer);
+           // $logger->info("STORE  ".$orgretailer);
 
                 $tempSellerProductArray = array();
                 $tempSellerProductIdArray = array();
@@ -117,8 +115,26 @@ class Orgreailerview implements OrgnizedretailerInterface
                 $cartNotPresentProducts = 0;               
 	            foreach ($items as $item) 
                 {
-                $totalDiscount  = 0;
-
+                    //-----------------
+                    $discountData = $this->_promoFactory->create()->getCollection()
+                    ->addFieldToFilter('cart_id', $post['quote_id']);
+                    if(isset($discountData)){
+                        foreach($discountData->getData() as $k => $val){ 
+                                $itemInfo = json_decode($val['item_qty'],true);
+                                foreach($itemInfo as $k => $itemArray){
+                                  foreach($itemArray as $key => $value){
+                                    $itemData = json_decode($value);
+                                    if(isset($itemData->type) && (($itemData->type == 'BXGY') || ($itemData->type == 'BWGY')) && ($itemData->id == $item->getItemId())){
+                                        $free_price = "00.00";
+                                        $sendFreePrice = 1;
+                                     }
+                                  }
+                                }
+                            }
+                    }
+                    //-----------------
+                    $totalDiscount  = 0;
+                    
                     $collection = $this->_productCollectionFactory->create();
                     $collection->addAttributeToSelect('*');
                     $collection->addAttributeToSort('price', 'asc');
@@ -143,6 +159,9 @@ class Orgreailerview implements OrgnizedretailerInterface
 
                                 if(array_key_exists($product->getId(), $seller_products)){
                                     $productCollectionData['pickup_from_store'] = $seller_products[$product->getId()]['pickup_from_store'];
+                                }
+                                if($sendFreePrice == 1){
+                                    $productCollectionData['free_price'] = $free_price;
                                 }
                                 $productCollectionData['quote_qty'] = $item->getQty();
                                 $collectionNew['seller_id'] = $item->getSeller_id();
@@ -224,7 +243,7 @@ class Orgreailerview implements OrgnizedretailerInterface
                                 if(isset($seller_products[$product->getId()]['pickup_from_store']))
                                 {
                                     $cartSubTotal += ($seller_products[$product->getId()]['pickup_from_store'] * $item->getQty());
-                                    $logger->info(" subtotal without store promo discount  ". $cartSubTotal);
+                                   // $logger->info(" subtotal without store promo discount  ". $cartSubTotal);
 
                                     $cartSubTotal = ($cartSubTotal - $totalDiscount);
                                 }
@@ -234,7 +253,7 @@ class Orgreailerview implements OrgnizedretailerInterface
                             }
                         }
                     }
-                    $logger->info(" subtotal with @@@ discount  ". $cartSubTotal);
+                  //  $logger->info(" subtotal with @@@ discount  ". $cartSubTotal);
                     // If product not present with store.
                     if($produt_found == 0)
                     {
@@ -274,17 +293,12 @@ class Orgreailerview implements OrgnizedretailerInterface
                                 $ruleId = $promo['p_id'];
                                 $discountAmount = $promo['discount_amount'];
                                 if($ruleCode == "BWGO" && ($orgretailer==$promo['store_id'])){  
-                                    $logger->info("in BWGO dicount");
                                     $orderLevelDisc = $this->checkPromoBuyWorth($promo['p_id'], $seller_id, 0, $discountAmount,$org_total);
-                                    $logger->info($orderLevelDisc." bwgo discount");
                                 }
                                 if($ruleCode == "BWGOP" && ($orgretailer==$promo['store_id'])){  
-                                    $logger->info("in BWGOP dicount");
                                     $orderLevelDisc = $this->checkPromoBuyWorth($promo['p_id'], $seller_id, 1, $discountAmount,$org_total);
-                                    $logger->info($orderLevelDisc." bwgop discount");
                                 }
                                 if($ruleCode == "BWGY" && ($orgretailer==$promo['store_id'])) {
-                                    $logger->info("in BWGY dicount");
                                     $actionArr = json_decode($promo['actions_serialized'], true);
                                     $getProdSku = $getProdQty = $getProdId = '';
                                     foreach($actionArr['base_subtotal'] as $k => $v){ 
@@ -316,14 +330,14 @@ class Orgreailerview implements OrgnizedretailerInterface
                                             $orderLevelDisc = $this->getOrderLevelDisc($actionArr['get_product'],$seller_id);
                                         }
                                     } 
-                                    $logger->info($orderLevelDisc." bwgy discount");
+                                   // $logger->info($orderLevelDisc." bwgy discount");
 
                  
                                 }
                             }
                         }
                     }
-                    $logger->info(" subtotal without order level discount  ". $cartSubTotal);
+                  //  $logger->info(" subtotal without order level discount  ". $cartSubTotal);
 
                     $cartSubTotal = ($cartSubTotal - $orderLevelDisc);
                     ///////////////////

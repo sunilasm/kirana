@@ -110,7 +110,7 @@ $logger->addWriter($writer);
             $isEditable = 1;
             $door=0;
             $price =0;
-
+            $free_price = '';
             $doorStepPId = 0;
             $pickupFrmStorePId = 0;
        
@@ -137,6 +137,7 @@ $logger->addWriter($writer);
                             }
                             if(isset($itemData->type) && (($itemData->type == 'BXGY')|| ($itemData->type == 'BWGY')) && ($itemData->id == $quoteItem->getItemId())){
                                 $isEditable = 0;
+                                $free_price = "00.00";
                              }
                             if(isset($itemData->parent)){
                                 if($itemData->parent == $quoteItem->getItemId()) {
@@ -205,6 +206,8 @@ $logger->addWriter($writer);
                 $itemExtAttr->setExtFreeProduct($freeProduct);
                 $itemExtAttr->setSku($freeSku);
                 $itemExtAttr->setIsEditable($isEditable);
+                $itemExtAttr->setFreePrice($free_price);
+                
 
                 $itemExtAttr->setVolume($product->getVolume());
                 if(!empty($idInfo)){
