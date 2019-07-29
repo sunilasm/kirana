@@ -2,7 +2,7 @@
 namespace Asm\Customapi\Model;
 use Asm\Customapi\Api\OrgnizedretailerInterface;
 use Retailinsights\Promotion\Model\PostTableFactory;
-//use Retailinsights\Promotion\Model\PromoTableFactory;
+use Retailinsights\Promotion\Model\PromoTableFactory;
  
 class Orgreailerview implements OrgnizedretailerInterface
 {
@@ -17,11 +17,11 @@ class Orgreailerview implements OrgnizedretailerInterface
     protected $_sellerCollection;
     protected $_productCollectionFactory;
     protected $_connection;
-   // protected $_promoFactory;
+    protected $_promoFactory;
 
     public function __construct(
        PostTableFactory $PostTableFactory ,
-     //  PromoTableFactory $promoFactory,
+       PromoTableFactory $promoFactory,
        \Magento\Framework\App\RequestInterface $request,
        \Lof\MarketPlace\Model\Seller $sellerCollection,
        \Lof\MarketPlace\Model\SellerProduct $sellerProductCollection,
@@ -38,7 +38,7 @@ class Orgreailerview implements OrgnizedretailerInterface
        $this->_productCollectionFactory = $productCollectionFactory;
        $this->_PostTableFactory = $PostTableFactory;
        $this->_connection = $_connection;
-     //  $this->_promoFactory = $promoFactory;
+       $this->_promoFactory = $promoFactory;
     }
 
     public function orgreailer() 
@@ -48,19 +48,19 @@ class Orgreailerview implements OrgnizedretailerInterface
         $request = $objectManager->get('\Magento\Framework\Webapi\Rest\Request');
         $post = $request->getBodyParams();
         $quote = $this->quoteFactory->create()->load($post['quote_id']);
-        $flag = 0;
-        $sellerData = '';
+        $flag = $sendFreePrice = 0;
+        $sellerData = $free_price = '';
         if($post['latitude'] != '' && $post['longitude'] != '')
         {
             $ranageSeller = $this->getInRangeSeller($post['latitude'], $post['longitude']);
-            // $writer = new \Zend\Log\Writer\Stream(BP . '/var/log/ishu.log'); 
-            // $logger = new \Zend\Log\Logger();$logger->addWriter($writer);
-            // $logger->info($ranageSeller);
+            
             $items = $quote->getAllItems();
             $response = array();
             $i = 0;
             foreach($ranageSeller as $orgretailer)
             {
+           // $logger->info("STORE  ".$orgretailer);
+
                 $tempSellerProductArray = array();
                 $tempSellerProductIdArray = array();
                 $presentProducts = array();
@@ -110,12 +110,43 @@ class Orgreailerview implements OrgnizedretailerInterface
 
                 // Quote Data
                 $cartSubTotal = 0;
+                $orderLevelDisc = 0;
 		        $cartPresentProducts = 0;
                 $cartNotPresentProducts = 0;               
 	            foreach ($items as $item) 
                 {
-                $totalDiscount  = 0;
-
+                    $sendFreePrice = 0;
+                    $free_price = $promoSeller = $reqKey ='';
+                    //-----------------
+                    $discountData = $this->_promoFactory->create()->getCollection()
+                    ->addFieldToFilter('cart_id', $post['quote_id']);
+                    if(isset($discountData)){
+                        foreach($discountData->getData() as $ky => $val){ 
+                            $promo_ar = json_decode($val['promo_discount'],true);
+                            $itemInfo = json_decode($val['item_qty'],true);
+                            foreach($promo_ar as $k => $detailArr){
+                                foreach($detailArr as $key => $value){
+                                    $reqData = json_decode($value);
+                                    if(isset($reqData->seller)){
+                                      $promoSeller = $reqData->seller;
+                                      $reqKey = $k;
+                                    }
+                                }
+                            }
+                            foreach($itemInfo as $k => $itemArray){
+                                foreach($itemArray as $key => $value){
+                                    $itemData = json_decode($value);
+                                    if(($promoSeller == $orgretailer) && ($reqKey == $k) && isset($itemData->type) && (($itemData->type == 'BXGY') || ($itemData->type == 'BWGY')) && ($itemData->id == $item->getItemId())){
+                                        $free_price = "00.00";
+                                        $sendFreePrice = 1;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    //-----------------
+                    $totalDiscount  = 0;
+                    
                     $collection = $this->_productCollectionFactory->create();
                     $collection->addAttributeToSelect('*');
                     $collection->addAttributeToSort('price', 'asc');
@@ -141,6 +172,9 @@ class Orgreailerview implements OrgnizedretailerInterface
                                 if(array_key_exists($product->getId(), $seller_products)){
                                     $productCollectionData['pickup_from_store'] = $seller_products[$product->getId()]['pickup_from_store'];
                                 }
+                                if($sendFreePrice == 1){
+                                    $productCollectionData['free_price'] = $free_price;
+                                }
                                 $productCollectionData['quote_qty'] = $item->getQty();
                                 $collectionNew['seller_id'] = $item->getSeller_id();
                                 $productPresentCollArray[] = $productCollectionData;
@@ -156,37 +190,83 @@ class Orgreailerview implements OrgnizedretailerInterface
                                          }else{
                                             $product_price = $item->getPrice(); 
                                          }
-                                        // if($ruleCode == "BXGX"){
-                                        //    // $logger->info("in bxgx dicount");
-                                        //     $totalDiscount  += $this->applyBxgxBxgy($post['quote_id'],$item->getId(),$product_price,'BXGX');
-                                        //   //  $logger->info($totalDiscount." BXGX discount");
-                                        // }
-                                        // if($ruleCode == "BXGY"){
-                                        //     // $logger->info("in bxgy dicount");
-                                        //     $totalDiscount  += $this->applyBxgxBxgy($post['quote_id'],$item->getId(),$product_price,'BXGY');
-                                        //     // $logger->info($totalDiscount." BXGY discount");
-                                        // }
-                                        if($ruleCode == "BXGOFF"){
-                                            $totalDiscount  +=  $this->applyBxgoff($promo,$product_price,$item->getSku(),$item->getQty(),'BXGOFF',$item->getSeller_id());
+                                        if($ruleCode == "BXGX" && ($orgretailer==$promo['store_id'])){
+                                          //  $logger->info("in bxgx dicount");
+                                            $actionArr = json_decode($promo['actions_serialized'], true);
+                                            $ruleSku = $this->getActionSku($actionArr);
+                                            $skubxgx = '';
+                                            foreach($actionArr['conditions'] as $ck => $con){
+                                                if($con['attribute']=='sku'){
+                                                    $skubxgx = $con['value'];
+                                                }
+                                            }
+                                            if($item->getSku() == $skubxgx){
+                                                $totalDiscount  += $this->applyBxgxBxgy($post['quote_id'],$item->getId(),$product_price,'BXGX');
+                                            }
+                                           // $logger->info($totalDiscount." BXGX discount");
                                         }
-                                        if($ruleCode == "BXGPOFF"){
+                                        if($ruleCode == "BXGY" && ($orgretailer==$promo['store_id'])){
+                                           // $logger->info("in bxgy dicount");
+                                            $totalDiscount  += $this->applyBxgxBxgy($post['quote_id'],$item->getId(),$product_price,'BXGY');
+                                           // $logger->info($totalDiscount." BXGY discount");
+                                        }
+                                        if($ruleCode == "BXGOFF" && ($orgretailer==$promo['store_id'])){
+                                           // $logger->info("in BXGOFF dicount");
+                                            $totalDiscount  +=  $this->applyBxgoff($promo,$product_price,$item->getSku(),$item->getQty(),'BXGOFF',$item->getSeller_id());
+                                           // $logger->info($totalDiscount." BXGOFF discount");
+                                        }
+                                        if($ruleCode == "BXGPOFF" && ($orgretailer==$promo['store_id'])){
+                                           // $logger->info("in BXGPOFF dicount");
                                             $totalDiscount  +=  $this->applyBxgoff($promo,$product_price,$item->getSku(),$item->getQty(),'BXGPOFF',$item->getSeller_id());
+                                           // $logger->info($totalDiscount." BXGPOFF discount");
+                                        }
+                                        if($ruleCode == "BNXAF" && ($orgretailer==$promo['store_id'])){
+                                            $itemPriceTotal = 0;
+                                            $actionArr = json_decode($promo['actions_serialized'], true);
+                                            $ruleSku = array();
+                                            foreach($actionArr['buy_product'] as $k => $v){
+                                              $ruleSku[$v['sku']] = $v['qty'];
+                                            }
+                                            $ruleSkuLen = sizeof($ruleSku);
+                                            $quantity = $item->getQty();
+                                            foreach($ruleSku as $rule_sku =>$sku_qty){
+                                            $qtyFactor = floor($quantity/$sku_qty);
+                                            $qtyCheck = ($quantity%$sku_qty);
+                          
+                                              if(($rule_sku == $item->getSku()) && ($sku_qty <= $quantity)){
+                                                $itemPriceTotal += $item->getPrice()*$quantity;
+                                                $fixedPrice = $promo['discount_amount']; 
+                                                $disc_amt = ($fixedPrice*$qtyFactor);
+                                                $additional_item = 0;
+                                                if(($quantity > $sku_qty) && ($qtyCheck!=0)){
+                                                  $additional_item = $item->getPrice();  //($quantity - $sku_qty)*
+                                                }
+                                                $totalDiscount += ($itemPriceTotal -  $disc_amt)-$additional_item;
+                          
+                                                // if(isset($sellerAmount[$sellerId])) {
+                                                //   $sellerAmount[$sellerId] -= $discountBnxaf;
+                                                // }
+                                              }
+                                            }
+
                                         }
                                     }
                                 }
-
+                        
                                 if(isset($seller_products[$product->getId()]['pickup_from_store']))
                                 {
                                     $cartSubTotal += ($seller_products[$product->getId()]['pickup_from_store'] * $item->getQty());
+                                   // $logger->info(" subtotal without store promo discount  ". $cartSubTotal);
 
                                     $cartSubTotal = ($cartSubTotal - $totalDiscount);
                                 }
+                              
                                 $cartPresentProducts += $item->getQty();
                                 $produt_found = 1;
                             }
                         }
                     }
-                    
+                  //  $logger->info(" subtotal with @@@ discount  ". $cartSubTotal);
                     // If product not present with store.
                     if($produt_found == 0)
                     {
@@ -210,12 +290,70 @@ class Orgreailerview implements OrgnizedretailerInterface
                             if(array_key_exists($product->getId(), $seller_productsNew)){
                                 $collectionNew['pickup_from_store'] = $seller_productsNew[$product->getId()]['pickup_from_store'];
                             }
-			    $cartNotPresentProducts += $item->getQty();
+			        $cartNotPresentProducts += $item->getQty();
                             $productNotPresentCollArray[] = $collectionNew;
                         endforeach;
                     }           
                 }
+                    ///////////////////
+                    $sellerAmount = [];
+                    $sellerAmount[$orgretailer] = $cartSubTotal;
+                    foreach($sellerAmount as $seller_id => $org_total) {
+                        if(isset($mappedRulesArray[$seller_id])){ 
+                            foreach($mappedRulesArray[$seller_id] as $k => $promo) {
+                                $description = json_decode($promo['description'],true);
+                                $ruleCode = $description['code'];
+                                $ruleId = $promo['p_id'];
+                                $discountAmount = $promo['discount_amount'];
+                                if($ruleCode == "BWGO" && ($orgretailer==$promo['store_id'])){  
+                                    $orderLevelDisc = $this->checkPromoBuyWorth($promo['p_id'], $seller_id, 0, $discountAmount,$org_total);
+                                }
+                                if($ruleCode == "BWGOP" && ($orgretailer==$promo['store_id'])){  
+                                    $orderLevelDisc = $this->checkPromoBuyWorth($promo['p_id'], $seller_id, 1, $discountAmount,$org_total);
+                                }
+                                if($ruleCode == "BWGY" && ($orgretailer==$promo['store_id'])) {
+                                    $actionArr = json_decode($promo['actions_serialized'], true);
+                                    $getProdSku = $getProdQty = $getProdId = '';
+                                    foreach($actionArr['base_subtotal'] as $k => $v){ 
+                                      $operator = $v['operator'];
+                                      $baseSubtotal = $v['fixed_amount'];
+                                    }
+                                    if($operator == ">") {
+                                        if($org_total > $baseSubtotal) {
+                                            $orderLevelDisc = $this->getOrderLevelDisc($actionArr['get_product'],$seller_id);
+                                        }
+                                    }
+                                    if($operator == ">=") {
+                                        if($org_total >= $baseSubtotal) {
+                                            $orderLevelDisc = $this->getOrderLevelDisc($actionArr['get_product'],$seller_id);
+                                        }
+                                    }
+                                    if($operator == "<") {
+                                        if($org_total < $baseSubtotal) {
+                                            $orderLevelDisc = $this->getOrderLevelDisc($actionArr['get_product'],$seller_id);
+                                        }
+                                      }
+                                    if($operator == "<=") {
+                                        if($org_total <= $baseSubtotal) {
+                                            $orderLevelDisc = $this->getOrderLevelDisc($actionArr['get_product'],$seller_id);
+                                        }
+                                    }
+                                    if($operator == "==") {
+                                        if($org_total == $baseSubtotal) {
+                                            $orderLevelDisc = $this->getOrderLevelDisc($actionArr['get_product'],$seller_id);
+                                        }
+                                    } 
+                                   // $logger->info($orderLevelDisc." bwgy discount");
 
+                 
+                                }
+                            }
+                        }
+                    }
+                  //  $logger->info(" subtotal without order level discount  ". $cartSubTotal);
+
+                    $cartSubTotal = ($cartSubTotal - $orderLevelDisc);
+                    ///////////////////
                 $cartSummeryArray = array('total_item_count' => ($cartPresentProducts + $cartNotPresentProducts), 'present_item_count' => $cartPresentProducts, 'not_present_item_count' => $cartNotPresentProducts, 'sub_total' => number_format((float)$cartSubTotal, 2, '.', ''));
 
                 $response[$i]['store'] = $sellerData;
@@ -373,29 +511,29 @@ class Orgreailerview implements OrgnizedretailerInterface
         }
         return $actionQty;
     }
-    // public function applyBxgxBxgy($quoteId,$itemId,$price,$type){
-    //     $discPrice = 0;
-    //     $applyPromoData = $this->_promoFactory->create()->getCollection()
-    //     ->addFieldToFilter('cart_id', $quoteId);
-    //     foreach($applyPromoData as $key => $val){
-    //         $itemInfo = json_decode($val['item_qty'],true);
-    //         foreach($itemInfo as $k => $itemArray){
-    //             foreach($itemArray as $key => $value){
-    //               $itemData = json_decode($value);
-    //               if(isset($itemData->qty)) {
-    //                   if(($itemData->id == $itemId) && ($itemData->type == $type)){
-    //                       $discPrice = ($price*$itemData->qty);
-    //                   }
-    //               }
-    //             }
-    //         }
-    //     }
-    //     $writer = new \Zend\Log\Writer\Stream(BP . '/var/log/ishu.log'); 
-    //     $logger = new \Zend\Log\Logger();$logger->addWriter($writer);
-    //    // $logger->info($quoteId.".......".$itemId.".......".$price.".........".$discPrice);
 
-    //     return $discPrice;
-    // }
+    public function applyBxgxBxgy($quoteId,$itemId,$price,$type){
+        $discPrice = 0;
+        $applyPromoData = $this->_promoFactory->create()->getCollection()
+        ->addFieldToFilter('cart_id', $quoteId);
+        foreach($applyPromoData as $key => $val){
+            $itemInfo = json_decode($val['item_qty'],true);
+            foreach($itemInfo as $k => $itemArray){
+                foreach($itemArray as $key => $value){
+                  $itemData = json_decode($value);
+                  if(isset($itemData->qty)) {
+                      if(($itemData->id == $itemId) && ($itemData->type == $type)){
+                          $discPrice = ($price*$itemData->qty);
+                      }
+                  }
+                }
+            }
+        }
+       
+        return $discPrice;
+    }
+
+   
     public function applyBxgoff($promo,$product_price,$itemSku,$itemQty,$type,$seller_id){
         $prDiscount =0;  
         $description = json_decode($promo['description'],true);
@@ -413,6 +551,91 @@ class Orgreailerview implements OrgnizedretailerInterface
           }
         }
         return $prDiscount;   
+    }
+    public function getAppliedDiscount($sellerAmount,$discountAmount,$percent){
+        $appliedDiscount = 0;
+        if($percent == 1){              
+            $appliedDiscount = $sellerAmount*$discountAmount/100;
+        } else {
+            $appliedDiscount = $discountAmount;         
+        }
+        return $appliedDiscount;
+    }
+    public function getOrderLevelDisc($actionArr,$seller_id){
+        $connection = $this->_connection->getConnection();
+        $orderLevelDisc = 0;
+        foreach($actionArr as $k => $v){ 
+            $getProdSku = $v['sku'];
+            $getProdQty = $v['qty'];
+            $productQry  = "SELECT * FROM `mgcatalog_product_entity` WHERE sku ='".$getProdSku."'" ;
+            $productResult 	= $connection->rawFetchRow($productQry);
+            $getProdId = $productResult['entity_id'];  
+            $priceQry = "SELECT * FROM `mglof_marketplace_product`WHERE product_id = ".$getProdId." and seller_id =".$seller_id;
+            $priceResult 	= $connection->rawFetchRow($priceQry);
+            $orderLevelDisc = $priceResult['pickup_from_store']; 
+        }
+        return $orderLevelDisc;
+    }
+    public function  checkPromoBuyWorth($customPromoId, $sellerId, $percent, $discountAmount,$sellerAmount) {
+        $writer = new \Zend\Log\Writer\Stream(BP . '/var/log/ishu.log'); 
+        $logger = new \Zend\Log\Logger();
+        $logger->addWriter($writer);
+    
+        $promoEntry = array();
+        $getAppliedDiscount = 0;
+        $rule_data = $this->_PostTableFactory->create()->getCollection()
+        ->addFieldToFilter('p_id',$customPromoId);
+        $promotionData = $rule_data->getData();
+        $conditions_arr = json_decode($promotionData[0]['conditions_serialized'] , true); 
+       
+        $getConditionsParameters = $this->getConditionsParameters($conditions_arr);
+     
+        foreach ($getConditionsParameters as $operator => $value) {
+            if($operator == ">") {
+                if($sellerAmount > $value){
+                    if($discountAmount > 0) {
+                        $getAppliedDiscount = $this->getAppliedDiscount($sellerAmount,$discountAmount,$percent);
+                    }
+                }
+            }
+            if($operator == "==") {
+              if($sellerAmount == $value){
+                  if($discountAmount > 0) {
+                      $getAppliedDiscount = $this->getAppliedDiscount($sellerAmount,$discountAmount,$percent);
+                  }
+              }
+            }
+            if($operator == "<") {
+              if($sellerAmount < $value){
+                  if($discountAmount > 0) {
+                    $getAppliedDiscount = $this->getAppliedDiscount($sellerAmount,$discountAmount,$percent);
+                  }
+              }
+            }
+            if($operator == ">=") {
+              if($sellerAmount >= $value){
+                  if($discountAmount > 0) {
+                    $getAppliedDiscount = $this->getAppliedDiscount($sellerAmount,$discountAmount,$percent);
+                  }
+              }
+            }
+            if($operator == "<=") {
+              if($sellerAmount <= $value){
+                  if($discountAmount > 0) {
+                    $getAppliedDiscount = $this->getAppliedDiscount($sellerAmount,$discountAmount,$percent);
+                  }
+              }
+           }    
+        }
+        return $getAppliedDiscount;
+     }
+     public function getConditionsParameters($conditions_arr){
+        $condition = array();
+        if(!empty($conditions_arr)) {
+            $conditionarray = $conditions_arr['conditions'][0];
+            $condition[$conditionarray['operator']] = $conditionarray['value'];
+          }
+          return $condition;
     }
 }
  

@@ -824,6 +824,156 @@ class UpgradeSchema implements UpgradeSchemaInterface
 			);
 		}
 	}
+
+	if (version_compare($context->getVersion(), '2.0.5') < 0)  {
+		if (!$installer->tableExists('custom_promotion_BWGY')) {
+			$table = $installer->getConnection()->newTable(
+				$installer->getTable('custom_promotion_BWGY')
+			)
+				->addColumn(
+					'post_id',
+					Table::TYPE_INTEGER,
+					null,
+					[
+						'identity' => true,
+						'nullable' => false,
+						'primary'  => true,
+						'unsigned' => true,
+					],
+					'Post ID'
+				)
+				->addColumn(
+					'fixed_amount',
+					Table::TYPE_TEXT,
+					255,
+					['nullable => false'],
+					'Fixed Amount'
+				)
+				
+				->addColumn(
+					'get_product',
+					Table::TYPE_TEXT,
+					255,
+					[
+						'nullable' => false,
+					],
+					'Get Product'
+				)
+				->addColumn(
+					'get_quantity',
+					Table::TYPE_INTEGER,
+					null,
+					['nullable => false'],
+					'Get Product quantity'
+				)
+				->addColumn(
+					'condition',
+					Table::TYPE_TEXT,
+					255,
+					[
+						'nullable' => false,
+					],
+					'condition'
+				)
+
+				->addColumn(
+					'name',
+					Table::TYPE_TEXT,
+					255,
+					[
+						'nullable' => false,
+					],
+					'name'
+				)
+				->addColumn(
+					'store_id',
+					Table::TYPE_TEXT,
+					255,
+					[
+						'nullable' => false,
+					],
+					'Store Id'
+				)
+				->addColumn(
+					'priority',
+					Table::TYPE_INTEGER,
+					null,
+					['nullable => false'],
+					'priority'
+				)
+				->addColumn(
+					'offer_from',
+					Table::TYPE_TEXT,
+					255,
+					[
+						'nullable' => false,
+						'default' => ''	
+					],
+					'From Date'
+				)
+				->addColumn(
+					'offer_to',
+					Table::TYPE_TEXT,
+					null,
+					[
+						'nullable' => false,
+						'default' => ''	
+					],
+					'To Date'
+				)
+				->addColumn(
+					'customer_group',
+					Table::TYPE_TEXT,
+					255,
+					[
+						'nullable' => false,
+						'default' => ''	
+					],
+					'To Date'
+				)
+				->addColumn(
+					'status',
+					Table::TYPE_INTEGER,
+					1,
+					[],
+					'Post Status'
+				)
+				
+				->addColumn(
+					'featured_image',
+					Table::TYPE_TEXT,
+					255,
+					[],
+					'Post Featured Image'
+				)
+				->addColumn(
+					'created_at',
+					Table::TYPE_TIMESTAMP,
+					null,
+					['nullable' => false, 'default' => Table::TIMESTAMP_INIT],
+					'Created At'
+				)->addColumn(
+					'updated_at',
+					Table::TYPE_TIMESTAMP,
+					null,
+					['nullable' => false, 'default' => Table::TIMESTAMP_INIT_UPDATE],
+					'Updated At')
+				->setComment('Post Table');
+			$installer->getConnection()->createTable($table);
+
+			$installer->getConnection()->addIndex(
+				$installer->getTable('custom_promotion_BWGY'),
+				$setup->getIdxName(
+					$installer->getTable('custom_promotion_BWGY'),
+					['fixed_amount','get_product','get_quantity','name','store_id','priority','offer_from','offer_to','status','featured_image'],
+					\Magento\Framework\DB\Adapter\AdapterInterface::INDEX_TYPE_FULLTEXT
+				),
+				['fixed_amount','get_product','get_quantity','name','store_id','priority','offer_from','offer_to','status','featured_image'],
+				\Magento\Framework\DB\Adapter\AdapterInterface::INDEX_TYPE_FULLTEXT
+			);
+		}
+	}
+
 	$installer->endSetup();
 	}
 }

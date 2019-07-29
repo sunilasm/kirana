@@ -4,9 +4,12 @@
     	<add id="Retailinsights_Pricerules::pricerules" title="Custom Promotions" module="Retailinsights_Pricerules" sortOrder="51" resource="Retailinsights_Pricerules::pricerules"/>
         <add id="Retailinsights_Pricerules::post" title="Buy X Get Y" module="Retailinsights_Pricerules" sortOrder="10" action="retailinsights_pricerules/post/index" resource="Retailinsights_Pricerules::post" parent="Retailinsights_Pricerules::pricerules"/>
       
-         <add id="Retailinsights_Pricerules::postWorth" title="Buy Worth XXX Get Y" module="Retailinsights_Pricerules" sortOrder="10" action="retailinsights_pricerules/postWorth/index" 
-        resource="Retailinsights_Pricerules::postWorth" parent="Retailinsights_Pricerules::pricerules"/>
+         <!-- <add id="Retailinsights_Pricerules::postWorth" title="Buy Worth XXX Get Y" module="Retailinsights_Pricerules" sortOrder="10" action="retailinsights_pricerules/postWorth/index" 
+        resource="Retailinsights_Pricerules::postWorth" parent="Retailinsights_Pricerules::pricerules"/> -->
  
+   <add id="Retailinsights_Pricerules::postBWGY" title="Buy Worth Get Y Free" module="Retailinsights_Pricerules" sortOrder="10" action="retailinsights_pricerules/postBWGY/index" 
+        resource="Retailinsights_Pricerules::postBWGY" parent="Retailinsights_Pricerules::pricerules"/>
+        
         <add id="Retailinsights_Pricerules::postXYZ" title="Buy nX nY nZ amount off on one" module="Retailinsights_Pricerules" sortOrder="10" action="retailinsights_pricerules/postXYZ/index" 
         resource="Retailinsights_Pricerules::postXYZ" parent="Retailinsights_Pricerules::pricerules"/>
         

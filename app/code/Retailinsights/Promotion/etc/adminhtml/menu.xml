@@ -4,9 +4,9 @@
         <add id="Retailinsights_Promotion::promotion" title="Promotions" module="Retailinsights_Promotion"
         sortOrder="51" resource="Retailinsights_Promotion::promotion"/>
 
-        <add id="Retailinsights_Promotion::post" title="Promotion" module="Retailinsights_Promotion" 
-        sortOrder="10" action="retailinsights_promotion/post/index" 
-        resource="Retailinsights_Promotion::post" parent="Retailinsights_Promotion::promotion"/>
+        <add id="Retailinsights_Promotion::posttable" title="Promotion" module="Retailinsights_Promotion" 
+        sortOrder="10" action="retailinsights_promotion/posttable/index" 
+        resource="Retailinsights_Promotion::posttable" parent="Retailinsights_Promotion::promotion"/>
 
         
     </menu>

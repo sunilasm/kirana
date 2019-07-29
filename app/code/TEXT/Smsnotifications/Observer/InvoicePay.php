@@ -5,7 +5,7 @@ namespace TEXT\Smsnotifications\Observer;
 use Magento\Framework\Event\ObserverInterface;
 use \Magento\Framework\Event\Observer       as Observer;
 use \Magento\Framework\View\Element\Context as Context;
-use \TEXT\Smsnotifications\Helper\Data                 as Helper;
+use \TEXT\Smsnotifications\Helper\Data      as Helper;
 /**
  * Customer login observer
  */
@@ -94,10 +94,7 @@ class InvoicePay implements ObserverInterface
      * @param Context $context
      * @param Helper $helper _helper
      */
-    public function __construct(
-        Context $context,
-        Helper $helper
-    ) {
+    public function __construct( Context $context, Helper $helper) {
         $this->_helper  = $helper;
         $this->_request = $context->getRequest();
         $this->_layout  = $context->getLayout();
@@ -112,45 +109,47 @@ class InvoicePay implements ObserverInterface
     {
         $settings = $this->_helper->getSettings();
         /*For multiselect array */
-         $arr= $settings['order_statuss'];
-         $a = explode(',', $settings['order_statuss']);
-         $b = explode(',', $settings['order_statuss']);
-         $final_array = array_combine($a, $b);
+        $arr= $settings['order_statuss'];
+        $a = explode(',', $settings['order_statuss']);
+        $b = explode(',', $settings['order_statuss']);
+        $final_array = array_combine($a, $b);
 
-         $admin_recipients = array();
-                 $this->username         = $this->_helper->getSmsnotificationsApiUsername();
-               $this->password         = $this->_helper->getSmsnotificationsApiPassword();
-                 
-                $invoice   = $observer->getInvoice();
-                $order     = $invoice->getOrder($invoice);
-                    $orderId       =  $order->getIncrementId();
-                    $firstname     =  $order->getBillingAddress()->getFirstName();
-                    $middlename    =  $order->getBillingAddress()->getMiddlename();
-                    $lastname      =  $order->getBillingAddress()->getLastname();
-                    $totalPrice    =  number_format($order->getGrandTotal(), 2);
-                    $countryCode   =  $order->getOrderCurrencyCode();
-                    $customerEmail =  $order->getCustomerEmail();
-           
-                $telephone=  $this->destination  = $order->getBillingAddress()->getTelephone();
+        $admin_recipients = array();
+        
+        $this->username         = $this->_helper->getSmsnotificationsApiUsername();
+        $this->password         = $this->_helper->getSmsnotificationsApiPassword();
+        
+        $invoice   = $observer->getInvoice();
+        $order     = $invoice->getOrder($invoice);
+        $orderId       =  $order->getIncrementId();
+        $firstname     =  $order->getBillingAddress()->getFirstName();
+        $middlename    =  $order->getBillingAddress()->getMiddlename();
+        $lastname      =  $order->getBillingAddress()->getLastname();
+        $totalPrice    =  number_format($order->getGrandTotal(), 2);
+        $countryCode   =  $order->getOrderCurrencyCode();
+        $customerEmail =  $order->getCustomerEmail();
+   
+        $telephone=  $this->destination  = $order->getBillingAddress()->getTelephone();
+        
+        if(in_array('invoice', $final_array)){
+            if ($telephone){
+                $text= $settings['order_invoice'];
+                $text = str_replace('{order_id}', $orderId, $text);
+                $text = str_replace('{firstname}', $firstname, $text);
+                $text = str_replace('{lastname}', $lastname, $text);
+                $text = str_replace('{price}',  $totalPrice, $text);
+                $text = str_replace('{emailid}',  $customerEmail, $text);
+                $text = str_replace('{country_code}',  $countryCode, $text);
+               
+            }
 
+            $admin_recipients[]=$settings['admin_recipients'];
+            array_push($admin_recipients, $telephone);
 
-                 if(in_array('invoice', $final_array)){
-                    if ($telephone){
-                                 $text= $settings['order_invoice'];
-                                 $text = str_replace('{order_id}', $orderId, $text);
-                                 $text = str_replace('{firstname}', $firstname, $text);
-                                 $text = str_replace('{lastname}', $lastname, $text);
-                                 $text = str_replace('{price}',  $totalPrice, $text);
-                                 $text = str_replace('{emailid}',  $customerEmail, $text);
-                                 $text = str_replace('{country_code}',  $countryCode, $text);
-                                        }
-                 $admin_recipients[]=$settings['admin_recipients'];
-                 array_push($admin_recipients, $telephone);
-     
-                 $object_manager = \Magento\Framework\App\ObjectManager ::getInstance();
-                $result = $object_manager->get('TEXT\Smsnotifications\Helper\Data')->sendSms($text,$admin_recipients);
-                    return($result );
-                }
-     }
+            $object_manager = \Magento\Framework\App\ObjectManager::getInstance();
+            $result = $object_manager->get('TEXT\Smsnotifications\Helper\Data')->sendSms($text,$admin_recipients);
+            return($result);
+        }
+    }
 }
 
