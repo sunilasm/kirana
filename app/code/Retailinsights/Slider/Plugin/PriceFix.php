@@ -25,14 +25,17 @@ class PriceFix
     * @var EventManager
     */
     private $eventManager;
+    protected $request;
      
     public function __construct(\Magento\Quote\Api\CartRepositoryInterface $quoteRepository,
     \Magento\Quote\Api\Data\CartItemInterface $CartItem,
     \Magento\Framework\Event\Manager $eventManager,
+    \Magento\Framework\Webapi\Rest\Request $request,
     SellerProduct $sellerProduct)
     {
         $this->quoteRepository = $quoteRepository;
         $this->cartItem = $CartItem;
+        $this->request = $request;
         $this->sellerProduct = $sellerProduct;
         $this->eventManager = $eventManager;
     }
@@ -42,6 +45,8 @@ class PriceFix
         $writer = new \Zend\Log\Writer\Stream(BP . '/var/log/pvn.log'); 
         $logger = new \Zend\Log\Logger(); $logger->addWriter($writer); 
         $logger->info('in PriceFix');
+        
+        //$post = $this->request->getBodyParams();
         
         $cartId = $cartItem->getQuoteId();
         $sku = $cartItem->getSku();
@@ -67,8 +72,10 @@ class PriceFix
        
 
         $this->quoteRepository->save($quote->collectTotals());
-        if($_SERVER['REQUEST_METHOD']!= 'PUT'){
-            $this->eventManager->dispatch('promotion_after_add_cart', ['quoteid' => $cartId ]); 
+        if($_SERVER['REMOTE_ADDR']!=$_SERVER['SERVER_NAME']) {
+            if($_SERVER['REQUEST_METHOD']!= 'PUT'){
+                $this->eventManager->dispatch('promotion_after_add_cart', ['quoteid' => $cartId ]); 
+            }
         }
 
          return $quote->getLastAddedItem();

@@ -13,6 +13,18 @@ interface CatalogRuleRepositoryInterface
      */
 
      public function getRule($ruleId); 
+
+     
+     /**
+     * Returns greeting message to user
+     *
+     * @api
+     * @param string $ruleId Users name.
+     * @return string Greeting message with users name.
+     */
+
+    public function getBWGY($ruleId); 
+    
      /**
      * Returns greeting message to user
      *
