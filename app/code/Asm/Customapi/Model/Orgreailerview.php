@@ -115,22 +115,34 @@ class Orgreailerview implements OrgnizedretailerInterface
                 $cartNotPresentProducts = 0;               
 	            foreach ($items as $item) 
                 {
+                    $sendFreePrice = 0;
+                    $free_price = $promoSeller = $reqKey ='';
                     //-----------------
                     $discountData = $this->_promoFactory->create()->getCollection()
                     ->addFieldToFilter('cart_id', $post['quote_id']);
                     if(isset($discountData)){
-                        foreach($discountData->getData() as $k => $val){ 
-                                $itemInfo = json_decode($val['item_qty'],true);
-                                foreach($itemInfo as $k => $itemArray){
-                                  foreach($itemArray as $key => $value){
-                                    $itemData = json_decode($value);
-                                    if(isset($itemData->type) && (($itemData->type == 'BXGY') || ($itemData->type == 'BWGY')) && ($itemData->id == $item->getItemId())){
-                                        $free_price = "00.00";
-                                        $sendFreePrice = 1;
-                                     }
-                                  }
+                        foreach($discountData->getData() as $ky => $val){ 
+                            $promo_ar = json_decode($val['promo_discount'],true);
+                            $itemInfo = json_decode($val['item_qty'],true);
+                            foreach($promo_ar as $k => $detailArr){
+                                foreach($detailArr as $key => $value){
+                                    $reqData = json_decode($value);
+                                    if(isset($reqData->seller)){
+                                      $promoSeller = $reqData->seller;
+                                      $reqKey = $k;
+                                    }
                                 }
                             }
+                            foreach($itemInfo as $k => $itemArray){
+                                foreach($itemArray as $key => $value){
+                                    $itemData = json_decode($value);
+                                    if(($promoSeller == $orgretailer) && ($reqKey == $k) && isset($itemData->type) && (($itemData->type == 'BXGY') || ($itemData->type == 'BWGY')) && ($itemData->id == $item->getItemId())){
+                                        $free_price = "00.00";
+                                        $sendFreePrice = 1;
+                                    }
+                                }
+                            }
+                        }
                     }
                     //-----------------
                     $totalDiscount  = 0;
@@ -516,9 +528,7 @@ class Orgreailerview implements OrgnizedretailerInterface
                 }
             }
         }
-        $writer = new \Zend\Log\Writer\Stream(BP . '/var/log/ishu.log'); 
-        $logger = new \Zend\Log\Logger();$logger->addWriter($writer);
-       // $logger->info($quoteId.".......".$itemId.".......".$price.".........".$discPrice);
+       
         return $discPrice;
     }
 
