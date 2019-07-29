@@ -17,6 +17,7 @@ xsi:noNamespaceSchemaLocation="urn:magento:framework:Api/etc/extension_attribute
 	<attribute code="ext_row_qty" type="string" />
 	<attribute code="sku" type="string" />
 	<attribute code="is_editable" type="string" />
+	<attribute code="free_price" type="string" />
 	<attribute code="seller_id" type="string" >
 	
     	<resources>
@@ -27,6 +28,10 @@ xsi:noNamespaceSchemaLocation="urn:magento:framework:Api/etc/extension_attribute
 <extension_attributes for="Magento\Quote\Api\Data\TotalsItemInterface">
 		   <attribute code="is_editable" type="string" />
     </extension_attributes>
+<extension_attributes for="Magento\Quote\Api\Data\TotalsItemInterface">
+		   <attribute code="free_price" type="string" />
+    </extension_attributes>  
+    
 <extension_attributes for="Magento\Quote\Api\Data\TotalsItemInterface">
 		   <attribute code="ext_free_product" type="string" />
     </extension_attributes>
