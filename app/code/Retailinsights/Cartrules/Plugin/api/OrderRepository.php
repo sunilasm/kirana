@@ -9,6 +9,7 @@ use Magento\Sales\Api\Data\OrderSearchResultInterface;
 use Magento\Sales\Api\OrderRepositoryInterface;
 use Magento\Catalog\Helper\ImageFactory as ProductImageHelper;
 use Lof\MarketPlace\Model\SellerProductFactory as SellerProduct;        
+use Retailinsights\Promotion\Model\PromoTableFactory;
 
 class OrderRepository
 {
@@ -36,11 +37,13 @@ class OrderRepository
      * @param OrderExtensionFactory $extensionFactory
      */
     protected $sellerProduct;
+    protected $_promoFactory;
 
     protected $itemextensionFactory;
     public function __construct(
         \Magento\Framework\Stdlib\DateTime\TimezoneInterface $timezone,
         SellerProduct $sellerProduct,
+        PromoTableFactory $promoFactory,
         ProductImageHelper $productImageHelper,
         OrderExtensionFactory $extensionFactory,
         OrderItemExtensionFactory $itemextensionFactory,
@@ -56,6 +59,7 @@ class OrderRepository
         $this->productImageHelper = $productImageHelper;
         $this->sellerProduct = $sellerProduct;
         $this->_getOrderCollectionFactory = $getOrderCollectionFactory;
+        $this->_promoFactory = $promoFactory;
 
     }
     public function afterGetList(OrderRepositoryInterface $subject, OrderSearchResultInterface $searchResult)
@@ -74,9 +78,29 @@ class OrderRepository
                 $orderItems = $order->getItems();
                 $grandTotal = 0;
                 $chosenprice = 0;
+                $free_price = '';
+
             foreach($orderItems as $items){
             $priceType = $items->getPriceType();
-          
+           //-----------------
+           $discountData = $this->_promoFactory->create()->getCollection()
+           ->addFieldToFilter('cart_id', $order->getQuoteId());
+
+           if(isset($discountData)){
+               foreach($discountData->getData() as $k => $val){ 
+                       $itemInfo = json_decode($val['item_qty'],true);
+                       foreach($itemInfo as $k => $itemArray){
+                         foreach($itemArray as $key => $value){
+                           $itemData = json_decode($value);
+                           if(isset($itemData->type) && (($itemData->type == 'BXGY') || ($itemData->type == 'BWGY')) && ($itemData->id == $items->getQuoteItemId())){
+                               $free_price = "00.00";
+                            }
+                         }
+                       }
+                   }
+           }
+
+           //-----------------
             $product = $this->_productRepository->getById($items->getProductId());
             $SellerProd = $this->sellerProduct->create()->getCollection();
              $fltColl = $SellerProd->addFieldToFilter('seller_id', $items->getSellerId())
@@ -122,6 +146,8 @@ class OrderRepository
             $extensionAttributes->setPriceType($priceType);
             $extensionAttributes->setExtnRowTotal($rowTotal);
             $extensionAttributes->setChosenPrice($chosenprice);
+            $extensionAttributes->setFreePrice($free_price);
+            
             $extensionAttributes->setVolume($volume);
             $items->setExtensionAttributes($extensionAttributes);
 
