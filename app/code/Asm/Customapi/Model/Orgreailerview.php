@@ -115,8 +115,11 @@ class Orgreailerview implements OrgnizedretailerInterface
                 $cartNotPresentProducts = 0;               
 	            foreach ($items as $item) 
                 {
+                    // $writer = new \Zend\Log\Writer\Stream(BP . '/var/log/issue.log'); 
+                    // $logger = new \Zend\Log\Logger();
+                    // $logger->addWriter($writer);
                     $sendFreePrice = 0;
-                    $free_price = $promoSeller = $reqKey ='';
+                    $free_price = $promoSeller ='';
                     //-----------------
                     $discountData = $this->_promoFactory->create()->getCollection()
                     ->addFieldToFilter('cart_id', $post['quote_id']);
@@ -129,19 +132,20 @@ class Orgreailerview implements OrgnizedretailerInterface
                                     $reqData = json_decode($value);
                                     if(isset($reqData->seller)){
                                       $promoSeller = $reqData->seller;
-                                      $reqKey = $k;
+                                    }
+                                    foreach($itemInfo as $kiy => $itemArray){
+                                        foreach($itemArray as $key2 => $value){
+                                            $itemData = json_decode($value);
+                                           // $logger->info($itemData->type."   +++++++++++  ".$reqKey."   ++  ".$k);
+                                            if(($promoSeller == $orgretailer) && ($k == $kiy)  && ($reqData->type == $itemData->type) && isset($itemData->type) && (($itemData->type == 'BXGY') || ($itemData->type == 'BWGY')) && ($itemData->id == $item->getItemId())){
+                                                $free_price = "00.00";
+                                                $sendFreePrice = 1;
+                                            }
+                                        }
                                     }
                                 }
                             }
-                            foreach($itemInfo as $k => $itemArray){
-                                foreach($itemArray as $key => $value){
-                                    $itemData = json_decode($value);
-                                    if(($promoSeller == $orgretailer) && ($reqKey == $k) && isset($itemData->type) && (($itemData->type == 'BXGY') || ($itemData->type == 'BWGY')) && ($itemData->id == $item->getItemId())){
-                                        $free_price = "00.00";
-                                        $sendFreePrice = 1;
-                                    }
-                                }
-                            }
+                            
                         }
                     }
                     //-----------------
@@ -576,9 +580,6 @@ class Orgreailerview implements OrgnizedretailerInterface
         return $orderLevelDisc;
     }
     public function  checkPromoBuyWorth($customPromoId, $sellerId, $percent, $discountAmount,$sellerAmount) {
-        $writer = new \Zend\Log\Writer\Stream(BP . '/var/log/ishu.log'); 
-        $logger = new \Zend\Log\Logger();
-        $logger->addWriter($writer);
     
         $promoEntry = array();
         $getAppliedDiscount = 0;
