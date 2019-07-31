@@ -115,9 +115,9 @@ class Orgreailerview implements OrgnizedretailerInterface
                 $cartNotPresentProducts = 0;               
 	            foreach ($items as $item) 
                 {
-                    // $writer = new \Zend\Log\Writer\Stream(BP . '/var/log/issue.log'); 
-                    // $logger = new \Zend\Log\Logger();
-                    // $logger->addWriter($writer);
+                    $writer = new \Zend\Log\Writer\Stream(BP . '/var/log/issue.log'); 
+                    $logger = new \Zend\Log\Logger();
+                    $logger->addWriter($writer);
                     $sendFreePrice = 0;
                     $free_price = $promoSeller ='';
                     //-----------------
@@ -136,7 +136,6 @@ class Orgreailerview implements OrgnizedretailerInterface
                                     foreach($itemInfo as $kiy => $itemArray){
                                         foreach($itemArray as $key2 => $value){
                                             $itemData = json_decode($value);
-                                           // $logger->info($itemData->type."   +++++++++++  ".$reqKey."   ++  ".$k);
                                             if(($promoSeller == $orgretailer) && ($k == $kiy)  && ($reqData->type == $itemData->type) && isset($itemData->type) && (($itemData->type == 'BXGY') || ($itemData->type == 'BWGY')) && ($itemData->id == $item->getItemId())){
                                                 $free_price = "00.00";
                                                 $sendFreePrice = 1;
@@ -184,6 +183,8 @@ class Orgreailerview implements OrgnizedretailerInterface
                                 $productPresentCollArray[] = $productCollectionData;
                                 //print_r($seseller_products); exit;
                                 if(isset($mappedRulesArray[$item->getSeller_id()])){ 
+                               // print_r($mappedRulesArray[$item->getSeller_id()]); exit;
+
                                     foreach($mappedRulesArray[$item->getSeller_id()] as $k => $promo) {
                                          $description = json_decode($promo['description'],true);
                                          $ruleCode = $description['code'];
@@ -203,16 +204,23 @@ class Orgreailerview implements OrgnizedretailerInterface
                                                 if($con['attribute']=='sku'){
                                                     $skubxgx = $con['value'];
                                                 }
-                                            }
+                                            } 
                                             if($item->getSku() == $skubxgx){
                                                 $totalDiscount  += $this->applyBxgxBxgy($post['quote_id'],$item->getId(),$product_price,'BXGX');
                                             }
                                            // $logger->info($totalDiscount." BXGX discount");
                                         }
                                         if($ruleCode == "BXGY" && ($orgretailer==$promo['store_id'])){
-                                           // $logger->info("in bxgy dicount");
-                                            $totalDiscount  += $this->applyBxgxBxgy($post['quote_id'],$item->getId(),$product_price,'BXGY');
-                                           // $logger->info($totalDiscount." BXGY discount");
+                                            $actionArr = json_decode($promo['actions_serialized'], true);
+                                            $getProdSku = "";
+                                            foreach($actionArr['get_product'] as $k => $v){ 
+                                                $getProdSku = $v['sku'];
+                                            }
+                                           // $logger->info("in bxgy dicount".$item->getId());
+                                            if($item->getSku() == $getProdSku){
+                                                $totalDiscount  += $this->applyBxgxBxgy($post['quote_id'],$item->getId(),$product_price,'BXGY');
+                                            }
+                                          //  $logger->info($totalDiscount." BXGY discount");
                                         }
                                         if($ruleCode == "BXGOFF" && ($orgretailer==$promo['store_id'])){
                                            // $logger->info("in BXGOFF dicount");
@@ -256,14 +264,16 @@ class Orgreailerview implements OrgnizedretailerInterface
                                         }
                                     }
                                 }
+                               // $logger->info(" Subttttotal  ". $cartSubTotal);
                         
                                 if(isset($seller_products[$product->getId()]['pickup_from_store']))
                                 {
                                     $cartSubTotal += ($seller_products[$product->getId()]['pickup_from_store'] * $item->getQty());
-                                   // $logger->info(" subtotal without store promo discount  ". $cartSubTotal);
+                                    //$logger->info(" subtotal without store promo discount  ". $cartSubTotal);
 
                                     $cartSubTotal = ($cartSubTotal - $totalDiscount);
                                 }
+                                //$logger->info(" Subttttotal after disc  ". $cartSubTotal);
                               
                                 $cartPresentProducts += $item->getQty();
                                 $produt_found = 1;
@@ -347,7 +357,7 @@ class Orgreailerview implements OrgnizedretailerInterface
                                             $orderLevelDisc = $this->getOrderLevelDisc($actionArr['get_product'],$seller_id);
                                         }
                                     } 
-                                   // $logger->info($orderLevelDisc." bwgy discount");
+                                    //$logger->info($orderLevelDisc." bwgy discount");
 
                  
                                 }
@@ -357,6 +367,8 @@ class Orgreailerview implements OrgnizedretailerInterface
                   //  $logger->info(" subtotal without order level discount  ". $cartSubTotal);
 
                     $cartSubTotal = ($cartSubTotal - $orderLevelDisc);
+                 //   $logger->info(" FinallSubttttotal  ". $cartSubTotal);
+
                     ///////////////////
                 $cartSummeryArray = array('total_item_count' => ($cartPresentProducts + $cartNotPresentProducts), 'present_item_count' => $cartPresentProducts, 'not_present_item_count' => $cartNotPresentProducts, 'sub_total' => number_format((float)$cartSubTotal, 2, '.', ''));
 
