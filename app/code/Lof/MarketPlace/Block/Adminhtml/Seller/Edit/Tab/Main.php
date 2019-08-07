@@ -320,7 +320,7 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
                 'name' => 'sector',
                 'label' => __('Sector'),
                 'title' => __('Sector'),
-                'required' => true,
+                //'required' => true,
                 'disabled' => $isElementDisabled
             ]
         );
