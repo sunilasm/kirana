@@ -633,8 +633,8 @@ class ApplyPromotion implements ObserverInterface
       $writer = new \Zend\Log\Writer\Stream(BP . '/var/log/pvn.log'); 
       $logger = new \Zend\Log\Logger();
       $logger->addWriter($writer);
-     // $logger->info('in internal add to cart');
-      //$logger->info($cart_id."------".$sku_to_add."------".$sku_qty."------".$product_id."------".$seller_id."------".$discountpromo."----SERVER---".$_SERVER['REMOTE_ADDR']."---".$_SERVER['SERVER_ADDR']);
+      $logger->info('in internal add to cart');
+      $logger->info($cart_id."------".$sku_to_add."------".$sku_qty."------".$product_id."------".$seller_id."------".$discountpromo."----SERVER---".$_SERVER['REMOTE_ADDR']."---".$_SERVER['SERVER_ADDR']);
 
       if($_SERVER['REMOTE_ADDR']!=$_SERVER['SERVER_NAME']){
        // $logger->info('inside if    '.$_SERVER['REDIRECT_HTTP_AUTHORIZATION']);
