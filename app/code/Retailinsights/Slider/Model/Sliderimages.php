@@ -21,10 +21,11 @@ class Sliderimages implements SliderimagesInterface
 			$ImageCollection = $this->_postFactory->create()->getCollection()
 			->addFieldToFilter('promo_type',array('promo_type'=>$ruletype));
 			foreach($ImageCollection->getData() as $image){
-				$x['image_path'] =  $image['image_path'];
+			if($image['status']==1){
+    	$x['image_path'] =  $image['image_path'];
 				$x['promo_type'] = $image['promo_type'];
 				array_push($result,$x);
-			}
+			}}
 			
 			return $result ;
 		    
