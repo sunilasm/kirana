@@ -195,7 +195,7 @@ class Searchview implements SearchInterface
    /*
     Get seller id's based on lat & lon.
     */
-    public function getInRangeSeller($lat, $lon){
+    public function getInRangeSeller($lat, $lon, $auto_update_range = false){
         $selerIdArray = array();
         $orgRetail = array();
         $retail = array();
@@ -210,6 +210,10 @@ class Searchview implements SearchInterface
             }
         }else{
             $distance = 1; //your distance in KM
+        }
+        if($auto_update_range)
+        {
+            $distance =  $distance + 1;
         }
         $R = 6371; //constant earth radius. You can add precision here if you wish
 
@@ -251,11 +255,24 @@ class Searchview implements SearchInterface
         return  $selerIdArray;
     }
     public function getSearchTermData($title, $lat, $lon){
-         $sellerId = $this->getInRangeSeller($lat, $lon);
-         //print_r($sellerId); exit();
-         
-         $pickRetail = array();
-         $pickOrgRetail = array();
+        $sellerId = $this->getInRangeSeller($lat, $lon);
+        $range_flag = false;
+        if(isset($sellerId['retail']) && isset($sellerId['orgretail']))
+        {
+            $range_flag = (count($sellerId['retail'])) ? false : true;
+            if($range_flag)
+            {
+                $range_flag = (count($sellerId['orgretail'])) ? false : true;
+            } 
+        }
+        if($range_flag)
+        {
+            $sellerId = $this->getInRangeSeller($lat, $lon, $auto_update_range = true);
+        }
+        //print_r($sellerId); exit();
+        
+        $pickRetail = array();
+        $pickOrgRetail = array();
          
          
          $proIds = array();
