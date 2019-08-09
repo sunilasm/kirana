@@ -216,7 +216,7 @@ class Searchview implements SearchInterface
             $distance =  $distance + 1;
         }
         $R = 6371; //constant earth radius. You can add precision here if you wish
-
+	
         $maxLat = $lat + rad2deg($distance/$R);
         $minLat = $lat - rad2deg($distance/$R);
         $maxLon = $lon + rad2deg(asin($distance/$R) / cos(deg2rad($lat)));
