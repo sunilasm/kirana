@@ -44,7 +44,7 @@ class CheckWishlistitemsview implements CheckWishlistInterface
                     $flag = true;
                 }
             }
-            $result = array("Success" => $flag);
+            $result = array("Success" => "$flag");
         }
         else
         {
