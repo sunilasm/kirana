@@ -216,7 +216,7 @@ class Searchview implements SearchInterface
             $distance =  $distance + 1;
         }
         $R = 6371; //constant earth radius. You can add precision here if you wish
-
+	
         $maxLat = $lat + rad2deg($distance/$R);
         $minLat = $lat - rad2deg($distance/$R);
         $maxLon = $lon + rad2deg(asin($distance/$R) / cos(deg2rad($lat)));
@@ -360,8 +360,8 @@ class Searchview implements SearchInterface
             $entColl['thumbnail'] = $product->getData('thumbnail'); 
             $entColl['volume'] = $product->getData('volume');   
             $entColl['price'] = $product->getData('price');   
-            $entColl['description'] = $product->getData('description');   
-            $entColl['short_description'] = $product->getData('short_description');   
+            $entColl['description'] = strip_tags($product->getData('description'));   
+            $entColl['short_description'] = strip_tags($product->getData('short_description'));   
             //$entColl['unitm'] = (round($product->getData('weight'),0)).' '.($product->getData('uom_label'));
             $entColl['unitm'] = ($product->getData('volume')).' '.($product->getData('uom_label'));
             if(!empty($chsnOrgId && $chsnOrgPrice)){
