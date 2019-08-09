@@ -360,8 +360,8 @@ class Searchview implements SearchInterface
             $entColl['thumbnail'] = $product->getData('thumbnail'); 
             $entColl['volume'] = $product->getData('volume');   
             $entColl['price'] = $product->getData('price');   
-            $entColl['description'] = $product->getData('description');   
-            $entColl['short_description'] = $product->getData('short_description');   
+            $entColl['description'] = strip_tags($product->getData('description'));   
+            $entColl['short_description'] = strip_tags($product->getData('short_description'));   
             //$entColl['unitm'] = (round($product->getData('weight'),0)).' '.($product->getData('uom_label'));
             $entColl['unitm'] = ($product->getData('volume')).' '.($product->getData('uom_label'));
             if(!empty($chsnOrgId && $chsnOrgPrice)){
