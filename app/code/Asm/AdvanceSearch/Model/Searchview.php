@@ -214,6 +214,7 @@ class Searchview implements SearchInterface
         if($auto_update_range)
         {
             $distance =  $distance + 1;
+	
         }
         $R = 6371; //constant earth radius. You can add precision here if you wish
 	
@@ -265,6 +266,7 @@ class Searchview implements SearchInterface
                 $range_flag = (count($sellerId['orgretail'])) ? false : true;
             } 
         }
+	//print_r($sellerId); exit();
         if($range_flag)
         {
             $sellerId = $this->getInRangeSeller($lat, $lon, $auto_update_range = true);
