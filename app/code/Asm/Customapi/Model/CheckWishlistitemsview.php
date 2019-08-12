@@ -38,13 +38,27 @@ class CheckWishlistitemsview implements CheckWishlistInterface
             $wishlist_collection = $wishlist->loadByCustomerId($post['customer_id'], true)->getItemCollection();
             $data = $wishlist_collection->getData();
             $flag = false;
+            $result = array();
+            $productCollectionArray = array();
             foreach ($data as $item) {
                 if($product_id == $item['product_id'])
                 {
                     $flag = true;
+                    $productData['wishlist_item_id'] = $item['wishlist_item_id'];
+                    $productData['wishlist_id'] = $item['wishlist_id'];
+                    $productData['wishlist_product_id'] = $item['product_id'];
+                    // $productData['wishlist_seller_id'] = $item['seller_id'];
+                    // $productData['wishlist_seller_name'] = $item['seller_name'];
+                    // $productData['wishlist_qty'] = $item['qty'];
+                    // $productData['wishlist_product_price'] = $item['seller_price'];
+                    // $productData['wishlist_price_type'] = $item['price_type'];
+                    // $productData['wishlist_added_at'] = $item['added_at'];
+                    $productCollectionArray[] = $productData;
                 }
             }
-            $result = array("Success" => "$flag");
+            if(count($productCollectionArray)){
+                $result = $productCollectionArray;
+            }
         }
         else
         {
