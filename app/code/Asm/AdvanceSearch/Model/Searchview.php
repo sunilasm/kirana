@@ -124,14 +124,11 @@ class Searchview implements SearchInterface
             if($title)
             {
                 $productCollectionArray = $this->getSearchTermData($title, $lat, $lon);
-                if($productCollectionArray)
+                if(!count($productCollectionArray[1]['items']))
                 {
-                    $data = $productCollectionArray;
+                    $productCollectionArray = $this->getSearchTermData($title, $lat, $lon,true);
                 }
-                else
-                {
-                    $data = $productCollectionArray;
-                }
+                $data = $productCollectionArray;
                 $flag = 0;
             }
             else
@@ -143,14 +140,12 @@ class Searchview implements SearchInterface
         else
         {
             $productCollectionArray = $this->getSearchTermData($title = null,$lat, $lon);
-            if($productCollectionArray)
+            if(!count($productCollectionArray[1]['items']))
             {
-                $data = $productCollectionArray;
+                $productCollectionArray = $this->getSearchTermData($title = null, $lat, $lon,true);
             }
-            else
-            {
-                $data = $productCollectionArray;
-            }
+            $data = $productCollectionArray;
+            
             $flag = 2;
         }
        // print_r($data); exit();r
@@ -255,7 +250,7 @@ class Searchview implements SearchInterface
         //print_r($selerIdArray); exit();
         return  $selerIdArray;
     }
-    public function getSearchTermData($title, $lat, $lon){
+    public function getSearchTermData($title, $lat, $lon, $update_range = false){
         $sellerId = $this->getInRangeSeller($lat, $lon);
         $range_flag = false;
         if(isset($sellerId['retail']) && isset($sellerId['orgretail']))
@@ -266,9 +261,10 @@ class Searchview implements SearchInterface
                 $range_flag = (count($sellerId['orgretail'])) ? false : true;
             } 
         }
-	//print_r($sellerId); exit();
-        if($range_flag)
+        
+        if($range_flag || $update_range)
         {
+            //echo "Range"; exit;
             $sellerId = $this->getInRangeSeller($lat, $lon, $auto_update_range = true);
         }
         //print_r($sellerId); exit();
@@ -315,24 +311,24 @@ class Searchview implements SearchInterface
          $Productcollection->addAttributeToSelect('*');
 
 
-                 // check current page
-                $current_page = $this->request->getParam('current_page');
-                if($current_page == ''){
-                    $current_page = 1;
-                }else{
-                    $current_page = $this->request->getParam('current_page');
-                }
-                // Check page size
-                $page_size = $this->request->getParam('page_size');
-                if($page_size == ''){
-                    $page_size = 10;
-                }else{
-                    $page_size = $this->request->getParam('page_size');
-                }
-                if($title != null){
-                    $Productcollection->addFieldToFilter([['attribute' => 'name', 'like' => '%'.$title.'%']]);
-                }
-                $Productcollection->setCurPage($current_page)->setPageSize($page_size);
+            // check current page
+        $current_page = $this->request->getParam('current_page');
+        if($current_page == ''){
+            $current_page = 1;
+        }else{
+            $current_page = $this->request->getParam('current_page');
+        }
+        // Check page size
+        $page_size = $this->request->getParam('page_size');
+        if($page_size == ''){
+            $page_size = 10;
+        }else{
+            $page_size = $this->request->getParam('page_size');
+        }
+        if($title != null){
+            $Productcollection->addFieldToFilter([['attribute' => 'name', 'like' => '%'.$title.'%']]);
+        }
+        $Productcollection->setCurPage($current_page)->setPageSize($page_size);
          $result = array();
          $mappedRulesArray = $this->getCustomTableRules();
          foreach($Productcollection->getData() as $product){

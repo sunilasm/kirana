@@ -64,15 +64,15 @@ use Magento\Framework\Event\ObserverInterface;
     public function execute(\Magento\Framework\Event\Observer $observer, string $imageType = NULL)
         {
 
-                $product = $observer->getProduct();
-                $productInfo = $this->_productRepository->getById($product->getEntityId());
-                $optionId = $product->getUnitm();
-                $attribute = $product->getResource()->getAttribute('unitm');
-                if ($attribute->usesSource()) {
-                   $optionText = $attribute->getSource()->getOptionText($optionId); 
-                }
-                $productInfo->setCustomAttribute('uom_label', $optionText);
-                $this->_productRepository->save($productInfo);
+                // $product = $observer->getProduct();
+                // $productInfo = $this->_productRepository->getById($product->getEntityId());
+                // $optionId = $product->getUnitm();
+                // $attribute = $product->getResource()->getAttribute('unitm');
+                // if ($attribute->usesSource()) {
+                //    $optionText = $attribute->getSource()->getOptionText($optionId); 
+                // }
+                // $productInfo->setCustomAttribute('uom_label', $optionText);
+                // $this->_productRepository->save($productInfo);
 
         }
     }
