@@ -124,14 +124,11 @@ class Searchview implements SearchInterface
             if($title)
             {
                 $productCollectionArray = $this->getSearchTermData($title, $lat, $lon);
-                if($productCollectionArray)
+                if(!count($productCollectionArray[1]['items']))
                 {
-                    $data = $productCollectionArray;
+                    $productCollectionArray = $this->getSearchTermData($title, $lat, $lon,true);
                 }
-                else
-                {
-                    $data = $productCollectionArray;
-                }
+                $data = $productCollectionArray;
                 $flag = 0;
             }
             else
@@ -143,14 +140,12 @@ class Searchview implements SearchInterface
         else
         {
             $productCollectionArray = $this->getSearchTermData($title = null,$lat, $lon);
-            if($productCollectionArray)
+            if(!count($productCollectionArray[1]['items']))
             {
-                $data = $productCollectionArray;
+                $productCollectionArray = $this->getSearchTermData($title = null, $lat, $lon,true);
             }
-            else
-            {
-                $data = $productCollectionArray;
-            }
+            $data = $productCollectionArray;
+            
             $flag = 2;
         }
        // print_r($data); exit();r
@@ -195,7 +190,7 @@ class Searchview implements SearchInterface
    /*
     Get seller id's based on lat & lon.
     */
-    public function getInRangeSeller($lat, $lon){
+    public function getInRangeSeller($lat, $lon, $auto_update_range = false){
         $selerIdArray = array();
         $orgRetail = array();
         $retail = array();
@@ -211,8 +206,13 @@ class Searchview implements SearchInterface
         }else{
             $distance = 1; //your distance in KM
         }
+        if($auto_update_range)
+        {
+            $distance =  $distance + 1;
+	
+        }
         $R = 6371; //constant earth radius. You can add precision here if you wish
-
+	
         $maxLat = $lat + rad2deg($distance/$R);
         $minLat = $lat - rad2deg($distance/$R);
         $maxLon = $lon + rad2deg(asin($distance/$R) / cos(deg2rad($lat)));
@@ -250,12 +250,27 @@ class Searchview implements SearchInterface
         //print_r($selerIdArray); exit();
         return  $selerIdArray;
     }
-    public function getSearchTermData($title, $lat, $lon){
-         $sellerId = $this->getInRangeSeller($lat, $lon);
-         //print_r($sellerId); exit();
-         
-         $pickRetail = array();
-         $pickOrgRetail = array();
+    public function getSearchTermData($title, $lat, $lon, $update_range = false){
+        $sellerId = $this->getInRangeSeller($lat, $lon);
+        $range_flag = false;
+        if(isset($sellerId['retail']) && isset($sellerId['orgretail']))
+        {
+            $range_flag = (count($sellerId['retail'])) ? false : true;
+            if($range_flag)
+            {
+                $range_flag = (count($sellerId['orgretail'])) ? false : true;
+            } 
+        }
+        
+        if($range_flag || $update_range)
+        {
+            //echo "Range"; exit;
+            $sellerId = $this->getInRangeSeller($lat, $lon, $auto_update_range = true);
+        }
+        //print_r($sellerId); exit();
+        
+        $pickRetail = array();
+        $pickOrgRetail = array();
          
          
          $proIds = array();
@@ -296,24 +311,24 @@ class Searchview implements SearchInterface
          $Productcollection->addAttributeToSelect('*');
 
 
-                 // check current page
-                $current_page = $this->request->getParam('current_page');
-                if($current_page == ''){
-                    $current_page = 1;
-                }else{
-                    $current_page = $this->request->getParam('current_page');
-                }
-                // Check page size
-                $page_size = $this->request->getParam('page_size');
-                if($page_size == ''){
-                    $page_size = 10;
-                }else{
-                    $page_size = $this->request->getParam('page_size');
-                }
-                if($title != null){
-                    $Productcollection->addFieldToFilter([['attribute' => 'name', 'like' => '%'.$title.'%']]);
-                }
-                $Productcollection->setCurPage($current_page)->setPageSize($page_size);
+            // check current page
+        $current_page = $this->request->getParam('current_page');
+        if($current_page == ''){
+            $current_page = 1;
+        }else{
+            $current_page = $this->request->getParam('current_page');
+        }
+        // Check page size
+        $page_size = $this->request->getParam('page_size');
+        if($page_size == ''){
+            $page_size = 10;
+        }else{
+            $page_size = $this->request->getParam('page_size');
+        }
+        if($title != null){
+            $Productcollection->addFieldToFilter([['attribute' => 'name', 'like' => '%'.$title.'%']]);
+        }
+        $Productcollection->setCurPage($current_page)->setPageSize($page_size);
          $result = array();
          $mappedRulesArray = $this->getCustomTableRules();
          foreach($Productcollection->getData() as $product){
@@ -343,7 +358,10 @@ class Searchview implements SearchInterface
             $entColl['thumbnail'] = $product->getData('thumbnail'); 
             $entColl['volume'] = $product->getData('volume');   
             $entColl['price'] = $product->getData('price');   
-            $entColl['unitm'] = (round($product->getData('weight'),0)).' '.($product->getData('uom_label'));
+            $entColl['description'] = strip_tags($product->getData('description'));   
+            $entColl['short_description'] = strip_tags($product->getData('short_description'));   
+            //$entColl['unitm'] = (round($product->getData('weight'),0)).' '.($product->getData('uom_label'));
+            $entColl['unitm'] = ($product->getData('volume')).' '.($product->getData('uom_label'));
             if(!empty($chsnOrgId && $chsnOrgPrice)){
                 $entColl['org_retail'] = $chsnOrgId;
                 $entColl['pickup_from_store'] = $chsnOrgPrice;

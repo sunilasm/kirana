@@ -144,4 +144,18 @@
             <resource ref="anonymous"/>
         </resources>
     </route>
+    <!-- Re Order -->
+    <route url="/V1/reorder" method="POST">
+        <service class="Asm\Customapi\Api\ReorderInterface" method="reorder"/>
+        <resources>
+            <resource ref="anonymous"/>
+        </resources>
+    </route>
+    <!-- Get Wishlist Item -->
+    <route url="/V1/wishlist/items/check" method="POST">
+        <service class="Asm\Customapi\Api\CheckWishlistInterface" method="checkwishlistitems"/>
+        <resources>
+            <resource ref="anonymous"/>
+        </resources>
+    </route>
 </routes>

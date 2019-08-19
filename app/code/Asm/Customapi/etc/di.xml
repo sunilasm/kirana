@@ -48,5 +48,8 @@
     <preference for="Asm\Customapi\Api\WishlistInterface" type="Asm\Customapi\Model\Wishlistitemsview" /> 
     <!-- Add Wishlist Items -->
     <preference for="Asm\Customapi\Api\AddwishlistInterface" type="Asm\Customapi\Model\Addwishlistview" />  <!-- Merge cart Items -->
-    <preference for="Asm\Customapi\Api\MergeItemInterface" type="Asm\Customapi\Model\Mergeitemsview" /> 
+    <preference for="Asm\Customapi\Api\MergeItemInterface" type="Asm\Customapi\Model\Mergeitemsview" />   <!-- Re Order -->
+    <preference for="Asm\Customapi\Api\ReorderInterface" type="Asm\Customapi\Model\Reorderview" />
+     <!-- Get Wishlist Items -->
+    <preference for="Asm\Customapi\Api\CheckWishlistInterface" type="Asm\Customapi\Model\CheckWishlistitemsview" /> 
 </config>
